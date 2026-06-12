@@ -1,0 +1,14 @@
+{
+  "name": "TCCC Field Reference",
+  "short_name": "TCCC",
+  "description": "MARCH PAWS quick-reference — offline-capable field guide",
+  "start_url": "/tccc/",
+  "scope": "/tccc/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#15282B",
+  "theme_color": "#15282B",
+  "icons": [
+    { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" }
+  ]
+}

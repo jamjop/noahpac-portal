@@ -1,0 +1,58 @@
+:root{
+  /* Broselow color bands */
+  --brose-grey:#9CA3AF;   /* <3 kg */
+  --brose-pink:#F9A8D4;
+  --brose-red:#FCA5A5;
+  --brose-purple:#C4B5FD;
+  --brose-yellow:#FDE68A;
+  --brose-white:#E5E7EB;
+  --brose-blue:#93C5FD;
+  --brose-orange:#FD9B72;
+  --brose-green:#6EE7B7;
+}
+.header-inner{padding:20px 22px 16px}
+
+/* Input panel */
+.input-area{background:var(--surface);border-bottom:1px solid var(--line);padding:16px 22px;position:sticky;top:0;z-index:10;box-shadow:var(--sh)}
+.input-grid{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:4px;min-width:120px}
+.field label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
+.field input,.field select{font-family:'Archivo',sans-serif;font-size:14px;font-weight:600;padding:9px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink);transition:border-color .15s;width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--purple)}
+.or-sep{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);align-self:center;padding-bottom:2px}
+.calc-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;padding:10px 20px;border-radius:var(--r-sm);background:var(--purple);color:#fff;border:none;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0;align-self:flex-end}
+.calc-btn:hover{background:#6D28D9}
+
+/* Broselow band indicator */
+.brose-bar{display:flex;align-items:center;gap:10px;margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600}
+.brose-swatch{width:24px;height:24px;border-radius:6px;border:1.5px solid rgba(0,0,0,.12);flex-shrink:0}
+.brose-label{color:var(--ink-soft)}
+.brose-weight{color:var(--ink);font-size:12px}
+
+/* Content */
+.content{max-width:860px;padding:18px 22px 60px}
+.sec-head{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink-muted);margin:22px 0 10px;display:flex;align-items:center;gap:10px}
+.sec-head::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* Dose cards grid */
+.dose-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.dose-card{background:var(--surface);border-radius:var(--r-sm);padding:12px 14px;box-shadow:var(--sh)}
+.dose-name{font-weight:700;font-size:13px;margin-bottom:4px}
+.dose-val{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:var(--purple)}
+.dose-unit{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);margin-left:3px}
+.dose-range{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);margin-top:2px}
+.dose-note{font-size:11.5px;color:var(--ink-soft);margin-top:4px;font-style:italic}
+.dose-card.highlight{box-shadow:0 0 0 2px var(--teal),var(--sh)}
+.dose-card.warn{box-shadow:0 0 0 2px var(--warn),var(--sh)}
+.dose-card.risk{box-shadow:0 0 0 2px var(--risk),var(--sh)}
+
+/* Airway / equipment row */
+.equip-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:0}
+
+.callout{border-radius:var(--r-sm);padding:12px 16px;margin:10px 0;font-size:13px;line-height:1.55}
+.callout.warn{background:var(--warn-soft);border-left:4px solid var(--warn);color:#78350f}
+.callout.info{background:#E0F7FA;border-left:4px solid var(--teal);color:#0c4a6e;font-family:'IBM Plex Mono',monospace;font-size:11px}
+.field-wt{max-width:110px}
+.field-age{max-width:80px}
+.field-unit{max-width:100px}
+.callout.mt{margin-top:20px}
