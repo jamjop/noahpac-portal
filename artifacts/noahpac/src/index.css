@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* ── Design tokens from noahpac shared.css ── */
+:root {
+  --bg: #EFF3FA;
+  --surface: #FFFFFF;
+  --ink: #0D1E3F;
+  --ink-soft: #4A5A7A;
+  --ink-muted: #8895B3;
+  --line: #D8E0EE;
+  --purple: #1B2E6B;
+  --purple-soft: #E8EDF7;
+  --purple-mid: #9AAACE;
+  --teal: #0891B2;
+  --ok: #1A8A5A;
+  --ok-soft: #E3F5EC;
+  --warn: #D4820A;
+  --warn-soft: #FEF3DA;
+  --risk: #C53030;
+  --risk-soft: #FDE8E8;
+  --grad: linear-gradient(160deg, #0D1E3F 0%, #1B2E6B 100%);
+  --sh: 0 2px 8px rgba(13, 30, 63, .07), 0 1px 2px rgba(13, 30, 63, .04);
+  --sh-lg: 0 8px 24px rgba(13, 30, 63, .10), 0 2px 8px rgba(13, 30, 63, .05);
+  --r: 8px;
+  --r-sm: 6px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Archivo', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  min-height: 100vh;
+}
