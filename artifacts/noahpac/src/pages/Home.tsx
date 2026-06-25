@@ -66,7 +66,7 @@ export default function Home() {
           color: "green",
         },
         {
-          name: "Lab Differentials",
+          name: "Lab Value DDx",
           desc: "Select any lab value to see differential diagnoses for elevated and decreased results. Covers 40+ tests across electrolytes, CBC, liver, thyroid, and more — with clinical context for each differential.",
           chips: ["40+ tests", "Differentials"],
           href: "/labdiff",
