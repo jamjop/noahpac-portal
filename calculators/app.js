@@ -921,6 +921,7 @@ function calcAccutane(){
     <div class="result-label">Accutane Dose Targets</div>
     <div class="result-detail">
       Target cumulative dose: <strong>${esc(String(target))} mg</strong> <span class="calc-note">· ${esc(String(targetMgKg))} mg/kg</span><br>
+      Minimum cumulative dose: <strong>${esc(String(convLower))} mg</strong> <span class="calc-note">· 120 mg/kg</span><br>
       Conventional range: <strong>${esc(String(convLower))}–${esc(String(convUpper))} mg</strong> <span class="calc-note">· 120–220 mg/kg</span>
       <div class="sub-result">
         Starting daily dose: <strong>${esc(String(startDose))} mg/day</strong> <span class="calc-note">· 0.5 mg/kg</span><br>
@@ -942,7 +943,7 @@ function copyAccutane(btn){
   const startDose = Math.round(weight*0.5);
   const maxDaily = Math.floor(weight);
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  let text = `Accutane Dosing\nWeight: ${weight}kg\n\nTarget cumulative dose: ${target}mg (${targetMgKg} mg/kg)\nConventional range: ${convLower}–${convUpper}mg (120–220 mg/kg)\nStarting daily dose: ${startDose} mg/day (0.5 mg/kg)\nMax daily dose: ${maxDaily} mg/day (1 mg/kg)`;
+  let text = `Accutane Dosing\nWeight: ${weight}kg\n\nTarget cumulative dose: ${target}mg (${targetMgKg} mg/kg)\nMinimum cumulative dose: ${convLower}mg (120 mg/kg)\nConventional range: ${convLower}–${convUpper}mg (120–220 mg/kg)\nStarting daily dose: ${startDose} mg/day (0.5 mg/kg)\nMax daily dose: ${maxDaily} mg/day (1 mg/kg)`;
   if(!isNaN(daily) && daily > 0){
     const month1mg = startDose * 30;
     const remainingDays = Math.ceil((target - month1mg) / daily);
