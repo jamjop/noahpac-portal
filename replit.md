@@ -33,7 +33,7 @@ All tools are vanilla HTML/CSS/JS served as static files from `public/`, rendere
 |---|---|---|
 | `/screener` | `public/screener/` | USPSTF Screener |
 | `/vaccines` | `public/vaccines/` | Immunization Schedule (ACIP) |
-| `/calculators` | `public/calculators/` | Medical Calculators (17) |
+| `/calculators` | `public/calculators/` | Medical Calculators (19) |
 | `/opioids` | `public/opioids/` | Opioid Conversion |
 | `/sti` | `public/sti/` | STI Treatment |
 | `/abx` | `public/abx/` | Antibiotic Reference |

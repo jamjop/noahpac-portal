@@ -453,6 +453,60 @@ const CALCS = [
       renderItems();
     }
   },
+
+  /* 18. Accutane Dosing */
+  {
+    id:"accutane", name:"Accutane Dosing", num:"18",
+    eyebrow:"Dermatology", source:"Weight-based isotretinoin cumulative dose guidelines",
+    render: pane => {
+      pane.innerHTML = calcHeader("Accutane (Isotretinoin) Dosing","Dermatology","Weight-based cumulative dose calculator") + `
+      <div class="fields">
+        ${field("Weight","accutane-weight","number","kg","","1","200")}
+        ${field("Target cumulative dose","accutane-target","number","mg/kg","135","100","220")}
+        ${field("Planned daily dose","accutane-daily","number","mg/day","","","","e.g. 40")}
+      </div>
+      <div id="accutane-result" class="result-card"><div class="result-placeholder">Enter weight</div></div>
+      <button class="copy-btn" id="accutane-copy">&#x2398; Copy results</button>
+      <p class="note"><strong>How the duration projection is calculated:</strong> Month 1 runs at the starting dose (0.5 mg/kg/day), contributing <em>starting dose × 30 days</em> of cumulative mg. The remaining mg needed to reach the target cumulative dose is divided by the planned daily dose to get the additional days. Total duration = 30 days + remaining days, expressed in 30-day months. The target defaults to 135 mg/kg — within the conventional range — but can be adjusted based on individual patient factors.<br><br>Example (135 mg/kg target): 46 kg patient on 40 mg/day. Target = 6,210 mg. Month 1 at 23 mg/day = 690 mg. Remaining = 5,520 mg ÷ 40 mg/day = 138 days. Total = 168 days = 5 months 18 days.<br><br><strong>References:</strong> Dosing parameters (0.5–1 mg/kg/day) are consistent with: Zaenglein AL et al. "Guidelines of care for the management of acne vulgaris." <em>J Am Acad Dermatol.</em> 2016;74(5):945–973 (AAD); Layton AM, Cunliffe WJ. "Guidelines for optimal use of isotretinoin in acne." <em>J Am Acad Dermatol.</em> 1992;27(6 Pt 2):S2–7; and Lai J, Barbieri JS. "Acne Relapse and Isotretinoin Retrial in Patients With Acne." <em>JAMA Dermatol.</em> 2025;161(4):367–374 (PMID 39813053) — a retrospective cohort of 19,907 patients finding that higher cumulative dosage (conventional range 120–220 mg/kg) was independently associated with decreased relapse; daily dose was not associated with decreased relapse risk at conventional and high cumulative doses.</p>`;
+      pane.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('input', calcAccutane);
+        el.addEventListener('change', calcAccutane);
+      });
+      const acBtn = document.getElementById('accutane-copy');
+      if(acBtn) acBtn.addEventListener('click', () => copyAccutane(acBtn));
+      calcAccutane();
+    }
+  },
+
+  /* 19. Weight Change */
+  {
+    id:"weight-change", name:"Weight Change", num:"19",
+    eyebrow:"General / Monitoring", source:"Percentage body weight change calculator",
+    render: pane => {
+      pane.innerHTML = calcHeader("Weight Change Calculator","General / Monitoring","Percentage body weight change") + `
+      <div class="fields">
+        ${field("Baseline weight","wt-base","number","kg","","1","500")}
+        <div class="field">
+          <label class="field-label" for="wt-base-date">Baseline date <span class="calc-note">(optional)</span></label>
+          <input type="date" id="wt-base-date">
+        </div>
+        ${field("Current weight","wt-curr","number","kg","","1","500")}
+        <div class="field">
+          <label class="field-label" for="wt-curr-date">Current date <span class="calc-note">(optional)</span></label>
+          <input type="date" id="wt-curr-date">
+        </div>
+      </div>
+      <div id="weight-change-result" class="result-card"><div class="result-placeholder">Enter baseline and current weight</div></div>
+      <button class="copy-btn" id="weight-change-copy">&#x2398; Copy results</button>`;
+      pane.querySelectorAll('input').forEach(el => {
+        el.addEventListener('input', calcWeightChange);
+        el.addEventListener('change', calcWeightChange);
+      });
+      const wcBtn = document.getElementById('weight-change-copy');
+      if(wcBtn) wcBtn.addEventListener('click', () => copyWeightChange(wcBtn));
+      calcWeightChange();
+    }
+  },
 ];
 
 /* ── HTML helpers ── */
@@ -891,6 +945,144 @@ function copyResult(calcId, btn){
   navigator.clipboard.writeText(text).then(()=>{
     btn.classList.add('copied'); btn.textContent='✓ Copied';
     setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy result'; }, 2000);
+  });
+}
+
+function formatDate(dateStr){
+  if(!dateStr) return '';
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+}
+
+function calcAccutane(){
+  const weight = num('accutane-weight');
+  const daily = num('accutane-daily');
+  const targetRaw = num('accutane-target');
+  const targetMgKg = (!isNaN(targetRaw) && targetRaw > 0) ? targetRaw : 135;
+  const el = document.getElementById('accutane-result');
+  if(isNaN(weight)||weight<=0){
+    el.innerHTML='<div class="result-placeholder">Enter weight</div>'; el.className='result-card'; return;
+  }
+  const target = Math.round(weight*targetMgKg);
+  const convLower = Math.round(weight*120);
+  const convUpper = Math.round(weight*220);
+  const startDose = Math.round(weight*0.5);
+  const maxDaily = Math.floor(weight);
+  let durationLine;
+  if(!isNaN(daily) && daily > 0){
+    const month1mg = startDose * 30;
+    const remainingDays = Math.ceil((target - month1mg) / daily);
+    const totalDays = 30 + remainingDays;
+    const months = Math.floor(totalDays / 30);
+    const days = totalDays % 30;
+    const dur = days > 0 ? `${months} months ${days} days` : `${months} months`;
+    durationLine = `Using a target cumulative dose of <strong>${esc(String(target))} mg</strong> <span class="calc-note">(${esc(String(targetMgKg))} mg/kg)</span>, if you take <strong>${esc(String(daily))} mg</strong> of isotretinoin a day, your treatment will last <strong>${esc(dur)}</strong>.`;
+  } else {
+    durationLine = `<span class="calc-note">Enter planned daily dose above to calculate treatment duration.</span>`;
+  }
+  setResult('accutane-result', `
+    <div class="result-num">${esc(String(weight))} kg</div>
+    <div class="result-label">Accutane Dose Targets</div>
+    <div class="result-detail">
+      Target cumulative dose: <strong>${esc(String(target))} mg</strong> <span class="calc-note">· ${esc(String(targetMgKg))} mg/kg</span><br>
+      Minimum cumulative dose: <strong>${esc(String(convLower))} mg</strong> <span class="calc-note">· 120 mg/kg</span><br>
+      Conventional range: <strong>${esc(String(convLower))}–${esc(String(convUpper))} mg</strong> <span class="calc-note">· 120–220 mg/kg</span>
+      <div class="sub-result">
+        Starting daily dose: <strong>${esc(String(startDose))} mg/day</strong> <span class="calc-note">· 0.5 mg/kg</span><br>
+        Max daily dose: <strong>${esc(String(maxDaily))} mg/day</strong> <span class="calc-note">· 1 mg/kg</span>
+      </div>
+      <div class="sub-result">${durationLine}</div>
+    </div>`, '');
+}
+
+function copyAccutane(btn){
+  const weight = num('accutane-weight');
+  const daily = num('accutane-daily');
+  const targetRaw = num('accutane-target');
+  const targetMgKg = (!isNaN(targetRaw) && targetRaw > 0) ? targetRaw : 135;
+  if(isNaN(weight)||weight<=0) return;
+  const target = Math.round(weight*targetMgKg);
+  const convLower = Math.round(weight*120);
+  const convUpper = Math.round(weight*220);
+  const startDose = Math.round(weight*0.5);
+  const maxDaily = Math.floor(weight);
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  let text = `Accutane Dosing\nWeight: ${weight}kg\n\nTarget cumulative dose: ${target}mg (${targetMgKg} mg/kg)\nMinimum cumulative dose: ${convLower}mg (120 mg/kg)\nConventional range: ${convLower}–${convUpper}mg (120–220 mg/kg)\nStarting daily dose: ${startDose} mg/day (0.5 mg/kg)\nMax daily dose: ${maxDaily} mg/day (1 mg/kg)`;
+  if(!isNaN(daily) && daily > 0){
+    const month1mg = startDose * 30;
+    const remainingDays = Math.ceil((target - month1mg) / daily);
+    const totalDays = 30 + remainingDays;
+    const months = Math.floor(totalDays / 30);
+    const days = totalDays % 30;
+    const dur = days > 0 ? `${months} months ${days} days` : `${months} months`;
+    text += `\n\nUsing a target cumulative dose of ${target}mg (${targetMgKg} mg/kg), if you take ${daily} mg of isotretinoin a day, your treatment will last ${dur}.`;
+  }
+  text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/\nReference: Lai J, Barbieri JS. Acne Relapse and Isotretinoin Retrial in Patients With Acne. JAMA Dermatol. 2025;161(4):367-374. PMID 39813053`;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied'); btn.textContent='✓ Copied';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy results'; }, 2000);
+  });
+}
+
+function calcWeightChange(){
+  const base = num('wt-base');
+  const curr = num('wt-curr');
+  const baseDate = document.getElementById('wt-base-date')?.value || '';
+  const currDate = document.getElementById('wt-curr-date')?.value || '';
+  const el = document.getElementById('weight-change-result');
+  if(isNaN(base)||base<=0||isNaN(curr)||curr<=0){
+    el.innerHTML='<div class="result-placeholder">Enter baseline and current weight</div>'; el.className='result-card'; return;
+  }
+  const diff = curr - base;
+  const absDiff = Math.abs(diff);
+  const absPct = Math.abs((diff / base) * 100);
+  const isLoss = diff < 0;
+  const label = diff === 0 ? 'No Change' : (isLoss ? 'Weight Loss' : 'Weight Gain');
+  const sign = isLoss ? '−' : (diff > 0 ? '+' : '');
+  let durationLine = '';
+  if(baseDate && currDate){
+    const days = Math.round((new Date(currDate+'T00:00:00') - new Date(baseDate+'T00:00:00')) / 86400000);
+    if(days > 0){
+      durationLine = `<div class="sub-result">
+        Duration: <strong>${esc(String(days))} days</strong><br>
+        Rate: <strong>${esc(fmt(absDiff/(days/7),2))} kg/week</strong> · <strong>${esc(fmt(absDiff/(days/30.44),2))} kg/month</strong>
+      </div>`;
+    }
+  }
+  setResult('weight-change-result', `
+    <div class="result-num">${sign}${fmt(absPct,1)}%</div>
+    <div class="result-label">${esc(label)}</div>
+    <div class="result-detail">
+      Baseline: <strong>${esc(String(base))} kg</strong>${baseDate ? ` <span class="calc-note">· ${esc(formatDate(baseDate))}</span>` : ''}<br>
+      Current: <strong>${esc(String(curr))} kg</strong>${currDate ? ` <span class="calc-note">· ${esc(formatDate(currDate))}</span>` : ''}<br>
+      <strong>${sign}${fmt(absDiff,1)} kg ${esc(diff===0?'change':(isLoss?'lost':'gained'))}</strong>
+      ${durationLine}
+    </div>`, '');
+}
+
+function copyWeightChange(btn){
+  const base = num('wt-base');
+  const curr = num('wt-curr');
+  if(isNaN(base)||base<=0||isNaN(curr)||curr<=0) return;
+  const baseDate = document.getElementById('wt-base-date')?.value || '';
+  const currDate = document.getElementById('wt-curr-date')?.value || '';
+  const diff = curr - base;
+  const absDiff = Math.abs(diff);
+  const absPct = Math.abs((diff / base) * 100);
+  const isLoss = diff < 0;
+  const direction = diff === 0 ? 'unchanged' : (isLoss ? 'lost' : 'gained');
+  const changeType = diff === 0 ? 'change' : (isLoss ? 'loss' : 'gain');
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  let text = `Weight Change\n\nStarting weight: ${base} kg${baseDate ? ` (${formatDate(baseDate)})` : ''}\nCurrent weight: ${curr} kg${currDate ? ` (${formatDate(currDate)})` : ''}\n\n${absDiff.toFixed(1)} kg ${direction}\n${absPct.toFixed(1)}% ${changeType}`;
+  if(baseDate && currDate){
+    const days = Math.round((new Date(currDate+'T00:00:00') - new Date(baseDate+'T00:00:00')) / 86400000);
+    if(days > 0){
+      text += `\nDuration: ${days} days\nRate: ${(absDiff/(days/7)).toFixed(2)} kg/week · ${(absDiff/(days/30.44)).toFixed(2)} kg/month`;
+    }
+  }
+  text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/`;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied'); btn.textContent='✓ Copied';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy results'; }, 2000);
   });
 }
 
