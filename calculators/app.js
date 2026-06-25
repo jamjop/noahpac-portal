@@ -912,7 +912,7 @@ function calcAccutane(){
     const months = Math.floor(totalDays / 30);
     const days = totalDays % 30;
     const dur = days > 0 ? `${months} months ${days} days` : `${months} months`;
-    durationLine = `If you will take <strong>${esc(String(daily))} mg</strong> of isotretinoin a day, your treatment will last <strong>${esc(dur)}</strong>.`;
+    durationLine = `Using a target cumulative dose of <strong>${esc(String(target))} mg</strong> <span class="calc-note">(${esc(String(targetMgKg))} mg/kg)</span>, if you take <strong>${esc(String(daily))} mg</strong> of isotretinoin a day, your treatment will last <strong>${esc(dur)}</strong>.`;
   } else {
     durationLine = `<span class="calc-note">Enter planned daily dose above to calculate treatment duration.</span>`;
   }
@@ -950,7 +950,7 @@ function copyAccutane(btn){
     const months = Math.floor(totalDays / 30);
     const days = totalDays % 30;
     const dur = days > 0 ? `${months} months ${days} days` : `${months} months`;
-    text += `\n\nIf you will take ${daily} mg of isotretinoin a day, your treatment will last ${dur}.`;
+    text += `\n\nUsing a target cumulative dose of ${target}mg (${targetMgKg} mg/kg), if you take ${daily} mg of isotretinoin a day, your treatment will last ${dur}.`;
   }
   text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/`;
   navigator.clipboard.writeText(text).then(()=>{
