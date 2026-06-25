@@ -49,7 +49,7 @@ All tools are vanilla HTML/CSS/JS served as static files from `public/`, rendere
 
 Root-level files that power the PWA:
 
-- `sw.js` — service worker, pre-caches all tool pages; cache key `noahpac-vN`
+- `sw.js` — service worker, pre-caches all tool pages in batches of 4 (300 ms apart) to avoid server-side burst limits; cache key `noahpac-vN`
 - `manifest.json` — web app manifest (name, icons, theme)
 - `index.html` — landing page (also registers SW and listens for `controllerchange` to auto-reload on SW update)
 - `apple-touch-icon.png` / `icon-192.png` / `icon-512.png` — app icons
@@ -61,7 +61,7 @@ Root-level files that power the PWA:
 - **Static production deploy** — `artifact.toml` uses `serve = "static"` with `publicDir = "artifacts/noahpac/dist/public"`. The Express `server.mjs` runs only in dev; production is pure static files served by Replit.
 - **Shared CSS** — All tools reference `/shared.css` for design tokens (light + dark mode). Served from `artifacts/noahpac/public/shared.css`.
 - **No backend dependency** — All clinical logic runs client-side. API server is scaffolded but unused.
-- **Dark mode** — `shared.css` and `index.html` both include `prefers-color-scheme: dark` overrides.
+- **Dark mode** — `shared.css` and `index.html` both include `prefers-color-scheme: dark` overrides. Covers tool pages, the landing page (icons, rows, footer), and the About/Disclaimer dialogs. Inline-style overrides require `!important` in the media query block.
 
 ## Product
 
@@ -76,6 +76,7 @@ _Populate as you build — explicit user instructions worth remembering across s
 - **Adding a new tool:** drop `index.html`, `app.js`, `style.css` into `artifacts/noahpac/public/<slug>/`, then add a route entry to `src/App.tsx`, a card to `src/pages/Home.tsx`, and the slug to the `TOOLS` array in `sw.js`. Bump the SW cache version too (see below).
 - All tool `index.html` files reference `/shared.css` as a root-relative path — this works because Vite serves `public/` at the root.
 - **Deploying changes? Bump the SW cache version.** Edit the first line of `sw.js` (`const CACHE = 'noahpac-vN'`) and increment N. Without this, the service worker serves stale cached files to all visitors indefinitely, even after a redeploy. The `controllerchange` listener in `index.html` auto-reloads the page once the new SW activates.
+- **SW pre-cache uses batched fetching** (`cacheInBatches`, 4 files per batch, 300 ms delay) to stay under CrowdSec burst thresholds on the hosting server. If the host's rate limit changes, tune `batchSize` / `delayMs` in `sw.js`.
 
 ## Pointers
 
