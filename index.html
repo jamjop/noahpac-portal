@@ -59,21 +59,30 @@
 
       @media (prefers-color-scheme: dark) {
         body { background-color: #0f1117 !important; color: #e2e8f0 !important; }
-        [data-lucide="stethoscope"] { stroke: #4d94ff !important; }
-        #ext-refs { border-top-color: #2d3748 !important; }
-        .ext-name { color: #e2e8f0 !important; }
-        .ext-row:hover { background: #1a2030 !important; }
-        .ext-row:hover .ext-name,.ext-row:hover .ext-icon,.ext-row:hover .ext-arrow { color: #4d94ff !important; }
         header { border-bottom-color: #2d3748 !important; }
-        .tool-row:hover { background: #1a2030 !important; box-shadow: 0 1px 3px rgba(0,0,0,.3) !important; }
-        .tool-row:hover .tool-icon { color: #4d94ff !important; }
-        .tool-row:hover .tool-name { color: #4d94ff !important; }
-        .tool-icon { color: #a0aec0 !important; }
-        .tool-name { color: #e2e8f0 !important; }
-        .tool-desc { color: #64748b !important; }
         h1 { color: #e2e8f0 !important; }
         h2 { color: #64748b !important; }
-        p, span { color: #a0aec0 !important; }
+        p { color: #a0aec0 !important; }
+        /* Stethoscope header icon */
+        [data-lucide="stethoscope"] { stroke: #4d94ff !important; }
+        /* Tool rows */
+        .tool-icon { color: #a0aec0 !important; opacity: 0.75 !important; }
+        .tool-name { color: #e2e8f0 !important; }
+        .tool-desc { color: #64748b !important; }
+        .tool-row:hover { background: #1a2030 !important; box-shadow: 0 1px 3px rgba(0,0,0,.3) !important; }
+        .tool-row:hover .tool-icon { opacity: 1 !important; color: #4d94ff !important; }
+        .tool-row:hover .tool-name { color: #4d94ff !important; }
+        /* External reference rows */
+        .ext-icon { color: #a0aec0 !important; opacity: 0.75 !important; }
+        .ext-name { color: #e2e8f0 !important; }
+        .ext-desc { color: #64748b !important; }
+        .ext-arrow { color: #4a5568 !important; opacity: 1 !important; }
+        .ext-row:hover { background: #1a2030 !important; }
+        .ext-row:hover .ext-icon { opacity: 1 !important; color: #4d94ff !important; }
+        .ext-row:hover .ext-name { color: #4d94ff !important; }
+        .ext-row:hover .ext-arrow { color: #4d94ff !important; }
+        #ext-refs { border-top-color: #2d3748 !important; }
+        /* Inputs & footer */
         input[type=text] { background: #1a2030 !important; color: #e2e8f0 !important; border-color: #2d3748 !important; box-shadow: 0 1px 2px rgba(0,0,0,.3) !important; }
         kbd { background: #1a2030 !important; border-color: #2d3748 !important; color: #64748b !important; }
         footer { border-top-color: #2d3748 !important; color: #64748b !important; }
