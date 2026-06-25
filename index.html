@@ -231,7 +231,7 @@
         <div style="display:flex;gap:1rem">
           <a href="#" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">About</a>
           <a href="#" id="disclaimerLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Disclaimer</a>
-          <a href="#" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Contact</a>
+          <a href="#" id="contactLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Contact</a>
         </div>
       </footer>
 
@@ -264,6 +264,12 @@
       document.getElementById('disclaimerLink').addEventListener('click', e => { e.preventDefault(); dlg.showModal(); });
       document.getElementById('disclaimerClose').addEventListener('click', () => dlg.close());
       dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+      document.getElementById('contactLink').addEventListener('click', e => {
+        e.preventDefault();
+        const u = 'noah', d = 'noahpac.com';
+        window.location.href = 'mailto:' + u + '@' + d;
+      });
 
       const input = document.getElementById('search-input');
       const noResults = document.getElementById('no-results');
