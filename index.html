@@ -334,6 +334,11 @@
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
+        // When a new SW activates and calls clients.claim(), reload once so
+        // the page is served by the updated worker (and picks up fresh assets).
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          window.location.reload();
+        });
       }
 
       lucide.createIcons();
