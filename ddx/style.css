@@ -15,7 +15,7 @@
 @media(max-width:799px){
   .cat-nav{display:flex;overflow-x:auto;scrollbar-width:none;padding:10px 16px;gap:6px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
   .cat-nav::-webkit-scrollbar{display:none}
-  .cat-nav .tab-btn{flex-shrink:0;background:transparent;border:1.5px solid var(--line);border-radius:50px;color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:5px 12px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+  .cat-nav .tab-btn{flex-shrink:0;background:transparent;border:1.5px solid var(--line);border-radius:50px;color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:8px 16px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
   .cat-nav .tab-btn:hover{border-color:var(--purple);color:var(--purple)}
   .cat-nav .tab-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
 }
