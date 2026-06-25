@@ -15,11 +15,12 @@ const CALCS = [
       pane.innerHTML = calcHeader("Accutane (Isotretinoin) Dosing","Dermatology","Weight-based cumulative dose calculator") + `
       <div class="fields">
         ${field("Weight","accutane-weight","number","kg","","1","200")}
+        ${field("Target cumulative dose","accutane-target","number","mg/kg","135","100","220")}
         ${field("Planned daily dose","accutane-daily","number","mg/day","","","","e.g. 40")}
       </div>
       <div id="accutane-result" class="result-card"><div class="result-placeholder">Enter weight</div></div>
       <button class="copy-btn" id="accutane-copy">&#x2398; Copy results</button>
-      <p class="note"><strong>How the duration projection is calculated:</strong> The target cumulative dose is 120 mg/kg — the minimum threshold at which relapse rates drop significantly per Layton &amp; Cunliffe (1992). Month 1 runs at the starting dose (0.5 mg/kg/day), contributing <em>starting dose × 30 days</em> of cumulative mg. The remaining mg needed to reach 120 mg/kg is divided by the planned daily dose to get the additional days. Total duration = 30 days + remaining days, expressed in 30-day months. The upper limit of 150 mg/kg shown above represents the ceiling beyond which no additional benefit has been demonstrated — not a separate target to reach.<br><br>Example: 46 kg patient on 40 mg/day. Target = 5,520 mg. Month 1 at 23 mg/day = 690 mg. Remaining = 4,830 mg ÷ 40 mg/day = 121 days. Total = 151 days = 5 months 1 day.<br><br><strong>References:</strong> Dosing parameters (0.5–1 mg/kg/day; cumulative target 120–150 mg/kg) are consistent with: Zaenglein AL et al. "Guidelines of care for the management of acne vulgaris." <em>J Am Acad Dermatol.</em> 2016;74(5):945–973 (AAD); and Layton AM, Cunliffe WJ. "Guidelines for optimal use of isotretinoin in acne." <em>J Am Acad Dermatol.</em> 1992;27(6 Pt 2):S2–7.</p>`;
+      <p class="note"><strong>How the duration projection is calculated:</strong> Month 1 runs at the starting dose (0.5 mg/kg/day), contributing <em>starting dose × 30 days</em> of cumulative mg. The remaining mg needed to reach the target cumulative dose is divided by the planned daily dose to get the additional days. Total duration = 30 days + remaining days, expressed in 30-day months. The target defaults to 135 mg/kg — within the conventional range — but can be adjusted based on individual patient factors.<br><br>Example (135 mg/kg target): 46 kg patient on 40 mg/day. Target = 6,210 mg. Month 1 at 23 mg/day = 690 mg. Remaining = 5,520 mg ÷ 40 mg/day = 138 days. Total = 168 days = 5 months 18 days.<br><br><strong>References:</strong> Dosing parameters (0.5–1 mg/kg/day) are consistent with: Zaenglein AL et al. "Guidelines of care for the management of acne vulgaris." <em>J Am Acad Dermatol.</em> 2016;74(5):945–973 (AAD); Layton AM, Cunliffe WJ. "Guidelines for optimal use of isotretinoin in acne." <em>J Am Acad Dermatol.</em> 1992;27(6 Pt 2):S2–7; and Lai J, Barbieri JS. "Acne Relapse and Isotretinoin Retrial in Patients With Acne." <em>JAMA Dermatol.</em> 2025;161(4):367–374 (PMID 39813053) — a retrospective cohort of 19,907 patients finding that higher cumulative dosage (conventional range 120–220 mg/kg) was independently associated with decreased relapse; daily dose was not associated with decreased relapse risk at conventional and high cumulative doses.</p>`;
       pane.querySelectorAll('input, select').forEach(el => {
         el.addEventListener('input', calcAccutane);
         el.addEventListener('change', calcAccutane);
@@ -892,17 +893,19 @@ function calcOttawa(){
 function calcAccutane(){
   const weight = num('accutane-weight');
   const daily = num('accutane-daily');
+  const targetRaw = num('accutane-target');
+  const targetMgKg = (!isNaN(targetRaw) && targetRaw > 0) ? targetRaw : 135;
   const el = document.getElementById('accutane-result');
   if(isNaN(weight)||weight<=0){
     el.innerHTML='<div class="result-placeholder">Enter weight</div>'; el.className='result-card'; return;
   }
-  const lower = Math.round(weight*120);
-  const upper = Math.round(weight*150);
+  const target = Math.round(weight*targetMgKg);
+  const convLower = Math.round(weight*120);
+  const convUpper = Math.round(weight*220);
   const startDose = Math.round(weight*0.5);
   const maxDaily = Math.floor(weight);
   let durationLine;
   if(!isNaN(daily) && daily > 0){
-    const target = Math.round(weight*120);
     const month1mg = startDose * 30;
     const remainingDays = Math.ceil((target - month1mg) / daily);
     const totalDays = 30 + remainingDays;
@@ -917,10 +920,10 @@ function calcAccutane(){
     <div class="result-num">${esc(String(weight))} kg</div>
     <div class="result-label">Accutane Dose Targets</div>
     <div class="result-detail">
-      Lower cumulative dose: <strong>${esc(String(lower))} mg</strong> <span class="calc-note">· 120 mg/kg</span><br>
-      Upper cumulative dose: <strong>${esc(String(upper))} mg</strong> <span class="calc-note">· 150 mg/kg</span>
+      Target cumulative dose: <strong>${esc(String(target))} mg</strong> <span class="calc-note">· ${esc(String(targetMgKg))} mg/kg</span><br>
+      Conventional range: <strong>${esc(String(convLower))}–${esc(String(convUpper))} mg</strong> <span class="calc-note">· 120–220 mg/kg</span>
       <div class="sub-result">
-        Lower daily dose: <strong>${esc(String(startDose))} mg/day</strong> <span class="calc-note">· 0.5 mg/kg</span><br>
+        Starting daily dose: <strong>${esc(String(startDose))} mg/day</strong> <span class="calc-note">· 0.5 mg/kg</span><br>
         Max daily dose: <strong>${esc(String(maxDaily))} mg/day</strong> <span class="calc-note">· 1 mg/kg</span>
       </div>
       <div class="sub-result">${durationLine}</div>
@@ -930,15 +933,17 @@ function calcAccutane(){
 function copyAccutane(btn){
   const weight = num('accutane-weight');
   const daily = num('accutane-daily');
+  const targetRaw = num('accutane-target');
+  const targetMgKg = (!isNaN(targetRaw) && targetRaw > 0) ? targetRaw : 135;
   if(isNaN(weight)||weight<=0) return;
-  const lower = Math.round(weight*120);
-  const upper = Math.round(weight*150);
+  const target = Math.round(weight*targetMgKg);
+  const convLower = Math.round(weight*120);
+  const convUpper = Math.round(weight*220);
   const startDose = Math.round(weight*0.5);
   const maxDaily = Math.floor(weight);
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  let text = `Accutane Dosing\nWeight: ${weight}kg\n\nLower cumulative dose: ${lower}mg (120 mg/kg)\nUpper cumulative dose: ${upper}mg (150 mg/kg)\nLower daily dose: ${startDose} mg/day (0.5 mg/kg)\nMax daily dose: ${maxDaily} mg/day (1 mg/kg)`;
+  let text = `Accutane Dosing\nWeight: ${weight}kg\n\nTarget cumulative dose: ${target}mg (${targetMgKg} mg/kg)\nConventional range: ${convLower}–${convUpper}mg (120–220 mg/kg)\nStarting daily dose: ${startDose} mg/day (0.5 mg/kg)\nMax daily dose: ${maxDaily} mg/day (1 mg/kg)`;
   if(!isNaN(daily) && daily > 0){
-    const target = Math.round(weight*120);
     const month1mg = startDose * 30;
     const remainingDays = Math.ceil((target - month1mg) / daily);
     const totalDays = 30 + remainingDays;
