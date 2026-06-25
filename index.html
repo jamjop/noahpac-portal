@@ -13,6 +13,12 @@
     <meta name="twitter:title" content="Clinical Reference Tools — Noah PA-C" />
     <meta name="twitter:description" content="Free, open-access clinical decision-support tools for frontline healthcare providers. No login — all calculations run locally in your browser." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Clinical Tools" />
+    <meta name="theme-color" content="#0052cc" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -315,6 +321,10 @@
     </style>
 
     <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
+
       lucide.createIcons();
       document.getElementById('year').textContent = new Date().getFullYear();
 

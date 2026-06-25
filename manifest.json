@@ -1,0 +1,12 @@
+{
+  "name": "Noah PA-C Clinical Tools",
+  "short_name": "Clinical Tools",
+  "description": "Point-of-care clinical reference tools — calculators, drug references, guidelines, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#0052cc",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
