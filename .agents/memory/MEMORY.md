@@ -1,2 +1,1 @@
-- [Mockup Sandbox Restoration](mockup-sandbox-restore.md) — restoring missing src files, re-registering the artifact/workflow, and fixing tsconfig.base.json dependency.
-- [noahpac static files git architecture](noahpac-git-architecture.md) — tool files aren't in git tree; git push wipes them; recover from checkpoint commits.
+- [Service worker cache busting](sw-cache-busting.md) — bump CACHE version in sw.js with every deployment or live site won't update.
