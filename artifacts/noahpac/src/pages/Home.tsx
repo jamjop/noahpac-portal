@@ -34,8 +34,8 @@ export default function Home() {
       items: [
         {
           name: "Medical Calculators",
-          desc: "Thirteen calculators with live results: ASCVD 10-yr risk, CHA₂DS₂-VASc, Wells DVT & PE / PERC, CURB-65, CrCl (Cockcroft-Gault), eGFR (CKD-EPI 2021), corrected calcium, anion gap + delta ratio, MELD / MELD-Na, PHQ-9, GAD-7, HEART score, and Ottawa Knee / Ankle rules.",
-          chips: ["13 calculators", "Live results"],
+          desc: "Seventeen calculators with live results: ASCVD 10-yr risk, CHA₂DS₂-VASc, Wells DVT & PE / PERC, CURB-65, CrCl (Cockcroft-Gault), eGFR (CKD-EPI 2021), corrected calcium, anion gap + delta ratio, MELD / MELD-Na, PHQ-9, GAD-7, HEART score, Ottawa Knee / Ankle rules, Alvarado Score, Pregnancy Due Date, RCRI, and PECARN Head CT.",
+          chips: ["17 calculators", "Live results"],
           href: "/calculators",
           color: "indigo",
         },
