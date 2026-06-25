@@ -7,6 +7,7 @@ function pct(n){ return fmt(n*100,1); }
 /* ── Calculator definitions ── */
 const CALCS = [
 
+
   /* 1. Accutane Dosing */
   {
     id:"accutane", name:"Accutane Dosing", num:"01",
@@ -31,7 +32,31 @@ const CALCS = [
     }
   },
 
-  /* 2. ASCVD */
+  /* 2. Alvarado Score */
+  {
+    id:"alvarado", name:"Alvarado Score", num:"14",
+    eyebrow:"Appendicitis", source:"Alvarado 1986 · MANTRELS criteria",
+    render: pane => {
+      pane.innerHTML = calcHeader("Alvarado Score","Appendicitis","Suspected appendicitis in adults · Alvarado 1986") + `
+      <div class="section-label">MANTRELS Criteria</div>
+      <div class="checks">
+        ${checkPts("alv-migration","Migration of pain to right lower quadrant",1)}
+        ${checkPts("alv-anorexia","Anorexia",1)}
+        ${checkPts("alv-nausea","Nausea or vomiting",1)}
+        ${checkPts("alv-tenderness","Tenderness in right lower quadrant",2)}
+        ${checkPts("alv-rebound","Rebound tenderness",1)}
+        ${checkPts("alv-temp","Elevated temperature (>37.3°C / 99.1°F)",1)}
+        ${checkPts("alv-wbc","Leukocytosis (WBC >10,000/mm³)",2)}
+        ${checkPts("alv-shift","Left shift (neutrophils >75%)",1)}
+      </div>
+      <div id="alvarado-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="alvarado-copy">&#x2398; Copy result</button>
+      <p class="note">Validated for adults with suspected appendicitis. Score 1–4: low probability — discharge with return precautions. Score 5–6: equivocal — CT imaging recommended. Score 7–10: high probability — urgent surgical consultation. Does not replace clinical judgment or imaging in equivocal cases.</p>`;
+      addListeners("alvarado", calcAlvarado);
+    }
+  },
+
+  /* 3. ASCVD 10-yr Risk */
   {
     id:"ascvd", name:"ASCVD 10-yr Risk", num:"01",
     eyebrow:"Cardiovascular", source:"Pooled Cohort Equations · Goff et al. 2014 (ACC/AHA)",
@@ -57,7 +82,7 @@ const CALCS = [
     }
   },
 
-  /* 2. CHA2DS2-VASc */
+  /* 4. CHA₂DS₂-VASc */
   {
     id:"chads", name:"CHA₂DS₂-VASc", num:"02",
     eyebrow:"Atrial Fibrillation", source:"Lip et al. 2010 · ESC / AHA Guidelines",
@@ -80,103 +105,7 @@ const CALCS = [
     }
   },
 
-  /* 3. Wells DVT */
-  {
-    id:"wellsdvt", name:"Wells DVT Score", num:"03",
-    eyebrow:"Thrombosis", source:"Wells et al. 1997 / 2003",
-    render: pane => {
-      pane.innerHTML = calcHeader("Wells DVT Score","Thrombosis","Pretest probability for deep vein thrombosis · Wells et al.") + `
-      <div class="checks">
-        ${checkPts("dvt-cancer","Active cancer (treatment ongoing, within 6 months, or palliative)",1)}
-        ${checkPts("dvt-paralysis","Paralysis/paresis or recent plaster immobilization of lower extremity",1)}
-        ${checkPts("dvt-bedridden","Bedridden ≥3 days or major surgery within 12 weeks",1)}
-        ${checkPts("dvt-tenderness","Localized tenderness along the deep venous system",1)}
-        ${checkPts("dvt-legswollen","Entire leg swollen",1)}
-        ${checkPts("dvt-calf","Calf swelling >3 cm vs. asymptomatic leg",1)}
-        ${checkPts("dvt-pitting","Pitting edema confined to symptomatic leg",1)}
-        ${checkPts("dvt-collateral","Collateral superficial veins (non-varicose)",1)}
-        ${checkPts("dvt-alt","Alternative diagnosis as likely or more likely than DVT",-2)}
-      </div>
-      <div id="wellsdvt-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="wellsdvt-copy">&#x2398; Copy result</button>`;
-      addListeners("wellsdvt", calcWellsDvt);
-    }
-  },
-
-  /* 4. Wells PE + PERC */
-  {
-    id:"wellspe", name:"Wells PE + PERC", num:"04",
-    eyebrow:"Pulmonary Embolism", source:"Wells et al. 2000 · Kline PERC 2004",
-    render: pane => {
-      pane.innerHTML = calcHeader("Wells PE Score + PERC Rule","Pulmonary Embolism","Wells et al. 2000 · Kline PERC 2004") + `
-      <div class="section-label">PERC Rule — all must be absent to rule out PE without further testing</div>
-      <div class="checks">
-        ${check("perc-age50","Age ≥50")}
-        ${check("perc-hr100","HR ≥100 bpm")}
-        ${check("perc-sao2","SpO₂ &lt;95% on room air")}
-        ${check("perc-legswelling","Unilateral leg swelling")}
-        ${check("perc-hemoptysis","Hemoptysis")}
-        ${check("perc-surgery","Surgery or trauma within 4 weeks")}
-        ${check("perc-priorpe","Prior PE or DVT")}
-        ${check("perc-estrogen","Exogenous estrogen use")}
-      </div>
-      <div id="perc-result" class="perc-result"></div>
-
-      <div class="section-label">Wells PE Score</div>
-      <div class="checks">
-        ${checkPts("pe-dvt","Clinical signs/symptoms of DVT",3)}
-        ${checkPts("pe-pe1","PE is #1 diagnosis or equally likely",3)}
-        ${checkPts("pe-hr","Heart rate >100 bpm",1.5)}
-        ${checkPts("pe-immo","Immobilization ≥3 days or surgery in previous 4 weeks",1.5)}
-        ${checkPts("pe-priorpe","Previous PE or DVT",1.5)}
-        ${checkPts("pe-hemo","Hemoptysis",1)}
-        ${checkPts("pe-cancer","Malignancy (active or treated within 6 months)",1)}
-      </div>
-      <div id="wellspe-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="wellspe-copy">&#x2398; Copy result</button>`;
-      addListeners("wellspe", calcWellsPe);
-    }
-  },
-
-  /* 5. CURB-65 */
-  {
-    id:"curb65", name:"CURB-65", num:"05",
-    eyebrow:"Pneumonia", source:"Lim et al. 2003 · BTS Guidelines",
-    render: pane => {
-      pane.innerHTML = calcHeader("CURB-65","Pneumonia Severity","Community-acquired pneumonia mortality score · Lim et al. 2003") + `
-      <div class="checks">
-        ${checkPts("curb-confusion","Confusion (new disorientation to person, place, or time)",1)}
-        ${checkPts("curb-urea","Urea >7 mmol/L  OR  BUN >20 mg/dL",1)}
-        ${checkPts("curb-rr","Respiratory rate ≥30 breaths/min",1)}
-        ${checkPts("curb-bp","Systolic BP &lt;90 mmHg  OR  diastolic BP ≤60 mmHg",1)}
-        ${checkPts("curb-age65","Age ≥65 years",1)}
-      </div>
-      <div id="curb65-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="curb65-copy">&#x2398; Copy result</button>`;
-      addListeners("curb65", calcCurb65);
-    }
-  },
-
-  /* 6. Creatinine Clearance */
-  {
-    id:"crcl", name:"Creatinine Clearance", num:"06",
-    eyebrow:"Renal Function", source:"Cockcroft-Gault 1976",
-    render: pane => {
-      pane.innerHTML = calcHeader("Creatinine Clearance","Renal Function","Cockcroft-Gault equation · 1976") + `
-      <div class="fields">
-        ${field("Age","crcl-age","number","years","55","18","110")}
-        ${selectField("Sex","crcl-sex",[["male","Male"],["female","Female"]])}
-        ${field("Weight","crcl-wt","number","kg","70","20","300")}
-        ${field("Serum Creatinine","crcl-cr","number","mg/dL","1.0","0.1","20")}
-      </div>
-      <div id="crcl-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="crcl-copy">&#x2398; Copy result</button>
-      <p class="note">Use ideal body weight (IBW) for obese patients; actual body weight may overestimate CrCl. IBW (males): 50 + 2.3×(height inches - 60); (females): 45.5 + 2.3×(height inches - 60). eGFR (CKD-EPI) is now preferred for CKD staging; Cockcroft-Gault remains the standard for drug dosing.</p>`;
-      addListeners("crcl", calcCrcl);
-    }
-  },
-
-  /* 7. Corrected Ca + Anion Gap */
+  /* 5. Corrected Ca + Anion Gap */
   {
     id:"electro", name:"Corrected Ca + Anion Gap", num:"07",
     eyebrow:"Electrolytes / Metabolic", source:"Standard formulas",
@@ -202,59 +131,63 @@ const CALCS = [
     }
   },
 
-  /* 8. MELD */
+  /* 6. Creatinine Clearance */
   {
-    id:"meld", name:"MELD / MELD-Na", num:"08",
-    eyebrow:"Liver Disease", source:"Kamath et al. 2001 · UNOS modification",
+    id:"crcl", name:"Creatinine Clearance", num:"06",
+    eyebrow:"Renal Function", source:"Cockcroft-Gault 1976",
     render: pane => {
-      pane.innerHTML = calcHeader("MELD Score","Liver Disease","Model for End-Stage Liver Disease · UNOS modification") + `
+      pane.innerHTML = calcHeader("Creatinine Clearance","Renal Function","Cockcroft-Gault equation · 1976") + `
       <div class="fields">
-        ${field("INR","meld-inr","number","","1.5","0.5","20")}
-        ${field("Bilirubin","meld-bili","number","mg/dL","2.0","0.1","50")}
-        ${field("Creatinine","meld-cr","number","mg/dL","1.2","0.1","20")}
-        ${field("Sodium","meld-na","number","mEq/L","138","100","160")}
+        ${field("Age","crcl-age","number","years","55","18","110")}
+        ${selectField("Sex","crcl-sex",[["male","Male"],["female","Female"]])}
+        ${field("Weight","crcl-wt","number","kg","70","20","300")}
+        ${field("Serum Creatinine","crcl-cr","number","mg/dL","1.0","0.1","20")}
       </div>
-      <div id="meld-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="meld-copy">&#x2398; Copy result</button>
-      <p class="note">Creatinine capped at 4.0 mg/dL (minimum 1.0). Sodium clamped to 125–137 mEq/L for MELD-Na. Dialysis patients: set creatinine to 4.0.</p>`;
-      addListeners("meld", calcMeld);
+      <div id="crcl-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="crcl-copy">&#x2398; Copy result</button>
+      <p class="note">Use ideal body weight (IBW) for obese patients; actual body weight may overestimate CrCl. IBW (males): 50 + 2.3×(height inches - 60); (females): 45.5 + 2.3×(height inches - 60). eGFR (CKD-EPI) is now preferred for CKD staging; Cockcroft-Gault remains the standard for drug dosing.</p>`;
+      addListeners("crcl", calcCrcl);
     }
   },
 
-  /* 9. PHQ-9 */
+  /* 7. CURB-65 */
   {
-    id:"phq9", name:"PHQ-9", num:"09",
-    eyebrow:"Depression Screening", source:"Kroenke & Spitzer 2001",
+    id:"curb65", name:"CURB-65", num:"05",
+    eyebrow:"Pneumonia", source:"Lim et al. 2003 · BTS Guidelines",
     render: pane => {
-      const questions = [
-        "Little interest or pleasure in doing things",
-        "Feeling down, depressed, or hopeless",
-        "Trouble falling or staying asleep, or sleeping too much",
-        "Feeling tired or having little energy",
-        "Poor appetite or overeating",
-        "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
-        "Trouble concentrating on things, such as reading the newspaper or watching television",
-        "Moving or speaking so slowly that other people could have noticed, or being so fidgety/restless that you have been moving around a lot more than usual",
-        "Thoughts that you would be better off dead, or of hurting yourself in some way"
-      ];
-      const optHtml = [["0","Not at all"],["1","Several days"],["2","More than half the days"],["3","Nearly every day"]]
-        .map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('');
-      const rows = questions.map((q,i)=>`
-        <div class="phq-row${i===8?' phq-row-si':''}">
-          <div class="phq-q"><span class="phq-num">${i+1}</span>${esc(q)}</div>
-          <select id="phq9-q${i}" class="phq-sel">${optHtml}</select>
-        </div>`).join('');
-      pane.innerHTML = calcHeader("PHQ-9","Depression Screening","Patient Health Questionnaire · Kroenke &amp; Spitzer 2001") +
-        `<p class="phq-instr">Over the <strong>last 2 weeks</strong>, how often have you been bothered by each of the following?</p>
-        <div class="phq-table">${rows}</div>
-        <div id="phq9-result" class="result-card"><div class="result-placeholder">—</div></div>
-        <button class="copy-btn" id="phq9-copy">&#x2398; Copy result</button>
-        <p class="note">Question 9 (suicidal ideation) should trigger immediate safety assessment regardless of total score. Functional impairment question (unscored): "How difficult have these problems made it to do work, manage home, or get along with people?"</p>`;
-      addListeners("phq9", calcPhq9);
+      pane.innerHTML = calcHeader("CURB-65","Pneumonia Severity","Community-acquired pneumonia mortality score · Lim et al. 2003") + `
+      <div class="checks">
+        ${checkPts("curb-confusion","Confusion (new disorientation to person, place, or time)",1)}
+        ${checkPts("curb-urea","Urea >7 mmol/L  OR  BUN >20 mg/dL",1)}
+        ${checkPts("curb-rr","Respiratory rate ≥30 breaths/min",1)}
+        ${checkPts("curb-bp","Systolic BP &lt;90 mmHg  OR  diastolic BP ≤60 mmHg",1)}
+        ${checkPts("curb-age65","Age ≥65 years",1)}
+      </div>
+      <div id="curb65-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="curb65-copy">&#x2398; Copy result</button>`;
+      addListeners("curb65", calcCurb65);
     }
   },
 
-  /* 10. GAD-7 */
+  /* 8. eGFR (CKD-EPI 2021) */
+  {
+    id:"egfr", name:"eGFR (CKD-EPI 2021)", num:"12",
+    eyebrow:"Renal Function", source:"Inker et al. NEJM 2021",
+    render: pane => {
+      pane.innerHTML = calcHeader("eGFR (CKD-EPI 2021)","Renal Function","Race-free CKD-EPI creatinine equation · Inker et al. NEJM 2021") +
+        `<div class="fields">
+          ${field("Age","egfr-age","number","years","55","18","110")}
+          ${selectField("Sex","egfr-sex",[["male","Male"],["female","Female"]])}
+          ${field("Serum Creatinine","egfr-cr","number","mg/dL","1.0","0.1","20")}
+        </div>
+        <div id="egfr-result" class="result-card"><div class="result-placeholder">—</div></div>
+        <button class="copy-btn" id="egfr-copy">&#x2398; Copy result</button>
+        <p class="note">CKD-EPI 2021 (race-free) replaces the 2009 race-based equation. Preferred for CKD staging per KDIGO 2022 and NKF-ASN recommendations. Cockcroft-Gault (calculator #06) remains the standard for drug dosing adjustments. Both equations assume stable creatinine — inaccurate in AKI.</p>`;
+      addListeners("egfr", calcEgfr);
+    }
+  },
+
+  /* 9. GAD-7 */
   {
     id:"gad7", name:"GAD-7", num:"10",
     eyebrow:"Anxiety Screening", source:"Spitzer et al. 2006",
@@ -285,7 +218,7 @@ const CALCS = [
     }
   },
 
-  /* 11. HEART Score */
+  /* 10. HEART Score */
   {
     id:"heart", name:"HEART Score", num:"11",
     eyebrow:"Chest Pain", source:"Six et al. 2010 / Backus et al. 2010",
@@ -306,25 +239,26 @@ const CALCS = [
     }
   },
 
-  /* 12. eGFR CKD-EPI 2021 */
+  /* 11. MELD / MELD-Na */
   {
-    id:"egfr", name:"eGFR (CKD-EPI 2021)", num:"12",
-    eyebrow:"Renal Function", source:"Inker et al. NEJM 2021",
+    id:"meld", name:"MELD / MELD-Na", num:"08",
+    eyebrow:"Liver Disease", source:"Kamath et al. 2001 · UNOS modification",
     render: pane => {
-      pane.innerHTML = calcHeader("eGFR (CKD-EPI 2021)","Renal Function","Race-free CKD-EPI creatinine equation · Inker et al. NEJM 2021") +
-        `<div class="fields">
-          ${field("Age","egfr-age","number","years","55","18","110")}
-          ${selectField("Sex","egfr-sex",[["male","Male"],["female","Female"]])}
-          ${field("Serum Creatinine","egfr-cr","number","mg/dL","1.0","0.1","20")}
-        </div>
-        <div id="egfr-result" class="result-card"><div class="result-placeholder">—</div></div>
-        <button class="copy-btn" id="egfr-copy">&#x2398; Copy result</button>
-        <p class="note">CKD-EPI 2021 (race-free) replaces the 2009 race-based equation. Preferred for CKD staging per KDIGO 2022 and NKF-ASN recommendations. Cockcroft-Gault (calculator #06) remains the standard for drug dosing adjustments. Both equations assume stable creatinine — inaccurate in AKI.</p>`;
-      addListeners("egfr", calcEgfr);
+      pane.innerHTML = calcHeader("MELD Score","Liver Disease","Model for End-Stage Liver Disease · UNOS modification") + `
+      <div class="fields">
+        ${field("INR","meld-inr","number","","1.5","0.5","20")}
+        ${field("Bilirubin","meld-bili","number","mg/dL","2.0","0.1","50")}
+        ${field("Creatinine","meld-cr","number","mg/dL","1.2","0.1","20")}
+        ${field("Sodium","meld-na","number","mEq/L","138","100","160")}
+      </div>
+      <div id="meld-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="meld-copy">&#x2398; Copy result</button>
+      <p class="note">Creatinine capped at 4.0 mg/dL (minimum 1.0). Sodium clamped to 125–137 mEq/L for MELD-Na. Dialysis patients: set creatinine to 4.0.</p>`;
+      addListeners("meld", calcMeld);
     }
   },
 
-  /* 13. Ottawa Knee + Ankle */
+  /* 12. Ottawa Knee + Ankle */
   {
     id:"ottawa", name:"Ottawa Knee + Ankle", num:"13",
     eyebrow:"Musculoskeletal", source:"Stiell et al. 1995 / 1996",
@@ -363,68 +297,7 @@ const CALCS = [
     }
   },
 
-  /* 14. Alvarado (MANTRELS) */
-  {
-    id:"alvarado", name:"Alvarado Score", num:"14",
-    eyebrow:"Appendicitis", source:"Alvarado 1986 · MANTRELS criteria",
-    render: pane => {
-      pane.innerHTML = calcHeader("Alvarado Score","Appendicitis","Suspected appendicitis in adults · Alvarado 1986") + `
-      <div class="section-label">MANTRELS Criteria</div>
-      <div class="checks">
-        ${checkPts("alv-migration","Migration of pain to right lower quadrant",1)}
-        ${checkPts("alv-anorexia","Anorexia",1)}
-        ${checkPts("alv-nausea","Nausea or vomiting",1)}
-        ${checkPts("alv-tenderness","Tenderness in right lower quadrant",2)}
-        ${checkPts("alv-rebound","Rebound tenderness",1)}
-        ${checkPts("alv-temp","Elevated temperature (>37.3°C / 99.1°F)",1)}
-        ${checkPts("alv-wbc","Leukocytosis (WBC >10,000/mm³)",2)}
-        ${checkPts("alv-shift","Left shift (neutrophils >75%)",1)}
-      </div>
-      <div id="alvarado-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="alvarado-copy">&#x2398; Copy result</button>
-      <p class="note">Validated for adults with suspected appendicitis. Score 1–4: low probability — discharge with return precautions. Score 5–6: equivocal — CT imaging recommended. Score 7–10: high probability — urgent surgical consultation. Does not replace clinical judgment or imaging in equivocal cases.</p>`;
-      addListeners("alvarado", calcAlvarado);
-    }
-  },
-
-  /* 15. Pregnancy Due Date */
-  {
-    id:"edd", name:"Pregnancy Due Date", num:"15",
-    eyebrow:"Obstetrics", source:"Naegele's Rule · EDD = LMP + 280 days",
-    render: pane => {
-      pane.innerHTML = calcHeader("Pregnancy Due Date","Obstetrics","Naegele's Rule — EDD = LMP + 280 days") + `
-      <div class="fields">
-        ${field("Last Menstrual Period (LMP)","edd-lmp","date","","",undefined,undefined)}
-      </div>
-      <div id="edd-result" class="result-card"><div class="result-placeholder">Enter LMP date</div></div>
-      <button class="copy-btn" id="edd-copy">&#x2398; Copy result</button>
-      <p class="note">Based on Naegele's Rule (LMP + 280 days), assuming a 28-day cycle. Confirm EDD with first-trimester ultrasound (most accurate ≤14 weeks). Term = 37w0d–41w6d; late preterm = 34–36w; post-term = ≥42w0d.</p>`;
-      addListeners("edd", calcEdd);
-    }
-  },
-
-  /* 16. RCRI */
-  {
-    id:"rcri", name:"RCRI", num:"16",
-    eyebrow:"Perioperative", source:"Lee et al. 1999 · ACC/AHA Guidelines",
-    render: pane => {
-      pane.innerHTML = calcHeader("RCRI","Perioperative Cardiac Risk","Revised Cardiac Risk Index — major noncardiac surgery · Lee et al. 1999") + `
-      <div class="checks">
-        ${checkPts("rcri-surgery","High-risk surgery (intraperitoneal, intrathoracic, or suprainguinal vascular)",1)}
-        ${checkPts("rcri-ihd","Ischemic heart disease (history of MI, positive stress test, angina, nitrate use, or Q-waves on ECG)",1)}
-        ${checkPts("rcri-chf","Congestive heart failure (pulmonary edema, bilateral rales, PND, S3 gallop, or CXR with redistribution)",1)}
-        ${checkPts("rcri-cvd","Cerebrovascular disease (stroke or TIA)",1)}
-        ${checkPts("rcri-dm","Preoperative insulin therapy for diabetes",1)}
-        ${checkPts("rcri-cr","Preoperative creatinine >2.0 mg/dL",1)}
-      </div>
-      <div id="rcri-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="rcri-copy">&#x2398; Copy result</button>
-      <p class="note">Does not apply to emergency surgery, low-risk procedures (endoscopy, cataract, superficial), or cardiac surgery. Risk of major cardiac complications (MI, pulmonary edema, VF/cardiac arrest, complete heart block) from Lee et al. 1999 derivation cohort. Endorsed by ACC/AHA for preoperative cardiac evaluation.</p>`;
-      addListeners("rcri", calcRcri);
-    }
-  },
-
-  /* 17. PECARN */
+  /* 13. PECARN Head CT */
   {
     id:"pecarn", name:"PECARN Head CT", num:"17",
     eyebrow:"Pediatrics", source:"Kuppermann et al. 2009 — Lancet",
@@ -478,7 +351,77 @@ const CALCS = [
     }
   },
 
-  /* 18. Weight Change */
+  /* 14. PHQ-9 */
+  {
+    id:"phq9", name:"PHQ-9", num:"09",
+    eyebrow:"Depression Screening", source:"Kroenke & Spitzer 2001",
+    render: pane => {
+      const questions = [
+        "Little interest or pleasure in doing things",
+        "Feeling down, depressed, or hopeless",
+        "Trouble falling or staying asleep, or sleeping too much",
+        "Feeling tired or having little energy",
+        "Poor appetite or overeating",
+        "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
+        "Trouble concentrating on things, such as reading the newspaper or watching television",
+        "Moving or speaking so slowly that other people could have noticed, or being so fidgety/restless that you have been moving around a lot more than usual",
+        "Thoughts that you would be better off dead, or of hurting yourself in some way"
+      ];
+      const optHtml = [["0","Not at all"],["1","Several days"],["2","More than half the days"],["3","Nearly every day"]]
+        .map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('');
+      const rows = questions.map((q,i)=>`
+        <div class="phq-row${i===8?' phq-row-si':''}">
+          <div class="phq-q"><span class="phq-num">${i+1}</span>${esc(q)}</div>
+          <select id="phq9-q${i}" class="phq-sel">${optHtml}</select>
+        </div>`).join('');
+      pane.innerHTML = calcHeader("PHQ-9","Depression Screening","Patient Health Questionnaire · Kroenke &amp; Spitzer 2001") +
+        `<p class="phq-instr">Over the <strong>last 2 weeks</strong>, how often have you been bothered by each of the following?</p>
+        <div class="phq-table">${rows}</div>
+        <div id="phq9-result" class="result-card"><div class="result-placeholder">—</div></div>
+        <button class="copy-btn" id="phq9-copy">&#x2398; Copy result</button>
+        <p class="note">Question 9 (suicidal ideation) should trigger immediate safety assessment regardless of total score. Functional impairment question (unscored): "How difficult have these problems made it to do work, manage home, or get along with people?"</p>`;
+      addListeners("phq9", calcPhq9);
+    }
+  },
+
+  /* 15. Pregnancy Due Date */
+  {
+    id:"edd", name:"Pregnancy Due Date", num:"15",
+    eyebrow:"Obstetrics", source:"Naegele's Rule · EDD = LMP + 280 days",
+    render: pane => {
+      pane.innerHTML = calcHeader("Pregnancy Due Date","Obstetrics","Naegele's Rule — EDD = LMP + 280 days") + `
+      <div class="fields">
+        ${field("Last Menstrual Period (LMP)","edd-lmp","date","","",undefined,undefined)}
+      </div>
+      <div id="edd-result" class="result-card"><div class="result-placeholder">Enter LMP date</div></div>
+      <button class="copy-btn" id="edd-copy">&#x2398; Copy result</button>
+      <p class="note">Based on Naegele's Rule (LMP + 280 days), assuming a 28-day cycle. Confirm EDD with first-trimester ultrasound (most accurate ≤14 weeks). Term = 37w0d–41w6d; late preterm = 34–36w; post-term = ≥42w0d.</p>`;
+      addListeners("edd", calcEdd);
+    }
+  },
+
+  /* 16. RCRI */
+  {
+    id:"rcri", name:"RCRI", num:"16",
+    eyebrow:"Perioperative", source:"Lee et al. 1999 · ACC/AHA Guidelines",
+    render: pane => {
+      pane.innerHTML = calcHeader("RCRI","Perioperative Cardiac Risk","Revised Cardiac Risk Index — major noncardiac surgery · Lee et al. 1999") + `
+      <div class="checks">
+        ${checkPts("rcri-surgery","High-risk surgery (intraperitoneal, intrathoracic, or suprainguinal vascular)",1)}
+        ${checkPts("rcri-ihd","Ischemic heart disease (history of MI, positive stress test, angina, nitrate use, or Q-waves on ECG)",1)}
+        ${checkPts("rcri-chf","Congestive heart failure (pulmonary edema, bilateral rales, PND, S3 gallop, or CXR with redistribution)",1)}
+        ${checkPts("rcri-cvd","Cerebrovascular disease (stroke or TIA)",1)}
+        ${checkPts("rcri-dm","Preoperative insulin therapy for diabetes",1)}
+        ${checkPts("rcri-cr","Preoperative creatinine >2.0 mg/dL",1)}
+      </div>
+      <div id="rcri-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="rcri-copy">&#x2398; Copy result</button>
+      <p class="note">Does not apply to emergency surgery, low-risk procedures (endoscopy, cataract, superficial), or cardiac surgery. Risk of major cardiac complications (MI, pulmonary edema, VF/cardiac arrest, complete heart block) from Lee et al. 1999 derivation cohort. Endorsed by ACC/AHA for preoperative cardiac evaluation.</p>`;
+      addListeners("rcri", calcRcri);
+    }
+  },
+
+  /* 17. Weight Change */
   {
     id:"weight-change", name:"Weight Change", num:"18",
     eyebrow:"General / Monitoring", source:"Percentage body weight change calculator",
@@ -508,6 +451,63 @@ const CALCS = [
     }
   },
 
+  /* 18. Wells DVT Score */
+  {
+    id:"wellsdvt", name:"Wells DVT Score", num:"03",
+    eyebrow:"Thrombosis", source:"Wells et al. 1997 / 2003",
+    render: pane => {
+      pane.innerHTML = calcHeader("Wells DVT Score","Thrombosis","Pretest probability for deep vein thrombosis · Wells et al.") + `
+      <div class="checks">
+        ${checkPts("dvt-cancer","Active cancer (treatment ongoing, within 6 months, or palliative)",1)}
+        ${checkPts("dvt-paralysis","Paralysis/paresis or recent plaster immobilization of lower extremity",1)}
+        ${checkPts("dvt-bedridden","Bedridden ≥3 days or major surgery within 12 weeks",1)}
+        ${checkPts("dvt-tenderness","Localized tenderness along the deep venous system",1)}
+        ${checkPts("dvt-legswollen","Entire leg swollen",1)}
+        ${checkPts("dvt-calf","Calf swelling >3 cm vs. asymptomatic leg",1)}
+        ${checkPts("dvt-pitting","Pitting edema confined to symptomatic leg",1)}
+        ${checkPts("dvt-collateral","Collateral superficial veins (non-varicose)",1)}
+        ${checkPts("dvt-alt","Alternative diagnosis as likely or more likely than DVT",-2)}
+      </div>
+      <div id="wellsdvt-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="wellsdvt-copy">&#x2398; Copy result</button>`;
+      addListeners("wellsdvt", calcWellsDvt);
+    }
+  },
+
+  /* 19. Wells PE + PERC */
+  {
+    id:"wellspe", name:"Wells PE + PERC", num:"04",
+    eyebrow:"Pulmonary Embolism", source:"Wells et al. 2000 · Kline PERC 2004",
+    render: pane => {
+      pane.innerHTML = calcHeader("Wells PE Score + PERC Rule","Pulmonary Embolism","Wells et al. 2000 · Kline PERC 2004") + `
+      <div class="section-label">PERC Rule — all must be absent to rule out PE without further testing</div>
+      <div class="checks">
+        ${check("perc-age50","Age ≥50")}
+        ${check("perc-hr100","HR ≥100 bpm")}
+        ${check("perc-sao2","SpO₂ &lt;95% on room air")}
+        ${check("perc-legswelling","Unilateral leg swelling")}
+        ${check("perc-hemoptysis","Hemoptysis")}
+        ${check("perc-surgery","Surgery or trauma within 4 weeks")}
+        ${check("perc-priorpe","Prior PE or DVT")}
+        ${check("perc-estrogen","Exogenous estrogen use")}
+      </div>
+      <div id="perc-result" class="perc-result"></div>
+
+      <div class="section-label">Wells PE Score</div>
+      <div class="checks">
+        ${checkPts("pe-dvt","Clinical signs/symptoms of DVT",3)}
+        ${checkPts("pe-pe1","PE is #1 diagnosis or equally likely",3)}
+        ${checkPts("pe-hr","Heart rate >100 bpm",1.5)}
+        ${checkPts("pe-immo","Immobilization ≥3 days or surgery in previous 4 weeks",1.5)}
+        ${checkPts("pe-priorpe","Previous PE or DVT",1.5)}
+        ${checkPts("pe-hemo","Hemoptysis",1)}
+        ${checkPts("pe-cancer","Malignancy (active or treated within 6 months)",1)}
+      </div>
+      <div id="wellspe-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="wellspe-copy">&#x2398; Copy result</button>`;
+      addListeners("wellspe", calcWellsPe);
+    }
+  },
 ];
 
 /* ── HTML helpers ── */
