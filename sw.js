@@ -1,4 +1,4 @@
-const CACHE = 'noahpac-v5';
+const CACHE = 'noahpac-v6';
 
 const TOOLS = [
   'screener','vaccines','calculators','opioids','sti','abx',
@@ -12,11 +12,23 @@ const TOOL_FILES = TOOLS.flatMap(t => [
   `/${t}/`, `/${t}/index.html`, `/${t}/style.css`, `/${t}/app.js`
 ]);
 
+// Fetch in small batches with a pause between each to avoid triggering
+// server-side burst limits (CrowdSec, etc.) during SW install.
+async function cacheInBatches(cache, urls, batchSize = 4, delayMs = 300) {
+  for (let i = 0; i < urls.length; i += batchSize) {
+    const batch = urls.slice(i, i + batchSize);
+    await Promise.all(batch.map(url => cache.add(url).catch(() => null)));
+    if (i + batchSize < urls.length) {
+      await new Promise(r => setTimeout(r, delayMs));
+    }
+  }
+}
+
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(async c => {
       await c.addAll(CORE);
-      await Promise.all(TOOL_FILES.map(url => c.add(url).catch(() => null)));
+      await cacheInBatches(c, TOOL_FILES);
     }).then(() => self.skipWaiting())
   );
 });
