@@ -81,7 +81,7 @@ const ABX = [
   {
     id:'copd_exac', cat:'resp',
     name:'COPD Exacerbation (Bacterial)', organism:'H. influenzae, S. pneumoniae, M. catarrhalis, Pseudomonas (severe/structural)',
-    source:'GOLD 2024 / ATS-ERS',
+    source:'GOLD 2026 / ATS-ERS',
     regimens:[
       {label:'Mild–moderate outpatient', cls:'fl', drugs:[
         {name:'Amoxicillin-clavulanate', dose:'875/125 mg PO BID × 5–7 days'},
@@ -102,7 +102,7 @@ const ABX = [
   {
     id:'cap_out', cat:'resp',
     name:'CAP — Outpatient', organism:'S. pneumoniae, atypicals (Mycoplasma, Chlamydophila, Legionella)',
-    source:'IDSA/ATS 2019',
+    source:'IDSA/ATS 2019 / ATS 2025',
     regimens:[
       {label:'No comorbidities', cls:'fl', drugs:[
         {name:'Amoxicillin', dose:'1 g PO TID × 5 days', note:'Preferred for typical CAP; covers S. pneumoniae well'},
@@ -121,12 +121,12 @@ const ABX = [
         {name:'Azithromycin', dose:'500 mg PO day 1, 250 mg days 2–5', note:'For atypical coverage if needed'},
       ]},
     ],
-    notes:'PSI/PORT Class I–II or CURB-65 ≤1 appropriate for outpatient. Blood cultures not required for outpatient CAP. Consider influenza testing seasonally. Reserve fluoroquinolones when possible to reduce resistance pressure. Minimum 5-day course; extend if not clinically stable.',
+    notes:'PSI/PORT Class I–II or CURB-65 ≤1 appropriate for outpatient. Blood cultures not required for outpatient CAP. Consider influenza testing seasonally. Viral etiology: in an otherwise healthy outpatient with confirmed influenza or COVID-19 and no imaging findings, consider withholding antibiotics (ATS 2025); treat if comorbidities present or imaging abnormal. Reserve fluoroquinolones when possible to reduce resistance pressure. Duration: minimum 3 days for mild outpatient CAP reaching clinical stability (ATS 2025); extend if not stable.',
   },
   {
     id:'cap_in', cat:'resp',
     name:'CAP — Inpatient (Non-ICU)', organism:'S. pneumoniae, H. influenzae, atypicals, aspiration organisms',
-    source:'IDSA/ATS 2019',
+    source:'IDSA/ATS 2019 / ATS 2025',
     regimens:[
       {label:'Standard inpatient', cls:'fl', drugs:[
         {name:'Beta-lactam + Azithromycin', dose:'Ceftriaxone 1–2 g IV daily + Azithromycin 500 mg IV/PO daily × 5 days', note:'Combination provides typical + atypical coverage; preferred combination'},
@@ -141,7 +141,7 @@ const ABX = [
         {name:'Azithromycin', dose:'500 mg IV/PO daily (if fluoroquinolone contraindicated)', note:'Less reliable for typical bacteria; use with beta-lactam if possible'},
       ]},
     ],
-    notes:'Duration: 5 days if clinical stability achieved (temperature ≤37.8°C, HR ≤100, RR ≤24, SBP ≥90, SpO2 ≥90%). MRSA/Pseudomonas add-on coverage only if validated risk factors present — reassess and de-escalate at 48–72h based on cultures.',
+    notes:'Duration: ≥3 days for nonsevere (non-ICU) CAP once clinical stability achieved (temperature ≤37.8°C, HR ≤100, RR ≤24, SBP ≥90, SpO2 ≥90%); ≥5 days for severe/ICU CAP (ATS 2025). MRSA/Pseudomonas add-on coverage only if validated risk factors present — reassess and de-escalate at 48–72h based on cultures. Corticosteroids: may consider in severe (ICU) CAP; NOT recommended for nonsevere pneumonia (ATS 2025).',
   },
 
   // ── URINARY TRACT ─────────────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ const ABX = [
   {
     id:'prostatitis', cat:'uti',
     name:'Acute Bacterial Prostatitis', organism:'E. coli, Klebsiella, Pseudomonas, Enterococcus',
-    source:'EAU Guidelines 2023',
+    source:'EAU Guidelines 2025',
     regimens:[
       {label:'Outpatient — mild/moderate', cls:'fl', drugs:[
         {name:'Ciprofloxacin', dose:'500 mg PO BID × 4–6 weeks', note:'Fluoroquinolones preferred — excellent prostate penetration; culture-guided'},
