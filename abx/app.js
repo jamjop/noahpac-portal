@@ -377,7 +377,7 @@ const ABX = [
   {
     id:'meningitis', cat:'severe',
     name:'Bacterial Meningitis — Empiric', organism:'N. meningitidis, S. pneumoniae, L. monocytogenes (immunocompromised/elderly)',
-    source:'IDSA 2004 / updated practice',
+    source:'IDSA 2004 / 2017 HAI update',
     regimens:[
       {label:'Standard empiric therapy', cls:'fl', drugs:[
         {name:'Ceftriaxone', dose:'2 g IV q12h', note:'Covers N. meningitidis and S. pneumoniae'},

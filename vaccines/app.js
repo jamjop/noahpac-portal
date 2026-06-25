@@ -1,4 +1,4 @@
-/* ACIP Immunization Schedule — 2025 */
+/* ACIP Immunization Schedule — 2026 */
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -128,6 +128,14 @@ const VACCINES = [
     detail:"Shared clinical decision-making for ages 16–23 (preferred 16–18). Recommended for high-risk patients (asplenia, complement deficiency) at any age ≥10.",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["asplenia","immunocompromised"], note:"Recommended regardless of age — asplenia or complement deficiency"}],
+  },
+  {
+    id:"menabcwy", name:"Meningococcal ABCWY (Penbraya)", abbr:"MenABCWY",
+    routine:{min:16*12,max:23*12},
+    doses:"2 doses", freq:"Option when both MenACWY + MenB desired (16–23 yr)",
+    detail:"Penbraya (MenABCWY) is a pentavalent vaccine covering serogroups A, B, C, W, and Y in a single injection. ACIP 2026: may be used in place of separate MenACWY + MenB doses when both are indicated or desired at the same visit for patients aged 16–23. For high-risk patients (asplenia, complement deficiency) requiring both vaccines, Penbraya is an option at any age ≥16.",
+    requires:[], sexSpecific:null,
+    conditionExtra:[{conds:["asplenia","immunocompromised"], note:"Option instead of separate MenACWY + MenB when both vaccines are indicated"}],
   },
   /* ── Adult ── */
   {

@@ -3,11 +3,12 @@
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 const CATS = [
-  {id:'bacterial', label:'Bacterial'},
-  {id:'vaginal',   label:'Vaginal Infections'},
-  {id:'viral',     label:'Viral'},
-  {id:'pelvic',    label:'Pelvic / Reproductive'},
-  {id:'ecto',      label:'Ectoparasites'},
+  {id:'bacterial',   label:'Bacterial'},
+  {id:'vaginal',     label:'Vaginal Infections'},
+  {id:'viral',       label:'Viral'},
+  {id:'pelvic',      label:'Pelvic / Reproductive'},
+  {id:'ecto',        label:'Ectoparasites'},
+  {id:'prevention',  label:'Prevention'},
 ];
 
 // regimen label classes: 'fl'=first-line, 'preg'=pregnancy, 'allergy'=allergy/alt
@@ -395,6 +396,19 @@ const STIS = [
       ]},
     ],
     notes:'Treat eyelash involvement with occlusive ophthalmic ointment (petrolatum) BID × 10 days. Launder bedding/clothing. Treat sexual contacts.',
+  },
+
+  // ── PREVENTION ────────────────────────────────────────────────────────────
+  {
+    id:'doxy-pep', cat:'prevention',
+    name:'Doxy-PEP (STI Post-Exposure Prophylaxis)', organism:'Bacterial STI prevention (chlamydia, gonorrhea, syphilis)',
+    regimens:[
+      {label:'Recommended regimen', cls:'fl', drugs:[
+        {name:'Doxycycline', dose:'200 mg PO once, as soon as possible and within 72 hours of condomless sex',
+         note:'Max 1 dose per 24-hour period. Take with food to reduce GI upset.'},
+      ]},
+    ],
+    notes:'Indicated for MSM and transgender women who are HIV-positive or taking PrEP AND had ≥1 bacterial STI (chlamydia, gonorrhea, or syphilis) in the past 12 months. Reduces chlamydia by ~88%, gonorrhea by ~55%, and syphilis by ~79% (DoxyPEP and DOXYVAC trials). NOT recommended for cisgender women (insufficient efficacy data as of 2023). Contraindications: doxycycline allergy, pregnancy (2nd/3rd trimester — use with caution in 1st). STI testing recommended at baseline and every 3–6 months during use. Concern for antimicrobial resistance with widespread use. Source: CDC 2023 interim guidance (MMWR 2023;72:1077–1082).',
   },
 ];
 
