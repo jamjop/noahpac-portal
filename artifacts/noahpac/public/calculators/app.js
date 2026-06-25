@@ -904,9 +904,9 @@ function showCalc(id){
   if(calc) calc.render(pane);
 }
 
-/* Build nav */
+/* Build nav — alphabetical order */
 const tabNav = document.getElementById('tabNav');
-CALCS.forEach(c=>{
+[...CALCS].sort((a,b)=>a.name.localeCompare(b.name)).forEach(c=>{
   const btn=document.createElement('button');
   btn.className='tab-btn';
   btn.dataset.id=c.id;
