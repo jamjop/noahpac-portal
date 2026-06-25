@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ND Reportable Conditions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">North Dakota · Public Health Law</div>
+    <h1>Reportable Conditions</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+    <div class="datasource"><span class="dot"></span>ND HHS · NDCC 23-07 · NDAC 33-06 · Updated 12/2023</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <input class="search-box" id="search" type="search" placeholder="Search conditions…" autocomplete="off">
+
+  <div id="list-root"></div>
+
+  <!-- How to report -->
+  <section class="how-card">
+    <div class="how-title">How to Report</div>
+    <div class="how-grid">
+      <div class="how-item">
+        <div class="how-head">Infectious diseases</div>
+        <div class="how-body">
+          <strong>Immediate / 1 business day</strong><br>
+          📞 701-328-2378 or 800-472-2180<br>
+          🖥 <a href="https://www.ndhealth.gov/disease/reportcard/" target="_blank" rel="noopener">ndhealth.gov/disease/reportcard</a><br>
+          📠 Secure fax: 701-328-0355<br>
+          🔬 Electronic lab report available
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-head">Other conditions</div>
+        <div class="how-body">
+          <strong>Within 7 days</strong><br>
+          📞 701-328-2372<br>
+          🖥 <a href="https://www.ndhealth.gov/disease/reportcard/" target="_blank" rel="noopener">ndhealth.gov/disease/reportcard</a><br>
+          📠 Secure fax: 701-328-2785<br>
+          📧 stateepi@nd.gov (electronic reporting)
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>Source: <a href="https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/reportable-conditions" target="_blank" rel="noopener">ND HHS Reportable Conditions</a> · North Dakota Administrative Code 33-06-01 · Century Code 23-07-01 · Updated December 2023. <strong>Not medical advice.</strong></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sepsis Screening — qSOFA + SOFA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">Sepsis-3 Criteria · Screening Tools</div>
+    <h1>Sepsis Screening</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- qSOFA -->
+  <section class="card">
+    <div class="card-head">
+      <span class="card-title">qSOFA <span class="card-sub">Quick Screen</span></span>
+      <span class="badge" id="qsofa-badge">0 / 3</span>
+    </div>
+    <div class="field-row">
+      <label class="check-label"><input type="checkbox" id="q-rr"> Respiratory rate ≥ 22/min</label>
+      <label class="check-label"><input type="checkbox" id="q-ams"> Altered mental status (GCS &lt; 15)</label>
+      <label class="check-label"><input type="checkbox" id="q-sbp"> Systolic BP ≤ 100 mmHg</label>
+    </div>
+    <div class="result-box" id="qsofa-result"></div>
+  </section>
+
+  <!-- SOFA -->
+  <section class="card">
+    <div class="card-head">
+      <span class="card-title">SOFA <span class="card-sub">Sequential Organ Failure Assessment</span></span>
+      <span class="badge" id="sofa-badge">0</span>
+    </div>
+
+    <div class="sofa-grid">
+
+      <div class="sofa-row">
+        <div class="sofa-label">Respiration<br><span class="sofa-unit">PaO₂/FiO₂</span></div>
+        <div class="seg" id="seg-resp">
+          <button class="active" data-val="0">&ge;400</button>
+          <button data-val="1">300–399</button>
+          <button data-val="2">200–299*</button>
+          <button data-val="3">100–199*</button>
+          <button data-val="4">&lt;100*</button>
+        </div>
+      </div>
+
+      <div class="sofa-row">
+        <div class="sofa-label">Coagulation<br><span class="sofa-unit">Platelets ×10³/µL</span></div>
+        <div class="seg" id="seg-plt">
+          <button class="active" data-val="0">&ge;150</button>
+          <button data-val="1">100–149</button>
+          <button data-val="2">50–99</button>
+          <button data-val="3">20–49</button>
+          <button data-val="4">&lt;20</button>
+        </div>
+      </div>
+
+      <div class="sofa-row">
+        <div class="sofa-label">Liver<br><span class="sofa-unit">Bilirubin mg/dL</span></div>
+        <div class="seg" id="seg-bili">
+          <button class="active" data-val="0">&lt;1.2</button>
+          <button data-val="1">1.2–1.9</button>
+          <button data-val="2">2.0–5.9</button>
+          <button data-val="3">6.0–11.9</button>
+          <button data-val="4">&ge;12</button>
+        </div>
+      </div>
+
+      <div class="sofa-row">
+        <div class="sofa-label">Cardiovascular<br><span class="sofa-unit">MAP / vasopressors</span></div>
+        <div class="seg" id="seg-cv">
+          <button class="active" data-val="0">MAP &ge;70</button>
+          <button data-val="1">MAP &lt;70</button>
+          <button data-val="2">Dopa ≤5 or Dobu</button>
+          <button data-val="3">Dopa 5–15 or NE/Epi ≤0.1</button>
+          <button data-val="4">Dopa &gt;15 or NE/Epi &gt;0.1</button>
+        </div>
+      </div>
+
+      <div class="sofa-row">
+        <div class="sofa-label">CNS<br><span class="sofa-unit">GCS</span></div>
+        <div class="seg" id="seg-gcs">
+          <button class="active" data-val="0">15</button>
+          <button data-val="1">13–14</button>
+          <button data-val="2">10–12</button>
+          <button data-val="3">6–9</button>
+          <button data-val="4">&lt;6</button>
+        </div>
+      </div>
+
+      <div class="sofa-row">
+        <div class="sofa-label">Renal<br><span class="sofa-unit">Creatinine mg/dL</span></div>
+        <div class="seg" id="seg-cr">
+          <button class="active" data-val="0">&lt;1.2</button>
+          <button data-val="1">1.2–1.9</button>
+          <button data-val="2">2.0–3.4</button>
+          <button data-val="3">3.5–4.9 or &lt;500mL/d</button>
+          <button data-val="4">&gt;5.0 or &lt;200mL/d</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="result-box" id="sofa-result"></div>
+    <p class="footnote">* With respiratory support. Dopamine/norepinephrine/epinephrine in mcg/kg/min.</p>
+  </section>
+
+  <!-- Septic Shock -->
+  <section class="card">
+    <div class="card-head">
+      <span class="card-title">Septic Shock <span class="card-sub">Criteria</span></span>
+    </div>
+    <div class="field-row">
+      <label class="check-label"><input type="checkbox" id="sh-vaso"> Vasopressors required to maintain MAP ≥ 65 mmHg</label>
+      <label class="check-label"><input type="checkbox" id="sh-lac"> Lactate &gt; 2 mmol/L despite adequate resuscitation</label>
+    </div>
+    <div class="result-box" id="shock-result"></div>
+  </section>
+
+</div>
+
+<footer>
+  <p>Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥2 warrants further evaluation; SOFA ≥2 from baseline = organ dysfunction. <strong>Not medical advice.</strong></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

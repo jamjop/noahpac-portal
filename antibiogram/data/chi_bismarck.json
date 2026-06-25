@@ -1,0 +1,250 @@
+{
+  "id": "chi_bismarck",
+  "name": "CHI St. Alexius Health",
+  "location": "Bismarck, ND",
+  "period": "2024",
+  "sourceNote": "ND HHS Archive \u00b7 CHI St. Alexius Health Bismarck Antibiogram (Jan 1 \u2013 Dec 31, 2024) \u00b7 inpatient \u00b7 % susceptible",
+  "organisms": [
+    {
+      "name": "Staph aureus (MSSA)",
+      "gram": "positive",
+      "isolates": 137,
+      "s": {
+        "oxa": 100,
+        "gen": 100,
+        "lvx": 92,
+        "van": 100,
+        "cli": 87,
+        "sxt": 99,
+        "dox": 100,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Staph aureus (MRSA)",
+      "gram": "positive",
+      "isolates": 42,
+      "s": {
+        "gen": 100,
+        "lvx": 31,
+        "van": 100,
+        "cli": 73,
+        "sxt": 95,
+        "dox": 95,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Staph aureus (All)",
+      "gram": "positive",
+      "isolates": 185,
+      "s": {
+        "oxa": 74,
+        "gen": 100,
+        "van": 100,
+        "cli": 66,
+        "sxt": 95,
+        "dox": 96,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Staph CoNS",
+      "gram": "positive",
+      "isolates": 55,
+      "s": {
+        "oxa": 43,
+        "gen": 96,
+        "lvx": 69,
+        "van": 100,
+        "cli": 63,
+        "sxt": 68,
+        "dox": 90,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Streptococcus pneumoniae",
+      "gram": "positive",
+      "isolates": 26,
+      "note": "PCN/CRO: non-meningitis breakpoints",
+      "s": {
+        "pen": 96,
+        "cro": 96,
+        "lvx": 100,
+        "sxt": 80,
+        "dox": 58
+      }
+    },
+    {
+      "name": "Strep viridans",
+      "gram": "positive",
+      "isolates": 54,
+      "s": {
+        "pen": 78,
+        "cro": 94,
+        "lvx": 98,
+        "van": 100,
+        "cli": 81
+      }
+    },
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 87,
+      "s": {
+        "amp": 100,
+        "gen": 80,
+        "lvx": 85,
+        "cip": 85,
+        "van": 100,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 24,
+      "s": {
+        "amp": 13,
+        "gen": 96,
+        "lvx": 9,
+        "cip": 9,
+        "van": 50,
+        "nit": 39
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 536,
+      "s": {
+        "ptz": 50,
+        "cfz_u": 96,
+        "cro": 91,
+        "caz": 93,
+        "fep": 99,
+        "mem": 100,
+        "tob": 95,
+        "lvx": 77,
+        "cip": 79,
+        "sxt": 80,
+        "nit": 98
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 103,
+      "s": {
+        "ptz": 100,
+        "cfz_u": 91,
+        "cro": 85,
+        "caz": 87,
+        "fep": 89,
+        "mem": 99,
+        "tob": 94,
+        "lvx": 84,
+        "cip": 84,
+        "sxt": 86
+      }
+    },
+    {
+      "name": "Klebsiella oxytoca",
+      "gram": "negative",
+      "isolates": 28,
+      "s": {
+        "cfz_u": 94,
+        "cro": 96,
+        "caz": 100,
+        "fep": 100,
+        "mem": 100,
+        "tob": 100,
+        "lvx": 100,
+        "cip": 100,
+        "sxt": 93,
+        "nit": 96
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 55,
+      "s": {
+        "cfz_u": 100,
+        "cro": 98,
+        "caz": 98,
+        "fep": 100,
+        "mem": 100,
+        "tob": 100,
+        "lvx": 75,
+        "cip": 75,
+        "sxt": 90
+      }
+    },
+    {
+      "name": "Enterobacter cloacae",
+      "gram": "negative",
+      "isolates": 38,
+      "s": {
+        "ptz": 65,
+        "caz": "nr",
+        "fep": 89,
+        "mem": 95,
+        "tob": 97,
+        "lvx": 100,
+        "cip": 97,
+        "sxt": 97,
+        "nit": 29
+      }
+    },
+    {
+      "name": "Klebsiella aerogenes",
+      "gram": "negative",
+      "isolates": 19,
+      "s": {
+        "ptz": 71,
+        "caz": "nr",
+        "fep": 100,
+        "mem": 100,
+        "tob": 100,
+        "lvx": 100,
+        "cip": 100,
+        "sxt": 100,
+        "nit": 21
+      }
+    },
+    {
+      "name": "Citrobacter freundii",
+      "gram": "negative",
+      "isolates": 11,
+      "note": "n<30; interpret with caution",
+      "s": {
+        "ptz": 85,
+        "caz": "nr",
+        "fep": 100,
+        "mem": 100,
+        "tob": 100,
+        "lvx": 90,
+        "cip": 100,
+        "sxt": 100,
+        "nit": 90
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 95,
+      "s": {
+        "ptz": 91,
+        "caz": 92,
+        "fep": 97,
+        "mem": 89,
+        "tob": 97,
+        "lvx": 76,
+        "cip": 84
+      }
+    }
+  ],
+  "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/DOH%20Legacy/Antimicrobial/2024-CHI-StAlexius-Bismarck-antibiogram-archive.pdf"
+}

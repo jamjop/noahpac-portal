@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opioid Conversion Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">Equianalgesic Dosing · CDC MME</div>
+    <h1>Opioid Conversion</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+  </div>
+</header>
+
+<div class="content">
+
+  <div class="panel">
+    <div class="panel-label">Current Medication</div>
+    <div class="input-grid">
+      <div class="field">
+        <label class="field-label" for="fromDrug">Opioid</label>
+        <select id="fromDrug"></select>
+      </div>
+      <div class="field" id="fromRouteField">
+        <label class="field-label" for="fromRoute">Route</label>
+        <select id="fromRoute"></select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="fromDose">Dose per administration</label>
+        <div class="dose-row">
+          <input type="number" id="fromDose" min="0" step="any" placeholder="0">
+          <span class="unit-label" id="fromUnit">mg</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="fromFreq">Frequency</label>
+        <select id="fromFreq">
+          <option value="6">q4h (6×/day)</option>
+          <option value="4">q6h (4×/day)</option>
+          <option value="3">q8h (3×/day)</option>
+          <option value="2" selected>q12h (2×/day)</option>
+          <option value="1">Once daily</option>
+          <option value="1" data-patch="1">Continuous (patch)</option>
+        </select>
+      </div>
+    </div>
+    <div id="currentMme" class="mme-display"><span class="mme-placeholder">—</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">Convert To</div>
+    <div class="input-grid">
+      <div class="field">
+        <label class="field-label" for="toDrug">Target Opioid</label>
+        <select id="toDrug"></select>
+      </div>
+      <div class="field" id="toRouteField">
+        <label class="field-label" for="toRoute">Route</label>
+        <select id="toRoute"></select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="reduction">Cross-tolerance reduction</label>
+        <select id="reduction">
+          <option value="0">None (0%) — same drug/route</option>
+          <option value="25" selected>25% — standard rotation</option>
+          <option value="50">50% — high MME, frail, or elderly</option>
+        </select>
+      </div>
+    </div>
+    <div id="convResult" class="conv-result"><span class="mme-placeholder">—</span></div>
+  </div>
+
+  <div class="ref-table-wrap">
+    <div class="ref-table-label">Equianalgesic Reference (approximate)</div>
+    <table class="ref-table" id="refTable"></table>
+  </div>
+
+  <div class="disclaimer-box">
+    <strong>Clinical caution required.</strong> Equianalgesic conversions are approximations based on population averages. Individual responses vary significantly. Always apply clinical judgment, reassess frequently, and titrate to effect. When rotating opioids, use the lowest reasonable conversion ratio and adjust for incomplete cross-tolerance. Consult pain management or palliative care for complex patients.
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

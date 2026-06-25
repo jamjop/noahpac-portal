@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antibiotic Allergy Cross-Reactivity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">Antimicrobial Stewardship · Allergy</div>
+    <h1>Antibiotic Allergy</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="panel">
+    <div class="panel-row">
+      <div>
+        <label class="field-label">Reported allergy to</label>
+        <div class="seg" id="seg-allergy" role="group"></div>
+      </div>
+      <div>
+        <label class="field-label">Proposed antibiotic</label>
+        <div class="seg" id="seg-proposed" role="group"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="result-area"></div>
+
+  <!-- Cross-reactivity reference table -->
+  <section class="card ref-card">
+    <div class="section-label">Cross-reactivity overview</div>
+    <div class="tbl-wrap">
+      <table class="ref-tbl">
+        <thead>
+          <tr>
+            <th>Allergy</th>
+            <th>Drug class</th>
+            <th>Cross-reactivity risk</th>
+            <th>Basis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Penicillin</td><td>Cephalosporins</td><td class="risk-low">~2%</td><td>R1 side-chain similarity (not beta-lactam ring)</td></tr>
+          <tr><td>Penicillin</td><td>Carbapenems</td><td class="risk-low">&lt;1%</td><td>Distinct side chains; negligible shared epitopes</td></tr>
+          <tr><td>Penicillin</td><td>Aztreonam</td><td class="risk-low">&lt;1%</td><td>Monobactam ring; different R1 chain</td></tr>
+          <tr><td>Ampicillin / Amoxicillin</td><td>Cefadroxil, Cephalexin, Cefprozil, Cefaclor</td><td class="risk-mod">Moderate</td><td>Shared aminobenzyl R1 side chain</td></tr>
+          <tr><td>Ceftazidime</td><td>Aztreonam</td><td class="risk-hi">High</td><td>Identical R1 side chain — treat as contraindicated</td></tr>
+          <tr><td>Cephalosporins</td><td>Carbapenems</td><td class="risk-low">&lt;1%</td><td>No shared side chains; very low cross-reactivity</td></tr>
+          <tr><td>Sulfonamide antibiotics</td><td>Sulfonamide non-antibiotics</td><td class="risk-low">Minimal</td><td>Different aromatic amines; cross-reactivity likely overestimated</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">Cross-reactivity primarily driven by R1 side-chain similarity, not the beta-lactam ring. True penicillin allergy confirmed by skin testing: ~80–90% of reported allergies are not true IgE-mediated reactions.</p>
+  </section>
+
+</div>
+
+<footer>
+  <p>Based on Blumenthal et al. (NEJM 2019), Romano et al., and IDSA/AAAAI guidance. Cross-reactivity estimates are population-level; individual patient risk depends on reaction type, severity, and time since reaction. <strong>Not medical advice.</strong></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

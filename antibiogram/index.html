@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ND Antibiogram — Local Susceptibility Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div id="eyebrow" class="eyebrow">Trinity Hospital · Minot, ND · CY 2022</div>
+    <h1>ND Antibiogram</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+    <div class="datasource"><span class="dot"></span>ND HHS Archive · % susceptible · 1st isolate/patient/year</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div id="facility-tabs" class="facility-tabs" role="tablist" aria-label="Select facility"></div>
+
+  <div class="gram-tabs" role="tablist" aria-label="Gram stain filter">
+    <button class="gram-tab active" data-gram="positive" role="tab" aria-selected="true">Gram-positive</button>
+    <button class="gram-tab" data-gram="negative" role="tab" aria-selected="false">Gram-negative</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="abgram" aria-label="Antibiogram susceptibility table">
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="legend" aria-label="Color key">
+    <span><span class="swatch sw-hi">≥90</span>≥90% susceptible</span>
+    <span><span class="swatch sw-mid">75</span>70–89%</span>
+    <span><span class="swatch sw-lo">45</span>&lt;70%</span>
+    <span><span class="swatch sw-nr">~</span>Not recommended / &lt;10%</span>
+    <span><span class="swatch sw-na">—</span>Not tested</span>
+  </div>
+
+</div>
+
+<section class="import-panel" id="import-panel">
+  <div class="import-header" id="import-toggle" role="button" tabindex="0" aria-expanded="false">
+    <span class="import-icon">＋</span>
+    <span>Import facility from PDF URL</span>
+    <span class="import-chevron">▾</span>
+  </div>
+  <div class="import-body" id="import-body" hidden>
+    <p class="import-hint">Paste a direct link to an antibiogram PDF (e.g. from the ND HHS archive). The PDF will be processed by Claude AI and added as a selectable facility tab for this session.</p>
+    <div class="import-fields">
+      <div class="import-field import-field-wide">
+        <label class="import-label" for="imp-url">PDF URL <span class="import-req">*</span></label>
+        <input class="import-input" id="imp-url" type="url" placeholder="https://www.hhs.nd.gov/sites/…/2025-facility-antibiogram.pdf" autocomplete="off">
+      </div>
+      <div class="import-field">
+        <label class="import-label" for="imp-name">Facility name <span class="import-opt">(optional)</span></label>
+        <input class="import-input" id="imp-name" type="text" placeholder="Auto-detected from PDF">
+      </div>
+      <div class="import-field">
+        <label class="import-label" for="imp-loc">Location <span class="import-opt">(optional)</span></label>
+        <input class="import-input" id="imp-loc" type="text" placeholder="City, ND">
+      </div>
+      <div class="import-field">
+        <label class="import-label" for="imp-period">Year / period <span class="import-opt">(optional)</span></label>
+        <input class="import-input" id="imp-period" type="text" placeholder="2025">
+      </div>
+    </div>
+    <div class="import-actions">
+      <button class="import-btn" id="import-submit">Extract &amp; add facility</button>
+      <span class="import-status" id="import-status"></span>
+    </div>
+    <pre class="import-log" id="import-log" hidden></pre>
+  </div>
+</section>
+
+<footer>
+  <p id="source-note"></p>
+  <p>
+    Source: <a href="https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/antibiotic-resistance-and-antimicrobial-stewardship/antibiograms" target="_blank" rel="noopener">ND HHS Antibiogram Archive</a>.
+    CFZ-U = cefazolin with urine-only breakpoints.
+    Gentamicin for staphylococci (synergy only); Enterococcus gentamicin = high-level aminoglycoside synergy.
+    AmpC-producing organisms (Enterobacter, Klebsiella aerogenes, Citrobacter, Serratia): ~ for cephalosporins reflects inducible resistance risk.
+    <strong>Not medical advice.</strong> Individualize therapy with culture results and clinical judgment.
+  </p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empiric Therapy + Local Susceptibility</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">Empiric Therapy · Local Antibiogram — Minot, ND</div>
+    <h1>Empiric + Susceptibility</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="panel">
+    <div class="panel-row">
+      <div>
+        <label class="field-label">Local susceptibility data</label>
+        <select id="fac-sel" class="fac-sel"></select>
+      </div>
+      <div>
+        <label class="field-label">Infection site</label>
+        <div class="seg" id="seg-site" role="group"></div>
+      </div>
+      <div>
+        <label class="field-label">Likely / known organism <span class="optional">(optional)</span></label>
+        <div class="seg" id="seg-org" role="group"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="result-area"></div>
+
+</div>
+
+<footer>
+  <p>Empiric regimens from IDSA/Surviving Sepsis guidelines. Susceptibility data sourced from ND HHS Antibiogram Archive (Trinity CY 2022; Sanford, Altru, CHI 2024). Local rates shown when an organism is selected; percentages reflect primary antibiotic for that regimen where available. Individualize therapy based on culture results, allergies, renal function, and severity. <strong>Not medical advice.</strong></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

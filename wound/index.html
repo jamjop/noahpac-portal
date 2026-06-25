@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wound Classification &amp; Tetanus Prophylaxis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">ACIP · Emergency Medicine</div>
+    <h1>Wound &amp; Tetanus</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="card">
+    <div class="section-label">Step 1 — Wound type</div>
+    <div class="option-grid" id="wound-grid">
+      <button class="opt-btn active" data-wound="clean">
+        <span class="opt-title">Clean, minor</span>
+        <span class="opt-desc">Small laceration, no contamination, &lt;6 hours old, no devitalized tissue</span>
+      </button>
+      <button class="opt-btn" data-wound="prone">
+        <span class="opt-title">Tetanus-prone</span>
+        <span class="opt-desc">Contaminated, puncture, crush, bite, burn, avulsion, frostbite, missile, &gt;6 hrs old, or devitalized tissue</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-label">Step 2 — Tetanus vaccination history</div>
+    <div class="option-grid" id="vax-grid">
+      <button class="opt-btn active" data-vax="unknown">
+        <span class="opt-title">Unknown / &lt;3 doses</span>
+        <span class="opt-desc">History unknown, unvaccinated, or fewer than 3 doses</span>
+      </button>
+      <button class="opt-btn" data-vax="recent">
+        <span class="opt-title">≥3 doses, last &lt;5 yrs</span>
+        <span class="opt-desc">Series complete, most recent booster within 5 years</span>
+      </button>
+      <button class="opt-btn" data-vax="mid">
+        <span class="opt-title">≥3 doses, last 5–10 yrs</span>
+        <span class="opt-desc">Series complete, last booster 5–10 years ago</span>
+      </button>
+      <button class="opt-btn" data-vax="old">
+        <span class="opt-title">≥3 doses, last &gt;10 yrs</span>
+        <span class="opt-desc">Series complete, last booster more than 10 years ago</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="card" id="rec-card">
+    <div class="section-label">Recommendation</div>
+    <div id="rec-output"></div>
+  </section>
+
+  <section class="card info-card">
+    <div class="section-label">Reference</div>
+    <div class="info-grid">
+      <div>
+        <div class="info-head">Vaccine products</div>
+        <ul class="info-list">
+          <li><strong>Tdap</strong> (Adacel, Boostrix) — preferred if never received</li>
+          <li><strong>Td</strong> — use if Tdap given previously or contraindicated</li>
+          <li><strong>TIG</strong> (HyperTET) — 250 units IM, separate site from vaccine</li>
+          <li>If both needed: give at separate sites simultaneously</li>
+        </ul>
+      </div>
+      <div>
+        <div class="info-head">Tetanus-prone wound features</div>
+        <ul class="info-list">
+          <li>Contaminated (soil, saliva, feces)</li>
+          <li>Puncture wounds</li>
+          <li>Crush injuries or avulsions</li>
+          <li>Animal or human bites</li>
+          <li>Burns or frostbite</li>
+          <li>Missile wounds</li>
+          <li>Wounds &gt;6 hours old</li>
+          <li>Devitalized / ischemic tissue</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>Based on ACIP tetanus prophylaxis recommendations. Tdap/Td: 0.5 mL IM deltoid. TIG: 250 units IM contralateral site. <strong>Not medical advice.</strong></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

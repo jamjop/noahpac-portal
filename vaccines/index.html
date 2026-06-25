@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACIP Immunization Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">ACIP Immunization Schedule · Patient Screener</div>
+    <h1>Vaccines Due</h1>
+    <a class="back" href="/">← noahpac clinical tools</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="panel-grid">
+      <div>
+        <label class="field-label" for="age">Patient age</label>
+        <div class="age-input-row">
+          <input type="number" id="age" min="0" max="999" value="2" inputmode="numeric">
+          <div class="unit-toggle">
+            <button id="unitYr" class="active">yr</button>
+            <button id="unitMo">mo</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="field-label">Sex</span>
+        <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
+          <button data-sex="female" class="active">Female</button>
+          <button data-sex="male">Male</button>
+        </div>
+      </div>
+    </div>
+    <details class="flags" open>
+      <summary>Conditions (expand to refine)</summary>
+      <div class="flag-grid" id="flagGrid">
+        <label data-only="female"><input type="checkbox" id="f_pregnant"> Currently pregnant</label>
+        <label><input type="checkbox" id="f_immunocompromised"> Immunocompromised (transplant, biologics, high-dose steroids)</label>
+        <label><input type="checkbox" id="f_hiv"> HIV positive</label>
+        <label><input type="checkbox" id="f_asplenia"> Asplenia / functional asplenia (incl. sickle cell)</label>
+        <label><input type="checkbox" id="f_liverDz"> Chronic liver disease (incl. HBV/HCV carrier)</label>
+        <label><input type="checkbox" id="f_ckd"> Chronic kidney disease / ESRD / dialysis</label>
+        <label><input type="checkbox" id="f_diabetes"> Diabetes mellitus</label>
+        <label><input type="checkbox" id="f_heartDz"> Chronic heart disease (incl. CHF; not HTN alone)</label>
+        <label><input type="checkbox" id="f_lungDz"> Chronic lung disease (COPD, asthma — not mild intermittent)</label>
+        <label><input type="checkbox" id="f_hcw"> Healthcare worker</label>
+        <label data-only="male"><input type="checkbox" id="f_msm"> MSM</label>
+        <label><input type="checkbox" id="f_noRecords"> No vaccination records / assume unvaccinated</label>
+      </div>
+    </details>
+  </div>
+
+  <div class="copy-bar" id="copyBar" hidden>
+    <button class="copy-btn" id="copyBtn">&#x2398; Copy schedule</button>
+  </div>
+  <div class="results" id="results"></div>
+</div>
+
+<footer>
+  <p><strong>Not medical advice.</strong> Summarizes ACIP recommendations; verify with CDC immunization schedule and individualize based on prior vaccination history, contraindications, and clinical judgment. CDC schedule updated annually; built-in data reflects 2025 schedule.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
