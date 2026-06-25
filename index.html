@@ -38,6 +38,23 @@
       .tool-name { display: block; font-size: 0.875rem; font-weight: 500; color: #1a1f24; transition: color 0.1s; }
       .tool-desc { display: block; font-size: 0.75rem; color: #718096; margin-top: 2px; }
       .hidden-tool { display: none !important; }
+
+      @media (prefers-color-scheme: dark) {
+        body { background-color: #0f1117 !important; color: #e2e8f0 !important; }
+        header { border-bottom-color: #2d3748 !important; }
+        .tool-row:hover { background: #1a2030 !important; box-shadow: 0 1px 3px rgba(0,0,0,.3) !important; }
+        .tool-row:hover .tool-icon { color: #4d94ff !important; }
+        .tool-row:hover .tool-name { color: #4d94ff !important; }
+        .tool-icon { color: #a0aec0 !important; }
+        .tool-name { color: #e2e8f0 !important; }
+        .tool-desc { color: #64748b !important; }
+        h2 { color: #64748b !important; }
+        p, span { color: #a0aec0 !important; }
+        input[type=text] { background: #1a2030 !important; color: #e2e8f0 !important; border-color: #2d3748 !important; box-shadow: 0 1px 2px rgba(0,0,0,.3) !important; }
+        kbd { background: #1a2030 !important; border-color: #2d3748 !important; color: #64748b !important; }
+        footer { border-top-color: #2d3748 !important; color: #64748b !important; }
+        footer a { color: #64748b !important; }
+      }
     </style>
   </head>
   <body class="bg-[#f8f9fa] text-[#1a1f24] min-h-screen" style="font-family:'Inter',system-ui,sans-serif">
