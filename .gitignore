@@ -47,3 +47,7 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Live data files — written by cron jobs, not source
+screener/data/
+antibiogram/data/

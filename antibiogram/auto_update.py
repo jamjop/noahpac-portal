@@ -21,8 +21,8 @@ from datetime import date
 from pathlib import Path
 
 DIR = Path(__file__).resolve().parent
-LIVE_DIR = Path("/var/www/noahpac.com/antibiogram")
-REPO_DIR = LIVE_DIR  # same dir is the git repo
+LIVE_DIR = Path("/var/www/noahpac-portal/antibiogram")
+REPO_DIR = LIVE_DIR
 
 PAGE_URL = (
     "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/"
