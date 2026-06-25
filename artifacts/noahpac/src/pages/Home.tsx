@@ -14,7 +14,7 @@ export default function Home() {
       category: "Screening & Preventive Care",
       items: [
         {
-          name: "USPSTF Screener",
+          name: "Screening by Age",
           desc: "Age + sex + risk factors → applicable USPSTF Grade A/B/C recommendations. Covers the full schedule including 2024 breast cancer and 2025 cervical updates. Risk-factor checkboxes promote conditional screenings (lung LDCT, AAA, osteoporosis) into the recommended list.",
           chips: ["USPSTF 2026", "Ages 3–110"],
           href: "/screener",
