@@ -952,7 +952,7 @@ function copyAccutane(btn){
     const dur = days > 0 ? `${months} months ${days} days` : `${months} months`;
     text += `\n\nUsing a target cumulative dose of ${target}mg (${targetMgKg} mg/kg), if you take ${daily} mg of isotretinoin a day, your treatment will last ${dur}.`;
   }
-  text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/`;
+  text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/\nReference: Lai J, Barbieri JS. Acne Relapse and Isotretinoin Retrial in Patients With Acne. JAMA Dermatol. 2025;161(4):367-374. PMID 39813053`;
   navigator.clipboard.writeText(text).then(()=>{
     btn.classList.add('copied'); btn.textContent='✓ Copied';
     setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy results'; }, 2000);
