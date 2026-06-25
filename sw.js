@@ -6,7 +6,7 @@ const TOOLS = [
   'empiric','sepsis','wound','ddx','naloxone','reportable','sti-guide'
 ];
 
-const CORE = ['/', '/index.html', '/shared.css', '/favicon.svg'];
+const CORE = ['/', '/index.html', '/shared.css', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/manifest.json'];
 
 const TOOL_FILES = TOOLS.flatMap(t => [
   `/${t}/`, `/${t}/index.html`, `/${t}/style.css`, `/${t}/app.js`
