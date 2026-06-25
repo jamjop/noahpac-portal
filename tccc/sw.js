@@ -1,4 +1,4 @@
-const CACHE = 'tccc-v1';
+const CACHE = 'tccc-v2';
 const ASSETS = [
   '/tccc/',
   '/tccc/index.html',
