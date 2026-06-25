@@ -230,16 +230,40 @@
         <p style="margin:0">&copy; <span id="year"></span> Noah PA-C. All rights reserved.</p>
         <div style="display:flex;gap:1rem">
           <a href="#" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">About</a>
-          <a href="#" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Disclaimer</a>
+          <a href="#" id="disclaimerLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Disclaimer</a>
           <a href="#" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Contact</a>
         </div>
       </footer>
 
     </div>
 
+    <dialog id="disclaimerDialog" style="border:none;border-radius:12px;padding:0;max-width:480px;width:calc(100% - 2rem);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#fff;color:#1a1f24">
+      <div style="padding:1.75rem">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem">
+          <h2 style="font-size:0.875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#718096;margin:0">Disclaimer</h2>
+          <button id="disclaimerClose" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:#718096;font-size:1.25rem">&times;</button>
+        </div>
+        <p style="font-size:0.9375rem;line-height:1.7;margin:0;color:#1a1f24">Not medical advice. These tools summarize published guidelines and validated scoring systems for reference use only. Always apply clinical judgment, read primary sources, and individualize care. Verify calculator results before guiding treatment decisions.</p>
+      </div>
+    </dialog>
+    <style>
+      #disclaimerDialog::backdrop{background:rgba(0,0,0,.45)}
+      @media(prefers-color-scheme:dark){
+        #disclaimerDialog{background:#1a2030 !important;color:#e2e8f0 !important}
+        #disclaimerDialog p{color:#e2e8f0 !important}
+        #disclaimerDialog h2{color:#64748b !important}
+        #disclaimerDialog button{color:#64748b !important}
+      }
+    </style>
+
     <script>
       lucide.createIcons();
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      const dlg = document.getElementById('disclaimerDialog');
+      document.getElementById('disclaimerLink').addEventListener('click', e => { e.preventDefault(); dlg.showModal(); });
+      document.getElementById('disclaimerClose').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
 
       const input = document.getElementById('search-input');
       const noResults = document.getElementById('no-results');
