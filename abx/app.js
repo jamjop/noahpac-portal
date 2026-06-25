@@ -290,10 +290,10 @@ const ABX = [
   {
     id:'h_pylori', cat:'gi',
     name:'H. pylori Eradication', organism:'Helicobacter pylori',
-    source:'ACG 2017 / AGA 2022',
+    source:'ACG 2024 / AGA 2022',
     regimens:[
       {label:'Bismuth quadruple — preferred in most settings', cls:'fl', drugs:[
-        {name:'PPI + Bismuth + Tetracycline + Metronidazole', dose:'PPI (standard dose BID) + Bismuth subsalicylate 525 mg QID + Tetracycline 500 mg QID + Metronidazole 500 mg TID-QID × 10–14 days', note:'Preferred by ACG 2017; effective despite metronidazole resistance; requires many pills'},
+        {name:'PPI + Bismuth + Tetracycline + Metronidazole', dose:'PPI (standard dose BID) + Bismuth subsalicylate 525 mg QID + Tetracycline 500 mg QID + Metronidazole 500 mg TID-QID × 10–14 days', note:'Preferred by ACG 2024; effective despite metronidazole resistance; requires many pills'},
       ]},
       {label:'Clarithromycin triple — only if local resistance <15%', drugs:[
         {name:'PPI + Clarithromycin + Amoxicillin', dose:'PPI (standard dose BID) + Clarithromycin 500 mg BID + Amoxicillin 1 g BID × 14 days', note:'Do NOT use if prior macrolide exposure or clarithromycin resistance >15% locally'},
@@ -311,7 +311,7 @@ const ABX = [
   {
     id:'intraabdominal', cat:'gi',
     name:'Intra-abdominal Infection — Empiric', organism:'E. coli, Bacteroides fragilis, Streptococcus spp., Klebsiella',
-    source:'IDSA/SIS 2010 / WSES 2017',
+    source:'IDSA/SIS 2010 / WSES 2021',
     regimens:[
       {label:'Mild–moderate community-acquired', cls:'fl', drugs:[
         {name:'Ertapenem', dose:'1 g IV/IM once daily × 4–7 days', note:'Excellent gram-negative and anaerobic coverage; convenient once-daily dosing'},
