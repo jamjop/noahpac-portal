@@ -1,4 +1,4 @@
-const CACHE = 'noahpac-v3';
+const CACHE = 'noahpac-v5';
 
 const TOOLS = [
   'screener','vaccines','calculators','opioids','sti','abx',
@@ -33,16 +33,9 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
 
-  if (url.origin !== location.origin) {
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return res;
-      }).catch(() => cached))
-    );
-    return;
-  }
+  // Let browser fetch cross-origin resources (CDN scripts/fonts) directly.
+  // Intercepting them yields opaque responses that browsers may refuse to execute.
+  if (url.origin !== location.origin) return;
 
   const isHTML = e.request.headers.get('accept')?.includes('text/html');
 
