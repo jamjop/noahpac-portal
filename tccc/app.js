@@ -59,14 +59,14 @@ const SECTIONS = [
       ${callout('danger', 'Tourniquet Conversion Timeline',
         timeline([
           {t:'0 min', txt:'Apply TQ; record <strong>exact time</strong> on strap and DD Form 1380'},
-          {t:'< 2 h', txt:'Do not convert in field; reassess hemorrhage control and distal limb'},
-          {t:'2 h mark', txt:'Consider conversion at Role 2+ with surgical capability and ability to monitor continuously'},
-          {t:'> 6 h', txt:'<strong>Do not remove TQ</strong>; limb viability assessment at Role 2/3 only'},
+          {t:'< 2 h', txt:'Reassess; <strong>reposition</strong> any TQ applied over uniform by applying second TQ directly to skin 2–3 in above wound, then loosening first'},
+          {t:'2 h mark', txt:'Every effort should be made to convert before 2 h if bleeding can be controlled by other means. <strong>ASM/CLS: do not attempt conversion beyond 2 h without direction from medical personnel.</strong>'},
+          {t:'> 6 h', txt:'<strong>Do not remove TQ</strong> unless close monitoring and lab capability available; limb viability assessment at Role 2/3 only'},
           {t:'NEVER', txt:'Do not remove if: hemorrhagic shock, cannot monitor continuously, or wound cannot be packed'},
         ])
       )}
 
-      ${phase('TQ Conversion Procedure (Role 2+ only)', [
+      ${phase('TQ Conversion Procedure (Medical Personnel, Role 2+ only)', [
         'Verify hemorrhage is packable; assess wound',
         'Pack wound with hemostatic gauze + pressure dressing while maintaining pressure',
         'Inflate BP cuff 20 mmHg above systolic <em>proximal</em> to TQ, then slowly loosen TQ',
@@ -190,29 +190,29 @@ const SECTIONS = [
       ])}
 
       ${callout('danger', 'Resuscitation — Hemorrhagic Shock', `
-        <p><strong>Signs of shock:</strong> absent radial pulse, altered mental status (mnemonic: "No Pulse? No Problem — give blood"), tachycardia</p>
-        <p><strong>Target (permissive hypotension):</strong> SBP 80–90 mmHg OR palpable radial pulse</p>
-        <p><strong>TBI present:</strong> maintain SBP ≥ 90 mmHg — permissive hypotension is contraindicated</p>
-        <div class="phase-label phase-label-mt">Fluid/Blood Priority (in order)</div>
+        <p><strong>Signs of shock:</strong> absent/weak radial pulse, altered mental status without brain injury</p>
+        <p><strong>Resuscitation endpoint:</strong> palpable radial pulse, improved mental status, or SBP ≥ 100 mmHg — stop when any one is achieved</p>
+        <p><strong>TBI present:</strong> maintain SBP > 100 mmHg — permissive hypotension contraindicated</p>
+        <div class="phase-label phase-label-mt">Blood Product Priority (in order)</div>
         <ol class="steps-ol">
-          <li><strong>Low-Titer O Whole Blood (LTOWB)</strong> — gold standard</li>
-          <li><strong>1:1:1 component therapy</strong> — pRBC : FFP : Platelets</li>
-          <li><strong>Lyophilized plasma</strong> — shelf-stable option</li>
-          <li><strong>Hextend 500 mL × 1</strong> — last resort, crystalloid if nothing else available</li>
+          <li><strong>Cold-stored low-titer O whole blood</strong> — preferred</li>
+          <li><strong>Pre-screened low-titer O fresh whole blood</strong></li>
+          <li><strong>Plasma + pRBC + Platelets 1:1:1</strong></li>
+          <li><strong>Plasma + pRBC 1:1</strong></li>
+          <li><strong>Plasma or pRBC alone</strong></li>
         </ol>
-        <p class="mt-sm">Avoid excessive crystalloid; worsens coagulopathy and acidosis.</p>`
+        <p class="mt-sm"><strong>After first transfused product:</strong> give 1 g calcium (30 mL 10% calcium gluconate or 10 mL 10% calcium chloride) IV/IO.</p>
+        <p>Reassess after each unit; discontinue when endpoint reached. Avoid excessive crystalloid.</p>`
       )}
 
       ${callout('ok', 'TXA — Tranexamic Acid', `
-        <p><strong>Indications (ALL must apply):</strong></p>
+        <p><strong>Indications (give if EITHER applies):</strong></p>
         <ul>
-          <li>Age ≥ 18</li>
-          <li>Hemorrhagic shock OR anticipated need for blood transfusion</li>
-          <li><strong>Within 3 hours of injury</strong> (TXA given after 3h may be harmful)</li>
+          <li>Likely to need blood transfusion (hemorrhagic shock, major amputation, penetrating torso trauma, severe bleeding)</li>
+          <li>Signs/symptoms of significant TBI or altered mental status from blast or blunt trauma</li>
         </ul>
-        <p class="mt-sm"><strong>Dose:</strong> 1 g IV/IO over 10 min → then 1 g IV/IO over 8 h (second dose at Role 2+)</p>
-        <p><strong>If no IV/IO:</strong> 1 g IM (off-label; early anecdotal data; use if no IV access)</p>
-        <p>Administer ASAP — every 15-min delay reduces effectiveness.</p>`
+        <p class="mt-sm"><strong>Dose:</strong> 2 g IV or IO slow push — give as soon as possible, <strong>NOT later than 3 hours after injury</strong></p>
+        <p>Administer ASAP — every 15-min delay reduces effectiveness. Do not give after 3 h (may increase mortality).</p>`
       )}`;
     }
   },
@@ -274,44 +274,37 @@ const SECTIONS = [
 
       ${callout('info', 'Pain Tier System', `
         <ul>
-          <li><strong>Mild</strong> (still combat-effective): oral/buccal options</li>
-          <li><strong>Moderate–Severe</strong> (non-combat-effective): ketamine or IV opioids</li>
-          <li>Reassess after each intervention; document medications + doses + times on DD 1380</li>
+          <li><strong>Mission capable</strong> (still combat-effective): TCCC Combat Wound Medication Pack (CWMP)</li>
+          <li><strong>Non-mission capable</strong> (cannot stay in fight): CWMP + ketamine or esketamine (TCCC medical personnel)</li>
+          <li>Document all medications with doses and times on DD Form 1380. Disarm casualties who receive ketamine.</li>
+          <li>Goal: tolerable pain preserving airway patency, respiratory drive, and mentation — not complete pain elimination</li>
         </ul>`
       )}
 
-      ${phase('Mild Pain — Combat Pill Pack', [
-        'Acetaminophen 500 mg PO + Meloxicam 15 mg PO (combat pill pack)',
-        'Can repeat acetaminophen 500–1000 mg q6h',
-        '<strong>OTFC (fentanyl lozenge) 800 mcg buccal</strong>: hold against cheek 15 min; discard after use; may repeat × 1 after 15 min if no relief',
-        'OTFC contraindicated if: respiratory rate < 12, SpO₂ < 90%, unconscious',
+      ${phase('Mission Capable — TCCC Combat Wound Medication Pack (CWMP)', [
+        '<strong>Acetaminophen</strong> 1000–1300 mg (two 650 mg ER caplets) PO every 8 hours',
+        '<strong>Meloxicam</strong> 15 mg PO once daily',
+        '<strong>Suzetrigine</strong> 100 mg PO once (two 50 mg tablets), then 50 mg PO every 12 hours',
       ])}
 
-      ${phase('Moderate–Severe Pain — Ketamine (Preferred)', [
-        '<strong>IV/IO:</strong> 20–30 mg slow IV push (over 1–2 min); may repeat 20 mg q20 min (max 200 mg)',
-        '<strong>IM:</strong> 100–200 mg IM; may repeat × 1 after 15–20 min (max 400 mg)',
-        '<strong>Intranasal:</strong> 1 mg/kg (max 100 mg) — use atomizer',
-        'Analgesic dose only — patient should remain conversant',
-        'Procedural sedation: 1–2 mg/kg IV or 4 mg/kg IM (full dissociative dose)',
+      ${phase('Non-Mission Capable — Medical Personnel', [
+        'Direct casualty to take CWMP if not already done',
+        '<strong>Ketamine 100 mg IM</strong>  —or—  <strong>Ketamine 50 mg IN</strong>  —or—  <strong>Ketamine 25 mg (0.2–0.3 mg/kg) IV/IO</strong> slow push over 1 min',
+        '—or— <strong>Esketamine 14 or 28 mg IN × 1</strong>',
+        'Repeat doses q30 min PRN',
+        'Endpoint: reduction of pain or onset of nystagmus (rhythmic eye movement)',
       ])}
 
-      ${callout('warn', 'Ketamine — Practical Notes', `
+      ${callout('warn', 'Ketamine / Esketamine — Notes', `
         <ul>
-          <li>Onset: IV 1–2 min; IM 5–15 min; IN 5–10 min</li>
-          <li>Duration: IV 10–20 min; IM 20–45 min</li>
-          <li>Emergence reactions: add <strong>midazolam 2–5 mg IV or 5 mg IM</strong> if agitation/hallucinations</li>
-          <li>Use caution in TBI: raises ICP — use lowest effective dose; ensure airway maintained</li>
-          <li>Maintains airway reflexes and BP — preferred over opioids in field</li>
-          <li>Vial: 500 mg/10 mL (50 mg/mL) — draw 0.5–0.6 mL for 25–30 mg IV bolus</li>
+          <li><strong>Disarm casualty</strong> and consider disconnecting communications equipment before administration</li>
+          <li>TBI and eye injury do <strong>not</strong> preclude ketamine use — use lowest effective dose and monitor neurologic exam</li>
+          <li>IV ketamine: give slowly over 1 minute; use higher concentration (100 mg/mL) for IN route to minimize volume</li>
+          <li>If respirations reduced: reposition airway to "sniffing position"; provide ventilatory support if needed</li>
+          <li><strong>Do NOT co-administer benzodiazepines with ketamine or esketamine</strong></li>
+          <li>Ondansetron 4 mg ODT/IV/IO/IM q8h PRN for nausea or vomiting</li>
         </ul>`
-      )}
-
-      ${phase('Moderate–Severe Pain — Morphine (If Ketamine Unavailable)', [
-        'IV/IO: 5 mg slow IV push q10 min; max 15 mg/h',
-        'IM: 10 mg IM × 1; reassess in 30 min',
-        'Reversal: <strong>Naloxone 0.4–0.8 mg IV/IO/IM/IN</strong>',
-        'Avoid if: SBP < 90, RR < 12, altered mental status from head injury',
-      ])}`;
+      )}`;
     }
   },
 
@@ -322,7 +315,7 @@ const SECTIONS = [
       <div class="sec-title"><span class="sec-letter ok">A</span> Antibiotics</div>
 
       ${callout('info', 'Indications', `
-        <p>Administer antibiotics for <strong>all penetrating wounds</strong> except minor skin abrasions</p>
+        <p>Administer antibiotics for <strong>all open combat wounds</strong></p>
         <ul>
           <li>Penetrating abdominal wounds — highest priority</li>
           <li>Open fractures, blast injuries, amputations</li>
@@ -332,24 +325,24 @@ const SECTIONS = [
       )}
 
       ${phase('Antibiotic Selection', [
-        '<strong>With IV/IO access (preferred):</strong> Ertapenem 1 g IM × 1 dose',
-        '<strong>No IV access / field expedient:</strong> Moxifloxacin 400 mg PO × 1 dose',
-        'Penicillin/carbapenem allergy: Moxifloxacin is the preferred alternative (ertapenem is a carbapenem, low PCN cross-reactivity ≈ 1%)',
+        '<strong>Able to take PO (first-line):</strong> Cefadroxil 1 g PO once daily',
+        '<strong>Able to take PO (alternative):</strong> Cephalexin 500 mg PO every 6 hours',
+        '<strong>Unable to take PO</strong> (shock, unconscious): Ceftriaxone 2 g IV/IO/IM once daily',
         'Administer as soon as possible after wounding — delay increases infection risk',
       ])}
 
-      ${callout('ok', 'Ertapenem Reconstitution', `
-        <p>1 g powder vial + <strong>3.2 mL of 1% lidocaine</strong> → gives ~3.5 mL IM solution</p>
-        <p>Inject deep into large muscle (gluteus, lateral thigh); avoid IV administration of IM reconstitution</p>
-        <p>Spectrum: aerobic gram+ and gram−, anaerobes — excellent for abdominal penetrating trauma</p>`
+      ${callout('ok', 'Ceftriaxone Notes', `
+        <p><strong>Dose:</strong> 2 g IV/IO/IM once daily</p>
+        <p>IM: reconstitute with 3.5 mL 1% lidocaine for 1 g (adjust proportionally for 2 g); inject deep IM</p>
+        <p>Covers gram-positive and gram-negative organisms including many abdominal pathogens</p>`
       )}
 
-      ${callout('info', 'Moxifloxacin Notes', `
+      ${callout('info', 'Cefadroxil / Cephalexin Notes', `
         <ul>
-          <li>400 mg PO × 1 dose; take on empty stomach if possible</li>
-          <li>Caution: QT prolongation (avoid with other QT-prolonging drugs)</li>
-          <li>Good bioavailability — oral = IV for soft tissue/intra-abdominal coverage</li>
-          <li>Carried in combat pill pack and medic bag</li>
+          <li>Cefadroxil 1 g PO daily — convenient once-daily dosing; first-line oral option</li>
+          <li>Cephalexin 500 mg q6h — alternative if cefadroxil unavailable</li>
+          <li>Both are first-generation cephalosporins; low cross-reactivity with PCN allergy (&lt;2%)</li>
+          <li>Good coverage for skin, soft tissue, and wound pathogens</li>
         </ul>`
       )}
 
@@ -471,79 +464,73 @@ const SECTIONS = [
           tag:'HEMORRHAGE', tagColor:'',
           priority:true,
           rows:[
-            {l:'Indication', v:'Hemorrhagic shock within 3h of injury'},
-            {l:'Dose 1', v:'1 g IV/IO over 10 minutes — give ASAP'},
-            {l:'Dose 2', v:'1 g IV/IO over 8 hours (at Role 2+)'},
-            {l:'IM (no IV)', v:'1 g IM × 1 (off-label; use if no IV access)'},
+            {l:'Indication', v:'Likely to need transfusion (hemorrhagic shock, amputation, penetrating torso) OR significant TBI / blast with AMS'},
+            {l:'Dose', v:'2 g IV or IO slow push — give ASAP, NOT later than 3 h after injury'},
             {l:'Onset', v:'Antifibrinolytic effect in minutes'},
           ],
-          note:'CONTRAINDICATED if > 3h since injury (may increase mortality). Also avoid with STEMI, stroke, or suspected DIC. Every 15-min delay reduces benefit.',
+          note:'Do NOT give after 3 h since injury — may increase mortality. Every 15-min delay reduces benefit.',
         })}
 
         ${drugCard({
           name:'Ketamine',
           tag:'PAIN', tagColor:'warn',
           rows:[
-            {l:'Analgesia IV', v:'20–30 mg slow IV push; repeat 20 mg q20 min (max 200 mg)'},
-            {l:'Analgesia IM', v:'100–200 mg IM; repeat × 1 (max 400 mg)'},
-            {l:'Analgesia IN', v:'1 mg/kg intranasal (max 100 mg)'},
-            {l:'Proc. sed. IV', v:'1–2 mg/kg IV (full dissociative)'},
-            {l:'Proc. sed. IM', v:'4 mg/kg IM'},
+            {l:'Analgesia IM', v:'100 mg IM'},
+            {l:'Analgesia IN', v:'50 mg IN (use 100 mg/mL concentration)'},
+            {l:'Analgesia IV/IO', v:'25 mg (0.2–0.3 mg/kg) slow IV/IO push over 1 min'},
+            {l:'Repeat', v:'q30 min PRN; endpoint: pain reduction or nystagmus'},
+            {l:'Proc. sed. IV', v:'1–2 mg/kg slow IV/IO'},
+            {l:'Proc. sed. IM', v:'2–3 mg/kg IM (300 mg for avg adult)'},
             {l:'Onset IV', v:'1–2 min'},
             {l:'Onset IM', v:'5–15 min'},
-            {l:'Duration IV', v:'10–20 min'},
-            {l:'Duration IM', v:'20–45 min'},
-            {l:'Vial', v:'500 mg/10 mL (50 mg/mL)'},
           ],
-          note:'Maintains airway reflexes and BP. Emergence: add midazolam 2–5 mg IV or 5 mg IM. Use caution in TBI (raises ICP) — use lowest effective dose.',
+          note:'Disarm casualty before administration. TBI/eye injury do NOT preclude use. Do NOT co-administer benzodiazepines. If emergence occurs during procedural sedation: midazolam 0.5–2 mg IV/IO.',
         })}
 
         ${drugCard({
-          name:'OTFC — Oral Transmucosal Fentanyl',
+          name:'Esketamine',
           tag:'PAIN', tagColor:'warn',
           rows:[
-            {l:'Indication', v:'Mild–moderate pain; combat-effective casualty only'},
-            {l:'Dose', v:'800 mcg buccal lozenge'},
-            {l:'Admin', v:'Hold against cheek/gum 15 min; do not chew'},
-            {l:'Repeat', v:'May repeat × 1 after 15 min if no relief'},
-            {l:'Onset', v:'~5–15 min'},
+            {l:'Indication', v:'Non-mission capable — analgesic alternative to ketamine'},
+            {l:'Dose IN', v:'14 or 28 mg intranasal × 1'},
+            {l:'Repeat', v:'q30 min PRN'},
           ],
-          note:'CONTRAINDICATED if: RR < 12, SpO₂ < 90%, unconscious, anticipated airway intervention. Discard remaining lozenge; monitor for resp depression.',
+          note:'Do NOT co-administer with benzodiazepines. Disarm casualty before administration.',
         })}
 
         ${drugCard({
-          name:'Morphine',
+          name:'Suzetrigine (CWMP)',
           tag:'PAIN', tagColor:'warn',
           rows:[
-            {l:'IV/IO dose', v:'5 mg slow IV push q10 min (max 15 mg/h)'},
-            {l:'IM dose', v:'10 mg IM × 1'},
-            {l:'Reversal', v:'Naloxone 0.4–0.8 mg IV/IO/IM/IN; repeat q2–3 min PRN'},
+            {l:'Indication', v:'Mission-capable casualty — Combat Wound Medication Pack'},
+            {l:'Loading dose', v:'100 mg PO × 1 (two 50 mg tablets)'},
+            {l:'Maintenance', v:'50 mg PO every 12 hours'},
           ],
-          note:'Avoid if SBP < 90, RR < 12, head injury with AMS. Ketamine preferred in field over morphine.',
+          note:'NaV1.8 sodium channel blocker. Given with acetaminophen 1000–1300 mg q8h and meloxicam 15 mg daily as the CWMP.',
         })}
 
         ${drugCard({
-          name:'Ertapenem',
+          name:'Ceftriaxone',
           tag:'ANTIBIOTICS', tagColor:'ok',
           rows:[
-            {l:'Indication', v:'Penetrating wounds, open fractures, burns'},
-            {l:'Dose', v:'1 g IM × 1 dose'},
-            {l:'Reconstitute', v:'3.2 mL of 1% lidocaine into 1 g powder vial'},
-            {l:'Result', v:'~3.5 mL; inject deep IM (gluteus, lateral thigh)'},
-            {l:'Coverage', v:'Gram+, gram−, anaerobes'},
+            {l:'Indication', v:'Unable to take PO (shock, unconscious)'},
+            {l:'Dose', v:'2 g IV/IO/IM once daily'},
+            {l:'IM reconstitute', v:'3.5 mL of 1% lidocaine per 1 g; inject deep IM'},
+            {l:'Coverage', v:'Gram+, gram−, many abdominal pathogens'},
           ],
-          note:'Carbapenem — very low PCN cross-reactivity (~1%). Do not give reconstituted IM solution IV.',
+          note:'First-line parenteral antibiotic in 2026 TCCC guidelines.',
         })}
 
         ${drugCard({
-          name:'Moxifloxacin',
+          name:'Cefadroxil / Cephalexin',
           tag:'ANTIBIOTICS', tagColor:'ok',
           rows:[
-            {l:'Indication', v:'Penetrating wounds when parenteral route unavailable'},
-            {l:'Dose', v:'400 mg PO × 1 dose'},
-            {l:'Coverage', v:'Gram+, gram−, anaerobes, atypicals'},
+            {l:'Cefadroxil (1st line)', v:'1 g PO once daily'},
+            {l:'Cephalexin (alt)', v:'500 mg PO every 6 hours'},
+            {l:'Indication', v:'All open combat wounds — able to take PO'},
+            {l:'Coverage', v:'Gram+, wound/soft tissue pathogens'},
           ],
-          note:'QT prolongation — avoid with other QT-prolonging medications. Alternative when ertapenem not available or patient cannot receive IM injection.',
+          note:'1st-gen cephalosporins. Low PCN cross-reactivity (<2%). Administer ASAP after wounding.',
         })}
 
         ${drugCard({
