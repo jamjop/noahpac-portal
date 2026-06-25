@@ -478,6 +478,36 @@ const CALCS = [
     }
   },
 
+  /* 18. Weight Change */
+  {
+    id:"weight-change", name:"Weight Change", num:"18",
+    eyebrow:"General / Monitoring", source:"Percentage body weight change calculator",
+    render: pane => {
+      pane.innerHTML = calcHeader("Weight Change Calculator","General / Monitoring","Percentage body weight change") + `
+      <div class="fields">
+        ${field("Baseline weight","wt-base","number","kg","","1","500")}
+        <div class="field">
+          <label class="field-label" for="wt-base-date">Baseline date <span class="calc-note">(optional)</span></label>
+          <input type="date" id="wt-base-date">
+        </div>
+        ${field("Current weight","wt-curr","number","kg","","1","500")}
+        <div class="field">
+          <label class="field-label" for="wt-curr-date">Current date <span class="calc-note">(optional)</span></label>
+          <input type="date" id="wt-curr-date">
+        </div>
+      </div>
+      <div id="weight-change-result" class="result-card"><div class="result-placeholder">Enter baseline and current weight</div></div>
+      <button class="copy-btn" id="weight-change-copy">&#x2398; Copy results</button>`;
+      pane.querySelectorAll('input').forEach(el => {
+        el.addEventListener('input', calcWeightChange);
+        el.addEventListener('change', calcWeightChange);
+      });
+      const wcBtn = document.getElementById('weight-change-copy');
+      if(wcBtn) wcBtn.addEventListener('click', () => copyWeightChange(wcBtn));
+      calcWeightChange();
+    }
+  },
+
 ];
 
 /* ── HTML helpers ── */
@@ -986,6 +1016,74 @@ function copyResult(calcId, btn){
   navigator.clipboard.writeText(text).then(()=>{
     btn.classList.add('copied'); btn.textContent='✓ Copied';
     setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy result'; }, 2000);
+  });
+}
+
+function formatDate(dateStr){
+  if(!dateStr) return '';
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+}
+
+function calcWeightChange(){
+  const base = num('wt-base');
+  const curr = num('wt-curr');
+  const baseDate = document.getElementById('wt-base-date')?.value || '';
+  const currDate = document.getElementById('wt-curr-date')?.value || '';
+  const el = document.getElementById('weight-change-result');
+  if(isNaN(base)||base<=0||isNaN(curr)||curr<=0){
+    el.innerHTML='<div class="result-placeholder">Enter baseline and current weight</div>'; el.className='result-card'; return;
+  }
+  const diff = curr - base;
+  const absDiff = Math.abs(diff);
+  const absPct = Math.abs((diff / base) * 100);
+  const isLoss = diff < 0;
+  const label = diff === 0 ? 'No Change' : (isLoss ? 'Weight Loss' : 'Weight Gain');
+  const sign = isLoss ? '−' : (diff > 0 ? '+' : '');
+  let durationLine = '';
+  if(baseDate && currDate){
+    const days = Math.round((new Date(currDate+'T00:00:00') - new Date(baseDate+'T00:00:00')) / 86400000);
+    if(days > 0){
+      durationLine = `<div class="sub-result">
+        Duration: <strong>${esc(String(days))} days</strong><br>
+        Rate: <strong>${esc(fmt(absDiff/(days/7),2))} kg/week</strong> · <strong>${esc(fmt(absDiff/(days/30.44),2))} kg/month</strong>
+      </div>`;
+    }
+  }
+  setResult('weight-change-result', `
+    <div class="result-num">${sign}${fmt(absPct,1)}%</div>
+    <div class="result-label">${esc(label)}</div>
+    <div class="result-detail">
+      Baseline: <strong>${esc(String(base))} kg</strong>${baseDate ? ` <span class="calc-note">· ${esc(formatDate(baseDate))}</span>` : ''}<br>
+      Current: <strong>${esc(String(curr))} kg</strong>${currDate ? ` <span class="calc-note">· ${esc(formatDate(currDate))}</span>` : ''}<br>
+      <strong>${sign}${fmt(absDiff,1)} kg ${esc(diff===0?'change':(isLoss?'lost':'gained'))}</strong>
+      ${durationLine}
+    </div>`, '');
+}
+
+function copyWeightChange(btn){
+  const base = num('wt-base');
+  const curr = num('wt-curr');
+  if(isNaN(base)||base<=0||isNaN(curr)||curr<=0) return;
+  const baseDate = document.getElementById('wt-base-date')?.value || '';
+  const currDate = document.getElementById('wt-curr-date')?.value || '';
+  const diff = curr - base;
+  const absDiff = Math.abs(diff);
+  const absPct = Math.abs((diff / base) * 100);
+  const isLoss = diff < 0;
+  const direction = diff === 0 ? 'unchanged' : (isLoss ? 'lost' : 'gained');
+  const changeType = diff === 0 ? 'change' : (isLoss ? 'loss' : 'gain');
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  let text = `Weight Change\n\nStarting weight: ${base} kg${baseDate ? ` (${formatDate(baseDate)})` : ''}\nCurrent weight: ${curr} kg${currDate ? ` (${formatDate(currDate)})` : ''}\n\n${absDiff.toFixed(1)} kg ${direction}\n${absPct.toFixed(1)}% ${changeType}`;
+  if(baseDate && currDate){
+    const days = Math.round((new Date(currDate+'T00:00:00') - new Date(baseDate+'T00:00:00')) / 86400000);
+    if(days > 0){
+      text += `\nDuration: ${days} days\nRate: ${(absDiff/(days/7)).toFixed(2)} kg/week · ${(absDiff/(days/30.44)).toFixed(2)} kg/month`;
+    }
+  }
+  text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/`;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied'); btn.textContent='✓ Copied';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy results'; }, 2000);
   });
 }
 
