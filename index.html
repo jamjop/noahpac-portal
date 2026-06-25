@@ -229,13 +229,24 @@
       <footer style="margin-top:5rem;padding-top:2rem;border-top:1px solid #e2e8f0;font-size:0.75rem;color:#718096;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem">
         <p style="margin:0">&copy; <span id="year"></span> Noah PA-C. All rights reserved.</p>
         <div style="display:flex;gap:1rem">
-          <a href="#" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">About</a>
+          <a href="#" id="aboutLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">About</a>
           <a href="#" id="disclaimerLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Disclaimer</a>
           <a href="#" id="contactLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Contact</a>
         </div>
       </footer>
 
     </div>
+
+    <dialog id="aboutDialog" style="border:none;border-radius:12px;padding:0;max-width:480px;width:calc(100% - 2rem);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#fff;color:#1a1f24">
+      <div style="padding:1.75rem">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem">
+          <h2 style="font-size:0.875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#718096;margin:0">About</h2>
+          <button id="aboutClose" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:#718096;font-size:1.25rem">&times;</button>
+        </div>
+        <p style="font-size:0.9375rem;line-height:1.7;margin:0 0 0.875rem;color:#1a1f24"><strong>Noah</strong> is a Physician Associate-Certified (PA-C) practicing in clinical medicine. This site is a personal reference project — fast, offline-capable tools built for frontline providers who need guidelines, calculators, and drug references at the point of care, without logins or paywalls.</p>
+        <p style="font-size:0.9375rem;line-height:1.7;margin:0;color:#1a1f24">All calculations run entirely in your browser. No data is collected or transmitted. Content reflects current published guidelines and validated clinical tools.</p>
+      </div>
+    </dialog>
 
     <dialog id="disclaimerDialog" style="border:none;border-radius:12px;padding:0;max-width:480px;width:calc(100% - 2rem);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#fff;color:#1a1f24">
       <div style="padding:1.75rem">
@@ -247,18 +258,23 @@
       </div>
     </dialog>
     <style>
-      #disclaimerDialog::backdrop{background:rgba(0,0,0,.45)}
+      #disclaimerDialog::backdrop,#aboutDialog::backdrop{background:rgba(0,0,0,.45)}
       @media(prefers-color-scheme:dark){
-        #disclaimerDialog{background:#1a2030 !important;color:#e2e8f0 !important}
-        #disclaimerDialog p{color:#e2e8f0 !important}
-        #disclaimerDialog h2{color:#64748b !important}
-        #disclaimerDialog button{color:#64748b !important}
+        #disclaimerDialog,#aboutDialog{background:#1a2030 !important;color:#e2e8f0 !important}
+        #disclaimerDialog p,#aboutDialog p{color:#e2e8f0 !important}
+        #disclaimerDialog h2,#aboutDialog h2{color:#64748b !important}
+        #disclaimerDialog button,#aboutDialog button{color:#64748b !important}
       }
     </style>
 
     <script>
       lucide.createIcons();
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      const adlg = document.getElementById('aboutDialog');
+      document.getElementById('aboutLink').addEventListener('click', e => { e.preventDefault(); adlg.showModal(); });
+      document.getElementById('aboutClose').addEventListener('click', () => adlg.close());
+      adlg.addEventListener('click', e => { if (e.target === adlg) adlg.close(); });
 
       const dlg = document.getElementById('disclaimerDialog');
       document.getElementById('disclaimerLink').addEventListener('click', e => { e.preventDefault(); dlg.showModal(); });
