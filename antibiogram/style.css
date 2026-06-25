@@ -90,3 +90,12 @@ footer a{color:var(--purple)}
 .import-log{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-muted);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;margin-top:10px;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto}
 
 @media print{.tbl-wrap{border:none;box-shadow:none} .c-hi{background:#d1fae5!important} .c-mid{background:#fef9c3!important} .c-lo{background:#fee2e2!important}}
+
+@media(prefers-color-scheme:dark){
+  .gram-tab.active{background:var(--purple);border-color:var(--purple);color:#fff}
+  .c-hi,.sw-hi{background:#064e3b;color:#6ee7b7}
+  .c-mid,.sw-mid{background:#1c1300;color:#fde68a}
+  .c-lo,.sw-lo{background:#3b1515;color:#fca5a5}
+  .import-status.ok{color:#34d399}
+  .import-status.err{color:#fc8181}
+}
