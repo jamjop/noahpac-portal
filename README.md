@@ -4,34 +4,34 @@ Clinical reference portal for [noahpac.com](https://noahpac.com). Built for poin
 
 ## Structure
 
-This repo holds all deployed files for the portal.
+Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files directly from this repo's working directory.
 
-**Root** — React/Vite SPA (`index.html` + `assets/`) serves as the portal shell and navigation layer. Source lives in `artifacts/noahpac/` in this repo.
+**Root** (`index.html`) — static portal homepage and navigation shell.
 
-**Tool subdirectories** — Pure static HTML/CSS/JS apps, each served by the Express server in `artifacts/noahpac/server.mjs`:
+**Tool subdirectories** — each is a self-contained app:
 
 | Directory | App | Description |
 |---|---|---|
 | `labs/` | Lab Reference | 181 adult lab tests, 14 categories, searchable |
 | `ddx/` | Lab Differentials | Differential diagnoses by lab value (high/low), 30+ labs |
-| `sti/` | STI Treatment Reference | CDC-aligned empiric treatment by diagnosis |
-| `sti-guide/` | STI Treatment Guidelines | CDC 2021 full guidelines with monitoring scripts |
-| `abx/` | Antibiotic Reference | Empiric coverage for 17 infections across 6 categories |
-| `antibiogram/` | ND Antibiogram | Local susceptibility data for 4 ND facilities (2023–2024); import-from-PDF feature |
+| `abx/` | Antibiotic Reference | Empiric coverage for 19 infections across 6 categories; sources audited Jun 2026 |
 | `empiric/` | Empiric Therapy + Local Susceptibility | Treatment recommendations cross-referenced with local antibiogram data |
 | `allergy/` | Antibiotic Allergy Cross-Reactivity | Cross-reactivity reference for penicillin/cephalosporin/carbapenem allergies |
-| `tccc/` | TCCC Field Reference | Tactical Combat Casualty Care quick reference (PWA) |
-| `calculators/` | Clinical Calculators | ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD, PHQ-9, GAD-7, HEART, Ottawa rules |
+| `sti/` | STI Treatment Reference | CDC 2021 empiric treatment + doxy-PEP (CDC 2023 interim guidance) |
+| `sti-guide/` | STI Treatment Guidelines | CDC 2021 full guidelines |
+| `antibiogram/` | ND Antibiogram | Local susceptibility data for 4 ND facilities; auto-updated monthly from HHS PDFs |
+| `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
+| `vaccines/` | ACIP Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener |
+| `calculators/` | Clinical Calculators | 18 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Pregnancy EDD |
 | `opioids/` | Opioid Conversion | Equianalgesic conversion with MME and CDC risk thresholds |
-| `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data; quarterly monitoring for ND HHS updates |
+| `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data |
 | `sepsis/` | Sepsis Screening | qSOFA + SOFA scoring |
 | `wound/` | Wound Classification & Tetanus | Wound classification and tetanus prophylaxis guide |
 | `lookup/` | Code & Drug Lookup | ICD-10, RxTerms, LOINC live search via NLM Clinical Tables API |
 | `drugref/` | Drug Reference | FDA drug labels and recall search via openFDA |
 | `peds/` | Pediatric Dosing | Broselow-style dosing card by weight or age |
-| `vaccines/` | ACIP Immunization Schedule | Full birth-to-adult schedule |
-| `screener/` | USPSTF Screener | USPSTF A/B/C preventive services by age and sex |
-| `reportable/` | ND Reportable Conditions | ND HHS reportable conditions list; quarterly monitoring for updates |
+| `screener/` | USPSTF Screener | USPSTF A/B/C preventive services by age and sex; data auto-updated weekly |
+| `reportable/` | ND Reportable Conditions | ND HHS reportable conditions list |
 
 **Shared assets:**
 - `shared.css` — CSS design tokens and base styles used by all tool apps
@@ -39,49 +39,63 @@ This repo holds all deployed files for the portal.
 
 ## Deployment
 
-The portal runs on Replit. The Express server (`artifacts/noahpac/server.mjs`) serves the SPA and all static tool subdirectories from the workspace root.
-
-```
-artifacts/noahpac/server.mjs   ← Express static server
-artifacts/noahpac/src/         ← React/Vite SPA source
-```
-
-The `main` branch reflects deployed state. Deploy via Replit's publish flow.
-
-## SPA Development
-
-The React portal shell lives in `artifacts/noahpac/`. Built with Vite + wouter + Tailwind + Radix UI. Requires Node ≥20.19.
+Served by nginx on the Linux server. The `main` branch reflects deployed state.
 
 ```bash
-cd artifacts/noahpac
-pnpm install
-pnpm dev          # local dev server
-pnpm build        # output → dist/public/
+# Deploy
+git -C /var/www/noahpac-portal pull
+
+# Force-reset (e.g. after Replit force-push to main)
+git -C /var/www/noahpac-portal reset --hard origin/main
 ```
 
-## Data Updates
+No build step required.
 
-The USPSTF screener (`screener/`) fetches live data from the Prevention TaskForce API. A weekly cron (Monday 04:17) runs `screener/update_uspstf.py`:
+## TCCC — PWA / Service Worker
 
-```bash
-USPSTF_API_KEY=yourkey python3 screener/update_uspstf.py
+`tccc/` is a Progressive Web App with a service worker (`tccc/sw.js`). The cache name must be bumped after any content change so browsers discard stale cached files:
+
+```js
+// tccc/sw.js
+const CACHE = 'tccc-v3';  // increment on each content update
 ```
 
-An API key can be requested from uspstfpda@ahrq.gov.
+Current cache version: **tccc-v3** (updated for CoTCCC 1 May 2026 guidelines).
 
-Quarterly crons (Jan/Apr/Jul/Oct 15th) monitor ND HHS sources for updates:
-- `reportable/check_updates.py` — ND reportable conditions PDF
-- `sti-guide/check_updates.py` — CDC STI guidelines page
-- `naloxone/check_updates.py` — ND HHS behavioral health data
+## Automated Data Updates
 
-All three send Pushover notifications on change.
+### Weekly
+| Script | Schedule | Description |
+|--------|----------|-------------|
+| `screener/update_uspstf.py` | Mon 04:17 | Fetches USPSTF recommendations from Prevention TaskForce API; writes to `screener/data/` (gitignored). Requires `USPSTF_API_KEY` env var. API key: request from uspstfpda@ahrq.gov |
+
+### Monthly
+| Script | Schedule | Description |
+|--------|----------|-------------|
+| `antibiogram/auto_update.py` | 1st of month 04:23 | Downloads latest ND HHS antibiogram PDFs and extracts data via Claude vision; writes to `antibiogram/data/` (gitignored). Requires `ANTHROPIC_API_KEY` |
+
+### Quarterly (Jan / Apr / Jul / Oct — 15th)
+
+All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watching. Send Pushover notifications on detected changes. Require `PUSHOVER_USER` and `PUSHOVER_TOKEN` env vars.
+
+| Script | Cron time | Watches |
+|--------|-----------|---------|
+| `reportable/check_updates.py` | 04:30 | ND HHS notifiable disease list |
+| `sti-guide/check_updates.py` | 04:45 | CDC STI guidelines page |
+| `naloxone/check_updates.py` | 05:00 | ND HHS behavioral health / overdose data |
+| `abx/check_updates.py` | 05:15 | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
+| `tccc/check_updates.py` | 05:30 | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
+| `vaccines/check_updates.py` | 05:45 | PubMed: ACIP MMWR schedule + recommendations; CDC vaccine schedule page date |
+| `sti/check_updates.py` | 06:00 | PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance; CDC STI page links |
+
+Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
 
 ## Backend Services
 
 `antibiogram/` has a server-side PDF extraction API:
 
 - **Service:** `antibiogram-api.service` (systemd, runs as www-data on 127.0.0.1:8765)
-- **Source:** `/var/www/antibiogram/api_server.py` + `pdf_to_js.py`
+- **Source:** `antibiogram/api_server.py`
 - **Config:** `/etc/antibiogram-api.env` (holds `ANTHROPIC_API_KEY`)
 - **Nginx:** proxied at `/antibiogram/api/`
 
@@ -94,7 +108,7 @@ Used by the import panel to extract facility data from ND HHS antibiogram PDFs v
 | `lookup/` | [NLM Clinical Tables](https://clinicaltables.nlm.nih.gov/) |
 | `drugref/` | [openFDA](https://open.fda.gov/) |
 | `screener/` | [USPSTF Prevention TaskForce](https://www.uspreventiveservicestaskforce.org/apps/api.jsp) |
-| `antibiogram/` | [Anthropic Claude](https://console.anthropic.com/) (server-side only, via API key) |
+| `antibiogram/` | [Anthropic Claude](https://console.anthropic.com/) (server-side only) |
 
 All other tools are fully offline — no external requests at runtime.
 
