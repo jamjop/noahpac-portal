@@ -24,7 +24,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;padding:9px 18px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.seg button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
 .seg button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .flags{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
 .flags summary{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ok);cursor:pointer;user-select:none}
