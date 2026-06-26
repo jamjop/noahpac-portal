@@ -86,6 +86,37 @@ const SITES = [
       {name:"Ertapenem",        dose:"1 g IV q24h",         note:"Once-daily option; no Pseudomonas coverage"},
     ]
   },
+  {
+    id:"prostatitis", label:"Prostatitis (acute bacterial)",
+    orgs:["E. coli","Klebsiella pneumoniae","Proteus mirabilis","Enterococcus faecalis"],
+    regimens:[
+      {name:"Ciprofloxacin",    dose:"500 mg PO BID × 4–6 wk",        note:"First-line; excellent prostate penetration — check local E. coli susceptibility", abx:"cip"},
+      {name:"Levofloxacin",     dose:"500 mg PO QD × 4–6 wk",         note:"First-line alternative; once-daily dosing", abx:"lvx"},
+      {name:"TMP-SMX",          dose:"160/800 mg PO BID × 4–6 wk",    note:"Use only if susceptibility confirmed; inferior prostate penetration vs. fluoroquinolones", abx:"sxt"},
+      {name:"Ceftriaxone",      dose:"1–2 g IV q24h → oral step-down", note:"Initial IV for septic presentation; step down once afebrile and improving", abx:"cro"},
+    ]
+  },
+  {
+    id:"osteomyelitis", label:"Osteomyelitis / Septic Arthritis",
+    orgs:["Staph aureus (MSSA)","Staph aureus (MRSA)"],
+    regimens:[
+      {name:"Nafcillin / Oxacillin", dose:"1.5–2 g IV q4h",                       note:"MSSA definitive therapy; superior to vancomycin for MSSA — de-escalate if cultures confirm MSSA", abx:"oxa"},
+      {name:"Cefazolin",             dose:"1–2 g IV q8h",                          note:"MSSA alternative; better tolerated than nafcillin", abx:"cfz"},
+      {name:"Vancomycin",            dose:"15–20 mg/kg IV q8–12h (AUC-guided)",   note:"Empiric if MRSA risk or pending cultures; definitive therapy for MRSA", abx:"van"},
+      {name:"TMP-SMX",               dose:"160/800 mg PO BID (step-down)",         note:"Oral step-down for MRSA osteomyelitis; good bone penetration — use if susceptible", abx:"sxt"},
+      {name:"Doxycycline",           dose:"100 mg PO BID (step-down)",             note:"Oral MRSA alternative; similar efficacy to TMP-SMX for step-down therapy", abx:"dox"},
+    ]
+  },
+  {
+    id:"biliary", label:"Biliary / Cholangitis",
+    orgs:["E. coli","Klebsiella pneumoniae","Enterococcus faecalis"],
+    regimens:[
+      {name:"Ceftriaxone",                 dose:"1–2 g IV q24h",                              note:"Mild–moderate (Tokyo Grade I–II); adequate GNR coverage", abx:"cro"},
+      {name:"Ceftriaxone + Metronidazole", dose:"1–2 g IV q24h + Metro 500 mg IV q8h",       note:"Add metronidazole if anaerobic risk (biliary-enteric anastomosis, obstruction)", abx:"cro"},
+      {name:"Pip/Tazobactam",              dose:"3.375–4.5 g IV q6h",                         note:"Moderate–severe; broad GNR + anaerobic coverage; add vancomycin if Enterococcus suspected", abx:"ptz"},
+      {name:"Meropenem",                   dose:"1 g IV q8h",                                 note:"Severe (Tokyo Grade III); resistant organisms, healthcare-associated, or prior biliary instrumentation", abx:"mem"},
+    ]
+  },
 ];
 
 let selectedSite     = SITES[0].id;
