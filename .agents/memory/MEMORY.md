@@ -1,2 +1,0 @@
-- [Service worker cache busting](sw-cache-busting.md) — bump CACHE version in sw.js with every deployment or live site won't update.
-- [Artifacts Rebuild Plan](artifacts-rebuild-plan.md) — plan to restore pnpm-workspace.yaml + artifacts/noahpac/ cleanly, no duplicate files, saved for a future session.

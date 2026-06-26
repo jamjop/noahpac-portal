@@ -1,8 +1,0 @@
-uploads = []
-generated = []
-
-[[outputs]]
-id = "uVfnYhTTTNHlP1lzMzw0_"
-uri = "file://apple-touch-icon.png"
-type = "image"
-title = "App Icon (180×180)"
