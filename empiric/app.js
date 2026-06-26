@@ -173,25 +173,21 @@ function render() {
   const orgData = selectedOrg ? facInfo?.data?.[selectedOrg] : null;
 
   const rows = site.regimens.map(r => {
-    let localCell = "";
+    let resistVal = `<span class="susc-na">—</span>`;
     if (orgData && r.abx) {
       const val = getSusc(selectedOrg, r.abx);
-      const rendered = val !== undefined ? resistCell(val) : `<span class="susc-na">—</span>`;
-      localCell = `<td class="susc-col">${rendered}</td>`;
-    } else if (orgData) {
-      localCell = `<td class="susc-col susc-na">—</td>`;
+      resistVal = val !== undefined ? resistCell(val) : `<span class="susc-na">—</span>`;
     }
     return `
       <tr>
         <td class="reg-name">${r.name}</td>
         <td class="reg-dose">${r.dose}</td>
-        ${orgData ? localCell : ""}
+        <td class="susc-col">${resistVal}</td>
         <td class="reg-note">${r.note}</td>
       </tr>`;
   }).join("");
 
-  const localHeader = orgData
-    ? `<th class="susc-col">Local %R<br><span class="susc-src">${selectedOrg}</span></th>` : "";
+  const orgLabel = orgData ? selectedOrg : "select organism ↑";
 
   document.getElementById("result-area").innerHTML = `
     <div class="result-card">
@@ -202,19 +198,19 @@ function render() {
           <thead><tr>
             <th>Regimen</th>
             <th>Typical dose</th>
-            ${localHeader}
+            <th class="susc-col">Local %R<br><span class="susc-src">${orgLabel}</span></th>
             <th>Notes</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
-      ${orgData ? `<div class="legend-row">
+      <div class="legend-row">
         <span class="susc-hi">≤10%</span> low resistance &nbsp;·&nbsp;
         <span class="susc-mid">11–30%</span> moderate &nbsp;·&nbsp;
         <span class="susc-lo">&gt;30%</span> high resistance &nbsp;·&nbsp;
         <span class="susc-nr">~</span> not recommended &nbsp;·&nbsp;
-        <span class="susc-na">—</span> not tested at this facility
-      </div>` : ""}
+        <span class="susc-na">—</span> not tested / select organism
+      </div>
     </div>`;
 }
 
