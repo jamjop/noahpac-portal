@@ -41,20 +41,41 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
+# -----------------------------------------------------------------------
+# Replit-only — everything below stays on disk for the dev environment
+# but is NOT needed for nginx hosting and must not be in the git repo.
+# -----------------------------------------------------------------------
 
-# Replit — files stay on disk for preview/workflows but are not tracked
+# Replit platform config
+.replit
+.replitignore
+.npmrc
+
+# Replit dev environment
 .agents/
 .cache/
 .local/
-artifacts/
 replit.md
+
+# Replit workspace infrastructure (pnpm monorepo, TypeScript config)
+artifacts/
+lib/
+scripts/
+package.json
+tsconfig.base.json
+tsconfig.json
 pnpm-workspace.yaml
 pnpm-lock.yaml
 
-# Replit dev server — local only, not part of the project
+# Replit dev server
 server.js
+
+# Replit file attachments
+attached_assets/
+
+# Cursor/GitHub Copilot AI rules (Replit-generated, not nginx content)
+.cursor/
+.github/
 
 # Live data files — written by cron jobs, not source
 screener/data/
