@@ -1,4 +1,7 @@
-/* ACIP Immunization Schedule — 2026 */
+/* ACIP Immunization Schedule — 2026
+   Updated 2026-06-26: clesrovimab (Enwina) infant RSV added (ACIP 2025, PMID 40880502);
+   JYNNEOS mpox added (ACIP 2023, PMID 40531798); Penbraya source updated (PMID 41505372);
+   influenza ≥65 high-dose/adjuvanted preference added (ACIP 2025-26, PMID 40879559). */
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -73,9 +76,17 @@ const VACCINES = [
     id:"flu", name:"Influenza", abbr:"Flu",
     routine:{min:6,max:99*12},
     doses:"Annual", freq:"annually (≥6 months)",
-    detail:"Annual vaccination for everyone ≥6 months. Children 6 months–8 years receiving influenza vaccine for the first time need 2 doses ≥4 weeks apart.",
+    detail:"Annual vaccination for everyone ≥6 months. Children 6 months–8 years receiving influenza vaccine for the first time need 2 doses ≥4 weeks apart. Adults ≥65: high-dose (Fluzone HD) or adjuvanted (FLUAD) IIV4 preferentially recommended over standard-dose (ACIP 2025–26).",
     requires:[], sexSpecific:null,
-    conditionExtra:[{conds:["pregnant"], note:"Inactivated influenza vaccine preferred in pregnancy"}],
+    conditionExtra:[{conds:["pregnant"], note:"Inactivated influenza vaccine (IIV) — not LAIV — in pregnancy"}],
+  },
+  {
+    id:"rsv_infant", name:"RSV Immunoprophylaxis — Infant", abbr:"RSV-mAb",
+    routine:{min:0,max:7},
+    doses:"1 dose", freq:"birth – 7 months (first RSV season)",
+    detail:"Nirsevimab (Beyfortus, ACIP 2023) or clesrovimab (Enwina, ACIP 2025) recommended for all infants ≤7 months entering their first RSV season. Single IM dose before or at start of RSV season (typically Oct–Nov in ND). Children 8–19 months at high risk for severe RSV disease (chronic lung disease of prematurity, hemodynamically significant CHD, severe immunocompromise) may receive a dose in their second RSV season.",
+    requires:[], sexSpecific:null,
+    conditionExtra:[{conds:["immunocompromised","lungDz","heartDz"], note:"High-risk: second-season dose may be indicated (ages 8–19 months)"}],
   },
   /* ── School age / adolescent ── */
   {
@@ -132,10 +143,10 @@ const VACCINES = [
   {
     id:"menabcwy", name:"Meningococcal ABCWY (Penbraya)", abbr:"MenABCWY",
     routine:{min:16*12,max:23*12},
-    doses:"2 doses", freq:"Option when both MenACWY + MenB desired (16–23 yr)",
-    detail:"Penbraya (MenABCWY) is a pentavalent vaccine covering serogroups A, B, C, W, and Y in a single injection. ACIP 2026: may be used in place of separate MenACWY + MenB doses when both are indicated or desired at the same visit for patients aged 16–23. For high-risk patients (asplenia, complement deficiency) requiring both vaccines, Penbraya is an option at any age ≥16.",
+    doses:"2 doses", freq:"Option when both MenACWY + MenB indicated (≥10 yr)",
+    detail:"Penbraya (GSK MenACWY-CRM/MenB-4C) covers serogroups A, B, C, W, and Y in a single injection. ACIP 2025 (MMWR 2026 Jan; PMID 41505372): option for persons ≥10 years when both MenACWY and MenB are indicated or desired at the same visit. For routine healthy adolescents, applies to the 16–23-year shared-decision MenB window. For high-risk patients (asplenia, complement deficiency) requiring both vaccines, an option from age 10.",
     requires:[], sexSpecific:null,
-    conditionExtra:[{conds:["asplenia","immunocompromised"], note:"Option instead of separate MenACWY + MenB when both vaccines are indicated"}],
+    conditionExtra:[{conds:["asplenia","immunocompromised"], note:"Option from age 10 instead of separate MenACWY + MenB when both vaccines are indicated"}],
   },
   /* ── Adult ── */
   {
@@ -147,11 +158,20 @@ const VACCINES = [
     conditionExtra:[{conds:["immunocompromised","hiv"], note:"Recommended from age 19 with immunocompromising conditions"}],
   },
   {
-    id:"rsv", name:"RSV (Respiratory Syncytial Virus)", abbr:"RSV",
+    id:"rsv", name:"RSV Vaccine — Adult", abbr:"RSV",
     routine:{min:60*12,max:99*12},
     doses:"1 dose", freq:"single dose (shared decision ≥60 yr)",
-    detail:"Shared clinical decision-making for adults ≥60. RSV vaccine (Abrysvo, Arexvy, or mResvia) provides protection against severe RSV disease.",
+    detail:"Shared clinical decision-making for adults ≥60. RSV vaccine (Abrysvo, Arexvy, or mResvia) provides protection against severe RSV lower respiratory tract disease. Annual revaccination not currently recommended.",
     requires:[], sexSpecific:null, conditionExtra:[],
+  },
+  {
+    id:"mpox", name:"Mpox (JYNNEOS)", abbr:"JYNNEOS",
+    routine:{min:18*12,max:99*12},
+    adultIfCondition:true,
+    doses:"2 doses", freq:"2-dose series (28 days apart)",
+    detail:"JYNNEOS (Imvamune) for pre-exposure prophylaxis against mpox in adults at increased risk. ACIP 2023 (PMID 40531798): recommended for MSM with multiple or anonymous partners, transgender/gender-diverse people who have sex with men, sex workers, and others at risk. 2-dose subcutaneous or intradermal series; intradermal (0.1 mL) is dose-sparing. Also indicated post-exposure within 4 days of contact.",
+    requires:[], sexSpecific:null,
+    conditionExtra:[{conds:["msm","hiv"], note:"Pre-exposure prophylaxis recommended — MSM with multiple partners or HIV+ at risk for mpox"}],
   },
   {
     id:"ppsv23", name:"Pneumococcal Polysaccharide (PPSV23)", abbr:"PPSV23",
