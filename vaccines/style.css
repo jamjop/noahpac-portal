@@ -7,6 +7,7 @@
 body{padding-bottom:50px;min-height:0}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px}
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px}
+header{background:var(--purple);border-top:none}
 .eyebrow{font-size:10px;color:rgba(255,255,255,.65)}
 h1{font-size:clamp(22px,4.5vw,30px);margin:4px 0;color:#fff}
 .back{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:4px;gap:4px}
@@ -21,13 +22,13 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;padding:9px 18px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.seg button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
 .seg button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 
 .age-input-row{display:flex;align-items:stretch;gap:8px}
 .unit-toggle{display:flex;border:1.5px solid var(--line);border-radius:var(--r-sm);overflow:hidden;background:var(--bg)}
 .unit-toggle button{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:0 14px;min-width:44px;border:none;background:transparent;color:var(--ink-muted);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em}
-.unit-toggle button.active{background:var(--ink);color:#fff}
+.unit-toggle button.active{background:var(--purple);color:#fff}
 .unit-toggle button:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
 
 .flags{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
