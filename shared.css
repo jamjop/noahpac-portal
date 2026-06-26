@@ -136,5 +136,5 @@ h1{
     --sh-lg:0 4px 16px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.25);
   }
   .err{color:#fca5a5}
-  .app-header,header{box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .app-header,header{box-shadow:0 2px 8px rgba(0,0,0,.4);border-top-color:transparent}
 }
