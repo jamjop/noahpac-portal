@@ -144,11 +144,12 @@ let selectedSite     = SITES[0].id;
 let selectedOrg      = null;
 let selectedFacility = 'trinity';
 
-function suscCell(val) {
+function resistCell(val) {
   if (val === null || val === undefined) return "";
   if (val === "nr") return `<span class="susc-nr">~</span>`;
-  const cls = val>=90?"susc-hi":val>=70?"susc-mid":"susc-lo";
-  return `<span class="${cls}">${val}%</span>`;
+  const r = 100 - val;
+  const cls = r<=10?"susc-hi":r<=30?"susc-mid":"susc-lo";
+  return `<span class="${cls}">${r}%</span>`;
 }
 
 function getSusc(org, abxKey) {
@@ -175,7 +176,7 @@ function render() {
     let localCell = "";
     if (orgData && r.abx) {
       const val = getSusc(selectedOrg, r.abx);
-      const rendered = val !== undefined ? suscCell(val) : `<span class="susc-na">—</span>`;
+      const rendered = val !== undefined ? resistCell(val) : `<span class="susc-na">—</span>`;
       localCell = `<td class="susc-col">${rendered}</td>`;
     } else if (orgData) {
       localCell = `<td class="susc-col susc-na">—</td>`;
@@ -190,12 +191,12 @@ function render() {
   }).join("");
 
   const localHeader = orgData
-    ? `<th class="susc-col">Local %S<br><span class="susc-src">${selectedOrg}</span></th>` : "";
+    ? `<th class="susc-col">Local %R<br><span class="susc-src">${selectedOrg}</span></th>` : "";
 
   document.getElementById("result-area").innerHTML = `
     <div class="result-card">
       <div class="result-head">${site.label}</div>
-      ${orgData ? `<div class="susc-note">Local susceptibility: <strong>${selectedOrg}</strong> · ${facInfo.label}</div>` : ""}
+      ${orgData ? `<div class="susc-note">Local resistance rates: <strong>${selectedOrg}</strong> · ${facInfo.label}</div>` : ""}
       <div class="tbl-wrap">
         <table class="reg-tbl">
           <thead><tr>
@@ -208,9 +209,9 @@ function render() {
         </table>
       </div>
       ${orgData ? `<div class="legend-row">
-        <span class="susc-hi">≥90%</span> high &nbsp;·&nbsp;
-        <span class="susc-mid">70–89%</span> intermediate &nbsp;·&nbsp;
-        <span class="susc-lo">&lt;70%</span> low &nbsp;·&nbsp;
+        <span class="susc-hi">≤10%</span> low resistance &nbsp;·&nbsp;
+        <span class="susc-mid">11–30%</span> moderate &nbsp;·&nbsp;
+        <span class="susc-lo">&gt;30%</span> high resistance &nbsp;·&nbsp;
         <span class="susc-nr">~</span> not recommended &nbsp;·&nbsp;
         <span class="susc-na">—</span> not tested at this facility
       </div>` : ""}
