@@ -22,38 +22,64 @@ EUTILS_BASE  = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 STATE_FILE   = Path(__file__).resolve().parent / "known_pmids.json"
 ABX_URL      = "https://noahpac.com/abx/"
 
-# Each entry targets one source cited in the abx reference page.
-# reldate: how many past days to search (use 400 to safely cover a quarter + margin).
+# Each entry targets one source cited in the abx reference pages (data/*.js).
+# reldate: how many past days to search (400 safely covers a quarter + margin).
 SEARCHES = [
+
+    # ── Infectious Disease / General ────────────────────────────────────────
     {
-        'id':      'idsa',
+        'id':      'idsa_general',
         'name':    'IDSA Practice Guidelines',
         'query':   '"Infectious Diseases Society of America" AND guideline[pt]',
         'reldate': 400,
     },
     {
-        'id':      'shea',
+        'id':      'shea_cdi',
         'name':    'SHEA / CDI Guidelines',
         'query':   '"Society for Healthcare Epidemiology of America" AND guideline[pt]',
         'reldate': 400,
     },
+    {
+        'id':      'idsa_bone',
+        'name':    'IDSA Bone & Joint Guidelines',
+        'query':   '"Infectious Diseases Society of America" AND (osteomyelitis OR "prosthetic joint" OR "septic arthritis" OR "bone and joint") AND (guideline[pt] OR update[ti] OR revision[ti])',
+        'reldate': 400,
+    },
+    {
+        'id':      'idsa_tick',
+        'name':    'IDSA Tick-borne Disease Guidelines (Lyme, Babesia)',
+        'query':   '"Infectious Diseases Society of America" AND (Lyme OR babesiosis OR Borrelia OR "tick-borne") AND (guideline[pt] OR update[ti])',
+        'reldate': 730,
+    },
+    {
+        'id':      'escmid',
+        'name':    'ESCMID / European ID Guidelines',
+        'query':   '"European Society of Clinical Microbiology and Infectious Diseases" AND guideline[pt]',
+        'reldate': 400,
+    },
+
+    # ── Sepsis / Critical Care ──────────────────────────────────────────────
     {
         'id':      'ssc',
         'name':    'Surviving Sepsis Campaign',
         'query':   '"Surviving Sepsis Campaign" AND (guideline OR recommendation OR update)[ti]',
         'reldate': 400,
     },
+
+    # ── Pulmonary / Respiratory ─────────────────────────────────────────────
     {
-        'id':      'wses',
-        'name':    'WSES Intra-abdominal Guidelines',
-        'query':   '"World Society of Emergency Surgery" AND (intra-abdominal OR peritonitis OR infection) AND guideline[pt]',
+        'id':      'ats_resp',
+        'name':    'ATS/IDSA Respiratory Guidelines (CAP/HAP/COPD)',
+        'query':   '("American Thoracic Society" OR "IDSA") AND (pneumonia OR "community-acquired" OR "hospital-acquired" OR "ventilator-associated" OR COPD) AND guideline[pt]',
         'reldate': 400,
     },
+
+    # ── GI / Hepatology ─────────────────────────────────────────────────────
     {
-        'id':      'aap_aom',
-        'name':    'AAP Otitis Media',
-        'query':   '"American Academy of Pediatrics" AND "otitis media" AND guideline[pt]',
-        'reldate': 730,
+        'id':      'idsa_gi',
+        'name':    'IDSA GI / C. diff Guidelines',
+        'query':   '"Infectious Diseases Society of America" AND ("Clostridium difficile" OR "Clostridioides difficile" OR "intra-abdominal" OR diarrhea) AND guideline[pt]',
+        'reldate': 400,
     },
     {
         'id':      'acg_pylori',
@@ -62,22 +88,98 @@ SEARCHES = [
         'reldate': 400,
     },
     {
-        'id':      'ats_resp',
-        'name':    'ATS/IDSA Respiratory Guidelines (CAP/COPD)',
-        'query':   '("American Thoracic Society" OR "IDSA") AND (pneumonia OR "community-acquired" OR COPD) AND guideline[pt]',
-        'reldate': 400,
-    },
-    {
         'id':      'aga_gi',
-        'name':    'AGA / GI Guidelines',
+        'name':    'AGA Gastrointestinal Guidelines',
         'query':   '"American Gastroenterological Association" AND guideline[pt]',
         'reldate': 400,
     },
     {
-        'id':      'idsa_uti',
-        'name':    'IDSA UTI / SSTI Guidelines',
-        'query':   '"Infectious Diseases Society of America" AND (urinary tract OR skin OR "soft tissue") AND guideline[pt]',
+        'id':      'aasld_sbp',
+        'name':    'AASLD Liver Disease / SBP Guidelines',
+        'query':   '"American Association for the Study of Liver Diseases" AND (peritonitis OR cirrhosis OR ascites OR "liver disease") AND (guideline[pt] OR practice guideline[pt])',
         'reldate': 400,
+    },
+    {
+        'id':      'wses_biliary',
+        'name':    'WSES / Tokyo Guidelines — Biliary & Intra-abdominal',
+        'query':   '("World Society of Emergency Surgery" OR "Tokyo Guidelines") AND (cholangitis OR cholecystitis OR "intra-abdominal" OR peritonitis) AND (guideline[pt] OR update[ti])',
+        'reldate': 730,
+    },
+
+    # ── GU / STI ────────────────────────────────────────────────────────────
+    {
+        'id':      'idsa_uti',
+        'name':    'IDSA UTI / GU Guidelines',
+        'query':   '"Infectious Diseases Society of America" AND ("urinary tract" OR pyelonephritis OR prostatitis) AND guideline[pt]',
+        'reldate': 400,
+    },
+    {
+        'id':      'cdc_sti',
+        'name':    'CDC STI Treatment Guidelines',
+        'query':   '"Centers for Disease Control" AND ("sexually transmitted" OR gonorrhea OR chlamydia OR "pelvic inflammatory" OR vaginosis OR trichomoniasis) AND (guideline[pt] OR recommendation[ti] OR update[ti])',
+        'reldate': 400,
+    },
+
+    # ── Skin & Soft Tissue ──────────────────────────────────────────────────
+    {
+        'id':      'idsa_ssti',
+        'name':    'IDSA SSTI Guidelines (Cellulitis, Abscess, NF)',
+        'query':   '"Infectious Diseases Society of America" AND ("skin and soft tissue" OR cellulitis OR abscess OR "necrotizing fasciitis") AND guideline[pt]',
+        'reldate': 400,
+    },
+    {
+        'id':      'iwgdf',
+        'name':    'IWGDF Diabetic Foot Guidelines',
+        'query':   '"International Working Group on the Diabetic Foot" AND (guideline[pt] OR update[ti] OR recommendation[ti])',
+        'reldate': 730,
+    },
+
+    # ── ENT ─────────────────────────────────────────────────────────────────
+    {
+        'id':      'aap_aom',
+        'name':    'AAP Otitis Media / Pediatric ENT Guidelines',
+        'query':   '"American Academy of Pediatrics" AND ("otitis media" OR rhinosinusitis OR pharyngitis) AND guideline[pt]',
+        'reldate': 730,
+    },
+    {
+        'id':      'aaoHNS',
+        'name':    'AAO-HNS ENT Guidelines',
+        'query':   '"American Academy of Otolaryngology" AND (guideline[pt] OR "clinical practice guideline"[ti])',
+        'reldate': 400,
+    },
+    {
+        'id':      'idsa_sinusitis',
+        'name':    'IDSA Sinusitis / ENT Guidelines',
+        'query':   '"Infectious Diseases Society of America" AND (sinusitis OR pharyngitis OR "upper respiratory") AND guideline[pt]',
+        'reldate': 730,
+    },
+
+    # ── Cardiac / Endocarditis ──────────────────────────────────────────────
+    {
+        'id':      'aha_endocarditis',
+        'name':    'AHA / ACC Endocarditis & Cardiac Infection Guidelines',
+        'query':   '("American Heart Association" OR "American College of Cardiology") AND (endocarditis OR pericarditis OR "infective endocarditis") AND (guideline[pt] OR statement[pt] OR update[ti])',
+        'reldate': 400,
+    },
+    {
+        'id':      'esc_cardiac',
+        'name':    'ESC Endocarditis / Cardiac Infection Guidelines',
+        'query':   '"European Society of Cardiology" AND (endocarditis OR pericarditis) AND (guideline[pt] OR update[ti])',
+        'reldate': 400,
+    },
+
+    # ── CNS ─────────────────────────────────────────────────────────────────
+    {
+        'id':      'idsa_cns',
+        'name':    'IDSA CNS Infection Guidelines (Meningitis, Brain Abscess, Encephalitis)',
+        'query':   '"Infectious Diseases Society of America" AND (meningitis OR encephalitis OR "brain abscess" OR "spinal epidural abscess") AND guideline[pt]',
+        'reldate': 730,
+    },
+    {
+        'id':      'escmid_cns',
+        'name':    'ESCMID CNS Infection Guidelines',
+        'query':   '"European Society of Clinical Microbiology and Infectious Diseases" AND (meningitis OR encephalitis OR "brain abscess") AND (guideline[pt] OR update[ti])',
+        'reldate': 730,
     },
 ]
 
@@ -224,7 +326,7 @@ def main() -> int:
             lines.append(f'  PMID {m["pmid"]}')
         lines.append('')
 
-    lines.append('Review and update /var/www/noahpac-portal/abx/app.js if regimens changed.')
+    lines.append('Update the relevant file in /var/www/noahpac-portal/abx/data/ if regimens changed.')
     message = '\n'.join(lines)
 
     print(message)
