@@ -87,6 +87,16 @@ function flags() {
 
 function sexMatch(recSex, patientSex){ return recSex === "any" || recSex === patientSex; }
 
+// For female patients: if a female-specific rec exists for a topic, suppress the sex:"any" rec for the same topic.
+// Topic = text before " -- " (API data) or full name (built-in data, no duplicates).
+function dedupForSex(recs) {
+  if (state.sex !== "female") return recs;
+  const femaleTopics = new Set(
+    recs.filter(r => r.sex === "female").map(r => r.name.split(" -- ")[0])
+  );
+  return recs.filter(r => r.sex !== "any" || !femaleTopics.has(r.name.split(" -- ")[0]));
+}
+
 function render() {
   const age = Math.max(0, Math.min(110, parseInt(els.age.value || "0", 10)));
   const f = flags();
@@ -103,6 +113,14 @@ function render() {
     const unmet = req.filter(k => !f[k]);
     if (unmet.length === 0) firm.push(r);
     else conditional.push({ rec: r, unmet });
+  }
+  if (state.sex === "female") {
+    const femaleTopics = new Set(
+      [...firm, ...conditional.map(x=>x.rec)].filter(r=>r.sex==="female").map(r=>r.name.split(" -- ")[0])
+    );
+    const ok = r => r.sex !== "any" || !femaleTopics.has(r.name.split(" -- ")[0]);
+    firm.splice(0, firm.length, ...firm.filter(ok));
+    conditional.splice(0, conditional.length, ...conditional.filter(({rec})=>ok(rec)));
   }
   const order = {A:0,B:1,C:2};
   firm.sort((a,b)=>(order[a.grade]??3)-(order[b.grade]??3));
@@ -165,6 +183,10 @@ function buildText() {
     const unmet = (r.requires || []).filter(k => !f[k]);
     if (unmet.length === 0) firm.push(r);
     else conditional.push({ rec: r, unmet });
+  }
+  if (state.sex === "female") {
+    const femaleTopics = new Set(firm.filter(r=>r.sex==="female").map(r=>r.name.split(" -- ")[0]));
+    firm.splice(0, firm.length, ...firm.filter(r => r.sex!=="any" || !femaleTopics.has(r.name.split(" -- ")[0])));
   }
   firm.sort((a,b)=>({A:0,B:1,C:2}[a.grade]??3)-({A:0,B:1,C:2}[b.grade]??3));
 
