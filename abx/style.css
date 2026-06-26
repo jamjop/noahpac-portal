@@ -43,7 +43,7 @@
   transition:background .12s,color .12s;margin-bottom:1px
 }
 .tab-btn:hover{background:var(--purple-soft);color:var(--purple)}
-.tab-btn.active{background:var(--purple-soft);color:var(--purple);font-weight:700}
+.tab-btn.active{background:var(--purple-soft);color:var(--purple);font-weight:600}
 
 @media(max-width:799px){
   .nav-section-hdr{font-size:10px;padding:8px 10px}
@@ -61,7 +61,7 @@
 @media(max-width:560px){.pane{padding:16px 16px 50px}}
 
 .abx-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);font-weight:600}
-.abx-title{font-size:clamp(18px,3vw,22px);font-weight:800;line-height:1.1;margin:4px 0 2px}
+.abx-title{font-size:clamp(18px,3vw,22px);font-weight:600;line-height:1.1;margin:4px 0 2px}
 .abx-organism{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-muted);margin-bottom:6px;font-style:italic}
 .abx-source{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink-muted);margin-bottom:20px}
 
@@ -73,7 +73,7 @@
 .drugs{display:flex;flex-direction:column;gap:8px}
 .drug{background:var(--surface);border-radius:var(--r-sm);padding:11px 14px;box-shadow:var(--sh)}
 .drug.fl{box-shadow:0 0 0 2px var(--ok),var(--sh)}
-.drug-name{font-weight:700;font-size:13.5px}
+.drug-name{font-weight:600;font-size:13.5px}
 .drug-dose{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;margin-top:4px;color:var(--ink);line-height:1.5}
 .drug-note{font-size:12px;color:var(--ink-soft);margin-top:4px;font-style:italic}
 
