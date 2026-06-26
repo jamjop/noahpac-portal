@@ -24,6 +24,25 @@ DIR = Path(__file__).resolve().parent
 LIVE_DIR = Path("/var/www/noahpac-portal/antibiogram")
 REPO_DIR = LIVE_DIR
 
+ANTIBIOGRAM_URL = "https://noahpac.com/antibiogram/"
+REPORT_PREFIX   = "antibiogram-report"
+
+
+def _write_report_result(status: str, findings: list) -> None:
+    import datetime as _dt
+    report_file = Path(f"/tmp/{REPORT_PREFIX}-{_dt.date.today()}.json")
+    try:
+        existing = json.loads(report_file.read_text()) if report_file.exists() else []
+        existing.append({
+            'app_id': 'antibiogram', 'app_name': 'ND Antibiogram',
+            'app_url': ANTIBIOGRAM_URL, 'status': status, 'findings': findings,
+            'ran_at': _dt.datetime.now().isoformat(timespec='minutes'),
+        })
+        report_file.write_text(json.dumps(existing, indent=2))
+    except Exception as exc:
+        print(f"WARNING: could not write report: {exc}", file=sys.stderr)
+
+
 PAGE_URL = (
     "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/"
     "antibiotic-resistance-and-antimicrobial-stewardship/"
@@ -254,6 +273,7 @@ def main() -> int:
     if not to_update:
         print(f"No facility updates needed ({date.today()})")
         save_state(current)
+        _write_report_result('no_change', [])
         return 0
 
     updated_names = []
@@ -277,6 +297,9 @@ def main() -> int:
     if not updated_names:
         print("All extractions failed — not rebuilding app.js")
         save_state(current)
+        _write_report_result('error', [
+            {'detail': f"Extraction failed for: {', '.join(failed_names)}"}
+        ])
         return 1
 
     # Rebuild app.js
@@ -323,6 +346,11 @@ def main() -> int:
     msg = f"{len(updated_names)} facility antibiogram(s) updated:\n" + "\n".join(lines)
     push_notify(pushover_user, pushover_token, "ND Antibiogram Auto-Updated", msg)
     print("Pushover notification sent.")
+
+    findings = [{'detail': f"Updated: {n}"} for n in updated_names]
+    if failed_names:
+        findings.append({'detail': f"Extraction failed: {', '.join(failed_names)}"})
+    _write_report_result('changed' if not failed_names else 'error', findings)
 
     save_state(current)
     return 0

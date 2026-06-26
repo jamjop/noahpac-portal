@@ -30,8 +30,25 @@ import urllib.request
 from datetime import date
 from pathlib import Path
 
-API_URL = "https://data.uspreventiveservicestaskforce.org/api/json"
-KEEP_GRADES = {"A", "B", "C"}
+API_URL       = "https://data.uspreventiveservicestaskforce.org/api/json"
+KEEP_GRADES   = {"A", "B", "C"}
+SCREENER_URL  = "https://noahpac.com/screener/"
+REPORT_PREFIX = "uspstf-report"
+
+
+def _write_report_result(status: str, findings: list) -> None:
+    import datetime as _dt
+    report_file = Path(f"/tmp/{REPORT_PREFIX}-{_dt.date.today()}.json")
+    try:
+        existing = json.loads(report_file.read_text()) if report_file.exists() else []
+        existing.append({
+            'app_id': 'uspstf', 'app_name': 'USPSTF Screener',
+            'app_url': SCREENER_URL, 'status': status, 'findings': findings,
+            'ran_at': _dt.datetime.now().isoformat(timespec='minutes'),
+        })
+        report_file.write_text(json.dumps(existing, indent=2))
+    except Exception as exc:
+        print(f"WARNING: could not write report: {exc}", file=sys.stderr)
 
 # Map API flag fields -> the app's risk-factor flag ids
 FLAG_MAP = {
@@ -171,7 +188,11 @@ def main() -> int:
     os.chmod(tmp, 0o644)
     os.replace(tmp, out_path)
 
-    print(f"OK: wrote {data['meta']['count']} recommendations -> {out_path}")
+    count = data['meta']['count']
+    print(f"OK: wrote {count} recommendations -> {out_path}")
+    _write_report_result('no_change', [
+        {'detail': f"Refreshed {count} A/B/C-grade USPSTF recommendations from Prevention TaskForce API"},
+    ])
     return 0
 
 
@@ -180,4 +201,5 @@ if __name__ == "__main__":
         sys.exit(main())
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: {exc}", file=sys.stderr)
+        _write_report_result('error', [{'detail': str(exc)}])
         sys.exit(1)
