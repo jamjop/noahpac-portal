@@ -226,6 +226,7 @@ siteSeg.innerHTML = SITES.map(s =>
 siteSeg.querySelectorAll(".seg-btn").forEach(btn => btn.addEventListener("click", () => {
   selectedSite = btn.dataset.site;
   selectedOrg  = null;
+  siteSeg.querySelectorAll(".seg-btn").forEach(b => b.classList.toggle("active", b === btn));
   render();
 }));
 
