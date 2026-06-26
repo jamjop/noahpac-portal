@@ -63,6 +63,16 @@ h1{
 }
 .back:hover{color:var(--purple)}
 
+.update-cadence{
+  font-size:9px;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--ink-muted);
+  margin-top:5px;
+  font-weight:500;
+  opacity:.75;
+}
+
 /* ── Search on light header (higher specificity beats tool-level .tab-search) ── */
 .app-header .tab-search,header .tab-search{
   font-family:'IBM Plex Mono',monospace;
