@@ -108,6 +108,27 @@ const SITES = [
     ]
   },
   {
+    id:"meningitis", label:"Meningitis (bacterial)",
+    orgs:["Streptococcus pneumoniae"],
+    regimens:[
+      {name:"Vancomycin + Ceftriaxone",  dose:"Vanco 15–20 mg/kg IV q8–12h + Ceftriaxone 2 g IV q12h", note:"Empiric first-line for community-acquired; covers pneumococcal and meningococcal", abx:"cro"},
+      {name:"+ Ampicillin (add-on)",     dose:"2 g IV q4h",                                              note:"Add if age >50, immunocompromised, or pregnant — covers Listeria monocytogenes"},
+      {name:"Dexamethasone",             dose:"0.15 mg/kg IV q6h × 4 days",                              note:"Give before or with first antibiotic dose; reduces mortality and neurological sequelae in pneumococcal meningitis"},
+      {name:"Ceftriaxone (monotherapy)", dose:"2 g IV q12h",                                              note:"De-escalation for confirmed susceptible pneumococcal or meningococcal — discontinue vancomycin once susceptibilities return", abx:"cro"},
+    ]
+  },
+  {
+    id:"diabetic-foot", label:"Diabetic Foot Infection",
+    orgs:["Staph aureus (MSSA)","Staph aureus (MRSA)","E. coli","Klebsiella pneumoniae","Proteus mirabilis"],
+    regimens:[
+      {name:"Amox/Clavulanate",            dose:"875/125 mg PO BID × 7–14d",                            note:"Mild; Strep/MSSA + anaerobic + GNR coverage", abx:"ams"},
+      {name:"TMP-SMX",                     dose:"160/800 mg PO BID × 7–14d",                            note:"Mild–moderate with MRSA risk; add amoxicillin if Streptococcus coverage needed", abx:"sxt"},
+      {name:"Doxycycline",                 dose:"100 mg PO BID × 7–14d",                                note:"MRSA alternative for mild–moderate; less GNR coverage than TMP-SMX", abx:"dox"},
+      {name:"Vancomycin + Pip/Tazobactam", dose:"Vanco 15–20 mg/kg IV q8–12h + PipTaz 4.5 g IV q6h",   note:"Moderate–severe; MRSA + GNR + anaerobic coverage", abx:"ptz"},
+      {name:"Vancomycin + Meropenem",      dose:"Vanco + Meropenem 1 g IV q8h",                         note:"Severe or ESBL/MDR risk; prior antibiotics, osteomyelitis, or healthcare-associated infection", abx:"mem"},
+    ]
+  },
+  {
     id:"biliary", label:"Biliary / Cholangitis",
     orgs:["E. coli","Klebsiella pneumoniae","Enterococcus faecalis"],
     regimens:[
