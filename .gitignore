@@ -52,6 +52,9 @@ replit.md
 pnpm-workspace.yaml
 pnpm-lock.yaml
 
+# Replit dev server — local only, not part of the project
+server.js
+
 # Live data files — written by cron jobs, not source
 screener/data/
 antibiogram/data/
