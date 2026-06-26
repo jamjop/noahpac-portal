@@ -45,6 +45,7 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 # Replit — files stay on disk for preview/workflows but are not tracked
+.agents/
 .cache/
 .local/
 artifacts/
