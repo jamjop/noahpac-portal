@@ -55,3 +55,6 @@ pnpm-lock.yaml
 # Live data files — written by cron jobs, not source
 screener/data/
 antibiogram/data/
+**/known_pmids.json
+**/known_state.json
+**/known_files.json
