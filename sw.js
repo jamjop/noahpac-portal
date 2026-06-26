@@ -1,4 +1,4 @@
-const CACHE = 'noahpac-v10';
+const CACHE = 'noahpac-v11';
 
 const TOOLS = [
   'screener','vaccines','calculators','opioids','sti','abx',
