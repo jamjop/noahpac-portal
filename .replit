@@ -29,7 +29,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node server.js"
+args = "pnpm --filter @workspace/noahpac run dev"
 
 [agent]
 stack = "PNPM_WORKSPACE"
