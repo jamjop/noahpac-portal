@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root{
+  color-scheme: light dark;
   --bg:#f8f9fa; --surface:#ffffff; --ink:#1a1f24; --ink-soft:#4a5568;
   --ink-muted:#718096; --line:#e2e8f0; --purple:#0052cc;
   --purple-soft:#ebf2ff; --purple-mid:#93b4f0; --teal:#0891B2;
