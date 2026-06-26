@@ -44,9 +44,13 @@ Thumbs.db
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
-# Replit
+# Replit — files stay on disk for preview/workflows but are not tracked
 .cache/
 .local/
+artifacts/
+replit.md
+pnpm-workspace.yaml
+pnpm-lock.yaml
 
 # Live data files — written by cron jobs, not source
 screener/data/
