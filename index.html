@@ -382,7 +382,7 @@
           rows.forEach(r => r.classList.remove('hidden-tool'));
           cols.forEach(c => c.style.display = '');
           noResults.style.display = 'none';
-          grid.style.display = '';
+          grid.style.display = 'grid';
           return;
         }
 
@@ -401,7 +401,7 @@
         });
 
         noResults.style.display = anyVisible ? 'none' : 'block';
-        grid.style.display = anyVisible ? '' : 'none';
+        grid.style.display = anyVisible ? 'grid' : 'none';
       });
 
       // Live-update calculator count from app.js so it stays correct when new ones are added
