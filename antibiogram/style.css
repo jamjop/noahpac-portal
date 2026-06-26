@@ -19,7 +19,7 @@ h1{font-size:clamp(20px,4vw,26px);line-height:1.1;margin:4px 0}
 /* gram tabs */
 .gram-tabs{display:flex;gap:8px;margin:16px 0 12px}
 .gram-tab{font-size:12px;font-weight:600;padding:8px 18px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.gram-tab.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.gram-tab.active{background:var(--purple);border-color:var(--purple);color:#fff}
 .gram-tab:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 
 /* table wrapper */

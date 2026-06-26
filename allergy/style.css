@@ -10,7 +10,7 @@ h1{font-size:clamp(22px,4.5vw,30px);font-stretch:75%;text-transform:uppercase;li
 
 .seg{display:flex;flex-wrap:wrap;gap:5px}
 .seg-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;padding:5px 10px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
-.seg-btn.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
 .seg-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 
 .result-card{border-radius:var(--r-sm);padding:14px 16px;margin:14px 0;line-height:1.6}
