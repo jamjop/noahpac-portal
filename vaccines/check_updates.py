@@ -133,6 +133,20 @@ def save_state(state: dict) -> None:
     STATE_FILE.chmod(0o644)
 
 
+def _write_quarterly_result(app_id: str, app_name: str, app_url: str,
+                            status: str, findings: list[dict]) -> None:
+    import datetime as _dt
+    report_file = Path(f"/tmp/quarterly-report-{_dt.date.today()}.json")
+    try:
+        existing = json.loads(report_file.read_text()) if report_file.exists() else []
+        existing.append({'app_id': app_id, 'app_name': app_name, 'app_url': app_url,
+                         'status': status, 'findings': findings,
+                         'ran_at': _dt.datetime.now().isoformat(timespec='minutes')})
+        report_file.write_text(json.dumps(existing, indent=2))
+    except Exception as exc:
+        print(f"WARNING: could not write quarterly report: {exc}", file=sys.stderr)
+
+
 def push_notify(user: str, token: str, title: str, message: str) -> None:
     payload = json.dumps({
         'token':     token,
@@ -222,6 +236,7 @@ def main() -> int:
 
     if not all_new and not page_changed:
         print(f'No ACIP/vaccine schedule changes detected ({date.today()}).')
+        _write_quarterly_result('vaccines', 'ACIP Vaccine Schedules', VACCINES_URL, 'no_change', [])
         return 0
 
     lines = []
@@ -245,6 +260,15 @@ def main() -> int:
 
     print(message)
     push_notify(user, token, 'ACIP Vaccine Schedule Update', message)
+    findings = []
+    if page_changed:
+        findings.append({'detail': f"CDC vaccine schedule page date → {current_page_date}"})
+    findings.extend(
+        {'search': name, 'title': m['title'], 'pmid': m['pmid'],
+         'journal': m['journal'], 'pubdate': m['pubdate']}
+        for name, m in all_new
+    )
+    _write_quarterly_result('vaccines', 'ACIP Vaccine Schedules', VACCINES_URL, 'changed', findings)
     print('Notification sent.')
     return 0
 
