@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vaccines Due</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -22,16 +22,8 @@
 
 <div class="wrap">
   <div class="panel">
-    <div class="source-row">
-      <span class="field-label" style="margin-bottom:0">Schedule source</span>
-      <div class="seg" id="sourceSeg" role="group" aria-label="Schedule source">
-        <button data-source="acip" class="active">ACIP / CDC</button>
-        <button data-source="aap">AAP</button>
-        <button data-source="acog">ACOG</button>
-      </div>
-    </div>
-    <div class="panel-grid">
-      <div>
+    <div class="input-row">
+      <div class="input-group">
         <label class="field-label" for="age">Patient age</label>
         <div class="age-input-row">
           <input type="number" id="age" min="0" max="999" value="2" inputmode="numeric">
@@ -41,16 +33,24 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="input-group">
         <span class="field-label">Sex</span>
         <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
           <button data-sex="female" class="active">Female</button>
           <button data-sex="male">Male</button>
         </div>
       </div>
+      <div class="input-group">
+        <span class="field-label">Schedule source</span>
+        <div class="seg" id="sourceSeg" role="group" aria-label="Schedule source">
+          <button data-source="acip" class="active">ACIP</button>
+          <button data-source="aap">AAP</button>
+          <button data-source="acog">ACOG</button>
+        </div>
+      </div>
     </div>
-    <details class="flags" open>
-      <summary>Conditions (expand to refine)</summary>
+    <details class="flags">
+      <summary>Special conditions</summary>
       <div class="flag-grid" id="flagGrid">
         <label data-only="female"><input type="checkbox" id="f_pregnant"> Currently pregnant</label>
         <label><input type="checkbox" id="f_immunocompromised"> Immunocompromised (transplant, biologics, high-dose steroids)</label>
