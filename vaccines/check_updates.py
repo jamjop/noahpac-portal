@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-check_updates.py — monitor PubMed/CDC/AAP for immunization schedule updates.
+check_updates.py — monitor PubMed/CDC/AAP/ACOG for immunization schedule updates.
 
 Watches:
   ACIP / CDC
@@ -14,9 +14,14 @@ Watches:
   6. AAP influenza / LAIV guidance updates
   7. AAP immunization resources page for date changes
 
-The vaccines app now supports ACIP and AAP schedule sources; key AAP differences
-(HPV from age 9, LAIV preferred ages 2-8, MenB routine 16-23) must be reviewed
-when either schedule publishes an update.
+  ACOG
+  8. ACOG immunization committee opinions (Obstetrics & Gynecology journal)
+  9. ACOG RSV maternal vaccine / pregnancy immunization guidance
+  10. ACOG immunization for women resources page for date changes
+
+The vaccines app supports ACIP, AAP, and ACOG schedule sources. Key differences:
+  AAP: HPV from age 9, LAIV preferred ages 2-8, MenB routine 16-23
+  ACOG: RSV maternal (Abrysvo 32-36wk), Tdap 27-32wk optimal, HPV deferred in pregnancy
 
 Run quarterly via cron (Jan/Apr/Jul/Oct 15).
 
@@ -34,12 +39,13 @@ import urllib.parse
 from datetime import date
 from pathlib import Path
 
-PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
-EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-STATE_FILE    = Path(__file__).resolve().parent / "known_pmids.json"
-VACCINES_URL  = "https://noahpac.com/vaccines/"
-CDC_SCHED_URL = "https://www.cdc.gov/vaccines/schedules/"
-AAP_SCHED_URL = "https://www.aap.org/en/patient-care/immunizations/immunization-schedule-and-resources/"
+PUSHOVER_API   = "https://api.pushover.net/1/messages.json"
+EUTILS_BASE    = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+STATE_FILE     = Path(__file__).resolve().parent / "known_pmids.json"
+VACCINES_URL   = "https://noahpac.com/vaccines/"
+CDC_SCHED_URL  = "https://www.cdc.gov/vaccines/schedules/"
+AAP_SCHED_URL  = "https://www.aap.org/en/patient-care/immunizations/immunization-schedule-and-resources/"
+ACOG_IMMU_URL  = "https://www.acog.org/womens-health/immunization-for-women"
 
 SEARCHES = [
     # ── ACIP / CDC ──
@@ -80,6 +86,19 @@ SEARCHES = [
         'query':   '"American Academy of Pediatrics" AND (influenza[ti] OR "live attenuated influenza"[ti]) AND Pediatrics[ta]',
         'reldate': 400,
     },
+    # ── ACOG ──
+    {
+        'id':      'acog_immunization',
+        'name':    'ACOG Immunization in Pregnancy Committee Opinions (Obstetrics & Gynecology)',
+        'query':   '"American College of Obstetricians and Gynecologists" AND (immunization[ti] OR vaccination[ti] OR vaccine[ti]) AND "Obstetrics and gynecology"[ta]',
+        'reldate': 400,
+    },
+    {
+        'id':      'acog_rsv_pregnancy',
+        'name':    'ACOG RSV / Maternal Vaccine Guidance',
+        'query':   '"respiratory syncytial virus" AND (pregnancy[ti] OR maternal[ti] OR obstetric[ti]) AND (vaccine[ti] OR vaccination[ti] OR immunization[ti])',
+        'reldate': 400,
+    },
 ]
 
 CDC_PAGE = {
@@ -96,6 +115,17 @@ AAP_PAGE = {
     'id':   'aap_schedule_page',
     'name': 'AAP Immunization Schedule page',
     'url':  AAP_SCHED_URL,
+    'date_patterns': [
+        r'(?:updated?|reviewed?|published?)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
+        r'(20\d{2}-\d{2}-\d{2})',
+        r'((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})',
+    ],
+}
+
+ACOG_PAGE = {
+    'id':   'acog_immunization_page',
+    'name': 'ACOG Immunization for Women page',
+    'url':  ACOG_IMMU_URL,
     'date_patterns': [
         r'(?:updated?|reviewed?|published?)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
         r'(20\d{2}-\d{2}-\d{2})',
@@ -226,8 +256,9 @@ def main() -> int:
     page_notes: list[str] = []
 
     for page_cfg, state_key, label in [
-        (CDC_PAGE, 'cdc_page_date', 'CDC vaccine schedule page date'),
-        (AAP_PAGE, 'aap_page_date', 'AAP immunization schedule page date'),
+        (CDC_PAGE,  'cdc_page_date',  'CDC vaccine schedule page date'),
+        (AAP_PAGE,  'aap_page_date',  'AAP immunization schedule page date'),
+        (ACOG_PAGE, 'acog_page_date', 'ACOG immunization for women page date'),
     ]:
         known = state.get(state_key, '')
         print(f"Checking {page_cfg['name']} …")
@@ -285,7 +316,7 @@ def main() -> int:
 
     if not all_new and not page_changed:
         print(f'No ACIP/AAP vaccine schedule changes detected ({date.today()}).')
-        _write_quarterly_result('vaccines', 'ACIP/AAP Vaccine Schedules', VACCINES_URL, 'no_change', [])
+        _write_quarterly_result('vaccines', 'ACIP/AAP/ACOG Vaccine Schedules', VACCINES_URL, 'no_change', [])
         return 0
 
     lines = []
@@ -304,19 +335,19 @@ def main() -> int:
                 lines.append(f'  PMID {m["pmid"]}')
             lines.append('')
 
-    lines.append('Review vaccines/app.js VACCINES array and AAP aap:{} overrides.')
+    lines.append('Review vaccines/app.js VACCINES array and aap:{}/acog:{} overrides.')
     lines.append('Update footer in vaccines/index.html if a new annual schedule was published.')
     message = '\n'.join(lines)
 
     print(message)
-    push_notify(user, token, 'ACIP/AAP Vaccine Schedule Update', message)
+    push_notify(user, token, 'ACIP/AAP/ACOG Vaccine Schedule Update', message)
     findings = [{'detail': n} for n in page_notes]
     findings.extend(
         {'search': name, 'title': m['title'], 'pmid': m['pmid'],
          'journal': m['journal'], 'pubdate': m['pubdate']}
         for name, m in all_new
     )
-    _write_quarterly_result('vaccines', 'ACIP/AAP Vaccine Schedules', VACCINES_URL, 'changed', findings)
+    _write_quarterly_result('vaccines', 'ACIP/AAP/ACOG Vaccine Schedules', VACCINES_URL, 'changed', findings)
     print('Notification sent.')
     return 0
 

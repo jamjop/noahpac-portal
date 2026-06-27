@@ -1,7 +1,9 @@
-/* ACIP Immunization Schedule — 2026
+/* ACIP / AAP / ACOG Immunization Schedule — 2026
    Updated 2026-06-26: clesrovimab (Enwina) infant RSV added (ACIP 2025, PMID 40880502);
    JYNNEOS mpox added (ACIP 2023, PMID 40531798); Penbraya source updated (PMID 41505372);
-   influenza ≥65 high-dose/adjuvanted preference added (ACIP 2025-26, PMID 40879559). */
+   influenza ≥65 high-dose/adjuvanted preference added (ACIP 2025-26, PMID 40879559).
+   ACOG source added 2026-06-27: RSV maternal vaccine (Abrysvo), Tdap 27-32wk optimal,
+   HPV deferred in pregnancy. */
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -40,6 +42,9 @@ const VACCINES = [
     detail:"Single Tdap dose at 11–12 years. Td booster every 10 years thereafter. Adults who have never received Tdap should get one dose; pregnant persons receive Tdap each pregnancy at 27–36 weeks.",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["pregnant"], note:"Tdap every pregnancy (27–36 weeks)"}],
+    acog:{
+      detail:"Single Tdap dose at 11–12 years; Td booster every 10 years thereafter. ACOG strongly recommends Tdap during each pregnancy, ideally at 27–32 weeks gestational age to maximize transplacental antibody transfer to the newborn (acceptable range 27–36 weeks). If Tdap was not given during pregnancy, administer immediately postpartum before hospital discharge. Adults who have never received Tdap should get one dose.",
+    },
   },
   {
     id:"hib", name:"Haemophilus influenzae type b", abbr:"Hib",
@@ -82,6 +87,9 @@ const VACCINES = [
     aap:{
       detail:"Annual vaccination for everyone ≥6 months. For healthy children ages 2–8 years, AAP preferentially recommends LAIV (FluMist) over IIV when no contraindications exist (not immunocompromised, no reactive airway disease or wheezing in the past 12 months, no severe egg allergy). Children 6 months–8 years receiving influenza vaccine for the first time need 2 doses ≥4 weeks apart. Adults ≥65: high-dose (Fluzone HD) or adjuvanted (FLUAD) IIV4 preferred.",
     },
+    acog:{
+      detail:"Annual IIV (inactivated influenza vaccine) strongly recommended for all pregnant persons and those planning pregnancy, regardless of trimester. LAIV (FluMist) is contraindicated during pregnancy. IIV is safe at any stage of pregnancy and provides passive antibody protection to the newborn. Children 6 months–8 years receiving influenza vaccine for the first time need 2 doses ≥4 weeks apart. Adults ≥65: high-dose (Fluzone HD) or adjuvanted (FLUAD) IIV4 preferred.",
+    },
   },
   {
     id:"rsv_infant", name:"RSV Immunoprophylaxis — Infant", abbr:"RSV-mAb",
@@ -90,6 +98,15 @@ const VACCINES = [
     detail:"Nirsevimab (Beyfortus, ACIP 2023) or clesrovimab (Enwina, ACIP 2025) recommended for all infants ≤7 months entering their first RSV season. Single IM dose before or at start of RSV season (typically Oct–Nov in ND). Children 8–19 months at high risk for severe RSV disease (chronic lung disease of prematurity, hemodynamically significant CHD, severe immunocompromise) may receive a dose in their second RSV season.",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["immunocompromised","lungDz","heartDz"], note:"High-risk: second-season dose may be indicated (ages 8–19 months)"}],
+  },
+  {
+    id:"rsv_maternal", name:"RSV Vaccine — Maternal (Abrysvo)", abbr:"RSV-mat",
+    routine:{min:9999,max:9998},
+    sexSpecific:"female",
+    doses:"1 dose", freq:"32–36 weeks gestation (Oct 1–Jan 31 birth window)",
+    detail:"Abrysvo (RSV bivalent prefusion F, Pfizer) given at 32–36 weeks gestational age protects the newborn via transplacental antibody transfer through the first 6 months of life. ACOG endorses routine maternal RSV vaccination. If Abrysvo is administered during pregnancy, infant nirsevimab (Beyfortus) or clesrovimab (Enwina) is generally not needed. Do not co-administer with other injections at the same visit if possible. Year-round administration is an option; greatest benefit for births during RSV season (Oct–Mar).",
+    requires:[], conditionExtra:[{conds:["pregnant"], note:"ACOG: administer Abrysvo at 32–36 weeks gestation to protect newborn via transplacental antibody transfer; infant monoclonal antibody RSV prophylaxis generally not needed if maternal vaccine given"}],
+    acogOnly: true,
   },
   /* ── School age / adolescent ── */
   {
@@ -130,6 +147,11 @@ const VACCINES = [
       routine:{min:9*12,max:12*12},
       freq:"9–12 yr (through 26 yr catch-up)",
       detail:"AAP recommends initiating HPV vaccination at age 9 and completing the series by age 12. Earlier vaccination maximizes immunogenicity and completion rates. 2-dose series if started before age 15; 3-dose series if started at 15+. Catch-up through age 26; ages 27–45: shared clinical decision-making.",
+    },
+    acog:{
+      freq:"9–26 yr (defer during pregnancy; resume postpartum)",
+      detail:"ACOG recommends HPV vaccination through age 26 routinely and ages 27–45 via shared clinical decision-making, consistent with ACIP. HPV vaccination should be deferred during pregnancy due to limited safety data; complete or initiate the series postpartum. 2-dose series if started before age 15; 3-dose series if started at 15+.",
+      contraindications:["pregnant"],
     },
   },
   {
@@ -219,6 +241,9 @@ function applySource(v) {
   if (state.source === "aap" && v.aap) {
     return Object.assign({}, v, v.aap);
   }
+  if (state.source === "acog" && v.acog) {
+    return Object.assign({}, v, v.acog);
+  }
   return v;
 }
 
@@ -259,6 +284,7 @@ function render(){
   const added = new Set();
 
   for (const vRaw of VACCINES) {
+    if (vRaw.acogOnly && state.source !== "acog") continue;
     const v = applySource(vRaw);
     if (v.sexSpecific && v.sexSpecific !== state.sex) continue;
     if (v.contraindications && v.contraindications.some(c => f[c])) continue;
@@ -369,6 +395,8 @@ function buildText(){
 
   const sourceLabel = state.source === "aap"
     ? "AAP Immunization Schedule (with ACIP base)"
+    : state.source === "acog"
+    ? "ACOG Immunization Schedule (with ACIP base)"
     : "ACIP Immunization Schedule";
 
   const lines = [
@@ -396,6 +424,8 @@ function buildText(){
 
   const sourceUrl = state.source === "aap"
     ? "AAP immunization schedule · publications.aap.org · based on ACIP/CDC recommendations"
+    : state.source === "acog"
+    ? "ACOG immunization guidance · acog.org · based on ACIP/CDC recommendations"
     : "ACIP / CDC immunization schedule · cdc.gov/vaccines/schedules";
   lines.push(`Source: ${sourceUrl}`);
   return lines.join("\n");
