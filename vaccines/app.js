@@ -79,6 +79,9 @@ const VACCINES = [
     detail:"Annual vaccination for everyone ≥6 months. Children 6 months–8 years receiving influenza vaccine for the first time need 2 doses ≥4 weeks apart. Adults ≥65: high-dose (Fluzone HD) or adjuvanted (FLUAD) IIV4 preferentially recommended over standard-dose (ACIP 2025–26).",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["pregnant"], note:"Inactivated influenza vaccine (IIV) — not LAIV — in pregnancy"}],
+    aap:{
+      detail:"Annual vaccination for everyone ≥6 months. For healthy children ages 2–8 years, AAP preferentially recommends LAIV (FluMist) over IIV when no contraindications exist (not immunocompromised, no reactive airway disease or wheezing in the past 12 months, no severe egg allergy). Children 6 months–8 years receiving influenza vaccine for the first time need 2 doses ≥4 weeks apart. Adults ≥65: high-dose (Fluzone HD) or adjuvanted (FLUAD) IIV4 preferred.",
+    },
   },
   {
     id:"rsv_infant", name:"RSV Immunoprophylaxis — Infant", abbr:"RSV-mAb",
@@ -123,6 +126,11 @@ const VACCINES = [
     doses:"2–3 doses", freq:"11–12 yr (through 26 yr catch-up)",
     detail:"2-dose series if started before age 15; 3-dose series if started at 15+. Routine through age 26. Ages 27–45: shared clinical decision-making.",
     requires:[], sexSpecific:null, conditionExtra:[],
+    aap:{
+      routine:{min:9*12,max:12*12},
+      freq:"9–12 yr (through 26 yr catch-up)",
+      detail:"AAP recommends initiating HPV vaccination at age 9 and completing the series by age 12. Earlier vaccination maximizes immunogenicity and completion rates. 2-dose series if started before age 15; 3-dose series if started at 15+. Catch-up through age 26; ages 27–45: shared clinical decision-making.",
+    },
   },
   {
     id:"menacwy", name:"Meningococcal ACWY", abbr:"MenACWY",
@@ -139,6 +147,11 @@ const VACCINES = [
     detail:"Shared clinical decision-making for ages 16–23 (preferred 16–18). Recommended for high-risk patients (asplenia, complement deficiency) at any age ≥10.",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["asplenia","immunocompromised"], note:"Recommended regardless of age — asplenia or complement deficiency"}],
+    aap:{
+      routineMax:23*12,
+      freq:"16–23 yr (AAP: recommended at each preventive visit)",
+      detail:"AAP recommends MenB vaccine for all adolescents aged 16–23 years at routine preventive care visits, not limited to shared clinical decision-making. 2–3 doses depending on brand: Bexsero 2 doses ≥1 month apart; Trumenba 2 doses ≥6 months apart (or 3-dose accelerated schedule). Also recommended for high-risk patients (asplenia, complement deficiency) at any age ≥10.",
+    },
   },
   {
     id:"menabcwy", name:"Meningococcal ABCWY (Penbraya)", abbr:"MenABCWY",
@@ -200,7 +213,14 @@ const CONDITION_LABELS = {
   noRecords:"no vaccination records",
 };
 
-const state = { ageMonths: 24, sex: "female", unit: "yr" };
+const state = { ageMonths: 24, sex: "female", unit: "yr", source: "acip" };
+
+function applySource(v) {
+  if (state.source === "aap" && v.aap) {
+    return Object.assign({}, v, v.aap);
+  }
+  return v;
+}
 
 const els = {
   age: document.getElementById('age'),
@@ -238,7 +258,8 @@ function render(){
   const routine = [], condDriven = [], sharedDecision = [];
   const added = new Set();
 
-  for (const v of VACCINES) {
+  for (const vRaw of VACCINES) {
+    const v = applySource(vRaw);
     if (v.sexSpecific && v.sexSpecific !== state.sex) continue;
     if (v.contraindications && v.contraindications.some(c => f[c])) continue;
 
@@ -246,8 +267,8 @@ function render(){
 
     /* Routine age range */
     if (ageM >= v.routine.min && ageM <= v.routine.max) {
-      /* Special: MenB is shared decision for routine ages */
-      if (v.id === "menb" && ageM >= 16*12 && ageM <= 23*12 && !f.asplenia && !f.immunocompromised) {
+      /* MenB: shared decision under ACIP; routine under AAP */
+      if (v.id === "menb" && ageM >= 16*12 && ageM <= 23*12 && !f.asplenia && !f.immunocompromised && state.source === "acip") {
         sharedDecision.push({v, note:null});
       } else {
         routine.push({v, note:null});
@@ -346,8 +367,12 @@ function buildText(){
   const activeFlags = Object.entries(f).filter(([,v])=>v).map(([k])=>CONDITION_LABELS[k]||k);
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
+  const sourceLabel = state.source === "aap"
+    ? "AAP Immunization Schedule (with ACIP base)"
+    : "ACIP Immunization Schedule";
+
   const lines = [
-    "ACIP Immunization Schedule",
+    sourceLabel,
     `Patient: ${ageDisplay} ${state.sex}`,
   ];
   if (activeFlags.length) lines.push(`Conditions: ${activeFlags.join(", ")}`);
@@ -369,9 +394,14 @@ function buildText(){
     }
   }
 
-  lines.push("Source: ACIP / CDC immunization schedule · cdc.gov/vaccines/schedules");
+  const sourceUrl = state.source === "aap"
+    ? "AAP immunization schedule · publications.aap.org · based on ACIP/CDC recommendations"
+    : "ACIP / CDC immunization schedule · cdc.gov/vaccines/schedules";
+  lines.push(`Source: ${sourceUrl}`);
   return lines.join("\n");
 }
+
+els.sourceSeg = document.getElementById('sourceSeg');
 
 /* events */
 els.age.addEventListener('input', render);
@@ -386,6 +416,13 @@ els.sexSeg.addEventListener('click', e => {
   render();
 });
 els.flagGrid.addEventListener('change', render);
+els.sourceSeg.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  els.sourceSeg.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  state.source = b.dataset.source;
+  render();
+});
 els.copyBtn.addEventListener('click', () => {
   navigator.clipboard.writeText(buildText()).then(() => {
     els.copyBtn.classList.add('copied');

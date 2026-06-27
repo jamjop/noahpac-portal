@@ -13,7 +13,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="eyebrow">ACIP Immunization Schedule · Patient Screener</div>
+    <div class="eyebrow">ACIP / AAP Immunization Schedule · Patient Screener</div>
     <h1>Vaccines Due</h1>
     <a href="/" class="back" target="_top">← noahpac</a>
     <div class="update-cadence">↻ Reviewed quarterly</div>
@@ -38,6 +38,13 @@
         <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
           <button data-sex="female" class="active">Female</button>
           <button data-sex="male">Male</button>
+        </div>
+      </div>
+      <div>
+        <span class="field-label">Schedule source</span>
+        <div class="seg" id="sourceSeg" role="group" aria-label="Schedule source">
+          <button data-source="acip" class="active">ACIP / CDC</button>
+          <button data-source="aap">AAP</button>
         </div>
       </div>
     </div>
@@ -67,7 +74,7 @@
 </div>
 
 <footer>
-  <p><strong>Not medical advice.</strong> Summarizes ACIP recommendations; verify with CDC immunization schedule and individualize based on prior vaccination history, contraindications, and clinical judgment. CDC schedule updated annually; built-in data reflects 2026 ACIP schedule including ACIP 2025 updates (clesrovimab/Enwina for infant RSV, Penbraya MenABCWY, JYNNEOS mpox, influenza 2025–26).</p>
+  <p><strong>Not medical advice.</strong> Summarizes ACIP and AAP immunization schedule recommendations; verify with current CDC and AAP schedules and individualize based on prior vaccination history, contraindications, and clinical judgment. Data reflects 2026 ACIP schedule including ACIP 2025 updates (clesrovimab/Enwina, Penbraya MenABCWY, JYNNEOS mpox, influenza 2025–26). AAP differences: HPV from age 9, LAIV preferred ages 2–8, MenB routine for all adolescents 16–23.</p>
 </footer>
 
 <script src="app.js"></script>
