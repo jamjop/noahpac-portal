@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
 """
-check_updates.py — monitor PubMed/CDC for ACIP immunization schedule updates.
+check_updates.py — monitor PubMed/CDC/AAP for immunization schedule updates.
 
 Watches:
+  ACIP / CDC
   1. MMWR ACIP annual immunization schedule publications
   2. Individual ACIP vaccine recommendations (new vaccines, updated guidance)
   3. CDC vaccine schedule page for "last updated" date changes
 
-ACIP publishes the annual child/adolescent/adult schedule in MMWR (typically
-Feb–March). Individual vaccine recommendations appear throughout the year.
+  AAP
+  4. AAP annual immunization schedule (Pediatrics journal, published Jan alongside ACIP)
+  5. AAP Committee on Infectious Diseases (COID) vaccine policy statements
+  6. AAP influenza / LAIV guidance updates
+  7. AAP immunization resources page for date changes
+
+The vaccines app now supports ACIP and AAP schedule sources; key AAP differences
+(HPV from age 9, LAIV preferred ages 2-8, MenB routine 16-23) must be reviewed
+when either schedule publishes an update.
+
 Run quarterly via cron (Jan/Apr/Jul/Oct 15).
 
 Usage:
@@ -25,13 +34,15 @@ import urllib.parse
 from datetime import date
 from pathlib import Path
 
-PUSHOVER_API = "https://api.pushover.net/1/messages.json"
-EUTILS_BASE  = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-STATE_FILE   = Path(__file__).resolve().parent / "known_pmids.json"
-VACCINES_URL = "https://noahpac.com/vaccines/"
+PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
+EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+STATE_FILE    = Path(__file__).resolve().parent / "known_pmids.json"
+VACCINES_URL  = "https://noahpac.com/vaccines/"
 CDC_SCHED_URL = "https://www.cdc.gov/vaccines/schedules/"
+AAP_SCHED_URL = "https://www.aap.org/en/patient-care/immunizations/immunization-schedule-and-resources/"
 
 SEARCHES = [
+    # ── ACIP / CDC ──
     {
         'id':      'acip_schedule',
         'name':    'ACIP Annual Immunization Schedule (MMWR)',
@@ -50,6 +61,25 @@ SEARCHES = [
         'query':   '"Advisory Committee on Immunization Practices" AND guideline[pt]',
         'reldate': 400,
     },
+    # ── AAP ──
+    {
+        'id':      'aap_schedule',
+        'name':    'AAP Annual Immunization Schedule (Pediatrics)',
+        'query':   '"immunization schedule" AND Pediatrics[ta] AND ("American Academy of Pediatrics" OR "Committee on Infectious Diseases")',
+        'reldate': 400,
+    },
+    {
+        'id':      'aap_coid',
+        'name':    'AAP COID Vaccine Policy Statements (Pediatrics)',
+        'query':   '"Committee on Infectious Diseases" AND Pediatrics[ta] AND (vaccine[ti] OR vaccination[ti] OR immunization[ti] OR immunoprophylaxis[ti])',
+        'reldate': 400,
+    },
+    {
+        'id':      'aap_influenza',
+        'name':    'AAP Influenza / LAIV Guidance (Pediatrics)',
+        'query':   '"American Academy of Pediatrics" AND (influenza[ti] OR "live attenuated influenza"[ti]) AND Pediatrics[ta]',
+        'reldate': 400,
+    },
 ]
 
 CDC_PAGE = {
@@ -59,6 +89,17 @@ CDC_PAGE = {
     'date_patterns': [
         r'(?:updated?|reviewed?)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
         r'(20\d{2}-\d{2}-\d{2})',
+    ],
+}
+
+AAP_PAGE = {
+    'id':   'aap_schedule_page',
+    'name': 'AAP Immunization Schedule page',
+    'url':  AAP_SCHED_URL,
+    'date_patterns': [
+        r'(?:updated?|reviewed?|published?)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
+        r'(20\d{2}-\d{2}-\d{2})',
+        r'((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})',
     ],
 }
 
@@ -103,22 +144,22 @@ def esummary(pmids: list[str]) -> dict:
     return result
 
 
-def check_cdc_page(known_date: str) -> tuple[str, bool]:
-    """Fetch CDC vaccine schedule page and check for date changes."""
+def check_page(page_cfg: dict, known_date: str) -> tuple[str, bool]:
+    """Fetch a page and check for date changes using configured patterns."""
     try:
         req = urllib.request.Request(
-            CDC_PAGE['url'],
+            page_cfg['url'],
             headers={'User-Agent': 'noahpac-vaccines-monitor/1.0'},
         )
         with urllib.request.urlopen(req, timeout=30) as resp:
             html = resp.read().decode('utf-8', errors='replace')
-        for pat in CDC_PAGE['date_patterns']:
+        for pat in page_cfg['date_patterns']:
             m = re.search(pat, html, re.IGNORECASE)
             if m:
                 current = m.group(1).strip()
                 return current, (current != known_date and bool(known_date))
     except Exception as exc:
-        print(f"  WARNING: could not fetch CDC page: {exc}", file=sys.stderr)
+        print(f"  WARNING: could not fetch {page_cfg['name']}: {exc}", file=sys.stderr)
     return known_date, False
 
 
@@ -182,16 +223,24 @@ def main() -> int:
 
     all_new: list[tuple[str, dict]] = []
     page_changed = False
+    page_notes: list[str] = []
 
-    # Check CDC page date
-    known_page_date = state.get('cdc_page_date', '')
-    print(f"Checking {CDC_PAGE['name']} …")
-    current_page_date, changed = check_cdc_page(known_page_date)
-    print(f"  Page date: {current_page_date or '(not found)'}")
-    if changed and not first_run:
-        page_changed = True
-        print(f"  Date changed: {known_page_date!r} → {current_page_date!r}")
-    state['cdc_page_date'] = current_page_date
+    for page_cfg, state_key, label in [
+        (CDC_PAGE, 'cdc_page_date', 'CDC vaccine schedule page date'),
+        (AAP_PAGE, 'aap_page_date', 'AAP immunization schedule page date'),
+    ]:
+        known = state.get(state_key, '')
+        print(f"Checking {page_cfg['name']} …")
+        current, changed = check_page(page_cfg, known)
+        print(f"  Page date: {current or '(not found)'}")
+        if changed and not first_run:
+            page_changed = True
+            page_notes.append(f"{label} → {current}")
+            print(f"  Date changed: {known!r} → {current!r}")
+        state[state_key] = current
+        # capture CDC date for legacy reference in notification
+        if state_key == 'cdc_page_date':
+            current_page_date = current
 
     # PubMed searches
     for search in SEARCHES:
@@ -235,16 +284,17 @@ def main() -> int:
         return 0
 
     if not all_new and not page_changed:
-        print(f'No ACIP/vaccine schedule changes detected ({date.today()}).')
-        _write_quarterly_result('vaccines', 'ACIP Vaccine Schedules', VACCINES_URL, 'no_change', [])
+        print(f'No ACIP/AAP vaccine schedule changes detected ({date.today()}).')
+        _write_quarterly_result('vaccines', 'ACIP/AAP Vaccine Schedules', VACCINES_URL, 'no_change', [])
         return 0
 
     lines = []
-    if page_changed:
-        lines.append(f'CDC vaccine schedule page date changed → {current_page_date}')
+    for note in page_notes:
+        lines.append(note)
+    if page_notes:
         lines.append('')
     if all_new:
-        lines.append(f'{len(all_new)} new ACIP/vaccine publication(s):\n')
+        lines.append(f'{len(all_new)} new publication(s):\n')
         for search_name, m in all_new:
             lines.append(f'[{search_name}]')
             lines.append(f'  {m["title"]}')
@@ -254,21 +304,19 @@ def main() -> int:
                 lines.append(f'  PMID {m["pmid"]}')
             lines.append('')
 
-    lines.append('Review and update /var/www/noahpac-portal/vaccines/app.js if schedule changed.')
-    lines.append('Update year tag in vaccines/index.html if a new annual schedule was published.')
+    lines.append('Review vaccines/app.js VACCINES array and AAP aap:{} overrides.')
+    lines.append('Update footer in vaccines/index.html if a new annual schedule was published.')
     message = '\n'.join(lines)
 
     print(message)
-    push_notify(user, token, 'ACIP Vaccine Schedule Update', message)
-    findings = []
-    if page_changed:
-        findings.append({'detail': f"CDC vaccine schedule page date → {current_page_date}"})
+    push_notify(user, token, 'ACIP/AAP Vaccine Schedule Update', message)
+    findings = [{'detail': n} for n in page_notes]
     findings.extend(
         {'search': name, 'title': m['title'], 'pmid': m['pmid'],
          'journal': m['journal'], 'pubdate': m['pubdate']}
         for name, m in all_new
     )
-    _write_quarterly_result('vaccines', 'ACIP Vaccine Schedules', VACCINES_URL, 'changed', findings)
+    _write_quarterly_result('vaccines', 'ACIP/AAP Vaccine Schedules', VACCINES_URL, 'changed', findings)
     print('Notification sent.')
     return 0
 
