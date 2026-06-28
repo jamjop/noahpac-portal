@@ -91,8 +91,11 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `peds/check_updates.py` | 06:30 | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
 | `als/check_updates.py` | 06:35 | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
 | `pals/check_updates.py` | 06:40 | PubMed: AHA PALS, ILCOR pediatric resuscitation, ERC pediatric, AHA/ACC pediatric arrhythmia, pediatric post-arrest care, IO access |
+| `opioids/check_updates.py` | 06:45 | PubMed: CDC 2022 opioid prescribing guideline, MME conversion factors, buprenorphine/OUD guidance, methadone safety, high-dose thresholds |
+| `wound/check_updates.py` | 06:50 | PubMed: ACIP tetanus recommendations, wound prophylaxis evidence, SSI/wound classification guidelines |
+| `sepsis/check_updates.py` | 06:55 | PubMed: Surviving Sepsis Campaign, Sepsis-3/SOFA updates, SSC bundles, septic shock management |
 
-Quarterly email report runs at **07:00** (20 min after last check script). Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
+Quarterly email report runs at **07:20** (25 min after last check script). Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
 
 ## Backend Services
 
