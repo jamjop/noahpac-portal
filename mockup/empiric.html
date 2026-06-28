@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empiric — Redesign Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a2e;--ink-soft:#4a4a6a;--ink-muted:#7a7a9a;
+  --surface:#fff;--bg:#f4f4f8;--line:#e2e2ea;
+  --purple:#6366f1;--purple-soft:#eef2ff;--purple-mid:#a5b4fc;
+  --ok:#16a34a;--ok-soft:#dcfce7;
+  --warn:#d97706;--warn-soft:#fef3c7;
+  --risk:#dc2626;--risk-soft:#fee2e2;
+  --r:10px;--r-sm:6px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh-lg:0 4px 12px rgba(0,0,0,.1);
+  font-family:'IBM Plex Mono',monospace;
+}
+body{background:var(--bg);color:var(--ink);font-size:14px;padding-bottom:50px}
+
+/* ── Header ── */
+.app-header{background:var(--purple);color:#fff;padding:0}
+.header-inner{max-width:1000px;margin:0 auto;padding:18px 16px 14px}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.7;margin-bottom:4px}
+h1{font-size:20px;font-weight:600;line-height:1.1}
+
+/* ── Page body ── */
+.page-body{max-width:1000px;margin:0 auto;padding:20px 16px 40px;display:flex;gap:24px;align-items:flex-start}
+.criteria-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+
+/* ── Cards ── */
+.criterion{background:var(--surface);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.c-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.c-letter{font-size:13px;font-weight:600;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);background:var(--purple-soft);color:var(--purple);flex-shrink:0}
+.c-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.c-desc{font-size:11px;color:var(--ink-muted);line-height:1.4}
+.c-opt{font-weight:400;color:var(--ink-muted)}
+
+/* ── Dropdown (site selector) ── */
+.site-select{
+  width:100%;padding:10px 14px;
+  border:1.5px solid var(--line);border-radius:var(--r-sm);
+  background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:36px;
+  transition:border-color .15s;
+}
+.site-select:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
+
+/* ── Full-width organism buttons (test page style) ── */
+.org-list{display:flex;flex-direction:column;gap:5px}
+.org-btn{
+  display:flex;align-items:center;gap:10px;
+  width:100%;text-align:left;
+  background:var(--bg);
+  border:1.5px solid var(--line);
+  border-radius:var(--r-sm);
+  padding:9px 12px;
+  cursor:pointer;
+  transition:background .12s,border-color .12s;
+  color:var(--ink-soft);
+}
+.org-btn:hover{background:var(--purple-soft);border-color:var(--purple-mid);color:var(--ink)}
+.org-btn.active{background:var(--purple-soft);border-color:var(--purple);color:var(--ink)}
+.org-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--line);flex-shrink:0;
+  transition:background .12s;
+}
+.org-btn.active .org-dot{background:var(--purple)}
+.org-label{font-size:12px;font-weight:500;font-style:italic}
+.org-btn.active .org-label{font-weight:600}
+
+/* ── Facility selector ── */
+.fac-sel{
+  width:100%;padding:8px 12px;
+  border:1.5px solid var(--line);border-radius:var(--r-sm);
+  background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;
+}
+
+/* ── Result table ── */
+.result-card{background:var(--surface);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.result-head{font-weight:700;font-size:15px;margin-bottom:6px;color:var(--ink)}
+.susc-note{font-size:11px;color:var(--ink-muted);margin-bottom:10px;font-style:italic}
+.tbl-wrap{overflow-x:auto}
+.reg-tbl{border-collapse:collapse;font-size:12px;width:100%}
+.reg-tbl th{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;color:var(--ink-muted);text-align:left;padding:6px 10px;border-bottom:1.5px solid var(--line);background:var(--bg);white-space:nowrap}
+.reg-tbl td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+.reg-tbl tr:last-child td{border-bottom:none}
+.reg-name{font-weight:700;font-size:12.5px;white-space:nowrap;color:var(--ink)}
+.reg-dose{font-family:'IBM Plex Mono',monospace;font-size:10.5px;white-space:nowrap;color:var(--ink)}
+.reg-note{color:var(--ink-muted);font-size:11.5px}
+.susc-col{text-align:center;white-space:nowrap}
+.susc-hi{background:var(--ok-soft);color:var(--ok);font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block}
+.susc-mid{background:var(--warn-soft);color:var(--warn);font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block}
+.susc-lo{background:var(--risk-soft);color:var(--risk);font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block}
+.susc-na{color:var(--ink-muted);font-size:12px;opacity:.4}
+.legend-row{font-size:10.5px;color:var(--ink-muted);margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+
+/* ── Right col ── */
+.result-col{width:200px;flex-shrink:0;position:sticky;top:16px}
+.source-note{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink-muted);line-height:1.55;padding:0 2px}
+.source-note a{color:var(--purple);text-decoration:none}
+
+/* ── Label badge ── */
+.badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:50px;margin-left:6px;background:var(--purple-soft);color:var(--purple)}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">Empiric Therapy · Local Antibiogram — Minot, ND</div>
+    <h1>Empiric + Susceptibility</h1>
+  </div>
+</header>
+
+<div class="page-body">
+  <div class="criteria-col">
+
+    <!-- Step 1: Facility -->
+    <div class="criterion">
+      <div class="c-header">
+        <span class="c-letter">1</span>
+        <div>
+          <div class="c-name">Susceptibility Data</div>
+          <div class="c-desc">Local antibiogram source for resistance percentages</div>
+        </div>
+      </div>
+      <select class="fac-sel">
+        <option>Trinity Health — Minot, ND (2024)</option>
+        <option>St. Alexius — Bismarck, ND (2024)</option>
+      </select>
+    </div>
+
+    <!-- Step 2: Infection Site — NOW A DROPDOWN -->
+    <div class="criterion">
+      <div class="c-header">
+        <span class="c-letter">2</span>
+        <div>
+          <div class="c-name">Infection Site</div>
+          <div class="c-desc">Anatomic focus guides empiric regimen selection</div>
+        </div>
+      </div>
+      <select class="site-select" id="site-select" onchange="changeSite(this.value)">
+        <option value="uti">UTI (uncomplicated)</option>
+        <option value="uti-comp">UTI (complicated / pyelonephritis)</option>
+        <option value="pneumonia-cap">Pneumonia (CAP)</option>
+        <option value="pneumonia-hap">Pneumonia (HAP / VAP)</option>
+        <option value="ssti">Skin &amp; Soft Tissue</option>
+        <option value="sepsis">Sepsis (undifferentiated)</option>
+        <option value="abdominal">Intra-abdominal</option>
+        <option value="prostatitis">Prostatitis (acute bacterial)</option>
+        <option value="osteomyelitis">Osteomyelitis / Septic Arthritis</option>
+        <option value="meningitis">Meningitis (bacterial)</option>
+        <option value="diabetic-foot">Diabetic Foot Infection</option>
+        <option value="biliary">Biliary / Cholangitis</option>
+      </select>
+    </div>
+
+    <!-- Step 3: Likely Organism — FULL-WIDTH BUTTONS -->
+    <div class="criterion">
+      <div class="c-header">
+        <span class="c-letter">3</span>
+        <div>
+          <div class="c-name">Likely Organism <span class="c-opt">(optional)</span></div>
+          <div class="c-desc">Narrows options and displays local susceptibility rates when selected</div>
+        </div>
+      </div>
+      <div class="org-list" id="org-list">
+        <button class="org-btn active" data-org="">
+          <span class="org-dot"></span>
+          <span class="org-label">Any / unknown</span>
+        </button>
+        <button class="org-btn" data-org="E. coli">
+          <span class="org-dot"></span>
+          <span class="org-label">E. coli</span>
+        </button>
+        <button class="org-btn" data-org="Klebsiella pneumoniae">
+          <span class="org-dot"></span>
+          <span class="org-label">Klebsiella pneumoniae</span>
+        </button>
+        <button class="org-btn" data-org="Proteus mirabilis">
+          <span class="org-dot"></span>
+          <span class="org-label">Proteus mirabilis</span>
+        </button>
+        <button class="org-btn" data-org="Enterococcus faecalis">
+          <span class="org-dot"></span>
+          <span class="org-label">Enterococcus faecalis</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-card">
+      <div class="result-head">UTI (uncomplicated)</div>
+      <div class="susc-note">Select an organism above to see local resistance rates</div>
+      <div class="tbl-wrap">
+        <table class="reg-tbl">
+          <thead><tr>
+            <th>Regimen</th>
+            <th>Typical dose</th>
+            <th class="susc-col">Local %R<br><span style="font-size:9px;color:var(--ink-muted)">select organism ↑</span></th>
+            <th>Notes</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="reg-name">Nitrofurantoin</td>
+              <td class="reg-dose">100 mg ER BID × 5d</td>
+              <td class="susc-col"><span class="susc-na">—</span></td>
+              <td class="reg-note">First-line; avoid if CrCl &lt;30 or pyelonephritis</td>
+            </tr>
+            <tr>
+              <td class="reg-name">TMP-SMX</td>
+              <td class="reg-dose">160/800 mg BID × 3d</td>
+              <td class="susc-col"><span class="susc-na">—</span></td>
+              <td class="reg-note">Use only if local E. coli susceptibility ≥80%</td>
+            </tr>
+            <tr>
+              <td class="reg-name">Fosfomycin</td>
+              <td class="reg-dose">3 g PO single dose</td>
+              <td class="susc-col"><span class="susc-na">—</span></td>
+              <td class="reg-note">First-line; not effective for Klebsiella or Proteus</td>
+            </tr>
+            <tr>
+              <td class="reg-name">Ciprofloxacin</td>
+              <td class="reg-dose">250 mg BID × 3d</td>
+              <td class="susc-col"><span class="susc-hi">8%</span></td>
+              <td class="reg-note">Reserve — local E. coli resistance high</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="legend-row">
+        <span class="susc-hi">≤10%</span> low &nbsp;·&nbsp;
+        <span class="susc-mid">11–30%</span> moderate &nbsp;·&nbsp;
+        <span class="susc-lo">&gt;30%</span> high resistance
+      </div>
+    </div>
+
+  </div><!-- /criteria-col -->
+
+  <div class="result-col">
+    <div class="source-note">
+      Empiric regimens from IDSA/Surviving Sepsis guidelines. Susceptibility data from the <a href="#">ND Antibiogram</a> (updated monthly). Individualize based on culture results, allergies, renal function, and severity. Not medical advice.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Simple interactivity for mockup demo
+const ORGS = {
+  'uti': ['E. coli','Klebsiella pneumoniae','Proteus mirabilis','Enterococcus faecalis'],
+  'uti-comp': ['E. coli','Klebsiella pneumoniae','Proteus mirabilis'],
+  'pneumonia-cap': ['Streptococcus pneumoniae','Haemophilus influenzae','Atypicals'],
+  'pneumonia-hap': ['Staph aureus (MRSA)','Pseudomonas aeruginosa','Klebsiella pneumoniae'],
+  'ssti': ['Staph aureus (MSSA)','Staph aureus (MRSA)','Streptococcus pyogenes'],
+  'sepsis': ['E. coli','Klebsiella pneumoniae','Staph aureus (MSSA)','Staph aureus (MRSA)'],
+  'abdominal': ['E. coli','Klebsiella pneumoniae','Bacteroides fragilis'],
+  'prostatitis': ['E. coli','Klebsiella pneumoniae','Proteus mirabilis','Enterococcus faecalis'],
+  'osteomyelitis': ['Staph aureus (MSSA)','Staph aureus (MRSA)'],
+  'meningitis': ['Streptococcus pneumoniae','Neisseria meningitidis','Listeria'],
+  'diabetic-foot': ['Staph aureus (MSSA)','Staph aureus (MRSA)','E. coli','Klebsiella pneumoniae'],
+  'biliary': ['E. coli','Klebsiella pneumoniae','Enterococcus faecalis'],
+};
+
+function changeSite(val) {
+  const orgs = ORGS[val] || [];
+  const list = document.getElementById('org-list');
+  list.innerHTML = `<button class="org-btn active" data-org=""><span class="org-dot"></span><span class="org-label">Any / unknown</span></button>` +
+    orgs.map(o => `<button class="org-btn" data-org="${o}"><span class="org-dot"></span><span class="org-label">${o}</span></button>`).join('');
+  list.querySelectorAll('.org-btn').forEach(btn => btn.addEventListener('click', () => {
+    list.querySelectorAll('.org-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }));
+}
+
+document.getElementById('org-list').querySelectorAll('.org-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.getElementById('org-list').querySelectorAll('.org-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}));
+</script>
+</body>
+</html>
