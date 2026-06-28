@@ -1,4 +1,4 @@
-const CACHE = 'als-v5';
+const CACHE = 'als-v6';
 const ASSETS = [
   '/als/',
   '/als/index.html',
