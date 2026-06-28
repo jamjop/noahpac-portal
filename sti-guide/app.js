@@ -269,6 +269,20 @@ const DATA = [
     notes:"Eyelid infestation: apply petrolatum BID × 10 days. Wash all bedding/clothing."
   },
 
+  // ── Chancroid ──
+  {
+    cat:"Chancroid", name:"Chancroid",
+    recommended:[
+      {drug:"Azithromycin", dose:"1 g PO × 1 dose", note:""},
+      {drug:"Ceftriaxone", dose:"250 mg IM × 1 dose", note:""},
+    ],
+    alternative:[
+      {drug:"Ciprofloxacin", dose:"500 mg PO BID × 3 days", note:"Contraindicated in pregnancy"},
+      {drug:"Erythromycin base", dose:"500 mg PO TID × 7 days", note:""},
+    ],
+    notes:"Rare in US (Haemophilus ducreyi). Co-test for HIV and syphilis. Fluctuant nodes may require aspiration, not incision. Re-examine at 3–7 days; if no improvement reconsider diagnosis or resistance."
+  },
+
   // ── MPox ──
   {
     cat:"Mpox", name:"Mpox — Antiviral therapy",
@@ -279,6 +293,16 @@ const DATA = [
       {drug:"Cidofovir or Brincidofovir", dose:"Specialist consultation required", note:"Alternative for severe refractory disease"},
     ],
     notes:"Most immunocompetent cases are self-limiting. Tecovirimat requires IND/CDC protocol access. Supportive care (wound care, pain management) is primary for mild cases. JYNNEOS vaccine PEP within 4 days of exposure."
+  },
+
+  // ── Prevention ──
+  {
+    cat:"Prevention", name:"Doxy-PEP (STI Post-Exposure Prophylaxis)",
+    recommended:[
+      {drug:"Doxycycline", dose:"200 mg PO once, as soon as possible and within 72 hours of condomless sex", note:"Max 1 dose per 24-hour period. Take with food to reduce GI upset."},
+    ],
+    alternative:[],
+    notes:"Indicated for MSM and transgender women who are HIV-positive or on PrEP AND had ≥1 bacterial STI (chlamydia, gonorrhea, or syphilis) in the past 12 months. Reduces chlamydia by ~88%, gonorrhea by ~55%, syphilis by ~79% (DoxyPEP and DOXYVAC trials). NOT recommended for cisgender women (insufficient efficacy data as of 2023). STI testing at baseline and every 3–6 months during use. Concern for antimicrobial resistance with widespread use. Source: CDC 2023 interim guidance (MMWR 2023;72:1077–1082)."
   },
 ];
 
@@ -302,7 +326,7 @@ function buildCopyText(d) {
   section(d.alternative, 'Alternative');
   section(d.pregnancy, 'In Pregnancy');
   if (d.notes) lines.push('Notes: ' + d.notes, '');
-  lines.push('Source: CDC 2021 STI Treatment Guidelines');
+  lines.push('Source: CDC STI Treatment Guidelines (noahpac.com/sti-guide/)');
   return lines.join('\n').trim();
 }
 

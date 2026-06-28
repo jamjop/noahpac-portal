@@ -17,8 +17,7 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `abx/` | Antibiotic Reference | Empiric coverage for 19 infections across 6 categories; sources audited Jun 2026 |
 | `empiric/` | Empiric Therapy + Local Susceptibility | Treatment recommendations cross-referenced with local antibiogram data |
 | `allergy/` | Antibiotic Allergy Cross-Reactivity | Cross-reactivity reference for penicillin/cephalosporin/carbapenem allergies |
-| `sti/` | STI Treatment Reference | CDC 2021 empiric treatment + doxy-PEP (CDC 2023 interim guidance) |
-| `sti-guide/` | STI Treatment Guidelines | CDC 2021 full guidelines |
+| `sti-guide/` | STI Treatment Guidelines | CDC 2021 full guidelines; includes doxy-PEP (CDC 2023 interim guidance) and chancroid |
 | `antibiogram/` | ND Antibiogram | Local susceptibility data for 4 ND facilities; auto-updated monthly from HHS PDFs |
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
 | `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
@@ -83,12 +82,11 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | Script | Cron time | Watches |
 |--------|-----------|---------|
 | `reportable/check_updates.py` | 04:30 | ND HHS notifiable disease list |
-| `sti-guide/check_updates.py` | 04:45 | CDC STI guidelines page |
+| `sti-guide/check_updates.py` | 04:45 | CDC STI guidelines page + PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance |
 | `naloxone/check_updates.py` | 05:00 | ND HHS behavioral health / overdose data |
 | `abx/check_updates.py` | 05:15 | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
 | `tccc/check_updates.py` | 05:30 | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
 | `vaccines/check_updates.py` | 05:45 | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
-| `sti/check_updates.py` | 06:00 | PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance; CDC STI page links |
 | `calculators/check_updates.py` | 06:15 | PubMed: ACC/AHA (ASCVD, AFib, chest pain, periop), ACCP/ESC (VTE), ATS/BTS (pneumonia), KDIGO (eGFR/CrCl), AASLD (MELD), USPSTF (depression/anxiety), Ottawa/PECARN/Alvarado, AAD (isotretinoin), ACOG (EDD) |
 | `peds/check_updates.py` | 06:30 | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
 | `als/check_updates.py` | 06:35 | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
