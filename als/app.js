@@ -554,3 +554,10 @@ function renderSection() {
 
 buildTabs();
 renderSection();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/als/sw.js').catch(() => {});
+  window.addEventListener('offline', () => { document.getElementById('offlineBadge').hidden = false; });
+  window.addEventListener('online',  () => { document.getElementById('offlineBadge').hidden = true; });
+  if (!navigator.onLine) document.getElementById('offlineBadge').hidden = false;
+}
