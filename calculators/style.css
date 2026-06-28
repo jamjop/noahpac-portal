@@ -50,6 +50,7 @@
   padding:16px 18px;
   box-shadow:var(--sh);
   transition:box-shadow .15s;
+  overflow:hidden;
 }
 .criterion:hover{box-shadow:var(--sh-lg)}
 
@@ -112,6 +113,14 @@
 .perc-result.pos{background:var(--warn-soft);color:#92400E}
 .perc-result{display:none}
 .perc-result.pos,.perc-result.neg{display:block}
+
+/* When perc-result is anchored inside a criterion card */
+.criterion .perc-result{
+  margin:10px -18px -16px;
+  padding:10px 18px;
+  border-radius:0;
+  border-top:1px solid var(--line);
+}
 
 /* Copy button inside result-panel */
 .copy-btn-wrap{padding:12px 16px;border-top:1px solid var(--line)}

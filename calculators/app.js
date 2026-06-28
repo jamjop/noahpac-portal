@@ -1014,12 +1014,13 @@ function copyOttawa(e){
 function copyResult(calcId, btn){
   const resultEl = document.getElementById(`${calcId}-result`);
   if(!resultEl) return;
-  const num = resultEl.querySelector('.result-num')?.textContent||'';
-  const label = resultEl.querySelector('.result-label')?.textContent||'';
-  const detail = resultEl.querySelector('.result-detail')?.textContent||'';
+  const score = resultEl.querySelector('.result-num')?.textContent?.trim()||'';
+  const label = resultEl.querySelector('.result-label')?.textContent?.trim()||'';
+  const detail = (resultEl.querySelector('.result-detail')?.textContent||'').replace(/\s+/g,' ').trim();
   const calcName = CALCS.find(c=>c.id===calcId)?.name||calcId;
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  const text = `${calcName}\nResult: ${num} — ${label}\n${detail}\nGenerated: ${today}\nSource: noahpac.com/calculators/`;
+  const scoreLine = [score, label].filter(Boolean).join(' — ');
+  const text = [calcName, scoreLine, detail, '', `Generated: ${today}`, `Source: noahpac.com/calculators/`].join('\n');
   navigator.clipboard.writeText(text).then(()=>{
     btn.classList.add('copied'); btn.textContent='✓ Copied';
     setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='&#x2398; Copy result'; }, 2000);
@@ -1143,6 +1144,13 @@ function wrapInputGroups(criteriaCol) {
       card.appendChild(el);
       children.splice(i, 1);
       children.splice(i, 0, card);
+
+      // absorb immediately-following perc-result into the card bottom
+      // so inline section results (Ottawa, PERC) stay tied to their criteria
+      if(i + 1 < children.length && children[i+1].classList.contains('perc-result')) {
+        card.appendChild(children[i+1]);
+        children.splice(i+1, 1);
+      }
     }
     i++;
   }
@@ -1152,8 +1160,11 @@ function buildResultColumn(criteriaCol, resultCol) {
   const panel = document.createElement('div');
   panel.className = 'result-panel';
 
-  // collect all result-card and perc-result elements
-  criteriaCol.querySelectorAll('.result-card, .perc-result').forEach(el => panel.appendChild(el));
+  // collect result-card elements; skip perc-results already inside .criterion cards
+  criteriaCol.querySelectorAll('.result-card').forEach(el => panel.appendChild(el));
+  criteriaCol.querySelectorAll('.perc-result').forEach(el => {
+    if(!el.closest('.criterion')) panel.appendChild(el);
+  });
 
   // collect copy buttons
   const copyWrap = document.createElement('div');
