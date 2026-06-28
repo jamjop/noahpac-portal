@@ -33,10 +33,10 @@
 
 /* Content blocks */
 .phase{margin-bottom:20px}
-.phase-label{font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--purple);background:#d4e5ff;border-left:3px solid var(--purple);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:6px 12px;margin-bottom:10px;display:block}
+.phase-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--purple);background:#d4e5ff;border-left:3px solid var(--purple);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:6px 12px;margin-bottom:10px;display:block}
 
 .steps{list-style:none;display:flex;flex-direction:column;gap:7px}
-.steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border-radius:var(--r-sm);padding:10px 14px;font-size:13px;box-shadow:var(--sh)}
+.steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border-radius:var(--r);padding:14px 18px;font-size:13px;box-shadow:var(--sh)}
 .step-num{font-size:11px;font-weight:700;color:var(--teal);flex-shrink:0;min-width:18px}
 .steps li strong{font-weight:700}
 
@@ -60,7 +60,7 @@
 .drug-tag.teal{background:var(--teal-soft);color:#0369A1}
 .drug-tag.warn{background:var(--warn-soft);color:#92400E}
 .drug-row{display:grid;grid-template-columns:108px 1fr;gap:5px 12px;font-size:12.5px;margin-top:4px;align-items:baseline}
-.drug-row-label{font-size:9.5px;font-weight:600;color:var(--ink-muted);text-transform:uppercase}
+.drug-row-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.08em;color:var(--ink-muted);text-transform:uppercase}
 .drug-row-val{font-weight:600;font-size:12.5px;color:var(--ink)}
 .drug-note{font-size:12px;color:var(--ink-soft);margin-top:8px;font-style:italic;border-top:1px solid var(--line);padding-top:8px}
 

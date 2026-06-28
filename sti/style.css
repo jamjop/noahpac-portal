@@ -33,7 +33,7 @@
 .reg-label.allergy{color:var(--warn);border-color:var(--warn)}
 
 .drugs{display:flex;flex-direction:column;gap:8px}
-.drug{background:var(--surface);border-radius:var(--r-sm);padding:11px 14px;box-shadow:var(--sh)}
+.drug{background:var(--surface);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
 .drug.fl{box-shadow:0 0 0 2px var(--ok),var(--sh)}
 .drug-name{font-weight:700;font-size:13.5px}
 .drug-dose{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;margin-top:3px}
