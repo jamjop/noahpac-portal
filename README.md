@@ -22,7 +22,7 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `antibiogram/` | ND Antibiogram | Local susceptibility data for 4 ND facilities; auto-updated monthly from HHS PDFs |
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
 | `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
-| `calculators/` | Clinical Calculators | 18 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Pregnancy EDD |
+| `calculators/` | Clinical Calculators | 19 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Weight Change, Pregnancy EDD |
 | `opioids/` | Opioid Conversion | Equianalgesic conversion with MME and CDC risk thresholds |
 | `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data |
 | `sepsis/` | Sepsis Screening | qSOFA + SOFA scoring |
