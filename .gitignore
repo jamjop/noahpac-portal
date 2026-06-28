@@ -65,7 +65,7 @@ attached_assets/
 
 # Live data files — written by cron jobs, not source
 screener/data/
-antibiogram/data/
+# antibiogram/data/ — tracked: empiric page fetches these as runtime static assets
 **/known_pmids.json
 **/known_state.json
 **/known_files.json

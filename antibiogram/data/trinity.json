@@ -1,0 +1,335 @@
+{
+  "id": "trinity",
+  "name": "Trinity Hospital",
+  "location": "Minot, ND",
+  "period": "2023",
+  "sourceNote": "ND HHS Archive \u00b7 Trinity Hospital Antibiogram 2023 (data period: Jan 1 \u2013 Dec 31, 2022) \u00b7 % susceptible, 1st isolate/patient/year \u00b7 hhs.nd.gov/\u2026/2023-TrinityHealth-archive.pdf",
+  "organisms": [
+    {
+      "name": "Staph aureus (MSSA)",
+      "gram": "positive",
+      "isolates": 483,
+      "s": {
+        "pen": "nr",
+        "oxa": 100,
+        "ams": 100,
+        "ptz": "nr",
+        "cfz": "nr",
+        "cfx": "nr",
+        "cxm": "nr",
+        "cro": "nr",
+        "caz": "nr",
+        "fep": "nr",
+        "mem": "nr",
+        "gen": 99,
+        "tob": "nr",
+        "cip": 89,
+        "lvx": 90,
+        "van": 100,
+        "tet": 94,
+        "cli": 81,
+        "azi": 69,
+        "sxt": 100,
+        "rif": 100,
+        "dap": 100,
+        "lzd": 100,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Staph aureus (MRSA)",
+      "gram": "positive",
+      "isolates": 162,
+      "s": {
+        "oxa": 0,
+        "ams": 0,
+        "mem": 98,
+        "gen": "nr",
+        "cip": 32,
+        "lvx": 35,
+        "van": 100,
+        "tet": 96,
+        "cli": 80,
+        "sxt": 98,
+        "rif": 99,
+        "dap": 99,
+        "lzd": 100,
+        "nit": 93
+      }
+    },
+    {
+      "name": "Staph aureus (All strains)",
+      "gram": "positive",
+      "isolates": 645,
+      "s": {
+        "amp": "nr",
+        "oxa": 75,
+        "ams": 75,
+        "ptz": "nr",
+        "cfz": "nr",
+        "cfx": "nr",
+        "cxm": "nr",
+        "cro": "nr",
+        "caz": "nr",
+        "fep": "nr",
+        "mem": 98,
+        "gen": "nr",
+        "cip": 75,
+        "lvx": 76,
+        "van": 100,
+        "tet": 95,
+        "cli": 81,
+        "azi": 56,
+        "sxt": 99,
+        "rif": 100,
+        "dap": 100,
+        "lzd": 100,
+        "nit": 98
+      }
+    },
+    {
+      "name": "Staph, Coagulase Neg",
+      "gram": "positive",
+      "isolates": 280,
+      "s": {
+        "oxa": 50,
+        "ams": 50,
+        "mem": 96,
+        "gen": "nr",
+        "cip": 85,
+        "lvx": 85,
+        "van": 100,
+        "tet": 87,
+        "cli": 64,
+        "azi": 42,
+        "sxt": 83,
+        "rif": 99,
+        "dap": 100,
+        "lzd": 100,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Streptococcus pneumoniae",
+      "gram": "positive",
+      "isolates": 39,
+      "s": {
+        "pen": 93,
+        "amp": "nr",
+        "cro": 100,
+        "fep": "nr",
+        "mem": 89,
+        "lvx": 97,
+        "van": 100,
+        "tet": 76,
+        "cli": 86,
+        "azi": 75,
+        "sxt": 79
+      }
+    },
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 353,
+      "s": {
+        "amp": 100,
+        "cip": 84,
+        "lvx": 89,
+        "van": 100,
+        "tet": 31,
+        "sxt": 50,
+        "rif": 100,
+        "dap": 100,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 45,
+      "s": {
+        "amp": 33,
+        "cip": 20,
+        "lvx": 36,
+        "van": 67,
+        "tet": 64,
+        "rif": 100,
+        "dap": 98,
+        "nit": 83
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 2424,
+      "s": {
+        "amp": 64,
+        "ams": 68,
+        "ptz": 100,
+        "cfz": 93,
+        "cfx": 97,
+        "cxm": 93,
+        "cro": 95,
+        "caz": 96,
+        "fep": 96,
+        "mem": 100,
+        "gen": 94,
+        "tob": 97,
+        "cip": "nr",
+        "lvx": "nr",
+        "sxt": 84,
+        "nit": 98
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 421,
+      "s": {
+        "ptz": 98,
+        "cfz": 97,
+        "cfx": 96,
+        "cxm": 94,
+        "cro": 97,
+        "caz": 98,
+        "fep": 98,
+        "mem": 100,
+        "gen": 99,
+        "tob": 99,
+        "sxt": 94,
+        "nit": 48
+      }
+    },
+    {
+      "name": "Klebsiella oxytoca",
+      "gram": "negative",
+      "isolates": 133,
+      "s": {
+        "ams": 72,
+        "ptz": 97,
+        "cfz": 19,
+        "cfx": 94,
+        "cxm": 89,
+        "cro": 95,
+        "caz": 97,
+        "fep": 96,
+        "mem": 100,
+        "gen": 96,
+        "tob": 98,
+        "sxt": 97,
+        "nit": 93
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 166,
+      "s": {
+        "amp": 89,
+        "ptz": 95,
+        "cfz": 100,
+        "cfx": 93,
+        "cxm": 99,
+        "cro": 99,
+        "caz": 98,
+        "fep": 100,
+        "mem": 99,
+        "gen": 95,
+        "sxt": 86
+      }
+    },
+    {
+      "name": "Enterobacter cloacae",
+      "gram": "negative",
+      "isolates": 137,
+      "s": {
+        "ptz": 85,
+        "cro": 69,
+        "caz": 79,
+        "fep": 94,
+        "mem": 100,
+        "gen": 99,
+        "tob": 99,
+        "sxt": 96,
+        "nit": 26
+      }
+    },
+    {
+      "name": "Klebsiella aerogenes",
+      "gram": "negative",
+      "isolates": 63,
+      "note": "formerly Enterobacter",
+      "s": {
+        "ptz": 90,
+        "cxm": 84,
+        "cro": 83,
+        "caz": 98,
+        "fep": 100,
+        "mem": 100,
+        "gen": 100,
+        "sxt": 98,
+        "nit": 24
+      }
+    },
+    {
+      "name": "Serratia marcescens",
+      "gram": "negative",
+      "isolates": 28,
+      "s": {
+        "ptz": 89,
+        "cxm": 93,
+        "cro": 93,
+        "caz": 96,
+        "fep": 100,
+        "mem": 100,
+        "gen": 100,
+        "sxt": 100
+      }
+    },
+    {
+      "name": "Citrobacter freundii",
+      "gram": "negative",
+      "isolates": 35,
+      "s": {
+        "ptz": 89,
+        "cfx": 80,
+        "cxm": 80,
+        "cro": 100,
+        "caz": 100,
+        "fep": 97,
+        "mem": 97,
+        "sxt": 89,
+        "nit": 96
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 192,
+      "s": {
+        "ptz": 96,
+        "caz": 96,
+        "fep": 96,
+        "mem": 98,
+        "gen": 87,
+        "tob": 99
+      }
+    },
+    {
+      "name": "Stenotrophomonas maltophilia",
+      "gram": "negative",
+      "isolates": 24,
+      "s": {
+        "sxt": 100
+      }
+    },
+    {
+      "name": "H. influenzae",
+      "gram": "negative",
+      "isolates": 22,
+      "note": "68% beta-lactamase neg",
+      "s": {}
+    }
+  ],
+  "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/DOH%20Legacy/Antimicrobial/2023-TrinityHealth-archive.pdf"
+}

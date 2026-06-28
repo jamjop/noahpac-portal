@@ -1,0 +1,275 @@
+{
+  "id": "sanford_bismarck",
+  "name": "Sanford Health",
+  "location": "Bismarck, ND",
+  "period": "2024",
+  "sourceNote": "ND HHS Archive \u00b7 Sanford Health Bismarck Antibiogram 2025 (Jan\u2013Dec 2024 data) \u00b7 inpatient + outpatient \u00b7 % susceptible",
+  "organisms": [
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 423,
+      "s": {
+        "amp": 100,
+        "cip": 88,
+        "lvx": 88,
+        "nit": 100,
+        "lzd": 97,
+        "van": 100
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 54,
+      "s": {
+        "amp": 26,
+        "cip": 13,
+        "lvx": 19,
+        "nit": 30,
+        "lzd": 96,
+        "van": 30
+      }
+    },
+    {
+      "name": "Staph aureus (MSSA)",
+      "gram": "positive",
+      "isolates": 726,
+      "s": {
+        "oxa": 100,
+        "cli": 96,
+        "ery": 69,
+        "nit": 100,
+        "tet": 93,
+        "sxt": 98,
+        "lzd": 100,
+        "van": 100
+      }
+    },
+    {
+      "name": "Staph aureus (MRSA)",
+      "gram": "positive",
+      "isolates": 310,
+      "s": {
+        "oxa": 0,
+        "cli": 87,
+        "ery": 17,
+        "nit": 100,
+        "tet": 90,
+        "sxt": 92,
+        "lzd": 99,
+        "van": 100
+      }
+    },
+    {
+      "name": "Staph epidermidis",
+      "gram": "positive",
+      "isolates": 218,
+      "s": {
+        "oxa": 43,
+        "cli": 73,
+        "ery": 46,
+        "nit": 100,
+        "tet": 84,
+        "sxt": 67,
+        "lzd": 99,
+        "van": 100
+      }
+    },
+    {
+      "name": "Streptococcus pneumoniae",
+      "gram": "positive",
+      "isolates": 37,
+      "note": "PCN/CRO values for non-meningitis breakpoints",
+      "s": {
+        "pen": 100,
+        "cro": 100,
+        "lvx": 100,
+        "cli": 97,
+        "ery": 78,
+        "tet": 95,
+        "sxt": 95,
+        "lzd": 100,
+        "van": 100
+      }
+    },
+    {
+      "name": "Citrobacter freundii",
+      "gram": "negative",
+      "isolates": 192,
+      "s": {
+        "ptz": 91,
+        "fep": 100,
+        "caz": 90,
+        "cro": 89,
+        "mem": 100,
+        "cip": 96,
+        "lvx": 95,
+        "gen": 99,
+        "tob": 97,
+        "nit": 90,
+        "sxt": 97
+      }
+    },
+    {
+      "name": "Enterobacter cloacae",
+      "gram": "negative",
+      "isolates": 179,
+      "s": {
+        "ptz": 84,
+        "fep": 97,
+        "caz": 87,
+        "cro": 85,
+        "mem": 99,
+        "cip": 96,
+        "lvx": 93,
+        "gen": 97,
+        "tob": 97,
+        "nit": 27,
+        "sxt": 93
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 4156,
+      "s": {
+        "amp": 62,
+        "ptz": 97,
+        "cfz": 94,
+        "fep": 99,
+        "caz": 98,
+        "cro": 95,
+        "mem": 100,
+        "cip": 85,
+        "lvx": 81,
+        "gen": 94,
+        "tob": 95,
+        "nit": 98,
+        "sxt": 83
+      }
+    },
+    {
+      "name": "Klebsiella aerogenes",
+      "gram": "negative",
+      "isolates": 128,
+      "s": {
+        "ptz": 84,
+        "fep": 99,
+        "caz": 88,
+        "cro": 85,
+        "mem": 99,
+        "cip": 97,
+        "lvx": 96,
+        "gen": 98,
+        "tob": 98,
+        "nit": 18,
+        "sxt": 99
+      }
+    },
+    {
+      "name": "Klebsiella oxytoca",
+      "gram": "negative",
+      "isolates": 165,
+      "s": {
+        "ptz": 96,
+        "fep": 100,
+        "caz": 100,
+        "cro": 97,
+        "mem": 100,
+        "cip": 98,
+        "lvx": 98,
+        "gen": 99,
+        "tob": 99,
+        "nit": 87,
+        "sxt": 98
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 703,
+      "s": {
+        "ptz": 94,
+        "cfz": 96,
+        "fep": 99,
+        "caz": 98,
+        "cro": 96,
+        "mem": 99,
+        "cip": 95,
+        "lvx": 92,
+        "gen": 98,
+        "tob": 98,
+        "nit": 34,
+        "sxt": 95
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 364,
+      "s": {
+        "amp": 88,
+        "ptz": 100,
+        "cfz": 95,
+        "fep": 100,
+        "caz": 100,
+        "cro": 99,
+        "mem": 100,
+        "cip": 84,
+        "lvx": 84,
+        "gen": 98,
+        "tob": 98,
+        "sxt": 90
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 355,
+      "s": {
+        "ptz": 90,
+        "fep": 97,
+        "caz": 95,
+        "mem": 93,
+        "cip": 88,
+        "lvx": 80,
+        "tob": 97
+      }
+    },
+    {
+      "name": "Serratia marcescens",
+      "gram": "negative",
+      "isolates": 48,
+      "s": {
+        "fep": 100,
+        "caz": 100,
+        "cro": 90,
+        "mem": 98,
+        "cip": 96,
+        "lvx": 96,
+        "gen": 98,
+        "tob": 90,
+        "sxt": 98
+      }
+    },
+    {
+      "name": "Stenotrophomonas maltophilia",
+      "gram": "negative",
+      "isolates": 43,
+      "s": {
+        "lvx": 81,
+        "sxt": 88
+      }
+    },
+    {
+      "name": "H. influenzae",
+      "gram": "negative",
+      "isolates": 33,
+      "s": {
+        "amp": 76
+      }
+    }
+  ],
+  "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/DOH%20Legacy/Antimicrobial/2024-Sanford-Bismarck-archive.pdf"
+}

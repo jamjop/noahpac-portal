@@ -1,0 +1,293 @@
+{
+  "id": "altru",
+  "name": "Altru Health System",
+  "location": "Grand Forks, ND",
+  "period": "2024",
+  "sourceNote": "ND HHS Archive \u00b7 Altru Health System 2024 Antibiogram \u00b7 % susceptible, 1st isolate/patient",
+  "organisms": [
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 359,
+      "s": {
+        "amp": 100,
+        "van": 99,
+        "lzd": 98,
+        "dap": 100,
+        "nit": 100
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 57,
+      "s": {
+        "amp": 28,
+        "van": 61,
+        "lzd": 97,
+        "nit": 30
+      }
+    },
+    {
+      "name": "Staph aureus (MSSA)",
+      "gram": "positive",
+      "isolates": 738,
+      "s": {
+        "oxa": 75,
+        "ery": 93,
+        "sxt": 81,
+        "cli": 93,
+        "dox": 100,
+        "van": 100,
+        "lzd": 100
+      }
+    },
+    {
+      "name": "Staph aureus (MRSA)",
+      "gram": "positive",
+      "isolates": 186,
+      "s": {
+        "ery": 86,
+        "sxt": 80,
+        "cli": 91,
+        "dox": 100,
+        "van": 100,
+        "lzd": 100
+      }
+    },
+    {
+      "name": "Staph epidermidis",
+      "gram": "positive",
+      "isolates": 202,
+      "s": {
+        "oxa": 40,
+        "ery": "nr",
+        "sxt": 53,
+        "cli": 83,
+        "dox": 100,
+        "van": 99,
+        "lzd": 100
+      }
+    },
+    {
+      "name": "Streptococcus pneumoniae",
+      "gram": "positive",
+      "isolates": 54,
+      "note": "PCN/CRO: non-meningitis breakpoints",
+      "s": {
+        "pen": 97,
+        "cro": 96,
+        "ery": 65,
+        "cli": 96,
+        "dox": 75,
+        "van": 100
+      }
+    },
+    {
+      "name": "\u03b2-hemolytic Strep (GAS)",
+      "gram": "positive",
+      "isolates": 25,
+      "s": {
+        "pen": 100,
+        "cro": 100,
+        "cli": 100,
+        "sxt": 52
+      }
+    },
+    {
+      "name": "\u03b2-hemolytic Strep (GBS)",
+      "gram": "positive",
+      "isolates": 89,
+      "s": {
+        "pen": 98,
+        "cro": 100,
+        "cli": 100,
+        "sxt": 47
+      }
+    },
+    {
+      "name": "Strep anginosus",
+      "gram": "positive",
+      "isolates": 27,
+      "s": {
+        "amp": 96,
+        "cro": 95,
+        "sxt": 65,
+        "dox": 92
+      }
+    },
+    {
+      "name": "Strep intermedius",
+      "gram": "positive",
+      "isolates": 21,
+      "s": {
+        "amp": 100,
+        "cro": 100,
+        "sxt": 72,
+        "dox": 95
+      }
+    },
+    {
+      "name": "Strep mitis/oralis",
+      "gram": "positive",
+      "isolates": 27,
+      "s": {
+        "amp": 70,
+        "cro": 92,
+        "sxt": 77,
+        "dox": 100
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 2008,
+      "s": {
+        "amp": 63,
+        "ams": 72,
+        "ptz": 95,
+        "cfz_u": 93,
+        "cro": 95,
+        "fep": 97,
+        "mem": 100,
+        "cip": 79,
+        "gen": 94,
+        "sxt": 84,
+        "nit": 97
+      }
+    },
+    {
+      "name": "Enterobacter cloacae",
+      "gram": "negative",
+      "isolates": 151,
+      "s": {
+        "ptz": 82,
+        "cro": "nr",
+        "fep": 94,
+        "mem": 96,
+        "cip": 96,
+        "gen": 98,
+        "sxt": 94,
+        "nit": 11
+      }
+    },
+    {
+      "name": "Klebsiella aerogenes",
+      "gram": "negative",
+      "isolates": 47,
+      "s": {
+        "ptz": 69,
+        "cro": "nr",
+        "fep": 100,
+        "mem": 100,
+        "cip": 91,
+        "gen": 100,
+        "sxt": 97,
+        "nit": 33
+      }
+    },
+    {
+      "name": "Klebsiella oxytoca",
+      "gram": "negative",
+      "isolates": 128,
+      "s": {
+        "ams": 77,
+        "ptz": 92,
+        "cro": 93,
+        "fep": 96,
+        "mem": 99,
+        "cip": 95,
+        "gen": 97,
+        "sxt": 92,
+        "nit": 87
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 354,
+      "s": {
+        "ams": 89,
+        "ptz": 95,
+        "cfz_u": 94,
+        "cro": 97,
+        "fep": 96,
+        "mem": 99,
+        "cip": 92,
+        "gen": 98,
+        "sxt": 94,
+        "nit": 34
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 267,
+      "s": {
+        "ptz": 89,
+        "fep": 93,
+        "mem": 93,
+        "cip": 87,
+        "gen": 99
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 211,
+      "s": {
+        "amp": 86,
+        "ams": 93,
+        "ptz": 98,
+        "cfz_u": 96,
+        "cro": 99,
+        "fep": 100,
+        "mem": 99,
+        "cip": 87,
+        "gen": 93,
+        "sxt": 89,
+        "nit": "nr"
+      }
+    },
+    {
+      "name": "Citrobacter gp",
+      "gram": "negative",
+      "isolates": 127,
+      "s": {
+        "ptz": 94,
+        "cro": "nr",
+        "fep": 99,
+        "mem": 100,
+        "cip": 94,
+        "gen": 97,
+        "sxt": 94,
+        "nit": 89
+      }
+    },
+    {
+      "name": "Serratia marcescens",
+      "gram": "negative",
+      "isolates": 26,
+      "s": {
+        "cro": "nr",
+        "fep": 100,
+        "mem": 100,
+        "cip": 96,
+        "gen": 100,
+        "sxt": 100
+      }
+    },
+    {
+      "name": "Haemophilus gp",
+      "gram": "negative",
+      "isolates": 60,
+      "s": {
+        "ams": 90,
+        "cro": 96,
+        "cip": 100,
+        "sxt": 77
+      }
+    }
+  ],
+  "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/DOH%20Legacy/Antimicrobial/2024-Altru-antibiogram-archive.pdf"
+}
