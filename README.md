@@ -88,6 +88,7 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `vaccines/check_updates.py` | 05:45 | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
 | `sti/check_updates.py` | 06:00 | PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance; CDC STI page links |
 | `calculators/check_updates.py` | 06:15 | PubMed: ACC/AHA (ASCVD, AFib, chest pain, periop), ACCP/ESC (VTE), ATS/BTS (pneumonia), KDIGO (eGFR/CrCl), AASLD (MELD), USPSTF (depression/anxiety), Ottawa/PECARN/Alvarado, AAD (isotretinoin), ACOG (EDD) |
+| `peds/check_updates.py` | 06:30 | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
 
 Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
 
