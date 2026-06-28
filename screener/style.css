@@ -41,10 +41,10 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
 
 /* ── Sex seg buttons ── */
-.seg{display:flex;flex-direction:column;gap:6px}
+.seg{display:flex;flex-direction:row;gap:6px;flex-wrap:wrap}
 .seg-btn{
   display:flex;align-items:center;gap:10px;
-  width:100%;text-align:left;
+  width:auto;
   background:var(--bg);
   border:1.5px solid var(--line);
   border-radius:var(--r-sm);
