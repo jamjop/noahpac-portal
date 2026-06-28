@@ -18,6 +18,38 @@ function drugCard(d) {
   return `<div class="drug-card${d.priority?' priority':''}"><div class="drug-header"><span class="drug-name">${esc(d.name)}</span>${tag}</div>${rows}${note}</div>`;
 }
 
+// ── EKG waveform paths (viewBox 0 0 480 70, baseline y=35) ───────────────────
+const EKG = {
+  nsr:    `M0,35 L5,35 Q12,28 19,35 L28,35 L30,39 L32,4 L34,43 L37,35 L52,35 Q63,24 75,35 L120,35 L125,35 Q132,28 139,35 L148,35 L150,39 L152,4 L154,43 L157,35 L172,35 Q183,24 195,35 L240,35 L245,35 Q252,28 259,35 L268,35 L270,39 L272,4 L274,43 L277,35 L292,35 Q303,24 315,35 L360,35 L365,35 Q372,28 379,35 L388,35 L390,39 L392,4 L394,43 L397,35 L412,35 Q423,24 435,35 L480,35`,
+  brady:  `M0,35 L40,35 Q47,28 54,35 L63,35 L65,39 L67,4 L69,43 L72,35 L87,35 Q98,24 110,35 L248,35 Q255,28 262,35 L271,35 L273,39 L275,4 L277,43 L280,35 L295,35 Q306,24 318,35 L480,35`,
+  svt:    `M0,35 L2,39 L4,4 L6,43 L8,35 Q18,27 30,35 L80,35 L82,39 L84,4 L86,43 L88,35 Q98,27 110,35 L160,35 L162,39 L164,4 L166,43 L168,35 Q178,27 190,35 L240,35 L242,39 L244,4 L246,43 L248,35 Q258,27 270,35 L320,35 L322,39 L324,4 L326,43 L328,35 Q338,27 350,35 L400,35 L402,39 L404,4 L406,43 L408,35 Q418,27 430,35 L480,35`,
+  pvt:    `M0,35 C8,35 20,4 25,4 C30,4 44,60 48,60 C52,60 57,35 60,35 C68,35 80,4 85,4 C90,4 104,60 108,60 C112,60 117,35 120,35 C128,35 140,4 145,4 C150,4 164,60 168,60 C172,60 177,35 180,35 C188,35 200,4 205,4 C210,4 224,60 228,60 C232,60 237,35 240,35 C248,35 260,4 265,4 C270,4 284,60 288,60 C292,60 297,35 300,35 C308,35 320,4 325,4 C330,4 344,60 348,60 C352,60 357,35 360,35 C368,35 380,4 385,4 C390,4 404,60 408,60 C412,60 417,35 420,35 C428,35 440,4 445,4 C450,4 464,60 468,60 C472,60 477,35 480,35`,
+  vf:     `M0,35 Q6,48 12,22 Q16,8 20,56 Q24,65 28,16 Q32,4 36,58 Q40,66 44,20 Q48,8 52,54 Q56,62 60,22 Q64,10 68,56 Q72,64 76,18 Q80,6 84,52 Q88,62 92,24 Q96,12 100,54 Q104,62 108,20 Q112,8 116,56 Q120,64 124,18 Q128,6 132,52 Q136,60 140,24 Q144,14 148,54 Q152,62 156,22 Q160,10 164,56 Q168,64 172,18 Q176,6 180,52 Q184,62 188,24 Q192,12 196,54 Q200,60 204,20 Q208,8 212,52 Q216,60 220,22 Q224,12 228,56 Q232,64 236,20 Q240,8 244,54 Q248,62 252,24 Q256,12 260,54 Q264,60 268,22 Q272,10 276,56 Q280,64 284,18 Q288,6 292,52 Q296,60 300,24 Q304,12 308,54 Q312,62 316,22 Q320,10 324,56 Q328,64 332,18 Q336,6 340,52 Q344,62 348,24 Q352,12 356,52 Q360,62 364,20 Q368,8 372,56 Q376,64 380,18 Q384,6 388,52 Q392,60 396,24 Q400,14 404,56 Q408,64 412,20 Q416,8 420,52 Q424,60 428,24 Q432,12 436,56 Q440,64 444,18 Q448,6 452,52 Q456,60 460,24 Q464,14 468,54 Q472,62 476,26 Q478,40 480,35`,
+  asys:   `M0,35 Q120,34 240,36 Q360,35 480,35`,
+  pea:    `M0,35 L18,35 L21,39 L26,4 L34,4 L39,43 L45,35 Q57,26 70,35 L230,35 L233,39 L238,4 L246,4 L251,43 L257,35 Q269,26 282,35 L480,35`,
+  afib:   `M0,35 Q4,32 8,35 Q12,38 16,35 Q20,32 24,35 Q28,38 32,35 Q36,32 40,35 Q44,38 48,35 L50,39 L52,4 L54,43 L57,35 Q65,27 74,35 Q78,32 82,35 Q86,38 90,35 Q94,32 98,35 L100,39 L102,4 L104,43 L107,35 Q115,27 124,35 Q128,32 132,35 Q136,38 140,35 Q144,32 148,35 Q152,38 156,35 L158,39 L160,4 L162,43 L165,35 Q173,27 182,35 Q186,32 190,35 Q194,38 198,35 Q202,32 206,35 L208,39 L210,4 L212,43 L215,35 Q223,27 232,35 Q236,32 240,35 Q244,38 248,35 Q252,32 256,35 Q260,38 264,35 Q268,32 272,35 L274,39 L276,4 L278,43 L281,35 Q289,27 298,35 Q302,32 306,35 Q310,38 314,35 Q318,32 322,35 Q326,38 330,35 Q334,32 338,35 L340,39 L342,4 L344,43 L347,35 Q355,27 364,35 Q368,32 372,35 Q376,38 380,35 Q384,32 388,35 Q392,38 396,35 Q400,32 404,35 L406,39 L408,4 L410,43 L413,35 Q421,27 430,35 Q434,32 438,35 Q442,38 446,35 Q450,32 454,35 L456,39 L458,4 L460,43 L463,35 Q471,27 480,35`,
+  stemi:  `M0,35 L5,35 Q12,28 19,35 L28,35 L30,39 L32,4 L34,27 L50,25 Q60,14 72,35 L120,35 L125,35 Q132,28 139,35 L148,35 L150,39 L152,4 L154,27 L170,25 Q180,14 192,35 L240,35 L245,35 Q252,28 259,35 L268,35 L270,39 L272,4 L274,27 L290,25 Q300,14 312,35 L360,35 L365,35 Q372,28 379,35 L388,35 L390,39 L392,4 L394,27 L410,25 Q420,14 432,35 L480,35`,
+  nstemi: `M0,35 L5,35 Q12,28 19,35 L28,35 L30,39 L32,4 L34,43 L37,35 L46,43 L58,43 Q66,50 78,35 L120,35 L125,35 Q132,28 139,35 L148,35 L150,39 L152,4 L154,43 L157,35 L166,43 L178,43 Q186,50 198,35 L240,35 L245,35 Q252,28 259,35 L268,35 L270,39 L272,4 L274,43 L277,35 L286,43 L298,43 Q306,50 318,35 L360,35 L365,35 Q372,28 379,35 L388,35 L390,39 L392,4 L394,43 L397,35 L406,43 L418,43 Q426,50 438,35 L480,35`,
+  stachy: `M0,35 Q5,31 10,35 L14,35 L16,39 L18,4 L20,43 L22,35 Q30,27 40,35 L80,35 Q85,31 90,35 L94,35 L96,39 L98,4 L100,43 L102,35 Q110,27 120,35 L160,35 Q165,31 170,35 L174,35 L176,39 L178,4 L180,43 L182,35 Q190,27 200,35 L240,35 Q245,31 250,35 L254,35 L256,39 L258,4 L260,43 L262,35 Q270,27 280,35 L320,35 Q325,31 330,35 L334,35 L336,39 L338,4 L340,43 L342,35 Q350,27 360,35 L400,35 Q405,31 410,35 L414,35 L416,39 L418,4 L420,43 L422,35 Q430,27 440,35 L480,35`,
+  pedsvt: `M0,35 L1,39 L3,4 L5,43 L7,35 Q14,27 22,35 L60,35 L61,39 L63,4 L65,43 L67,35 Q74,27 82,35 L120,35 L121,39 L123,4 L125,43 L127,35 Q134,27 142,35 L180,35 L181,39 L183,4 L185,43 L187,35 Q194,27 202,35 L240,35 L241,39 L243,4 L245,43 L247,35 Q254,27 262,35 L300,35 L301,39 L303,4 L305,43 L307,35 Q314,27 322,35 L360,35 L361,39 L363,4 L365,43 L367,35 Q374,27 382,35 L420,35 L421,39 L423,4 L425,43 L427,35 Q434,27 442,35 L480,35`,
+};
+
+function ekgStrip(rows) {
+  return `<div class="ekg-card">${rows.map(r=>`
+    <div class="ekg-row">
+      <div class="ekg-labels">
+        <span class="ekg-rhythm">${r.label}</span>
+        ${r.sub?`<span class="ekg-sub">${r.sub}</span>`:''}
+      </div>
+      <div class="ekg-svg-wrap">
+        <svg class="ekg-svg" viewBox="0 0 480 70" preserveAspectRatio="none">
+          <line x1="0" y1="35" x2="480" y2="35" class="ekg-baseline"/>
+          <path d="${r.path}" class="ekg-path${r.color?' '+r.color:''}"/>
+        </svg>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
 const SECTIONS = [
 
   // ── Pediatric VF / pVT ────────────────────────────────────────────────────
@@ -25,6 +57,11 @@ const SECTIONS = [
     id:'vfpvt', label:'VF / pVT',
     render() { return `
       <div class="sec-title"><span class="sec-badge">SHOCKABLE</span> Pediatric VF / Pulseless VT</div>
+
+      ${ekgStrip([
+        {label:'V-Fib', sub:'Chaotic · no pulse',     path:EKG.vf,  color:'c-red'},
+        {label:'p-VT',  sub:'Wide regular · no pulse', path:EKG.pvt, color:'c-red'},
+      ])}
 
       ${callout('danger', 'Key Differences from Adult ALS', `
         <ul>
@@ -104,6 +141,11 @@ const SECTIONS = [
     render() { return `
       <div class="sec-title"><span class="sec-badge">NON-SHOCKABLE</span> Pediatric Asystole / PEA</div>
 
+      ${ekgStrip([
+        {label:'Asystole', sub:'Flat · no electrical activity', path:EKG.asys, color:'c-muted'},
+        {label:'PEA',      sub:'Organized · no pulse',          path:EKG.pea,  color:'c-warn'},
+      ])}
+
       <div class="sec-note">Asystole and PEA are the most common arrest rhythms in children. The primary cause is usually asphyxia — prioritize airway and ventilation.</div>
 
       ${phase('Initial Steps', [
@@ -161,6 +203,10 @@ const SECTIONS = [
     render() { return `
       <div class="sec-title"><span class="sec-badge warn">BRADYCARDIA</span> Pediatric Bradycardia with Pulse</div>
 
+      ${ekgStrip([
+        {label:'Sinus Brady', sub:'HR &lt;60 · P before QRS · hypoxia first', path:EKG.brady, color:'c-warn'},
+      ])}
+
       ${callout('danger', 'Critical Principle', `
         <p><strong>In children, bradycardia is most often caused by hypoxia.</strong> The first intervention is always to support the airway and provide adequate oxygenation and ventilation. Drugs and pacing are secondary.</p>`
       )}
@@ -209,6 +255,11 @@ const SECTIONS = [
     id:'tachy', label:'Tachycardia',
     render() { return `
       <div class="sec-title"><span class="sec-badge warn">TACHYCARDIA</span> Pediatric Tachycardia with Pulse</div>
+
+      ${ekgStrip([
+        {label:'SVT',  sub:'HR &gt;220 infant · narrow · regular', path:EKG.pedsvt, color:'c-warn'},
+        {label:'V-Tach',sub:'Wide · regular · fast',               path:EKG.pvt,    color:'c-red'},
+      ])}
 
       ${callout('danger', 'Unstable → Immediate Synchronized Cardioversion', `
         <p>Signs of instability: altered mental status, signs of shock, respiratory distress, or hypotension <em>caused by the tachycardia</em>.</p>
@@ -281,6 +332,10 @@ const SECTIONS = [
     render() { return `
       <div class="sec-title"><span class="sec-badge ok">ROSC</span> Pediatric Post-Cardiac Arrest Care</div>
 
+      ${ekgStrip([
+        {label:'Goal Rhythm', sub:'NSR after ROSC', path:EKG.nsr, color:'c-ok'},
+      ])}
+
       ${phase('Airway & Breathing', [
         'If not following commands or inadequate respirations → advanced airway (ETT preferred in children post-arrest)',
         'Confirm ETT placement: waveform capnography, bilateral breath sounds, symmetric chest rise',
@@ -332,6 +387,10 @@ const SECTIONS = [
     id:'resp', label:'Respiratory',
     render() { return `
       <div class="sec-title"><span class="sec-badge teal">RESPIRATORY</span> Pediatric Respiratory Emergencies</div>
+
+      ${ekgStrip([
+        {label:'Sinus Tachy', sub:'HR &gt;100 · compensatory · P before QRS', path:EKG.stachy, color:'c-warn'},
+      ])}
 
       <div class="sec-note">Respiratory failure is the leading cause of pediatric cardiac arrest. Early recognition and intervention can prevent arrest.</div>
 
@@ -389,6 +448,10 @@ const SECTIONS = [
     id:'shock', label:'Shock',
     render() { return `
       <div class="sec-title"><span class="sec-badge">SHOCK</span> Pediatric Shock</div>
+
+      ${ekgStrip([
+        {label:'Sinus Tachy', sub:'HR &gt;100 · compensatory tachycardia', path:EKG.stachy, color:'c-warn'},
+      ])}
 
       ${callout('warn', 'Shock Recognition in Children', `
         <ul>
