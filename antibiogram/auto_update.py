@@ -322,7 +322,7 @@ def main() -> int:
     git = lambda *args: subprocess.run(
         ["git", "-C", str(REPO_DIR), *args], capture_output=True, text=True
     )
-    git("add", "app.js")
+    git("add", "app.js", "data/")
     commit_msg = (
         f"antibiogram: auto-update {', '.join(updated_names)}\n\n"
         f"Extracted via Claude vision from ND HHS archive.\n"
