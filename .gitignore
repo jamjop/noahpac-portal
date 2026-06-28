@@ -42,33 +42,19 @@ testem.log
 Thumbs.db
 
 # -----------------------------------------------------------------------
-# Replit-only — everything below stays on disk for the dev environment
-# but is NOT needed for nginx hosting and must not be in the git repo.
+# Replit-only — files below stay on disk for the dev environment
+# but are not part of the deployed nginx static content.
 # -----------------------------------------------------------------------
 
-# Replit platform config
-.replit
+# Replit platform config (env-specific, not committed)
 .replitignore
 .npmrc
 
-# Replit dev environment
-.agents/
+# Replit dev environment state
 .cache/
-.local/
-replit.md
 
-# Replit workspace infrastructure (pnpm monorepo, TypeScript config)
+# Replit Express wrapper (serves workspace root in dev; not needed in git)
 artifacts/
-lib/
-scripts/
-package.json
-tsconfig.base.json
-tsconfig.json
-pnpm-workspace.yaml
-pnpm-lock.yaml
-
-# Replit dev server
-server.js
 
 # Replit file attachments
 attached_assets/
