@@ -285,6 +285,26 @@ const DATA = [
 const CATS = [...new Set(DATA.map(d => d.cat))];
 let activeSearch = "";
 let activeCat = null;
+let currentItems = [];
+
+function buildCopyText(d) {
+  const lines = [d.name, ''];
+  function section(regs, label) {
+    if (!regs || regs.length === 0) return;
+    lines.push(label + ':');
+    regs.forEach(r => {
+      lines.push('• ' + (r.dose ? r.drug + '  ' + r.dose : r.drug));
+      if (r.note) lines.push('  ' + r.note);
+    });
+    lines.push('');
+  }
+  section(d.recommended, 'Recommended');
+  section(d.alternative, 'Alternative');
+  section(d.pregnancy, 'In Pregnancy');
+  if (d.notes) lines.push('Notes: ' + d.notes, '');
+  lines.push('Source: CDC 2021 STI Treatment Guidelines');
+  return lines.join('\n').trim();
+}
 
 function filterData() {
   let items = DATA;
@@ -319,23 +339,27 @@ function regRows(regs, label) {
 }
 
 function render() {
-  const items = filterData();
-  const root  = document.getElementById("list-root");
+  currentItems = filterData();
+  const root = document.getElementById("list-root");
 
-  // Update cat tabs
   document.querySelectorAll(".cat-tab").forEach(t => {
     t.classList.toggle("active", t.dataset.cat === (activeCat||""));
   });
 
-  if (items.length === 0) {
+  if (currentItems.length === 0) {
     root.innerHTML = `<div class="empty">No results for "${activeSearch}"</div>`;
     return;
   }
 
-  root.innerHTML = items.map(d => `
+  root.innerHTML = currentItems.map((d, i) => `
     <div class="guide-card">
-      <div class="guide-cat">${d.cat}</div>
-      <div class="guide-name">${d.name}</div>
+      <div class="card-top">
+        <div class="card-top-text">
+          <div class="guide-cat">${d.cat}</div>
+          <div class="guide-name">${d.name}</div>
+        </div>
+        <button class="copy-btn" data-idx="${i}" aria-label="Copy regimen to clipboard">Copy</button>
+      </div>
       ${regRows(d.recommended, "Recommended")}
       ${regRows(d.alternative, "Alternative")}
       ${regRows(d.pregnancy,   "In Pregnancy")}
@@ -361,3 +385,17 @@ document.getElementById("search").addEventListener("input", e => {
 });
 
 render();
+
+document.getElementById("list-root").addEventListener("click", e => {
+  const btn = e.target.closest(".copy-btn");
+  if (!btn) return;
+  const d = currentItems[parseInt(btn.dataset.idx, 10)];
+  navigator.clipboard.writeText(buildCopyText(d)).then(() => {
+    btn.textContent = "✓ Copied";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 1500);
+  }).catch(() => {
+    btn.textContent = "Failed";
+    setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+  });
+});
