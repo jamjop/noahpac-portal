@@ -263,7 +263,7 @@ const CALCS = [
     id:"ottawa", name:"Ottawa Knee + Ankle", num:"13",
     eyebrow:"Musculoskeletal", source:"Stiell et al. 1995 / 1996",
     render: pane => {
-      pane.innerHTML = calcHeader("Ottawa Knee &amp; Ankle Rules","Musculoskeletal","Clinical decision rules for imaging · Stiell et al.") +
+      pane.innerHTML = calcHeader("Ottawa Knee & Ankle Rules","Musculoskeletal","Clinical decision rules for imaging · Stiell et al.") +
         `<div class="section-label">Ottawa Knee — X-ray indicated if any criterion present:</div>
         <div class="checks">
           ${check("knee-age","Age ≥55")}
