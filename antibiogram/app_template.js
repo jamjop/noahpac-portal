@@ -109,24 +109,12 @@ function render() {
 }
 
 // ── Facility selector ──────────────────────────────────────────────────────
-function buildFacilityTabs() {
-  const wrap = document.getElementById("facility-tabs");
-  wrap.innerHTML = FACILITIES.map(f => `
-    <button class="fac-tab${f.id === activeFacilityId ? " active" : ""}"
-            data-fac="${f.id}">
-      <span class="fac-name">${f.name}</span>
-      <span class="fac-loc">${f.location}</span>
-    </button>
-  `).join("");
-
-  wrap.querySelectorAll(".fac-tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      wrap.querySelectorAll(".fac-tab").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeFacilityId = btn.dataset.fac;
-      render();
-    });
-  });
+function buildFacilitySelect() {
+  const sel = document.getElementById("facility-select");
+  sel.innerHTML = FACILITIES.map(f =>
+    `<option value="${f.id}"${f.id === activeFacilityId ? " selected" : ""}>${f.name} — ${f.location} (${f.period})</option>`
+  ).join("");
+  sel.onchange = () => { activeFacilityId = sel.value; render(); };
 }
 
 // ── Gram tabs ──────────────────────────────────────────────────────────────
@@ -139,7 +127,7 @@ document.querySelectorAll(".gram-tab").forEach(btn => {
   });
 });
 
-buildFacilityTabs();
+buildFacilitySelect();
 render();
 
 // ── PDF Import ─────────────────────────────────────────────────────────────
@@ -203,7 +191,7 @@ render();
 
       FACILITIES.push(fac);
       activeFacilityId = fac.id;
-      buildFacilityTabs();
+      buildFacilitySelect();
       render();
 
       setStatus(
@@ -216,7 +204,7 @@ render();
       log.hidden = false;
 
       // Scroll to new tab
-      document.getElementById("facility-tabs").scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("facility-select").scrollIntoView({ behavior: "smooth", block: "start" });
 
     } catch (err) {
       setStatus("Network error: " + err.message, "err");

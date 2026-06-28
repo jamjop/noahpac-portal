@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
@@ -22,7 +22,7 @@
 
 <div class="wrap">
 
-  <div id="facility-tabs" class="facility-tabs" role="tablist" aria-label="Select facility"></div>
+  <select id="facility-select" class="fac-select" aria-label="Select facility"></select>
 
   <div class="gram-tabs" role="tablist" aria-label="Gram stain filter">
     <button class="gram-tab active" data-gram="positive" role="tab" aria-selected="true">Gram-positive</button>
@@ -92,6 +92,6 @@
 </footer>
 
 <script src="api-config.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

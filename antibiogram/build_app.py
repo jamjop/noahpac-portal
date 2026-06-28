@@ -29,9 +29,10 @@ def load_facilities() -> list:
             print(f"WARNING: {p} not found — skipping", file=sys.stderr)
             continue
         facilities.append(json.loads(p.read_text()))
-    # Include any extra facilities not in the fixed order
+    # Include any extra facilities not in the fixed order (exclude manifest)
     extra = sorted(
-        p.stem for p in (DIR / "data").glob("*.json") if p.stem not in FACILITY_ORDER
+        p.stem for p in (DIR / "data").glob("*.json")
+        if p.stem not in FACILITY_ORDER and p.stem != "manifest"
     )
     for fid in extra:
         facilities.append(json.loads((DIR / "data" / f"{fid}.json").read_text()))
