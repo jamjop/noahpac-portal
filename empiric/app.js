@@ -158,19 +158,22 @@ function getSusc(org, abxKey) {
   return data[abxKey] !== undefined ? data[abxKey] : undefined;
 }
 
-function render() {
-  const site    = SITES.find(s => s.id === selectedSite);
-  const facInfo = FACILITY_SUSC[selectedFacility];
-
+function renderOrgs(site) {
   const orgSeg = document.getElementById("seg-org");
   orgSeg.innerHTML =
     `<button class="org-btn${!selectedOrg?" active":""}" data-org=""><span class="org-dot"></span><span class="org-label">Any / unknown</span></button>` +
     site.orgs.map(o => `<button class="org-btn${o===selectedOrg?" active":""}" data-org="${o}"><span class="org-dot"></span><span class="org-label">${o}</span></button>`).join("");
   orgSeg.querySelectorAll(".org-btn").forEach(btn => btn.addEventListener("click", () => {
+    orgSeg.querySelectorAll(".org-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
     selectedOrg = btn.dataset.org || null;
-    render();
+    renderResult();
   }));
+}
 
+function renderResult() {
+  const site    = SITES.find(s => s.id === selectedSite);
+  const facInfo = FACILITY_SUSC[selectedFacility];
   const orgData = selectedOrg ? facInfo?.data?.[selectedOrg] : null;
 
   const rows = site.regimens.map(r => {
@@ -189,11 +192,14 @@ function render() {
   }).join("");
 
   const orgLabel = orgData ? selectedOrg : "select organism ↑";
+  const suscNote = orgData
+    ? `Local resistance rates: <strong>${selectedOrg}</strong> · ${facInfo.label}`
+    : "Select an organism above to see local resistance data";
 
   document.getElementById("result-area").innerHTML = `
     <div class="result-card">
       <div class="result-head">${site.label}</div>
-      ${orgData ? `<div class="susc-note">Local resistance rates: <strong>${selectedOrg}</strong> · ${facInfo.label}</div>` : ""}
+      <div class="susc-note">${suscNote}</div>
       <div class="tbl-wrap">
         <table class="reg-tbl">
           <thead><tr>
@@ -213,6 +219,12 @@ function render() {
         <span class="susc-na">—</span> not tested / select organism
       </div>
     </div>`;
+}
+
+function render() {
+  const site = SITES.find(s => s.id === selectedSite);
+  renderOrgs(site);
+  renderResult();
 }
 
 // Site dropdown — wired up once, before data loads
