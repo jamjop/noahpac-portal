@@ -22,12 +22,14 @@ h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 
 .reg-section{margin-bottom:10px}
 .reg-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;color:var(--ink-muted);padding-bottom:4px;border-bottom:1.5px solid var(--line)}
-.reg-section:first-of-type .reg-label{color:var(--ok)}
-.reg-section:nth-of-type(2) .reg-label{color:var(--ink-muted)}
-.reg-section:last-of-type .reg-label{color:#be185d}
-@media(prefers-color-scheme:dark){.reg-section:last-of-type .reg-label{color:#f472b6}}
+.reg-label.fl{color:var(--ok);border-color:var(--ok)}
+.reg-label.preg{color:#be185d;border-color:#be185d}
+@media(prefers-color-scheme:dark){.reg-label.preg{color:#f472b6;border-color:#f472b6}}
 
 .reg-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:5px;padding:6px 10px;background:var(--bg);border-radius:var(--r-sm)}
+.reg-row.fl{box-shadow:0 0 0 2px var(--ok);background:var(--surface)}
+.reg-row.preg{box-shadow:0 0 0 2px #be185d;background:var(--surface)}
+@media(prefers-color-scheme:dark){.reg-row.preg{box-shadow:0 0 0 2px #f472b6}}
 .reg-drug{font-weight:700;font-size:13px;color:var(--ink)}
 .reg-dose{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink);flex-basis:100%}
 .reg-note{font-size:11.5px;color:var(--ink-muted);font-style:italic;flex-basis:100%}

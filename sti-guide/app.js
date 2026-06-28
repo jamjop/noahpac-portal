@@ -347,13 +347,14 @@ function filterData() {
   return items;
 }
 
-function regRows(regs, label) {
+function regRows(regs, label, cls) {
   if (!regs || regs.length === 0) return "";
+  const lcls = cls ? ` ${cls}` : "";
   return `
     <div class="reg-section">
-      <div class="reg-label">${label}</div>
+      <div class="reg-label${lcls}">${label}</div>
       ${regs.map(r => `
-        <div class="reg-row">
+        <div class="reg-row${lcls}">
           <span class="reg-drug">${r.drug}</span>
           ${r.dose ? `<span class="reg-dose">${r.dose}</span>` : ""}
           ${r.note ? `<span class="reg-note">${r.note}</span>` : ""}
@@ -384,9 +385,9 @@ function render() {
         </div>
         <button class="copy-btn" data-idx="${i}" aria-label="Copy regimen to clipboard">Copy</button>
       </div>
-      ${regRows(d.recommended, "Recommended")}
+      ${regRows(d.recommended, "Recommended", "fl")}
       ${regRows(d.alternative, "Alternative")}
-      ${regRows(d.pregnancy,   "In Pregnancy")}
+      ${regRows(d.pregnancy,   "In Pregnancy", "preg")}
       ${d.notes ? `<div class="guide-notes">${d.notes}</div>` : ""}
     </div>
   `).join("");
