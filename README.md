@@ -23,6 +23,8 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
 | `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
 | `calculators/` | Clinical Calculators | 19 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Weight Change, Pregnancy EDD |
+| `als/` | Advanced Life Support | AHA 2020 ACLS algorithms: VF/pVT, Asystole/PEA, Bradycardia, Tachycardia, Post-Arrest Care (TTM), ACS, Stroke; PWA |
+| `pals/` | Pediatric Advanced Life Support | AHA 2020 PALS algorithms: weight-based cardiac arrest, arrhythmia, and post-arrest care; Broselow-matched dosing; PWA |
 | `opioids/` | Opioid Conversion | Equianalgesic conversion with MME and CDC risk thresholds |
 | `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data |
 | `sepsis/` | Sepsis Screening | qSOFA + SOFA scoring |
@@ -89,8 +91,10 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `sti/check_updates.py` | 06:00 | PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance; CDC STI page links |
 | `calculators/check_updates.py` | 06:15 | PubMed: ACC/AHA (ASCVD, AFib, chest pain, periop), ACCP/ESC (VTE), ATS/BTS (pneumonia), KDIGO (eGFR/CrCl), AASLD (MELD), USPSTF (depression/anxiety), Ottawa/PECARN/Alvarado, AAD (isotretinoin), ACOG (EDD) |
 | `peds/check_updates.py` | 06:30 | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
+| `als/check_updates.py` | 06:35 | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
+| `pals/check_updates.py` | 06:40 | PubMed: AHA PALS, ILCOR pediatric resuscitation, ERC pediatric, AHA/ACC pediatric arrhythmia, pediatric post-arrest care, IO access |
 
-Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
+Quarterly email report runs at **07:00** (20 min after last check script). Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
 
 ## Backend Services
 
