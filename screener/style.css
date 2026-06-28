@@ -4,7 +4,6 @@
 }
 body{padding-bottom:50px}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px}
-
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px}
 
 /* header */
@@ -13,24 +12,84 @@ h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .datasource .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);margin-right:5px;vertical-align:middle}
 .datasource.live .dot{background:#6ee7b7}
 
-/* patient panel */
-.panel{background:var(--surface);border-radius:var(--r);padding:18px;margin-top:12px;box-shadow:var(--sh)}
-.panel-grid{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:start}
-@media(max-width:560px){.panel-grid{grid-template-columns:1fr}}
+/* ── Input area ── */
+.input-area{display:flex;flex-direction:column;gap:4px;margin-top:12px}
+
+/* ── Criterion cards ── */
+.criterion{
+  background:var(--surface);
+  border-radius:var(--r);
+  padding:18px 20px;
+  box-shadow:var(--sh);
+  transition:box-shadow .15s;
+}
+.criterion:hover{box-shadow:var(--sh-lg)}
+
+.c-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.c-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:3px}
+.c-desc{font-size:11.5px;color:var(--ink-muted);line-height:1.45}
+
+/* ── Patient inputs ── */
+.patient-row{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:start}
+@media(max-width:480px){.patient-row{grid-template-columns:1fr}}
+
 .field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;display:block;margin-bottom:6px}
+
 input[type=number]{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;width:100%;padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink);-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
-.seg{display:flex;gap:6px;flex-wrap:wrap}
-.seg button{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;padding:9px 18px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
-.seg button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
-.flags{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
-.flags summary{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ok);cursor:pointer;user-select:none}
-.flag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 16px;margin-top:10px}
-.flag-grid label{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--ink-soft);padding:4px 0;cursor:pointer}
-.flag-grid input{margin-top:2px;accent-color:var(--ok)}
+
+/* ── Sex seg buttons ── */
+.seg{display:flex;flex-direction:column;gap:6px}
+.seg-btn{
+  display:flex;align-items:center;gap:10px;
+  width:100%;text-align:left;
+  background:var(--bg);
+  border:1.5px solid var(--line);
+  border-radius:var(--r-sm);
+  padding:9px 12px;
+  cursor:pointer;
+  transition:background .12s,border-color .12s,color .12s;
+  color:var(--ink-soft);
+  font-family:inherit;
+}
+.seg-btn:hover{background:var(--purple-soft);border-color:var(--purple-mid);color:var(--ink)}
+.seg-btn.active{background:var(--purple-soft);border-color:var(--purple);color:var(--ink)}
+.seg-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+
+.val-badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;font-weight:600;
+  width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  background:var(--line);
+  color:var(--ink-muted);
+  flex-shrink:0;
+  transition:background .12s,color .12s;
+}
+.seg-btn.active .val-badge{background:var(--purple);color:#fff}
+.val-label{font-size:12.5px;line-height:1.35}
+
+/* ── Check rows ── */
+.check-rows{display:flex;flex-direction:column;gap:5px}
+.check-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 12px;
+  border:1.5px solid var(--line);
+  border-radius:var(--r-sm);
+  background:var(--bg);
+  cursor:pointer;
+  font-size:12.5px;color:var(--ink-soft);
+  line-height:1.4;
+  transition:background .12s,border-color .12s,color .12s;
+}
+.check-row:hover{background:var(--purple-soft);border-color:var(--purple-mid);color:var(--ink)}
+.check-row input{margin-top:2px;accent-color:var(--purple);flex-shrink:0}
+.check-row input:checked ~ .check-label{color:var(--ink)}
+.check-row:has(input:checked){background:var(--purple-soft);border-color:var(--purple-mid)}
+.check-label{flex:1}
 
 /* results */
 .results{margin-top:22px}
@@ -61,9 +120,14 @@ input[type=number]:focus{outline:2px solid var(--purple);outline-offset:1px;bord
 .copy-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 
 footer{max-width:880px;margin:30px auto 0;padding:12px 16px;border-top:1px solid var(--line);font-size:10.5px;color:var(--ink-muted)}
-@media print{.panel{border:1px solid #ccc;box-shadow:none} input,.seg button{border:1px solid #999} body{background:#fff} .rec{break-inside:avoid;box-shadow:none;border:1px solid #eee}}
+@media print{.criterion{border:1px solid #ccc;box-shadow:none} input,.seg-btn{border:1px solid #999} body{background:#fff} .rec{break-inside:avoid;box-shadow:none;border:1px solid #eee}}
 
 @media(prefers-color-scheme:dark){
   :root{--women:#f472b6;--women-soft:#4a0e2d;--men:#38bdf8;--men-soft:#0c2a42}
-  .seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
+  .seg-btn{background:var(--bg)}
+  .seg-btn:hover,.seg-btn.active{background:var(--purple-soft)}
+  .val-badge{background:var(--line);color:var(--ink-muted)}
+  .seg-btn.active .val-badge{background:var(--purple);color:#fff}
+  .check-row{background:var(--bg)}
+  .check-row:hover,.check-row:has(input:checked){background:var(--purple-soft);border-color:var(--purple-mid)}
 }

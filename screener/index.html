@@ -21,34 +21,57 @@
 </header>
 
 <div class="wrap">
-  <div class="panel">
-    <div class="panel-grid">
-      <div>
-        <label class="field-label" for="age">Patient age</label>
-        <input type="number" id="age" min="0" max="110" value="50" inputmode="numeric">
+
+  <div class="input-area">
+
+    <div class="criterion" id="c-patient">
+      <div class="c-header">
+        <div>
+          <div class="c-name">Patient</div>
+          <div class="c-desc">Age and sex determine which USPSTF recommendations apply</div>
+        </div>
       </div>
-      <div>
-        <span class="field-label">Sex</span>
-        <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
-          <button data-sex="female" class="active">Female</button>
-          <button data-sex="male">Male</button>
+      <div class="patient-row">
+        <div class="patient-field">
+          <label class="field-label" for="age">Age</label>
+          <input type="number" id="age" min="0" max="110" value="50" inputmode="numeric">
+        </div>
+        <div class="patient-field sex-field">
+          <span class="field-label">Sex</span>
+          <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
+            <button class="seg-btn active" data-sex="female">
+              <span class="val-badge">F</span>
+              <span class="val-label">Female</span>
+            </button>
+            <button class="seg-btn" data-sex="male">
+              <span class="val-badge">M</span>
+              <span class="val-label">Male</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <details class="flags" open>
-      <summary>Risk factors & status (optional — refines results)</summary>
-      <div class="flag-grid" id="flagGrid">
-        <label data-only="female"><input type="checkbox" id="f_pregnant"> Currently pregnant</label>
-        <label data-only="female"><input type="checkbox" id="f_postmenopausal"> Postmenopausal</label>
-        <label><input type="checkbox" id="f_everSmoked"> Has ever smoked</label>
-        <label><input type="checkbox" id="f_heavySmoker"> ≥20 pack-year history, smokes now or quit &lt;15 yrs ago</label>
-        <label><input type="checkbox" id="f_bmi25"> Overweight or obesity (BMI ≥25)</label>
-        <label><input type="checkbox" id="f_sexuallyActive"> Sexually active</label>
-        <label><input type="checkbox" id="f_stiRisk"> Increased risk for STI / hepatitis B / TB</label>
-        <label><input type="checkbox" id="f_cvdRisk"> ≥1 cardiovascular risk factor (dyslipidemia, diabetes, HTN, smoking)</label>
-        <label data-only="female"><input type="checkbox" id="f_brcaHistory"> Personal/family history suggesting BRCA-related cancer</label>
+
+    <div class="criterion" id="c-risks">
+      <div class="c-header">
+        <div>
+          <div class="c-name">Risk Factors &amp; Status</div>
+          <div class="c-desc">Optional — refines which recommendations apply</div>
+        </div>
       </div>
-    </details>
+      <div class="flag-grid check-rows" id="flagGrid">
+        <label class="check-row" data-only="female"><input type="checkbox" id="f_pregnant"><span class="check-label">Currently pregnant</span></label>
+        <label class="check-row" data-only="female"><input type="checkbox" id="f_postmenopausal"><span class="check-label">Postmenopausal</span></label>
+        <label class="check-row"><input type="checkbox" id="f_everSmoked"><span class="check-label">Has ever smoked</span></label>
+        <label class="check-row"><input type="checkbox" id="f_heavySmoker"><span class="check-label">≥20 pack-year history, smokes now or quit &lt;15 yrs ago</span></label>
+        <label class="check-row"><input type="checkbox" id="f_bmi25"><span class="check-label">Overweight or obesity (BMI ≥25)</span></label>
+        <label class="check-row"><input type="checkbox" id="f_sexuallyActive"><span class="check-label">Sexually active</span></label>
+        <label class="check-row"><input type="checkbox" id="f_stiRisk"><span class="check-label">Increased risk for STI / hepatitis B / TB</span></label>
+        <label class="check-row"><input type="checkbox" id="f_cvdRisk"><span class="check-label">≥1 cardiovascular risk factor (dyslipidemia, diabetes, HTN, smoking)</span></label>
+        <label class="check-row" data-only="female"><input type="checkbox" id="f_brcaHistory"><span class="check-label">Personal/family history suggesting BRCA-related cancer</span></label>
+      </div>
+    </div>
+
   </div>
 
   <div class="copy-bar" id="copyBar" hidden>

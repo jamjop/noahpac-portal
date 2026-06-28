@@ -516,6 +516,13 @@ function calcHeader(title, eyebrow, source){
   <h1 class="calc-title">${esc(title)}</h1>
   <div class="calc-source">${esc(source)}</div>`;
 }
+
+function criterionCard(label, desc, content){
+  const hdr = label
+    ? `<div class="c-header"><div class="c-name">${esc(label)}</div>${desc?`<div class="c-desc">${esc(desc)}</div>`:''}</div>`
+    : '';
+  return `<div class="criterion">${hdr}${content}</div>`;
+}
 function field(label, id, type, unit, defaultVal, min, max, placeholder){
   return `<div class="field">
     <label class="field-label" for="${esc(id)}">${esc(label)}</label>
@@ -546,8 +553,8 @@ function resultCard(score, label, detail, risk){
 
 /* ── Event wiring ── */
 function addListeners(calcId, calcFn){
-  const pane = document.getElementById('pane');
-  pane.querySelectorAll('input, select').forEach(el => {
+  const criteriaCol = document.getElementById('criteriaCol') || document.getElementById('pane');
+  criteriaCol.querySelectorAll('input, select').forEach(el => {
     el.addEventListener('input', calcFn);
     el.addEventListener('change', calcFn);
   });
@@ -1087,6 +1094,83 @@ function copyWeightChange(btn){
   });
 }
 
+/* ── Post-render helpers ── */
+function wrapInputGroups(criteriaCol) {
+  const children = Array.from(criteriaCol.children);
+  let i = 0;
+  while(i < children.length) {
+    const el = children[i];
+
+    if(el.classList.contains('fields') || el.classList.contains('checks') || el.classList.contains('phq-table')) {
+      const card = document.createElement('div');
+      card.className = 'criterion';
+
+      let label = '';
+      let insertBefore = el;
+
+      // absorb preceding section-label into the card header
+      if(i > 0 && children[i-1].classList.contains('section-label')) {
+        const lblEl = children[i-1];
+        label = lblEl.textContent;
+        insertBefore = lblEl;
+        criteriaCol.removeChild(lblEl);
+        children.splice(i-1, 1);
+        i = Math.max(0, i-1);
+      }
+
+      // for phq-table, absorb preceding phq-instr
+      if(el.classList.contains('phq-table') && i > 0 && children[i-1].classList.contains('phq-instr')) {
+        const instrEl = children[i-1];
+        insertBefore = instrEl;
+        criteriaCol.insertBefore(card, instrEl);
+        card.appendChild(instrEl);
+        children.splice(i-1, 1);
+        i = Math.max(0, i-1);
+      } else {
+        criteriaCol.insertBefore(card, el);
+      }
+
+      if(label) {
+        const hdr = document.createElement('div');
+        hdr.className = 'c-header';
+        const nm = document.createElement('div');
+        nm.className = 'c-name';
+        nm.textContent = label;
+        hdr.appendChild(nm);
+        card.insertBefore(hdr, card.firstChild);
+      }
+
+      card.appendChild(el);
+      children.splice(i, 1);
+      children.splice(i, 0, card);
+    }
+    i++;
+  }
+}
+
+function buildResultColumn(criteriaCol, resultCol) {
+  const panel = document.createElement('div');
+  panel.className = 'result-panel';
+
+  // collect all result-card and perc-result elements
+  criteriaCol.querySelectorAll('.result-card, .perc-result').forEach(el => panel.appendChild(el));
+
+  // collect copy buttons
+  const copyWrap = document.createElement('div');
+  copyWrap.className = 'copy-btn-wrap';
+  let hasCopy = false;
+  criteriaCol.querySelectorAll('.copy-btn').forEach(el => {
+    copyWrap.appendChild(el);
+    hasCopy = true;
+  });
+  if(hasCopy) panel.appendChild(copyWrap);
+
+  resultCol.appendChild(panel);
+
+  // notes go below the panel
+  criteriaCol.querySelectorAll('.note').forEach(el => resultCol.appendChild(el));
+}
+
 /* ── Navigation ── */
 let currentCalc = null;
 function showCalc(id){
@@ -1094,7 +1178,21 @@ function showCalc(id){
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.id===id));
   const pane = document.getElementById('pane');
   const calc = CALCS.find(c=>c.id===id);
-  if(calc) calc.render(pane);
+  if(!calc) return;
+
+  // Set up two-column layout inside pane
+  pane.innerHTML = '<div class="pane-body"><div class="criteria-col" id="criteriaCol"></div><div class="result-col" id="resultCol"></div></div>';
+  const criteriaCol = document.getElementById('criteriaCol');
+  const resultCol = document.getElementById('resultCol');
+
+  // Render calc into criteria column
+  calc.render(criteriaCol);
+
+  // Wrap input groups in criterion cards
+  wrapInputGroups(criteriaCol);
+
+  // Move result elements to the result column
+  buildResultColumn(criteriaCol, resultCol);
 }
 
 /* Build nav */
