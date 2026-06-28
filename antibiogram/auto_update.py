@@ -30,17 +30,20 @@ REPORT_PREFIX   = "antibiogram-report"
 
 def _write_report_result(status: str, findings: list) -> None:
     import datetime as _dt
-    report_file = Path(f"/tmp/{REPORT_PREFIX}-{_dt.date.today()}.json")
-    try:
-        existing = json.loads(report_file.read_text()) if report_file.exists() else []
-        existing.append({
-            'app_id': 'antibiogram', 'app_name': 'ND Antibiogram',
-            'app_url': ANTIBIOGRAM_URL, 'status': status, 'findings': findings,
-            'ran_at': _dt.datetime.now().isoformat(timespec='minutes'),
-        })
-        report_file.write_text(json.dumps(existing, indent=2))
-    except Exception as exc:
-        print(f"WARNING: could not write report: {exc}", file=sys.stderr)
+    entry = {
+        'app_id': 'antibiogram', 'app_name': 'ND Antibiogram',
+        'app_url': ANTIBIOGRAM_URL, 'status': status, 'findings': findings,
+        'ran_at': _dt.datetime.now().isoformat(timespec='minutes'),
+    }
+    today = _dt.date.today()
+    for prefix in [REPORT_PREFIX, "quarterly-report"]:
+        report_file = Path(f"/tmp/{prefix}-{today}.json")
+        try:
+            existing = json.loads(report_file.read_text()) if report_file.exists() else []
+            existing.append(entry)
+            report_file.write_text(json.dumps(existing, indent=2))
+        except Exception as exc:
+            print(f"WARNING: could not write report ({prefix}): {exc}", file=sys.stderr)
 
 
 PAGE_URL = (
@@ -83,6 +86,50 @@ TRACKED = [
                              "chi-stale", "chist-alexius-bismarck"],
         "exclude_keywords": ["carrington", "dickinson", "devilslake", "devils",
                              "valley", "williston", "lisbon"],
+    },
+    {
+        "id":               "chi_devilslake",
+        "name":             "CHI St. Alexius Health",
+        "location":         "Devils Lake, ND",
+        "keywords":         ["devilslake", "devils-lake"],
+        "exclude_keywords": [],
+    },
+    {
+        "id":               "essentia_grampos",
+        "name":             "Essentia West Market (Gram Positive)",
+        "location":         "Fargo, ND",
+        "keywords":         ["essentia-west-grampositive", "essentia_west_grampositive",
+                             "essentia-west-gram-positive"],
+        "exclude_keywords": [],
+    },
+    {
+        "id":               "essentia_gramneg",
+        "name":             "Essentia West Market (Gram Negative)",
+        "location":         "Fargo, ND",
+        "keywords":         ["essentia-west-gramnegative", "essentia_west_gramnegative",
+                             "essentia-west-gram-negative"],
+        "exclude_keywords": [],
+    },
+    {
+        "id":               "jamestown_rmc",
+        "name":             "Jamestown Regional Medical Center",
+        "location":         "Jamestown, ND",
+        "keywords":         ["jamestown"],
+        "exclude_keywords": [],
+    },
+    {
+        "id":               "west_river_urine",
+        "name":             "West River Health Services (Urine)",
+        "location":         "Hettinger, ND",
+        "keywords":         ["west-river-urine", "west_river_urine"],
+        "exclude_keywords": [],
+    },
+    {
+        "id":               "west_river_nonurine",
+        "name":             "West River Health Services (Non-Urine)",
+        "location":         "Hettinger, ND",
+        "keywords":         ["west-river-nonurine", "west_river_nonurine"],
+        "exclude_keywords": [],
     },
 ]
 

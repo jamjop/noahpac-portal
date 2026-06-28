@@ -1,0 +1,283 @@
+{
+  "id": "chi_devilslake",
+  "name": "CHI St. Alexius Health",
+  "location": "Devils Lake, ND",
+  "period": "2025",
+  "sourceNote": "ND HHS Archive \u00b7 CHI St. Alexius Health Antibiogram 2025 \u00b7 % susceptible, 1st isolate/patient/year",
+  "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/public-health/hai/2025-chi-stalexius-devilslake-antibiogram-archive.pdf",
+  "organisms": [
+    {
+      "name": "Staph aureus (MSSA)",
+      "gram": "positive",
+      "isolates": 121,
+      "note": null,
+      "s": {
+        "oxacillin": 100,
+        "gentamicin": 100,
+        "tobramycin": 91,
+        "vancomycin": 100,
+        "doxycycline": 95,
+        "dap": 100,
+        "nit": 99,
+        "rif": 100
+      }
+    },
+    {
+      "name": "Staph aureus (MRSA)",
+      "gram": "positive",
+      "isolates": 53,
+      "note": null,
+      "s": {
+        "oxacillin": 0,
+        "gentamicin": 100,
+        "tobramycin": 30,
+        "vancomycin": 100,
+        "doxycycline": 77,
+        "dap": 90,
+        "nit": 96,
+        "rif": 100
+      }
+    },
+    {
+      "name": "Staph aureus (All strains)",
+      "gram": "positive",
+      "isolates": 174,
+      "note": null,
+      "s": {
+        "oxacillin": 70,
+        "gentamicin": 100,
+        "tobramycin": 72,
+        "vancomycin": 100,
+        "doxycycline": 89,
+        "dap": 97,
+        "nit": 98,
+        "rif": 100
+      }
+    },
+    {
+      "name": "Staph coag negative",
+      "gram": "positive",
+      "isolates": 58,
+      "note": null,
+      "s": {
+        "oxacillin": 43,
+        "gentamicin": 95,
+        "tobramycin": 81,
+        "vancomycin": 98,
+        "doxycycline": 52,
+        "dap": 69,
+        "nit": 88,
+        "rif": 100
+      }
+    },
+    {
+      "name": "Strep pneumoniae",
+      "gram": "positive",
+      "isolates": 27,
+      "note": "S - Gentamicin synergy only",
+      "s": {
+        "pen": 100,
+        "cfz": 70,
+        "caz": 96,
+        "fep": 92,
+        "vancomycin": 100,
+        "doxycycline": 85,
+        "nit": 52
+      }
+    },
+    {
+      "name": "Strep viridans",
+      "gram": "positive",
+      "isolates": 48,
+      "note": null,
+      "s": {
+        "pen": 78,
+        "caz": 98,
+        "tobramycin": 91,
+        "vancomycin": 100,
+        "doxycycline": 83
+      }
+    },
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 92,
+      "note": null,
+      "s": {
+        "amp": 100,
+        "gentamicin": 76,
+        "tobramycin": 87,
+        "vancomycin": 87,
+        "doxycycline": 99,
+        "nit": 33
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 32,
+      "note": null,
+      "s": {
+        "amp": 19,
+        "gentamicin": 100,
+        "tobramycin": 13,
+        "vancomycin": 7,
+        "doxycycline": 42,
+        "nit": 40
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 483,
+      "note": null,
+      "s": {
+        "amp": 55,
+        "ams": 22,
+        "ptz": 94,
+        "cfz": 61,
+        "cfx": 89,
+        "cro": 91,
+        "caz": 91,
+        "fep": 99,
+        "cip": 96,
+        "lvx": 93,
+        "gen": 77,
+        "tob": 79,
+        "doxycycline": 87,
+        "rif": 96
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 128,
+      "note": null,
+      "s": {
+        "amp": 93,
+        "ptz": 93,
+        "cfz": 66,
+        "cfx": 86,
+        "cro": 88,
+        "caz": 88,
+        "cip": 95,
+        "lvx": 93,
+        "gen": 86,
+        "tob": 87,
+        "doxycycline": 87,
+        "rif": 26
+      }
+    },
+    {
+      "name": "Klebsiella oxytoca",
+      "gram": "negative",
+      "isolates": 32,
+      "note": null,
+      "s": {
+        "amp": 100,
+        "ptz": 84,
+        "cfz": 0,
+        "cfx": 0,
+        "cro": 84,
+        "caz": 100,
+        "fep": 100,
+        "cip": 100,
+        "lvx": 100,
+        "gen": 89,
+        "tob": 100,
+        "doxycycline": 100,
+        "rif": 93
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 42,
+      "note": null,
+      "s": {
+        "amp": 81,
+        "ptz": 100,
+        "cfz": 100,
+        "cfx": 16,
+        "cro": 93,
+        "caz": 97,
+        "fep": 100,
+        "cip": 100,
+        "lvx": 100,
+        "gen": 96,
+        "tob": 83,
+        "doxycycline": 80,
+        "rif": 0
+      }
+    },
+    {
+      "name": "Enterobacter cloacae",
+      "gram": "negative",
+      "isolates": 39,
+      "note": null,
+      "s": {
+        "ptz": 63,
+        "cfx": 0,
+        "caz": 83,
+        "fep": 97,
+        "cip": 94,
+        "lvx": 95,
+        "gen": 81,
+        "tob": 89,
+        "doxycycline": 89,
+        "rif": 50
+      }
+    },
+    {
+      "name": "Kleb (Enterobacter) aerogenes",
+      "gram": "negative",
+      "isolates": 20,
+      "note": null,
+      "s": {
+        "ptz": 73,
+        "cfx": 0,
+        "cro": 84,
+        "caz": 100,
+        "fep": 100,
+        "cip": 100,
+        "lvx": 100,
+        "gen": 89,
+        "tob": 100,
+        "doxycycline": 100,
+        "rif": 13
+      }
+    },
+    {
+      "name": "Citrobacter freundii",
+      "gram": "negative",
+      "isolates": 18,
+      "note": null,
+      "s": {
+        "ptz": 89,
+        "cfx": 0,
+        "cro": 66,
+        "caz": 100,
+        "fep": 100,
+        "cip": 100,
+        "lvx": 100,
+        "gen": 100,
+        "tob": 100,
+        "doxycycline": 100,
+        "rif": 90
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 85,
+      "note": null,
+      "s": {
+        "ptz": 88,
+        "caz": 97,
+        "fep": 90,
+        "cip": 100,
+        "lvx": 79
+      }
+    }
+  ]
+}
