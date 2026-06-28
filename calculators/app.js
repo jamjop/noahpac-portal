@@ -1191,13 +1191,24 @@ function showCalc(id){
   const calc = CALCS.find(c=>c.id===id);
   if(!calc) return;
 
-  // Set up two-column layout inside pane
-  pane.innerHTML = '<div class="pane-body"><div class="criteria-col" id="criteriaCol"></div><div class="result-col" id="resultCol"></div></div>';
+  // Set up layout: header above, two-column body below
+  pane.innerHTML = '<div class="calc-header-area" id="calcHeaderArea"></div><div class="pane-body"><div class="criteria-col" id="criteriaCol"></div><div class="result-col" id="resultCol"></div></div>';
+  const headerArea = document.getElementById('calcHeaderArea');
   const criteriaCol = document.getElementById('criteriaCol');
   const resultCol = document.getElementById('resultCol');
 
   // Render calc into criteria column
   calc.render(criteriaCol);
+
+  // Lift header elements (eyebrow, h1, source) out of the two-column area
+  // so the result column aligns with the first criterion card
+  for(const child of Array.from(criteriaCol.children)){
+    if(child.classList.contains('calc-eyebrow') || child.tagName==='H1' || child.classList.contains('calc-source')){
+      headerArea.appendChild(child);
+    } else {
+      break;
+    }
+  }
 
   // Wrap input groups in criterion cards
   wrapInputGroups(criteriaCol);
