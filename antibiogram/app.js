@@ -378,7 +378,10 @@ render();
     try {
       const resp = await fetch("/antibiogram/api/extract", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Token": typeof ANTIBIOGRAM_API_TOKEN !== "undefined" ? ANTIBIOGRAM_API_TOKEN : "",
+        },
         body: JSON.stringify({ url, name, location: loc, period }),
       });
       const data = await resp.json();

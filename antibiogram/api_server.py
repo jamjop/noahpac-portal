@@ -116,8 +116,20 @@ def clean_organisms(organisms: list) -> list:
     return cleaned
 
 
+def _check_token() -> bool:
+    """Return True if request carries the correct API token."""
+    expected = os.environ.get("EXTRACT_TOKEN", "").strip()
+    if not expected:
+        return True  # token not configured — allow (backwards compat during deploy)
+    provided = request.headers.get("X-Api-Token", "").strip()
+    return provided == expected
+
+
 @app.route("/extract", methods=["POST"])
 def extract():
+    if not _check_token():
+        return jsonify({"error": "Unauthorized"}), 401
+
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
     if not api_key:
         return jsonify({"error": "Server not configured (missing API key)"}), 503

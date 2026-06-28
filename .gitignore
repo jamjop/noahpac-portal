@@ -69,3 +69,6 @@ screener/data/
 **/known_pmids.json
 **/known_state.json
 **/known_files.json
+
+# Antibiogram API token — server-only, never commit
+antibiogram/api-config.js
