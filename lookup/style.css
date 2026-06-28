@@ -6,7 +6,7 @@
 .tab-pill:hover{border-color:var(--purple);color:var(--purple)}
 .tab-pill.active{background:var(--purple);border-color:var(--purple);color:#fff}
 .search-row{position:relative;display:flex;gap:8px}
-.search-row input{flex:1;font-family:'Archivo',sans-serif;font-size:15px;font-weight:500;padding:11px 44px 11px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink);transition:border-color .15s}
+.search-row input{flex:1;font-family:inherit;font-size:15px;font-weight:500;padding:11px 44px 11px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink);transition:border-color .15s}
 .search-row input:focus{outline:none;border-color:var(--purple)}
 .search-row input::placeholder{color:var(--ink-muted)}
 .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--ink-muted);font-size:18px;pointer-events:none;line-height:1}

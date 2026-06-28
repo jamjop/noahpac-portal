@@ -31,7 +31,7 @@ h1{font-size:clamp(20px,4vw,26px);line-height:1.1;margin:4px 0}
 .abgram th.col-org{text-align:left;min-width:190px;max-width:220px;left:0;z-index:3;background:var(--bg)}
 .abgram th.col-n{min-width:46px;left:0}
 .abgram td{padding:6px 9px;text-align:center;border-bottom:1px solid var(--line);border-right:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600}
-.abgram td.col-org{text-align:left;font-family:'Archivo',sans-serif;font-size:12px;font-weight:500;white-space:normal;line-height:1.3;position:sticky;left:0;background:var(--surface);z-index:1}
+.abgram td.col-org{text-align:left;font-family:inherit;font-size:12px;font-weight:500;white-space:normal;line-height:1.3;position:sticky;left:0;background:var(--surface);z-index:1}
 .abgram td.col-n{color:var(--ink-muted);font-size:10px;font-weight:400}
 .abgram tr:last-child td{border-bottom:none}
 

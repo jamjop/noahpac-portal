@@ -1,17 +1,17 @@
 let woundType = "clean";
 let vaxStatus  = "unknown";
 
-document.querySelectorAll("#wound-grid .opt-btn").forEach(btn => {
+document.querySelectorAll("#wound-grid .seg-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll("#wound-grid .opt-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#wound-grid .seg-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     woundType = btn.dataset.wound;
     render();
   });
 });
-document.querySelectorAll("#vax-grid .opt-btn").forEach(btn => {
+document.querySelectorAll("#vax-grid .seg-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll("#vax-grid .opt-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#vax-grid .seg-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     vaxStatus = btn.dataset.vax;
     render();
