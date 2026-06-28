@@ -94,8 +94,9 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `opioids/check_updates.py` | 06:45 | PubMed: CDC 2022 opioid prescribing guideline, MME conversion factors, buprenorphine/OUD guidance, methadone safety, high-dose thresholds |
 | `wound/check_updates.py` | 06:50 | PubMed: ACIP tetanus recommendations, wound prophylaxis evidence, SSI/wound classification guidelines |
 | `sepsis/check_updates.py` | 06:55 | PubMed: Surviving Sepsis Campaign, Sepsis-3/SOFA updates, SSC bundles, septic shock management |
+| `allergy/check_updates.py` | 07:00 | PubMed: AAAAI/ACAAI beta-lactam cross-reactivity guidelines, penicillin allergy delabeling, R1 side-chain evidence, cephalosporin hypersensitivity |
 
-Quarterly email report runs at **07:20** (25 min after last check script). Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
+Quarterly email report runs at **07:25** (25 min after last check script). Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
 
 ## Backend Services
 
