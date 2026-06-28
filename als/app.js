@@ -211,8 +211,8 @@ const SECTIONS = [
       <div class="sec-title"><span class="sec-badge warn">BRADYCARDIA</span> Bradycardia with Pulse</div>
 
       ${ekgStrip([
-        {label:'Sinus Brady', sub:'HR &lt;60 · P before QRS',      path:EKG.brady, color:'c-warn'},
-        {label:'3° AV Block', sub:'P &amp; QRS dissociated · wide', path:EKG.avb3,  color:'c-red'},
+        {label:'Sinus Brady', sub:'HR &lt;60 · P before QRS',                    path:EKG.brady, color:'c-warn'},
+        {label:'3° AV Block', sub:'Vent rate 20–40 · P &amp; QRS dissociated', path:EKG.avb3,  color:'c-red'},
       ])}
 
       <div class="sec-note">Bradycardia = HR &lt;60 bpm. Treat only if causing symptoms or hemodynamic compromise.</div>
@@ -284,9 +284,9 @@ const SECTIONS = [
       <div class="sec-title"><span class="sec-badge warn">TACHYCARDIA</span> Tachycardia with Pulse</div>
 
       ${ekgStrip([
-        {label:'SVT',      sub:'Narrow · regular · fast',  path:EKG.svt,  color:'c-warn'},
-        {label:'A-Fib',    sub:'Narrow · irregular',       path:EKG.afib, color:'c-warn'},
-        {label:'Stable VT',sub:'Wide · regular · fast',   path:EKG.pvt,  color:'c-red'},
+        {label:'SVT',      sub:'HR &gt;150 · narrow · regular',   path:EKG.svt,  color:'c-warn'},
+        {label:'A-Fib',    sub:'HR 100–160 · narrow · irregular', path:EKG.afib, color:'c-warn'},
+        {label:'Stable VT',sub:'HR &gt;100 · wide · regular',     path:EKG.pvt,  color:'c-red'},
       ])}
 
       ${callout('danger', 'Unstable → Immediate Synchronized Cardioversion', `
