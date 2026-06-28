@@ -44,7 +44,7 @@
 
 /* Recalls */
 .recalls-section{margin-top:14px}
-.recalls-head{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink-muted);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.recalls-head{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--purple);margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .recalls-head::after{content:'';flex:1;height:1px;background:var(--line)}
 .recall-card{background:var(--surface);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);margin-bottom:8px}
 .recall-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
