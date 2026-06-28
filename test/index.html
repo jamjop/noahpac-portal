@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HEART Score — Chest Pain Risk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">Chest Pain Risk Stratification · Emergency &amp; Cardiology</div>
+    <h1>HEART Score</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+    <div class="update-cadence">↻ Reviewed annually</div>
+  </div>
+</header>
+
+<div class="page-body">
+
+  <!-- ── Criteria column ── -->
+  <div class="criteria-col">
+
+    <div class="criterion" id="c-history">
+      <div class="c-header">
+        <span class="c-letter">H</span>
+        <div>
+          <div class="c-name">History</div>
+          <div class="c-desc">Quality of chest pain history</div>
+        </div>
+      </div>
+      <div class="seg" role="group">
+        <button class="seg-btn" data-val="0">
+          <span class="val-badge">0</span>
+          <span class="val-label">Slightly suspicious</span>
+        </button>
+        <button class="seg-btn active" data-val="1">
+          <span class="val-badge">1</span>
+          <span class="val-label">Moderately suspicious</span>
+        </button>
+        <button class="seg-btn" data-val="2">
+          <span class="val-badge">2</span>
+          <span class="val-label">Highly suspicious</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="criterion" id="c-ecg">
+      <div class="c-header">
+        <span class="c-letter">E</span>
+        <div>
+          <div class="c-name">ECG</div>
+          <div class="c-desc">Most recent 12-lead ECG</div>
+        </div>
+      </div>
+      <div class="seg" role="group">
+        <button class="seg-btn active" data-val="0">
+          <span class="val-badge">0</span>
+          <span class="val-label">Normal</span>
+        </button>
+        <button class="seg-btn" data-val="1">
+          <span class="val-badge">1</span>
+          <span class="val-label">Non-specific repolarization disturbance</span>
+        </button>
+        <button class="seg-btn" data-val="2">
+          <span class="val-badge">2</span>
+          <span class="val-label">Significant ST deviation</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="criterion" id="c-age">
+      <div class="c-header">
+        <span class="c-letter">A</span>
+        <div>
+          <div class="c-name">Age</div>
+          <div class="c-desc">Patient age at presentation</div>
+        </div>
+      </div>
+      <div class="seg" role="group">
+        <button class="seg-btn active" data-val="0">
+          <span class="val-badge">0</span>
+          <span class="val-label">&lt; 45 years</span>
+        </button>
+        <button class="seg-btn" data-val="1">
+          <span class="val-badge">1</span>
+          <span class="val-label">45 – 64 years</span>
+        </button>
+        <button class="seg-btn" data-val="2">
+          <span class="val-badge">2</span>
+          <span class="val-label">≥ 65 years</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="criterion" id="c-risk">
+      <div class="c-header">
+        <span class="c-letter">R</span>
+        <div>
+          <div class="c-name">Risk Factors</div>
+          <div class="c-desc">HTN, DM, hypercholesterolemia, obesity (BMI&gt;30), smoking, family history, atherosclerosis</div>
+        </div>
+      </div>
+      <div class="seg" role="group">
+        <button class="seg-btn active" data-val="0">
+          <span class="val-badge">0</span>
+          <span class="val-label">No known risk factors</span>
+        </button>
+        <button class="seg-btn" data-val="1">
+          <span class="val-badge">1</span>
+          <span class="val-label">1 – 2 risk factors</span>
+        </button>
+        <button class="seg-btn" data-val="2">
+          <span class="val-badge">2</span>
+          <span class="val-label">≥ 3 risk factors or history of atherosclerotic disease</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="criterion" id="c-troponin">
+      <div class="c-header">
+        <span class="c-letter">T</span>
+        <div>
+          <div class="c-name">Troponin</div>
+          <div class="c-desc">Initial troponin level relative to institutional normal limit</div>
+        </div>
+      </div>
+      <div class="seg" role="group">
+        <button class="seg-btn active" data-val="0">
+          <span class="val-badge">0</span>
+          <span class="val-label">≤ Normal limit</span>
+        </button>
+        <button class="seg-btn" data-val="1">
+          <span class="val-badge">1</span>
+          <span class="val-label">1 – 3× normal limit</span>
+        </button>
+        <button class="seg-btn" data-val="2">
+          <span class="val-badge">2</span>
+          <span class="val-label">&gt; 3× normal limit</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Result column ── -->
+  <div class="result-col">
+    <div class="result-panel" id="resultPanel">
+
+      <div class="score-row">
+        <div class="score-wrap">
+          <div class="score-num" id="scoreNum">2</div>
+          <div class="score-denom">/ 10</div>
+        </div>
+        <div class="score-label" id="scoreLabel">HEART Score</div>
+      </div>
+
+      <div class="risk-banner" id="riskBanner">
+        <div class="risk-level" id="riskLevel">Low Risk</div>
+        <div class="risk-mace" id="riskMace">~1.7% MACE at 6 weeks</div>
+      </div>
+
+      <div class="recommendation" id="recommendation">
+        <div class="rec-head">Suggested approach</div>
+        <div class="rec-body" id="recBody">Consider early discharge with outpatient follow-up. Serial troponin and repeat evaluation if clinical concern.</div>
+      </div>
+
+      <div class="breakdown" id="breakdown">
+        <div class="breakdown-head">Score breakdown</div>
+        <div class="breakdown-row"><span>History</span><span class="bk-val" id="bk-history">1</span></div>
+        <div class="breakdown-row"><span>ECG</span><span class="bk-val" id="bk-ecg">0</span></div>
+        <div class="breakdown-row"><span>Age</span><span class="bk-val" id="bk-age">0</span></div>
+        <div class="breakdown-row"><span>Risk Factors</span><span class="bk-val" id="bk-risk">0</span></div>
+        <div class="breakdown-row"><span>Troponin</span><span class="bk-val" id="bk-troponin">1</span></div>
+      </div>
+
+    </div>
+
+    <div class="source-note">
+      Backus et al., 2010. PMID 20802272. Validated for undifferentiated chest pain in the ED. Not a substitute for clinical judgment.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const criteria = ['history','ecg','age','risk','troponin'];
+const state = {history:1, ecg:0, age:0, risk:0, troponin:1};
+
+const RISK = [
+  { max:3, level:'Low Risk',      mace:'~1.7% MACE at 6 weeks',  cls:'low',  rec:'Consider early discharge with outpatient follow-up. Serial troponin and repeat evaluation if clinical concern persists.' },
+  { max:6, level:'Moderate Risk', mace:'~12% MACE at 6 weeks',   cls:'mod',  rec:'Admit for observation. Serial troponin q3–6h. Cardiology consultation. Consider stress testing or coronary CTA.' },
+  { max:10,level:'High Risk',     mace:'~65% MACE at 6 weeks',   cls:'high', rec:'Early invasive strategy. Urgent cardiology consultation. Consider heparin and catheterization lab activation.' },
+];
+
+function update() {
+  const total = criteria.reduce((s, k) => s + state[k], 0);
+  const risk = RISK.find(r => total <= r.max);
+
+  document.getElementById('scoreNum').textContent = total;
+  document.getElementById('riskLevel').textContent = risk.level;
+  document.getElementById('riskMace').textContent = risk.mace;
+  document.getElementById('recBody').textContent = risk.rec;
+
+  const panel = document.getElementById('riskBanner');
+  panel.dataset.risk = risk.cls;
+
+  criteria.forEach(k => {
+    document.getElementById('bk-' + k).textContent = state[k];
+  });
+}
+
+document.querySelectorAll('.criterion').forEach(crit => {
+  const key = crit.id.replace('c-', '');
+  crit.querySelectorAll('.seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      crit.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state[key] = parseInt(btn.dataset.val, 10);
+      update();
+    });
+  });
+});
+
+update();
+</script>
+</body>
+</html>
