@@ -235,7 +235,7 @@ const CONDITION_LABELS = {
   noRecords:"no vaccination records",
 };
 
-const state = { ageMonths: 24, sex: "female", unit: "yr", source: "acip" };
+const state = { ageMonths: 24, sex: "female", unit: "yr", source: "acip", showCatchup: false };
 
 function applySource(v) {
   if (state.source === "aap" && v.aap) {
@@ -303,8 +303,8 @@ function render(){
       shown = true;
     }
 
-    /* Catch-up for unvaccinated */
-    if (!shown && v.catchupMax && ageM > v.routine.max && ageM <= v.catchupMax && (f.noRecords || v.adultIfNoRecords)) {
+    /* Catch-up for unvaccinated — only shown when user opts in */
+    if (!shown && state.showCatchup && v.catchupMax && ageM > v.routine.max && ageM <= v.catchupMax && (f.noRecords || v.adultIfNoRecords)) {
       routine.push({v, note:"catch-up"});
       added.add(v.id);
       shown = true;
@@ -321,8 +321,8 @@ function render(){
       if (!added.has(v.id)) { routine.push({v, note:null}); added.add(v.id); shown = true; }
     }
 
-    /* Adult universal vaccines if no records */
-    if (!shown && v.adultIfNoRecords && ageM >= 19*12 && f.noRecords && !added.has(v.id)) {
+    /* Adult universal vaccines if no records — only shown when user opts in */
+    if (!shown && state.showCatchup && v.adultIfNoRecords && ageM >= 19*12 && f.noRecords && !added.has(v.id)) {
       routine.push({v, note:"catch-up — no prior records"});
       added.add(v.id);
       shown = true;
@@ -369,7 +369,8 @@ function render(){
 
   let html = "";
 
-  html += `<div class="group-head"><span class="group-name">Routine / Catch-up</span><span class="group-count">${routine.length}</span></div>`;
+  const routineLabel = state.showCatchup ? "Routine / Catch-up" : "Routine";
+  html += `<div class="group-head"><span class="group-name">${routineLabel}</span><span class="group-count">${routine.length}</span></div>`;
   html += routine.length ? routine.map(({v,note,condNote}) => recRow(v, note, condNote, note && note.includes("catch") ? "catchup" : "routine")).join("") :
     `<div class="empty">No routine vaccines due at this age with the current inputs.</div>`;
 
@@ -404,6 +405,7 @@ function buildText(){
     `Patient: ${ageDisplay} ${state.sex}`,
   ];
   if (activeFlags.length) lines.push(`Conditions: ${activeFlags.join(", ")}`);
+  if (state.showCatchup) lines.push("Includes: catch-up recommendations");
   lines.push(`Generated: ${today}`, "");
 
   const allVax = [...els.results.querySelectorAll('.rec')];
@@ -432,6 +434,7 @@ function buildText(){
 }
 
 els.sourceSeg = document.getElementById('sourceSeg');
+els.catchupBtn = document.getElementById('catchupBtn');
 
 /* events */
 els.age.addEventListener('input', render);
@@ -451,6 +454,11 @@ els.sourceSeg.addEventListener('click', e => {
   els.sourceSeg.querySelectorAll('button').forEach(x => x.classList.remove('active'));
   b.classList.add('active');
   state.source = b.dataset.source;
+  render();
+});
+els.catchupBtn.addEventListener('click', () => {
+  state.showCatchup = !state.showCatchup;
+  els.catchupBtn.classList.toggle('active', state.showCatchup);
   render();
 });
 els.copyBtn.addEventListener('click', () => {
