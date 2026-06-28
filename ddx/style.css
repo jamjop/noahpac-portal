@@ -40,7 +40,7 @@
 
 .ddx-col-head{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:var(--r-sm);margin-bottom:10px}
 .ddx-col-head.high{background:var(--risk-soft);color:var(--risk)}
-.ddx-col-head.low{background:var(--blue-soft);color:var(--blue)}
+.ddx-col-head.low{background:var(--ok-soft);color:var(--ok)}
 
 .ddx-list{list-style:none;display:flex;flex-direction:column;gap:4px}
 .ddx-list li{font-size:12.5px;color:var(--ink-soft);line-height:1.45;padding:14px 16px 14px 32px;background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);position:relative}

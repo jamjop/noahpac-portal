@@ -20,6 +20,7 @@ h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .reg-section:first-of-type .reg-label{color:var(--ok)}
 .reg-section:nth-of-type(2) .reg-label{color:var(--ink-muted)}
 .reg-section:last-of-type .reg-label{color:#be185d}
+@media(prefers-color-scheme:dark){.reg-section:last-of-type .reg-label{color:#f472b6}}
 
 .reg-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:5px;padding:6px 10px;background:var(--bg);border-radius:var(--r-sm)}
 .reg-drug{font-weight:700;font-size:13px;color:var(--ink)}

@@ -30,3 +30,8 @@
 .abtn.ext:hover{background:var(--purple);color:#fff}
 
 .state kbd{font-family:'IBM Plex Mono',monospace;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:11px;box-shadow:0 1px 0 var(--line)}
+
+@media(prefers-color-scheme:dark){
+  .route-chip{background:color-mix(in srgb,var(--ok-soft) 80%,var(--surface) 20%);color:var(--teal)}
+  .cls-chip{color:var(--warn)}
+}
