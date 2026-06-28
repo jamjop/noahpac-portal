@@ -95,20 +95,14 @@ TRACKED = [
         "exclude_keywords": [],
     },
     {
-        "id":               "essentia_grampos",
-        "name":             "Essentia West Market (Gram Positive)",
+        "id":               "essentia",
+        "name":             "Essentia West Market",
         "location":         "Fargo, ND",
-        "keywords":         ["essentia-west-grampositive", "essentia_west_grampositive",
-                             "essentia-west-gram-positive"],
+        "keywords":         ["essentia-west-grampositive", "essentia-west-gram-positive",
+                             "essentia-west-gramnegative", "essentia-west-gram-negative",
+                             "essentia_west_grampositive", "essentia_west_gramnegative"],
         "exclude_keywords": [],
-    },
-    {
-        "id":               "essentia_gramneg",
-        "name":             "Essentia West Market (Gram Negative)",
-        "location":         "Fargo, ND",
-        "keywords":         ["essentia-west-gramnegative", "essentia_west_gramnegative",
-                             "essentia-west-gram-negative"],
-        "exclude_keywords": [],
+        "multi_pdf":        True,
     },
     {
         "id":               "jamestown_rmc",
@@ -208,17 +202,12 @@ def push_notify(user: str, token: str, title: str, message: str) -> None:
 
 # ── Extraction ─────────────────────────────────────────────────────────────
 
-def extract_facility(url: str, fac: dict, year: int) -> dict | None:
-    """Download PDF, run Claude extraction, return updated facility dict."""
+def _extract_one_pdf(client, url: str) -> list:
+    """Download one PDF, run Claude extraction, return list of page result dicts."""
     sys.path.insert(0, str(DIR))
-    from pdf_to_js import EXTRACT_PROMPT, merge_results
-    import anthropic, base64, io, tempfile, urllib.request
+    from pdf_to_js import EXTRACT_PROMPT
+    import base64, io, tempfile, urllib.request
     from pdf2image import convert_from_path
-
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
-    if not api_key:
-        print("ERROR: ANTHROPIC_API_KEY not set", file=sys.stderr)
-        return None
 
     print(f"  Downloading {url} …")
     req = urllib.request.Request(url, headers={"User-Agent": "nd-antibiogram-import/1.0"})
@@ -230,12 +219,11 @@ def extract_facility(url: str, fac: dict, year: int) -> dict | None:
         tmp_path = tmp.name
 
     try:
-        print("  Converting to images …")
         images = convert_from_path(tmp_path, dpi=200)
+        print(f"  {len(images)} page(s)")
     finally:
         Path(tmp_path).unlink(missing_ok=True)
 
-    client = anthropic.Anthropic(api_key=api_key)
     page_results = []
     for i, img in enumerate(images, 1):
         print(f"  Extracting page {i}/{len(images)} …")
@@ -258,15 +246,45 @@ def extract_facility(url: str, fac: dict, year: int) -> dict | None:
             page_results.append(json.loads(raw))
         except json.JSONDecodeError:
             page_results.append({"organisms": []})
+    return page_results
 
-    data = merge_results(page_results)
+
+def _dedup_organisms(organisms: list) -> list:
+    """Deduplicate by name, keeping entry with more non-null susceptibility data."""
+    seen: dict[str, dict] = {}
+    for org in organisms:
+        name = org["name"]
+        if name not in seen:
+            seen[name] = org
+        else:
+            existing = seen[name]
+            if sum(1 for v in org.get("s", {}).values() if v is not None) > \
+               sum(1 for v in existing.get("s", {}).values() if v is not None):
+                seen[name] = org
+    return list(seen.values())
+
+
+def extract_facility(urls: list[str], fac: dict, year: int) -> dict | None:
+    """Download one or more PDFs, extract, merge, and return facility dict."""
+    sys.path.insert(0, str(DIR))
+    from pdf_to_js import merge_results
+    import anthropic
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if not api_key:
+        print("ERROR: ANTHROPIC_API_KEY not set", file=sys.stderr)
+        return None
+
+    client = anthropic.Anthropic(api_key=api_key)
+
+    all_page_results = []
+    for url in urls:
+        page_results = _extract_one_pdf(client, url)
+        all_page_results.extend(page_results)
+
+    data = merge_results(all_page_results)
+    organisms = _dedup_organisms(data.get("organisms", []))
     year_str = str(year)
-
-    # Load existing file to preserve fields not returned by extraction
-    existing = {}
-    data_path = DIR / "data" / f"{fac['id']}.json"
-    if data_path.exists():
-        existing = json.loads(data_path.read_text())
 
     return {
         "id":         fac["id"],
@@ -277,8 +295,8 @@ def extract_facility(url: str, fac: dict, year: int) -> dict | None:
             f"ND HHS Archive · {fac['name']} Antibiogram {year_str} · "
             f"% susceptible, 1st isolate/patient/year"
         ),
-        "sourceUrl":  url,
-        "organisms":  data.get("organisms", existing.get("organisms", [])),
+        "sourceUrl":  urls[0],
+        "organisms":  organisms,
     }
 
 
@@ -303,19 +321,34 @@ def main() -> int:
     new_urls = current - known
     print(f"Total files on page: {len(current)} — new since last run: {len(new_urls)}")
 
-    # Find new PDFs that match a tracked facility AND have a newer year
-    to_update: list[tuple[str, dict, int]] = []
+    # Find facilities with new PDFs that have a newer year.
+    # For multi_pdf facilities: when ANY matching URL is new, collect ALL matching
+    # URLs for that year from current (not just new_urls) so we extract and merge them.
+    seen_fac_years: set[tuple[str, int]] = set()
+    to_update: list[tuple[list[str], dict, int]] = []
     for url in sorted(new_urls):
         fac  = facility_for_url(url)
         year = year_from_url(url)
         if not fac or not year:
             continue
         cur_year = current_period_year(fac["id"])
-        if cur_year is None or year > cur_year:
-            print(f"  → {fac['id']}: new {year} PDF found (current: {cur_year})")
-            to_update.append((url, fac, year))
-        else:
+        if cur_year is not None and year <= cur_year:
             print(f"  → {fac['id']}: {year} PDF found but not newer than {cur_year}, skipping")
+            continue
+        key = (fac["id"], year)
+        if key in seen_fac_years:
+            continue  # already queued this facility+year
+        seen_fac_years.add(key)
+        if fac.get("multi_pdf"):
+            # Collect ALL current URLs matching this facility for this year
+            year_prefix = f"/{year}-"
+            urls = sorted(u for u in current
+                          if year_prefix in u and facility_for_url(u) == fac)
+            print(f"  → {fac['id']}: {len(urls)} PDF(s) for {year} (current: {cur_year})")
+        else:
+            urls = [url]
+            print(f"  → {fac['id']}: new {year} PDF found (current: {cur_year})")
+        to_update.append((urls, fac, year))
 
     if not to_update:
         print(f"No facility updates needed ({date.today()})")
@@ -326,10 +359,10 @@ def main() -> int:
     updated_names = []
     failed_names  = []
 
-    for url, fac, year in to_update:
-        print(f"\nUpdating {fac['id']} from {url} …")
+    for urls, fac, year in to_update:
+        print(f"\nUpdating {fac['id']} ({year}) from {len(urls)} PDF(s) …")
         try:
-            facility_data = extract_facility(url, fac, year)
+            facility_data = extract_facility(urls, fac, year)
             if facility_data is None:
                 failed_names.append(fac["id"])
                 continue
