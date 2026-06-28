@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <header class="app-header">
@@ -42,7 +42,7 @@
           <div class="c-desc">Anatomic focus guides empiric regimen selection</div>
         </div>
       </div>
-      <div class="seg" id="seg-site" role="group"></div>
+      <select id="site-sel" class="site-select"></select>
     </div>
 
     <div class="criterion">
@@ -53,7 +53,7 @@
           <div class="c-desc">Narrows options and displays local susceptibility rates when selected</div>
         </div>
       </div>
-      <div class="seg" id="seg-org" role="group"></div>
+      <div class="org-list" id="seg-org" role="group"></div>
     </div>
 
     <div id="result-area"></div>
@@ -68,6 +68,6 @@
 
 </div>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

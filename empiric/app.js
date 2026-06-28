@@ -163,9 +163,10 @@ function render() {
   const facInfo = FACILITY_SUSC[selectedFacility];
 
   const orgSeg = document.getElementById("seg-org");
-  orgSeg.innerHTML = `<button class="seg-btn${!selectedOrg?" active":""}" data-org="">Any / unknown</button>` +
-    site.orgs.map(o => `<button class="seg-btn${o===selectedOrg?" active":""}" data-org="${o}">${o}</button>`).join("");
-  orgSeg.querySelectorAll(".seg-btn").forEach(btn => btn.addEventListener("click", () => {
+  orgSeg.innerHTML =
+    `<button class="org-btn${!selectedOrg?" active":""}" data-org=""><span class="org-dot"></span><span class="org-label">Any / unknown</span></button>` +
+    site.orgs.map(o => `<button class="org-btn${o===selectedOrg?" active":""}" data-org="${o}"><span class="org-dot"></span><span class="org-label">${o}</span></button>`).join("");
+  orgSeg.querySelectorAll(".org-btn").forEach(btn => btn.addEventListener("click", () => {
     selectedOrg = btn.dataset.org || null;
     render();
   }));
@@ -214,17 +215,20 @@ function render() {
     </div>`;
 }
 
-// Site buttons — wired up once, before data loads
-const siteSeg = document.getElementById("seg-site");
-siteSeg.innerHTML = SITES.map(s =>
-  `<button class="seg-btn${s.id===selectedSite?" active":""}" data-site="${s.id}">${s.label}</button>`
-).join("");
-siteSeg.querySelectorAll(".seg-btn").forEach(btn => btn.addEventListener("click", () => {
-  selectedSite = btn.dataset.site;
+// Site dropdown — wired up once, before data loads
+const siteSel = document.getElementById("site-sel");
+SITES.forEach(s => {
+  const opt = document.createElement("option");
+  opt.value = s.id;
+  opt.textContent = s.label;
+  if (s.id === selectedSite) opt.selected = true;
+  siteSel.appendChild(opt);
+});
+siteSel.addEventListener("change", () => {
+  selectedSite = siteSel.value;
   selectedOrg  = null;
-  siteSeg.querySelectorAll(".seg-btn").forEach(b => b.classList.toggle("active", b === btn));
   render();
-}));
+});
 
 async function loadFacilities() {
   document.getElementById("result-area").innerHTML = '<div class="state">Loading antibiogram data…</div>';
