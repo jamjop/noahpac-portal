@@ -21,7 +21,7 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `sti-guide/` | STI Treatment Guidelines | CDC 2021 full guidelines |
 | `antibiogram/` | ND Antibiogram | Local susceptibility data for 4 ND facilities; auto-updated monthly from HHS PDFs |
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
-| `vaccines/` | ACIP Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener |
+| `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
 | `calculators/` | Clinical Calculators | 18 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Pregnancy EDD |
 | `opioids/` | Opioid Conversion | Equianalgesic conversion with MME and CDC risk thresholds |
 | `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data |
@@ -72,7 +72,7 @@ Current cache version: **tccc-v3** (updated for CoTCCC 1 May 2026 guidelines).
 ### Monthly
 | Script | Schedule | Description |
 |--------|----------|-------------|
-| `antibiogram/auto_update.py` | 1st of month 04:23 | Downloads latest ND HHS antibiogram PDFs and extracts data via Claude vision; writes to `antibiogram/data/` (gitignored). Requires `ANTHROPIC_API_KEY` |
+| `antibiogram/auto_update.py` | 1st of month 04:23 | Downloads latest ND HHS antibiogram PDFs and extracts data via Claude vision; writes to `antibiogram/data/` and commits + pushes to git. Requires `ANTHROPIC_API_KEY` |
 
 ### Quarterly (Jan / Apr / Jul / Oct — 15th)
 
@@ -85,7 +85,7 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `naloxone/check_updates.py` | 05:00 | ND HHS behavioral health / overdose data |
 | `abx/check_updates.py` | 05:15 | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
 | `tccc/check_updates.py` | 05:30 | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
-| `vaccines/check_updates.py` | 05:45 | PubMed: ACIP MMWR schedule + recommendations; CDC vaccine schedule page date |
+| `vaccines/check_updates.py` | 05:45 | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
 | `sti/check_updates.py` | 06:00 | PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance; CDC STI page links |
 
 Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
