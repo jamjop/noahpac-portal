@@ -23,7 +23,7 @@
 }
 
 .lab-section{margin-bottom:32px}
-.lab-section-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.lab-section-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .lab-section-title::before{content:'';width:6px;height:6px;border-radius:2px;background:currentColor;flex-shrink:0;opacity:.65}
 .lab-section-title::after{content:'';flex:1;height:1px;background:var(--line)}
 
