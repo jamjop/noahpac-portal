@@ -1,9 +1,10 @@
-const CACHE = 'noahpac-v31';
+const CACHE = 'noahpac-v32';
 
 const TOOLS = [
   'screener','vaccines','calculators','opioids','sti','abx',
   'labs','tccc','lookup','drugref','peds','allergy','antibiogram',
-  'empiric','sepsis','wound','ddx','naloxone','reportable','sti-guide'
+  'empiric','sepsis','wound','ddx','naloxone','reportable','sti-guide',
+  'als','pals'
 ];
 
 const CORE = ['/', '/index.html', '/shared.css', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/manifest.json'];
