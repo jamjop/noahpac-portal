@@ -64,6 +64,12 @@ def build(out_path: Path) -> None:
     out_path.write_text(result)
     print(f"Built {out_path} ({len(facilities)} facilities, {len(result):,} bytes)")
 
+    # Write manifest so other apps (e.g. empiric) can discover facilities dynamically
+    manifest = {"facilities": [f["id"] for f in facilities]}
+    manifest_path = DIR / "data" / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2))
+    print(f"Wrote {manifest_path}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

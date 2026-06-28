@@ -1,4 +1,4 @@
-const FACILITY_IDS = ['trinity', 'sanford_bismarck', 'altru', 'chi_bismarck'];
+// Facility list is loaded at runtime from the antibiogram manifest.
 
 let FACILITY_SUSC = {};
 
@@ -229,8 +229,21 @@ siteSeg.querySelectorAll(".seg-btn").forEach(btn => btn.addEventListener("click"
 async function loadFacilities() {
   document.getElementById("result-area").innerHTML = '<div class="state">Loading antibiogram data…</div>';
 
+  let facilityIds;
+  try {
+    const manifest = await fetch('/antibiogram/data/manifest.json').then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    });
+    facilityIds = manifest.facilities;
+  } catch (e) {
+    document.getElementById("result-area").innerHTML =
+      '<div class="state err">Could not load antibiogram manifest. Please try again later.</div>';
+    return;
+  }
+
   const results = await Promise.allSettled(
-    FACILITY_IDS.map(id =>
+    facilityIds.map(id =>
       fetch(`/antibiogram/data/${id}.json`).then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
