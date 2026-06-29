@@ -40,4 +40,8 @@ footer a{color:var(--purple)}
   .t-immediate{background:var(--risk-soft);color:var(--risk)}
   .t-day{background:var(--warn-soft);color:var(--warn)}
   .t-week{background:var(--ok-soft);color:var(--ok)}
+  .cond-list{box-shadow:var(--sh)}
+  .how-card{box-shadow:var(--sh)}
+  .how-title{border-bottom-color:var(--line)}
+  .search-box{background:var(--surface);color:var(--ink);border-color:var(--line)}
 }

@@ -51,3 +51,11 @@
 .copy-btn{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.05em;padding:7px 16px;border-radius:50px;border:1.5px solid var(--purple);background:transparent;color:var(--purple);cursor:pointer;transition:background .15s,color .15s;margin-top:20px;display:inline-block}
 .copy-btn:hover{background:var(--purple);color:#fff}
 .copy-btn.copied{background:var(--ok);color:#fff;border-color:var(--ok)}
+
+@media(prefers-color-scheme:dark){
+  .cat-nav .tab-btn{border-color:var(--line);color:var(--ink-soft)}
+  .cat-nav .tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+  .ddx-list li{box-shadow:var(--sh)}
+  .ddx-col-head.high{background:var(--risk-soft);color:var(--risk)}
+  .ddx-col-head.low{background:var(--ok-soft);color:var(--ok)}
+}
