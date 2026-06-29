@@ -8,9 +8,9 @@ body{padding-bottom:50px}
 
 /* header */
 h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
-.datasource{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);margin-top:6px}
-.datasource .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);margin-right:5px;vertical-align:middle}
-.datasource.live .dot{background:#6ee7b7}
+.datasource{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);margin-top:6px}
+.datasource .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ink-muted);margin-right:5px;vertical-align:middle;opacity:.5}
+.datasource.live .dot{background:var(--ok);opacity:1}
 
 /* ── Input area ── */
 .input-area{display:flex;flex-direction:column;gap:4px;margin-top:12px}
