@@ -47,6 +47,36 @@ SEARCHES = [
         'query':   '("wound care" OR "wound irrigation" OR "wound management") AND (guideline OR recommendation OR "clinical practice") AND (emergency OR trauma OR laceration)',
         'reldate': 400,
     },
+    {
+        'id':      'wound_closure',
+        'name':    'Wound Closure / Laceration Repair Guidelines',
+        'query':   '("wound closure" OR "laceration repair" OR "primary closure" OR "delayed primary closure") AND (guideline OR recommendation OR "clinical practice") AND (emergency OR trauma)',
+        'reldate': 400,
+    },
+    {
+        'id':      'rabies_pep',
+        'name':    'Rabies Post-Exposure Prophylaxis (ACIP)',
+        'query':   'ACIP AND (rabies OR "post-exposure prophylaxis") AND (recommendation OR guideline OR update)',
+        'reldate': 400,
+    },
+    {
+        'id':      'animal_bite',
+        'name':    'Animal Bite Wound Management',
+        'query':   '("animal bite" OR "dog bite" OR "cat bite" OR "bite wound") AND ("wound management" OR "infection" OR prophylaxis) AND (guideline OR recommendation)',
+        'reldate': 400,
+    },
+    {
+        'id':      'human_bite',
+        'name':    'Human Bite / Clenched-Fist Injuries',
+        'query':   '("human bite" OR "clenched fist injury" OR "fight bite") AND (infection OR management OR prophylaxis)',
+        'reldate': 400,
+    },
+    {
+        'id':      'bite_abx',
+        'name':    'Antibiotic Prophylaxis — Bite Wounds',
+        'query':   '("bite wound" OR "animal bite" OR "human bite") AND (antibiotic OR prophylaxis OR "amoxicillin-clavulanate") AND (guideline OR recommendation OR "systematic review")',
+        'reldate': 400,
+    },
 ]
 
 
@@ -92,7 +122,7 @@ def _write_quarterly_result(status: str, findings: list[dict]) -> None:
     report_file = Path(f"/tmp/quarterly-report-{datetime.date.today()}.json")
     try:
         existing = json.loads(report_file.read_text()) if report_file.exists() else []
-        existing.append({'app_id': 'wound', 'app_name': 'Wound Care & Tetanus Prophylaxis',
+        existing.append({'app_id': 'wound', 'app_name': 'Wound Care',
                          'app_url': APP_URL, 'status': status, 'findings': findings,
                          'ran_at': datetime.datetime.now().isoformat(timespec='minutes')})
         report_file.write_text(json.dumps(existing, indent=2))
@@ -103,7 +133,7 @@ def _write_quarterly_result(status: str, findings: list[dict]) -> None:
 def push_notify(user: str, token: str, title: str, message: str) -> None:
     payload = json.dumps({
         'token': token, 'user': user, 'title': title, 'message': message,
-        'url': APP_URL, 'url_title': 'Wound Care & Tetanus Prophylaxis', 'priority': 0,
+        'url': APP_URL, 'url_title': 'Wound Care', 'priority': 0,
     }).encode()
     req = urllib.request.Request(PUSHOVER_API, data=payload,
                                  headers={'Content-Type': 'application/json'}, method='POST')
@@ -137,11 +167,13 @@ def main() -> int:
             print(f"  ERROR: {exc}", file=sys.stderr)
             continue
 
-        known     = set(state.get(sid, []))
-        new_pmids = [p for p in pmids if p not in known]
-        print(f"  Found {len(pmids)} total, {len(new_pmids)} new")
+        known        = set(state.get(sid, []))
+        first_search = sid not in state
+        new_pmids    = [p for p in pmids if p not in known]
+        suffix       = " (new search — initialising)" if first_search else ""
+        print(f"  Found {len(pmids)} total, {len(new_pmids)} new{suffix}")
 
-        if new_pmids and not first_run:
+        if new_pmids and not first_run and not first_search:
             try:
                 meta = esummary(new_pmids)
                 time.sleep(0.4)
@@ -173,7 +205,7 @@ def main() -> int:
     message = 'Wound care / tetanus guideline update detected:\n\n' + '\n'.join(f'• {a}' for a in alerts)
     message += '\n\nReview and update /var/www/noahpac-portal/wound/app.js if prophylaxis recommendations changed.'
     print(message)
-    push_notify(user, token, 'Wound Care Guidelines Update', message)
+    push_notify(user, token, 'Wound Care Update', message)
     _write_quarterly_result('changed', findings)
     print('Notification sent.')
     return 0

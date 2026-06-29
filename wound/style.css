@@ -117,6 +117,17 @@
   .result-col{width:100%;position:static}
 }
 
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:8px;max-width:1000px;margin:0 auto;padding:0 16px 16px}
+.tab-btn{font-family:inherit;font-size:13px;font-weight:600;padding:9px 22px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.tab-btn:hover{background:var(--purple-soft);border-color:var(--purple-mid)}
+.tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.tab-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.tab-panel[hidden]{display:none}
+
+/* ── Closure steps list ── */
+.rec-steps{margin:8px 0 0;padding-left:18px;font-size:12.5px;line-height:1.8;color:var(--ink-soft)}
+
 /* ── Dark mode ── */
 @media(prefers-color-scheme:dark){
   .seg-btn{background:var(--bg)}

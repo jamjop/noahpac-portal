@@ -3,23 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wound &amp; Tetanus</title>
+<title>Wound Care</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <header class="app-header">
   <div class="header-inner">
-    <div class="eyebrow">ACIP · Emergency Medicine</div>
-    <h1>Wound &amp; Tetanus</h1>
+    <div class="eyebrow">ACIP · ACEP · CDC · Emergency Medicine</div>
+    <h1>Wound Care</h1>
     <a href="/" class="back" target="_top">← noahpac</a>
     <div class="update-cadence">↻ Reviewed quarterly</div>
   </div>
 </header>
 
-<div class="page-body">
+<div class="tab-bar" role="tablist" aria-label="Wound care section">
+  <button class="tab-btn active" data-tab="tetanus" role="tab" aria-selected="true" aria-controls="panel-tetanus">Tetanus</button>
+  <button class="tab-btn" data-tab="closure" role="tab" aria-selected="false" aria-controls="panel-closure">Closure</button>
+  <button class="tab-btn" data-tab="bites" role="tab" aria-selected="false" aria-controls="panel-bites">Bites</button>
+</div>
+
+<!-- ── Tetanus ── -->
+<div id="panel-tetanus" class="tab-panel page-body" role="tabpanel">
 
   <div class="criteria-col">
 
@@ -128,6 +135,187 @@
 
 </div>
 
-<script src="app.js"></script>
+<!-- ── Closure ── -->
+<div id="panel-closure" class="tab-panel page-body" role="tabpanel" hidden>
+
+  <div class="criteria-col">
+
+    <div class="criterion">
+      <div class="c-header">
+        <span class="c-letter">1</span>
+        <div>
+          <div class="c-name">Wound Characteristics</div>
+          <div class="c-desc">Degree of contamination, tissue viability, and infection risk</div>
+        </div>
+      </div>
+      <div class="seg" id="contam-grid" role="group">
+        <button class="seg-btn active" data-contam="clean">
+          <span class="val-badge">A</span>
+          <span class="val-text">
+            <span class="val-label">Clean</span>
+            <span class="val-desc">Sharp mechanism, no contamination, no devitalized tissue, within golden period (&lt;6–12h body; ≤24h face)</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-contam="contaminated">
+          <span class="val-badge">B</span>
+          <span class="val-text">
+            <span class="val-label">Contaminated</span>
+            <span class="val-desc">Bite wound, soil or debris, moderate contamination, or wound &gt;6–12h old without signs of active infection</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-contam="infected">
+          <span class="val-badge">C</span>
+          <span class="val-text">
+            <span class="val-label">Infected / devitalized</span>
+            <span class="val-desc">Obvious infection signs (erythema, purulence, necrosis), heavy contamination (feces, gross soil), or significant tissue loss</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="ref-grid">
+        <div>
+          <div class="ref-head">Closure methods</div>
+          <ul class="ref-list">
+            <li><strong>Sutures:</strong> Nylon or Prolene for skin; Vicryl 3-0/4-0 for deep layers</li>
+            <li><strong>Staples:</strong> Scalp, trunk, extremities — fast, equivalent outcomes</li>
+            <li><strong>Tissue adhesive</strong> (Dermabond): Superficial, low-tension; avoid hands, joints, mucosa</li>
+            <li><strong>Steri-strips:</strong> Low-tension edges only; not over joints</li>
+          </ul>
+        </div>
+        <div>
+          <div class="ref-head">Suture removal timing</div>
+          <ul class="ref-list">
+            <li>Face: 3–5 days</li>
+            <li>Scalp: 7–10 days</li>
+            <li>Neck: 5–7 days</li>
+            <li>Chest / abdomen: 10–14 days</li>
+            <li>Back: 10–14 days</li>
+            <li>Extremity: 10–14 days</li>
+            <li>Over joint: 14 days</li>
+            <li>Hand / foot: 10–14 days</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="result-col">
+    <div class="result-panel">
+      <div class="result-panel-head">Closure Approach</div>
+      <div id="closure-output" class="result-panel-body"></div>
+    </div>
+    <div class="source-note">
+      Based on ACEP, IDSA, and ACS wound management guidelines. Irrigate all wounds with normal saline or tap water at adequate volume. Not medical advice.
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Bites ── -->
+<div id="panel-bites" class="tab-panel page-body" role="tabpanel" hidden>
+
+  <div class="criteria-col">
+
+    <div class="criterion">
+      <div class="c-header">
+        <span class="c-letter">1</span>
+        <div>
+          <div class="c-name">Biting Species</div>
+          <div class="c-desc">Species determines rabies risk category and prophylaxis approach</div>
+        </div>
+      </div>
+      <div class="seg" id="animal-grid" role="group">
+        <button class="seg-btn active" data-animal="domestic-obs">
+          <span class="val-badge">A</span>
+          <span class="val-text">
+            <span class="val-label">Dog, cat, or ferret — healthy &amp; available</span>
+            <span class="val-desc">Domestic animal, owner-known; healthy and available for 10-day observation</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-animal="domestic-unavail">
+          <span class="val-badge">B</span>
+          <span class="val-text">
+            <span class="val-label">Dog, cat, or ferret — unavailable, sick, or died</span>
+            <span class="val-desc">Animal escaped, euthanized without testing, ill, or developed neurologic signs</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-animal="wild-stray">
+          <span class="val-badge">C</span>
+          <span class="val-text">
+            <span class="val-label">Stray or wild-caught dog / cat</span>
+            <span class="val-desc">Unknown vaccination history, stray, unvaccinated, or wild-caught animal</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-animal="bat">
+          <span class="val-badge">D</span>
+          <span class="val-text">
+            <span class="val-label">Bat (any exposure)</span>
+            <span class="val-desc">Any bite, scratch, or mucous membrane contact; or bat found in room of sleeping person or unattended child</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-animal="wildlife-high">
+          <span class="val-badge">E</span>
+          <span class="val-text">
+            <span class="val-label">High-risk wildlife</span>
+            <span class="val-desc">Raccoon, skunk, fox, coyote, or wolf — primary rabies reservoir species in the US</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-animal="wildlife-low">
+          <span class="val-badge">F</span>
+          <span class="val-text">
+            <span class="val-label">Low-risk animal</span>
+            <span class="val-desc">Livestock, rabbit, squirrel, rat, mouse, hamster, gerbil, or other small rodent</span>
+          </span>
+        </button>
+        <button class="seg-btn" data-animal="human">
+          <span class="val-badge">G</span>
+          <span class="val-text">
+            <span class="val-label">Human bite</span>
+            <span class="val-desc">Clenched-fist injury, occlusal wound, or bite laceration from another person</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="ref-grid">
+        <div>
+          <div class="ref-head">Rabies PEP regimen (if indicated)</div>
+          <ul class="ref-list">
+            <li><strong>Unvaccinated:</strong> HRIG 20 IU/kg on day 0 (infiltrate wound site; remainder IM) + vaccine days 0, 3, 7, 14</li>
+            <li><strong>Previously vaccinated against rabies:</strong> No HRIG. Vaccine days 0 and 3 only.</li>
+            <li>Irrigate wound with soap and water, then povidone-iodine before PEP</li>
+          </ul>
+        </div>
+        <div>
+          <div class="ref-head">Antibiotic prophylaxis</div>
+          <ul class="ref-list">
+            <li><strong>Cat bites:</strong> All bites — Amox-clav 875/125 mg BID × 5 days</li>
+            <li><strong>Dog bites:</strong> Selective — puncture wounds, hands/face/feet, immunocompromised — Amox-clav 875/125 mg BID × 5 days</li>
+            <li><strong>Human bites:</strong> Clenched-fist and through-skin wounds — Amox-clav 875/125 mg BID × 5–7 days</li>
+            <li><strong>PCN allergy:</strong> Moxifloxacin 400 mg daily × 5 days, or doxycycline 100 mg BID + metronidazole 500 mg TID</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="result-col">
+    <div class="result-panel">
+      <div class="result-panel-head">Rabies Assessment</div>
+      <div id="bite-output" class="result-panel-body"></div>
+    </div>
+    <div class="source-note">
+      Based on ACIP rabies PEP guidelines (MMWR) and IDSA bite wound recommendations. Always consult local/state public health for rabies exposures. Not medical advice.
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js?v=2"></script>
 </body>
 </html>
