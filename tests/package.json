@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "playwright test",
-    "test:peds": "playwright test peds"
+    "pretest": "playwright install chromium",
+    "test": "bash run-tests.sh",
+    "test:peds": "bash run-tests.sh peds"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"

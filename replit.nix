@@ -1,5 +1,7 @@
 {pkgs}: {
   deps = [
+    pkgs.udev
+    pkgs.libgbm
     pkgs.mesa
     pkgs.cairo
     pkgs.pango

@@ -91,7 +91,8 @@ test.describe('Pediatric Dosing Calculator', () => {
     await page.click('#calcBtn');
 
     // Weight should be estimated to 26 kg (2*(5+8)=26) and dose cards rendered
-    await expect(page.locator('.dose-card')).toHaveCount({ min: 20 } as any);
+    const cardCount = await page.locator('.dose-card').count();
+    expect(cardCount).toBeGreaterThanOrEqual(20);
     const vals = await page.locator('.dose-val').allTextContents();
     const numericCount = vals.filter(v => v.trim() !== '—').length;
     expect(numericCount).toBeGreaterThan(10);
