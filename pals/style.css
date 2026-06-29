@@ -94,11 +94,11 @@
   .phase-label{background:#0d1e3d}
   .callout.danger{color:#fca5a5}
   .callout.warn{color:#fde68a}
-  .callout.info{color:#7dd3fc}
+  .callout.info{background:#0c2a42;color:#7dd3fc}
   .callout.ok{color:#6ee7b7}
   .callout.purple{color:#c4b5fd}
   .drug-tag.warn{color:#fbbf24}
-  .drug-tag.teal{color:#22d3ee}
+  .drug-tag.teal{background:#0c2a42;color:#22d3ee}
   .sec-badge{background:#7f1d1d}
   .sec-badge.ok{background:#166534}
   .sec-badge.teal{background:#0e7490}

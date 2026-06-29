@@ -1,4 +1,5 @@
 :root{--teal-soft:#E0F7FA}
+@media(prefers-color-scheme:dark){:root{--teal-soft:#0c2a42}}
 
 /* ── Header ── */
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px;display:flex;align-items:flex-start;justify-content:space-between}
@@ -86,4 +87,7 @@
   .drug-tag.warn{color:#fbbf24}
   .drug-tag.teal{color:#22d3ee}
   .sec-letter{background:#7f1d1d}
+  .sec-letter.ok{background:#166534}
+  .sec-letter.teal{background:#0e7490}
+  .sec-letter.warn{background:#92400e}
 }

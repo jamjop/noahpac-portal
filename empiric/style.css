@@ -140,4 +140,5 @@
   .susc-hi{background:var(--ok-soft)}
   .susc-mid{background:var(--warn-soft)}
   .susc-lo{background:var(--risk-soft)}
+  .reg-tbl th{background:var(--surface)}
 }

@@ -52,4 +52,5 @@
 @media(prefers-color-scheme:dark){
   .cat-nav .tab-btn{border-color:var(--line);color:var(--ink-soft)}
   .cat-nav .tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+  .lab-table th{background:var(--surface)}
 }
