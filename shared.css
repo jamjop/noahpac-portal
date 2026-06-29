@@ -2,14 +2,14 @@
 
 :root{
   color-scheme: light dark;
-  --bg:#f8f9fa; --surface:#ffffff; --ink:#1a1f24; --ink-soft:#4a5568;
-  --ink-muted:#718096; --line:#e2e8f0; --purple:#0052cc;
-  --purple-soft:#ebf2ff; --purple-mid:#93b4f0; --teal:#0891B2;
+  --bg:#EFF3FA; --surface:#ffffff; --ink:#0D1E3F; --ink-soft:#4A5A7A;
+  --ink-muted:#8895B3; --line:#D8E0EE; --purple:#1B2E6B;
+  --purple-soft:#E8EDF7; --purple-mid:#9AAACE; --teal:#0891B2;
   --ok:#1A8A5A; --ok-soft:#E3F5EC; --warn:#D4820A; --warn-soft:#FEF3DA;
   --risk:#C53030; --risk-soft:#FDE8E8;
-  --grad:linear-gradient(135deg,#0041a8 0%,#0052cc 100%);
-  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
-  --sh-lg:0 4px 16px rgba(0,0,0,.10),0 2px 6px rgba(0,0,0,.05);
+  --grad:linear-gradient(160deg,#0D1E3F 0%,#1B2E6B 100%);
+  --sh:0 2px 8px rgba(13,30,63,.07),0 1px 2px rgba(13,30,63,.04);
+  --sh-lg:0 8px 24px rgba(13,30,63,.10),0 2px 8px rgba(13,30,63,.05);
   --r:8px; --r-sm:6px;
 }
 
