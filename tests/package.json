@@ -1,0 +1,13 @@
+{
+  "name": "@workspace/tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:peds": "playwright test peds"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}
