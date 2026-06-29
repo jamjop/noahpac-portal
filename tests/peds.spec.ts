@@ -218,4 +218,48 @@ test.describe('Pediatric Dosing Calculator', () => {
     expect(content!.trim().length).toBeGreaterThan(0);
   });
 
+  // ── 10. Dose cards stay legible when shared.css fails to load ─────────────
+  //
+  // Simulates a slow/broken connection by aborting the /shared.css network
+  // request.  peds/style.css defines its own fallback :root tokens so the
+  // page must remain fully functional: dose-val elements visible, Calculate
+  // button clickable, and #content updated with real numeric values.
+
+  test('dose cards are legible and Calculate works when shared.css fails to load', async ({ page }) => {
+    // Abort any request for shared.css before the page even starts loading
+    await page.route('**/shared.css', route => route.abort());
+
+    await page.goto(PEDS_URL);
+
+    // Skeleton must appear — #content rendered even without shared.css tokens
+    await expect(page.locator('#content')).toBeVisible();
+
+    // Initial skeleton dose-val elements must be visible (not invisible due to
+    // missing --purple token or missing layout from shared.css)
+    const skeletonVals = page.locator('.dose-val');
+    await expect(skeletonVals.first()).toBeVisible();
+
+    // Calculate button must be visible and clickable
+    const calcBtn = page.locator('#calcBtn');
+    await expect(calcBtn).toBeVisible();
+    await expect(calcBtn).toBeEnabled();
+
+    // Enter a weight and calculate
+    await page.fill('#wtKg', '15');
+    await calcBtn.click();
+
+    // #content must update: at least one dose-val must now be numeric
+    const updatedVals = await page.locator('.dose-val').allTextContents();
+    const numericCount = updatedVals.filter(v => v.trim() !== '—').length;
+    expect(
+      numericCount,
+      `Expected numeric dose values after CSS failure, got ${numericCount} out of ${updatedVals.length}`
+    ).toBeGreaterThan(10);
+
+    // Spot-check: a critical card (Epinephrine cardiac arrest) must have a
+    // visible, legible dose-val — not hidden by a missing color token
+    const epiVal = await getDoseVal(page, 'Epinephrine (cardiac arrest)');
+    expect(isNumeric(epiVal), `Epi dose-val "${epiVal}" should be numeric without shared.css`).toBe(true);
+  });
+
 });
