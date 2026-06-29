@@ -1,9 +1,15 @@
+:root{
+  --t-immediate-bg:#fee2e2;--t-immediate-ink:#991b1b;
+  --t-day-bg:#fef9c3;--t-day-ink:#713f12;
+  --t-week-bg:#d1fae5;--t-week-ink:#065f46;
+  --dot-ok:#6ee7b7;
+}
 body{padding-bottom:50px}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px}
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px}
 h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .datasource{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);margin-top:6px}
-.datasource .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#6ee7b7;margin-right:5px;vertical-align:middle}
+.datasource .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dot-ok);margin-right:5px;vertical-align:middle}
 
 .search-box{width:100%;box-sizing:border-box;margin:16px 0 12px;padding:11px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:14px;font-family:inherit}
 .search-box:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
@@ -12,9 +18,9 @@ h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .group-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .group-cat{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
 .timing-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;padding:2px 9px;border-radius:50px}
-.t-immediate{background:#fee2e2;color:#991b1b}
-.t-day{background:#fef9c3;color:#713f12}
-.t-week{background:#d1fae5;color:#065f46}
+.t-immediate{background:var(--t-immediate-bg);color:var(--t-immediate-ink)}
+.t-day{background:var(--t-day-bg);color:var(--t-day-ink)}
+.t-week{background:var(--t-week-bg);color:var(--t-week-ink)}
 .group-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);margin-left:auto}
 
 .cond-list{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}

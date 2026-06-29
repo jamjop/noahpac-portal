@@ -19,14 +19,14 @@
 .drug-title{font-size:20px;font-weight:800;margin-bottom:4px}
 .drug-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .meta-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:3px 10px;border-radius:50px;background:var(--purple-soft);color:var(--purple)}
-.meta-pill.route{background:#E0F7FA;color:#0369A1}
+.meta-pill.route{background:var(--teal-soft);color:var(--teal-ink)}
 .meta-pill.brand{background:var(--bg);color:var(--ink-soft);border:1px solid var(--line)}
 
 /* Boxed warning */
 .boxed-warning{background:var(--risk-soft);border:2px solid var(--risk);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:14px}
 .boxed-warning-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--risk);margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .boxed-warning-label::before{content:'⚠';font-size:14px}
-.boxed-warning-text{font-size:13px;color:#7f1d1d;line-height:1.65;white-space:pre-wrap}
+.boxed-warning-text{font-size:13px;color:var(--callout-danger-ink);line-height:1.65;white-space:pre-wrap}
 
 /* Label sections */
 .label-section{background:var(--surface);border-radius:var(--r-sm);box-shadow:var(--sh);margin-bottom:10px;overflow:hidden}
@@ -50,8 +50,8 @@
 .recall-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .recall-class{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:50px}
 .cls1{background:var(--risk-soft);color:var(--risk)}
-.cls2{background:var(--warn-soft);color:#92400E}
-.cls3{background:var(--ok-soft);color:#065F46}
+.cls2{background:var(--warn-soft);color:var(--warn-ink)}
+.cls3{background:var(--ok-soft);color:var(--ok-ink)}
 .recall-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted)}
 .recall-status{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;margin-left:auto;color:var(--ink-muted)}
 .recall-reason{font-size:13px;font-weight:600;margin-bottom:4px}

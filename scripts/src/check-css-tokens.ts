@@ -48,6 +48,8 @@ function findPageStylesheets(root: string): string[] {
   return results.sort();
 }
 
+// ── Check 1: undefined token references ─────────────────────────────────────
+
 const sharedCssPath = join(projectRoot, "shared.css");
 let sharedCss: string;
 try {
@@ -117,4 +119,133 @@ if (totalErrors > 0) {
   process.exit(1);
 } else {
   console.log("\nAll CSS token references are satisfied (shared.css or page-local definitions).");
+}
+
+// ── Check 2: hardcoded hex color values ──────────────────────────────────────
+
+/**
+ * Hex colors that are acceptable without a CSS variable:
+ *   #fff / #ffffff  – pure white (contrast on fixed-color backgrounds)
+ *   #000 / #000000  – pure black
+ * Everything else must be expressed as var(--token).
+ */
+const ALLOWED_HEX = new Set(["#fff", "#ffffff", "#000", "#000000"]);
+
+/** Matches CSS hex colours: #RGB, #RGBA, #RRGGBB, #RRGGBBAA */
+const HEX_RE = /#[0-9a-fA-F]{3,8}/g;
+
+/** Matches a CSS *variable definition* – the property name starts with -- */
+const VAR_DEF_RE = /--[\w-]+\s*:/;
+
+interface HardcodedHit {
+  file: string;
+  lineNo: number;
+  hex: string;
+  lineText: string;
+}
+
+function findHardcodedHexColors(cssText: string): HardcodedHit[] {
+  const hits: HardcodedHit[] = [];
+  const lines = cssText.split("\n");
+  let inBlockComment = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+
+    // Track multi-line block comments
+    if (inBlockComment) {
+      if (line.includes("*/")) {
+        line = line.slice(line.indexOf("*/") + 2);
+        inBlockComment = false;
+      } else {
+        continue;
+      }
+    }
+
+    // Strip inline block comments  /* … */
+    line = line.replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g, "");
+
+    // Open a new block comment that hasn't closed yet
+    if (line.includes("/*")) {
+      line = line.slice(0, line.indexOf("/*"));
+      inBlockComment = true;
+    }
+
+    // Skip lines that only contain CSS variable definitions (--var: value)
+    // e.g.  :root{--preg:#BE185D;--preg-soft:#FCE7F3}
+    // If every color-bearing segment of the line is a var def, it's safe.
+    // Simple heuristic: if the stripped line has no property assignment that
+    // doesn't begin with --, skip it.  We check by removing all var-def
+    // segments and then looking for any remaining hex.
+    const withoutVarDefs = line.replace(/--[\w-]+\s*:\s*[^;{}]*/g, "");
+    if (!withoutVarDefs.includes("#")) {
+      continue;
+    }
+
+    // If the only hex colours left are in var() definitions on this line, skip.
+    if (!VAR_DEF_RE.test(withoutVarDefs) && VAR_DEF_RE.test(line)) {
+      // All hex colors were inside variable definitions
+      continue;
+    }
+
+    // Find hex colours in the "non-var-def" portion
+    HEX_RE.lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = HEX_RE.exec(withoutVarDefs)) !== null) {
+      const hex = match[0].toLowerCase();
+      // Normalise 3-digit shorthand for allowlist check
+      const normalised =
+        hex.length === 4
+          ? "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3]
+          : hex;
+      if (ALLOWED_HEX.has(normalised)) continue;
+      hits.push({ file: "", lineNo: i + 1, hex: match[0], lineText: lines[i].trim() });
+    }
+  }
+
+  return hits;
+}
+
+console.log("\n──────────────────────────────────────────────────────────────");
+console.log("Checking for hardcoded hex colors in page stylesheets...\n");
+
+let hexErrors = 0;
+const hexErrorLines: string[] = [];
+
+for (const sheet of stylesheets) {
+  const rel = sheet.replace(projectRoot + "/", "");
+  let css: string;
+  try {
+    css = readFileSync(sheet, "utf8");
+  } catch {
+    console.warn(`  WARN: Could not read ${rel} — skipping`);
+    continue;
+  }
+
+  const hits = findHardcodedHexColors(css);
+  if (hits.length === 0) {
+    console.log(`  ✓  ${rel}`);
+  } else {
+    hexErrorLines.push(`  ${rel}`);
+    for (const h of hits) {
+      hexErrorLines.push(`    ✗ line ${h.lineNo}: ${h.hex}  →  ${h.lineText}`);
+    }
+    hexErrors += hits.length;
+  }
+}
+
+if (hexErrors > 0) {
+  console.log("\nHARDCODED HEX COLORS DETECTED:\n");
+  for (const line of hexErrorLines) {
+    console.log(line);
+  }
+  const fileCount = hexErrorLines.filter((l) => !l.startsWith("    ")).length;
+  console.log(`\n${hexErrors} hardcoded hex color(s) found across ${fileCount} file(s).`);
+  console.log(
+    "Define each color as a CSS custom property in shared.css or the page's own :root block,\n" +
+    "then reference it via var(--token-name). Only #fff and #000 are exempt."
+  );
+  process.exit(1);
+} else {
+  console.log("\nNo hardcoded hex colors found in page stylesheets.");
 }

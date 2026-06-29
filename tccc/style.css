@@ -1,5 +1,3 @@
-:root{--teal-soft:#E0F7FA}
-@media(prefers-color-scheme:dark){:root{--teal-soft:#0c2a42}}
 
 /* ── Header ── */
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px;display:flex;align-items:flex-start;justify-content:space-between}
@@ -34,7 +32,7 @@
 
 /* Content blocks */
 .phase{margin-bottom:20px}
-.phase-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--purple);background:#d4e5ff;border-left:3px solid var(--purple);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:6px 12px;margin-bottom:10px;display:block}
+.phase-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--purple);background:var(--phase-bg);border-left:3px solid var(--purple);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:6px 12px;margin-bottom:10px;display:block}
 
 .steps{list-style:none;display:flex;flex-direction:column;gap:7px}
 .steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border-radius:var(--r);padding:14px 18px;font-size:13px;box-shadow:var(--sh)}
@@ -42,10 +40,10 @@
 .steps li strong{font-weight:700}
 
 .callout{border-radius:var(--r-sm);padding:12px 16px;margin:14px 0;font-size:13px}
-.callout.danger{background:var(--risk-soft);border-left:4px solid var(--risk);color:#7f1d1d}
-.callout.warn{background:var(--warn-soft);border-left:4px solid var(--warn);color:#78350f}
-.callout.info{background:var(--teal-soft);border-left:4px solid var(--teal);color:#0c4a6e}
-.callout.ok{background:var(--ok-soft);border-left:4px solid var(--ok);color:#14532d}
+.callout.danger{background:var(--risk-soft);border-left:4px solid var(--risk);color:var(--callout-danger-ink)}
+.callout.warn{background:var(--warn-soft);border-left:4px solid var(--warn);color:var(--callout-warn-ink)}
+.callout.info{background:var(--teal-soft);border-left:4px solid var(--teal);color:var(--callout-info-ink)}
+.callout.ok{background:var(--ok-soft);border-left:4px solid var(--ok);color:var(--callout-ok-ink)}
 .callout-label{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;opacity:.75}
 .callout p{margin:4px 0;line-height:1.55}
 .callout ul{margin:6px 0 0 16px;line-height:1.7}
@@ -58,8 +56,8 @@
 .drug-name{font-weight:800;font-size:15px}
 .drug-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:50px;background:var(--risk-soft);color:var(--risk);letter-spacing:.04em}
 .drug-tag.ok{background:var(--ok-soft);color:var(--ok)}
-.drug-tag.teal{background:var(--teal-soft);color:#0369A1}
-.drug-tag.warn{background:var(--warn-soft);color:#92400E}
+.drug-tag.teal{background:var(--teal-soft);color:var(--teal-ink)}
+.drug-tag.warn{background:var(--warn-soft);color:var(--warn-ink)}
 .drug-row{display:grid;grid-template-columns:108px 1fr;gap:5px 12px;font-size:12.5px;margin-top:4px;align-items:baseline}
 .drug-row-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.08em;color:var(--ink-muted);text-transform:uppercase}
 .drug-row-val{font-weight:600;font-size:12.5px;color:var(--ink)}
@@ -79,15 +77,8 @@
 .meds-ol{margin-left:16px;line-height:1.9;font-size:11.5px}
 
 @media(prefers-color-scheme:dark){
-  .phase-label{background:#0d1e3d}
-  .callout.danger{color:#fca5a5}
-  .callout.warn{color:#fde68a}
-  .callout.info{color:#7dd3fc}
-  .callout.ok{color:#6ee7b7}
-  .drug-tag.warn{color:#fbbf24}
-  .drug-tag.teal{color:#22d3ee}
-  .sec-letter{background:#7f1d1d}
-  .sec-letter.ok{background:#166534}
-  .sec-letter.teal{background:#0e7490}
-  .sec-letter.warn{background:#92400e}
+  .sec-letter{background:var(--badge-danger-dark)}
+  .sec-letter.ok{background:var(--badge-ok-dark)}
+  .sec-letter.teal{background:var(--badge-teal-dark)}
+  .sec-letter.warn{background:var(--badge-warn-dark)}
 }

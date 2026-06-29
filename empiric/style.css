@@ -124,8 +124,8 @@
 
 /* ── Load warning banner ── */
 .state.warn{
-  background:var(--warn-soft,#fef9c3);
-  border:1.5px solid var(--warn,#ca8a04);
+  background:var(--warn-soft);
+  border:1.5px solid var(--warn);
   color:var(--ink);
   border-radius:var(--r-sm);
   padding:10px 14px;

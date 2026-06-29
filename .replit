@@ -39,12 +39,12 @@ args = "pnpm --filter @workspace/noahpac run dev"
 name = "check-css-tokens"
 author = "agent"
 
+[workflows.workflow.metadata]
+isValidation = true
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pnpm --filter @workspace/scripts run check-css-tokens"
-
-[workflows.workflow.metadata]
-isValidation = true
 
 [agent]
 stack = "PNPM_WORKSPACE"

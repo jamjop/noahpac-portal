@@ -102,7 +102,7 @@
 /* ── Dark mode ── */
 @media(prefers-color-scheme:dark){
   .seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
-  .res-ok{background:var(--ok-soft);color:#6ee7b7}
-  .res-warn{background:var(--warn-soft);color:#fde68a}
-  .res-crit{background:var(--risk-soft);color:#fca5a5}
+  .res-ok{background:var(--ok-soft);color:var(--callout-ok-ink)}
+  .res-warn{background:var(--warn-soft);color:var(--callout-warn-ink)}
+  .res-crit{background:var(--risk-soft);color:var(--callout-danger-ink)}
 }
