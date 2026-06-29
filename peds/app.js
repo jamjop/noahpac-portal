@@ -335,8 +335,8 @@ function go() {
     return;
   }
 
-  if (wt < 1 || wt > 80) {
-    document.getElementById('content').innerHTML = '<div class="err">Weight must be between 1 and 80 kg.</div>';
+  if (wt < 1 || wt > 150) {
+    document.getElementById('content').innerHTML = '<div class="err">Weight must be between 1 and 150 kg.</div>';
     return;
   }
 

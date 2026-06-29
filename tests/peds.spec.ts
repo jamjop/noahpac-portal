@@ -167,7 +167,45 @@ test.describe('Pediatric Dosing Calculator', () => {
     expect(numericCount).toBeGreaterThan(10);
   });
 
-  // ── 7. Edge case: age 0 (newborn) does not crash ─────────────────────────
+  // ── 7. Succinylcholine infant vs child dose differs ───────────────────────
+  //
+  // infant (<10 kg): 2 mg/kg  →  5 kg → clamp(10, 5, 150) = 10 mg  → "10"
+  // child  (≥10 kg): 1.5 mg/kg → 15 kg → clamp(22.5, 5, 150) = 22.5 mg → fmt(22.5,0)="23"
+
+  test('succinylcholine dose for a 5 kg infant (10 mg) differs from a 15 kg child (23 mg)', async ({ page }) => {
+    // ── infant: 5 kg ──────────────────────────────────────────────────────────
+    await page.fill('#wtKg', '5');
+    await page.click('#calcBtn');
+
+    const infantDose = await getDoseVal(page, 'Succinylcholine');
+    expect(infantDose!.trim(), 'Infant sux dose should be 10 mg (2 mg/kg × 5 kg)').toBe('10');
+
+    // ── child: 15 kg ─────────────────────────────────────────────────────────
+    await page.fill('#wtKg', '15');
+    await page.click('#calcBtn');
+
+    const childDose = await getDoseVal(page, 'Succinylcholine');
+    expect(childDose!.trim(), 'Child sux dose should be 23 mg (1.5 mg/kg × 15 kg, rounded)').toBe('23');
+
+    // The two doses must differ — catches formula regression where both branches
+    // would use the same multiplier
+    expect(infantDose!.trim()).not.toBe(childDose!.trim());
+  });
+
+  // ── 8. Epinephrine cardiac-arrest dose is clamped to 1 mg above 100 kg ──
+  //
+  // Formula: clamp(wt * 0.01, 0.01, 1)  max = 1 mg
+  // At 150 kg: 150 * 0.01 = 1.5 → clamped to 1 → fmt(1, 2) = "1"
+
+  test('epinephrine (cardiac arrest) is clamped to 1 mg at supra-adult weight (150 kg)', async ({ page }) => {
+    await page.fill('#wtKg', '150');
+    await page.click('#calcBtn');
+
+    const epiDose = await getDoseVal(page, 'Epinephrine (cardiac arrest)');
+    expect(epiDose!.trim(), 'Epi dose must be clamped to 1 mg, not 1.5 mg').toBe('1');
+  });
+
+  // ── 9. Edge case: age 0 (newborn) does not crash ─────────────────────────
 
   test('age 0 years does not crash and renders content', async ({ page }) => {
     await page.fill('#wtKg', '');
