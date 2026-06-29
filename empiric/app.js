@@ -267,21 +267,38 @@ async function loadFacilities() {
     )
   );
 
-  results.forEach(result => {
-    if (result.status !== 'fulfilled') return;
+  const failedIds = [];
+  results.forEach((result, i) => {
+    if (result.status !== 'fulfilled') {
+      failedIds.push(facilityIds[i]);
+      return;
+    }
     const f = result.value;
-    const data = {};
-    f.organisms.forEach(org => { data[org.name] = org.s; });
-    FACILITY_SUSC[f.id] = {
-      label: `${f.name} — ${f.location} (${f.period})`,
-      data,
-    };
+    try {
+      if (!f || !Array.isArray(f.organisms)) throw new Error('Unexpected data shape');
+      const data = {};
+      f.organisms.forEach(org => { data[org.name] = org.s; });
+      FACILITY_SUSC[f.id] = {
+        label: `${f.name} — ${f.location} (${f.period})`,
+        data,
+      };
+    } catch (e) {
+      failedIds.push(facilityIds[i]);
+    }
   });
 
   if (!Object.keys(FACILITY_SUSC).length) {
     document.getElementById("result-area").innerHTML =
-      '<div class="state err">Could not load antibiogram data. Please try again later.</div>';
+      '<div class="state err">Could not load antibiogram data for any facility. Please try again later.</div>';
     return;
+  }
+
+  if (failedIds.length) {
+    const warn = document.createElement('div');
+    warn.className = 'state warn';
+    warn.id = 'load-warning';
+    warn.textContent = `Data unavailable for: ${failedIds.join(', ')}. Results may be incomplete.`;
+    document.getElementById("result-area").before(warn);
   }
 
   if (!FACILITY_SUSC[selectedFacility]) {

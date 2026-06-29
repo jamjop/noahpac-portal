@@ -122,6 +122,18 @@
   .result-col{width:100%;position:static}
 }
 
+/* ── Load warning banner ── */
+.state.warn{
+  background:var(--warn-soft,#fef9c3);
+  border:1.5px solid var(--warn,#ca8a04);
+  color:var(--ink);
+  border-radius:var(--r-sm);
+  padding:10px 14px;
+  font-size:12.5px;
+  line-height:1.5;
+  margin-bottom:8px;
+}
+
 /* ── Dark mode ── */
 @media(prefers-color-scheme:dark){
   .org-btn.active{background:var(--purple-soft);border-color:var(--purple)}
