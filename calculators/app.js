@@ -1187,6 +1187,7 @@ let currentCalc = null;
 function showCalc(id){
   currentCalc = id;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.id===id));
+  window.scrollTo({top: 0, behavior: 'instant'});
   const pane = document.getElementById('pane');
   const calc = CALCS.find(c=>c.id===id);
   if(!calc) return;
