@@ -46,6 +46,23 @@ def _write_report_result(status: str, findings: list) -> None:
             print(f"WARNING: could not write report ({prefix}): {exc}", file=sys.stderr)
 
 
+def _write_heartbeat() -> None:
+    import time as _time
+    dst = Path("/var/lib/node_exporter/textfile_collector/cron_antibiogram.prom")
+    if not dst.parent.exists():
+        return
+    tmp = dst.with_suffix(".prom.tmp")
+    try:
+        tmp.write_text(
+            f'# HELP cron_last_success_timestamp_seconds Unix timestamp of last successful run\n'
+            f'# TYPE cron_last_success_timestamp_seconds gauge\n'
+            f'cron_last_success_timestamp_seconds{{job="antibiogram"}} {int(_time.time())}\n'
+        )
+        tmp.rename(dst)
+    except Exception as exc:
+        print(f"WARNING: could not write heartbeat: {exc}", file=sys.stderr)
+
+
 PAGE_URL = (
     "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/"
     "antibiotic-resistance-and-antimicrobial-stewardship/"
@@ -354,6 +371,7 @@ def main() -> int:
         print(f"No facility updates needed ({date.today()})")
         save_state(current)
         _write_report_result('no_change', [])
+        _write_heartbeat()
         return 0
 
     updated_names = []
@@ -433,6 +451,8 @@ def main() -> int:
     _write_report_result('changed' if not failed_names else 'error', findings)
 
     save_state(current)
+    if not failed_names:
+        _write_heartbeat()
     return 0
 
 

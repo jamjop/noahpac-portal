@@ -13,8 +13,9 @@ import urllib.parse
 import datetime
 from pathlib import Path
 
-PUSHOVER_API = "https://api.pushover.net/1/messages.json"
-EUTILS_BASE  = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
+EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+TEXTFILE_DIR  = Path("/var/lib/node_exporter/textfile_collector")
 
 
 def esearch(query: str, reldate: int,
@@ -52,6 +53,23 @@ def esummary(pmids: list[str],
     return result
 
 
+def write_heartbeat(job: str) -> None:
+    """Atomically update the Prometheus textfile heartbeat for a cron job."""
+    if not TEXTFILE_DIR.exists():
+        return
+    tmp = TEXTFILE_DIR / f"cron_{job}.prom.tmp"
+    dst = TEXTFILE_DIR / f"cron_{job}.prom"
+    try:
+        tmp.write_text(
+            f'# HELP cron_last_success_timestamp_seconds Unix timestamp of last successful run\n'
+            f'# TYPE cron_last_success_timestamp_seconds gauge\n'
+            f'cron_last_success_timestamp_seconds{{job="{job}"}} {int(time.time())}\n'
+        )
+        tmp.rename(dst)
+    except Exception as exc:
+        print(f"WARNING: could not write heartbeat for {job}: {exc}", file=sys.stderr)
+
+
 def load_state(state_file: Path) -> dict:
     return json.loads(state_file.read_text()) if state_file.exists() else {}
 
@@ -63,6 +81,7 @@ def save_state(state_file: Path, state: dict) -> None:
 
 def write_quarterly_result(app_id: str, app_name: str, app_url: str,
                            status: str, findings: list[dict]) -> None:
+    write_heartbeat(app_id)
     report_file = Path(f"/tmp/quarterly-report-{datetime.date.today()}.json")
     try:
         existing = json.loads(report_file.read_text()) if report_file.exists() else []

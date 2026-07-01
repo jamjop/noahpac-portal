@@ -50,6 +50,23 @@ def _write_report_result(status: str, findings: list) -> None:
     except Exception as exc:
         print(f"WARNING: could not write report: {exc}", file=sys.stderr)
 
+def _write_heartbeat() -> None:
+    import time as _time
+    dst = Path("/var/lib/node_exporter/textfile_collector/cron_uspstf.prom")
+    if not dst.parent.exists():
+        return
+    tmp = dst.with_suffix(".prom.tmp")
+    try:
+        tmp.write_text(
+            f'# HELP cron_last_success_timestamp_seconds Unix timestamp of last successful run\n'
+            f'# TYPE cron_last_success_timestamp_seconds gauge\n'
+            f'cron_last_success_timestamp_seconds{{job="uspstf"}} {int(_time.time())}\n'
+        )
+        tmp.rename(dst)
+    except Exception as exc:
+        print(f"WARNING: could not write heartbeat: {exc}", file=sys.stderr)
+
+
 # Map API flag fields -> the app's risk-factor flag ids
 FLAG_MAP = {
     "pregnant": "pregnant",
@@ -193,6 +210,7 @@ def main() -> int:
     _write_report_result('no_change', [
         {'detail': f"Refreshed {count} A/B/C-grade USPSTF recommendations from Prevention TaskForce API"},
     ])
+    _write_heartbeat()
     return 0
 
 
