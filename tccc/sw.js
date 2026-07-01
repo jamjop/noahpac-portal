@@ -1,4 +1,4 @@
-const CACHE = 'tccc-v3';
+const CACHE = 'tccc-__DEPLOY_HASH__';
 const ASSETS = [
   '/tccc/',
   '/tccc/index.html',
