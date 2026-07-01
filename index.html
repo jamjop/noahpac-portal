@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/assets/fonts.css">
+    <link rel="stylesheet" href="index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>Clinical Reference Tools — Noah PA-C</title>
     <meta name="description" content="Free, open-access clinical decision-support tools for frontline healthcare providers. No login — all calculations run locally in your browser." />
@@ -20,154 +21,74 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Clinical Tools" />
-    <meta name="theme-color" content="#0052cc" />    <script src="/lib/tailwind.3.4.17.js"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
-          }
-        }
-      }
-    </script>
+    <meta name="theme-color" content="#0052cc" />
     <script src="/lib/lucide.min.js"></script>
-    <style>
-      * { -webkit-font-smoothing: antialiased; }
-      ::selection { background: #0052cc; color: #fff; }
-      .tool-row { display: flex; align-items: flex-start; padding: 0.75rem; margin-left: -0.75rem; margin-right: -0.75rem; transition: background 0.1s, box-shadow 0.1s; text-decoration: none; }
-      .tool-row:hover { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-      .tool-row:hover .tool-icon { opacity: 1; color: #0052cc; }
-      .tool-row:hover .tool-name { color: #0052cc; }
-      .tool-icon { margin-top: 2px; margin-right: 1rem; opacity: 0.4; transition: opacity 0.1s, color 0.1s; color: #1a1f24; flex-shrink: 0; }
-      .tool-name { display: block; font-size: 0.875rem; font-weight: 500; color: #1a1f24; transition: color 0.1s; }
-      .tool-desc { display: block; font-size: 0.75rem; color: #718096; margin-top: 2px; }
-      .hidden-tool { display: none !important; }
-      .ext-row { display: flex; align-items: center; gap: 0.875rem; padding: 0.75rem; margin-left: -0.75rem; margin-right: -0.75rem; text-decoration: none; border-radius: 8px; transition: background 0.1s; color: inherit; }
-      .ext-row:hover { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-      .ext-icon { color: #718096; opacity: 0.5; flex-shrink: 0; transition: opacity 0.1s, color 0.1s; }
-      .ext-row:hover .ext-icon { opacity: 1; color: #0052cc; }
-      .ext-body { flex: 1; min-width: 0; }
-      .ext-name { display: block; font-size: 0.875rem; font-weight: 500; color: #1a1f24; transition: color 0.1s; }
-      .ext-row:hover .ext-name { color: #0052cc; }
-      .ext-desc { display: block; font-size: 0.75rem; color: #718096; margin-top: 1px; }
-      .ext-arrow { color: #cbd5e1; flex-shrink: 0; transition: color 0.1s; }
-      .ext-row:hover .ext-arrow { color: #0052cc; }
-      #ext-refs { border-top-color: #e2e8f0; }
-
-      @media (prefers-color-scheme: dark) {
-        body { background-color: #0f1117 !important; color: #e2e8f0 !important; }
-        header { border-bottom-color: #2d3748 !important; }
-        h1 { color: #e2e8f0 !important; }
-        h2 { color: #64748b !important; }
-        p { color: #a0aec0 !important; }
-        /* Status tagline */
-        #status-label { color: #718096 !important; }
-        #status-dot { box-shadow: 0 0 0 3px rgba(34,197,94,.25) !important; }
-        /* Stethoscope header icon */
-        [data-lucide="stethoscope"] { stroke: #4d94ff !important; }
-        /* Tool rows */
-        .tool-icon { color: #a0aec0 !important; opacity: 0.75 !important; }
-        .tool-name { color: #e2e8f0 !important; }
-        .tool-desc { color: #64748b !important; }
-        .tool-row:hover { background: #1a2030 !important; box-shadow: 0 1px 3px rgba(0,0,0,.3) !important; }
-        .tool-row:hover .tool-icon { opacity: 1 !important; color: #4d94ff !important; }
-        .tool-row:hover .tool-name { color: #4d94ff !important; }
-        /* External reference rows */
-        .ext-icon { color: #a0aec0 !important; opacity: 0.75 !important; }
-        .ext-name { color: #e2e8f0 !important; }
-        .ext-desc { color: #64748b !important; }
-        .ext-arrow { color: #4a5568 !important; opacity: 1 !important; }
-        .ext-row:hover { background: #1a2030 !important; }
-        .ext-row:hover .ext-icon { opacity: 1 !important; color: #4d94ff !important; }
-        .ext-row:hover .ext-name { color: #4d94ff !important; }
-        .ext-row:hover .ext-arrow { color: #4d94ff !important; }
-        #ext-refs { border-top-color: #2d3748 !important; }
-        /* Dialogs (About, Disclaimer) */
-        #aboutDialog, #disclaimerDialog { background: #1a2030 !important; color: #e2e8f0 !important; box-shadow: 0 8px 40px rgba(0,0,0,.5) !important; }
-        #aboutDialog p, #disclaimerDialog p { color: #a0aec0 !important; }
-        #aboutDialog h2, #disclaimerDialog h2 { color: #4a5568 !important; }
-        #aboutClose, #disclaimerClose { color: #4a5568 !important; }
-        #aboutClose:hover, #disclaimerClose:hover { color: #a0aec0 !important; }
-        /* Inputs & footer */
-        input[type=text] { background: #1a2030 !important; color: #e2e8f0 !important; border-color: #2d3748 !important; box-shadow: 0 1px 2px rgba(0,0,0,.3) !important; }
-        kbd { background: #1a2030 !important; border-color: #2d3748 !important; color: #64748b !important; }
-        footer { border-top-color: #2d3748 !important; color: #64748b !important; }
-        footer a { color: #64748b !important; }
-      }
-    </style>
   </head>
-  <body class="bg-[#f8f9fa] text-[#1a1f24] min-h-screen" style="font-family:'Inter',system-ui,sans-serif">
-    <div style="max-width:80rem;margin:0 auto;padding:3rem 1.5rem">
+  <body>
+    <div class="page-wrap">
 
       <!-- Header -->
-      <header style="margin-bottom:5rem;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding-bottom:2rem;gap:1.5rem">
-        <div style="max-width:36rem">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem">
-            <i data-lucide="stethoscope" style="width:28px;height:28px;stroke:#0052cc;stroke-width:1.5;flex-shrink:0"></i>
-            <h1 style="font-size:1.5rem;font-weight:500;letter-spacing:-0.02em;color:#0b1015;margin:0">
-              Noah PA-C's Clinical Tools
-            </h1>
+      <header class="site-header">
+        <div class="header-lead">
+          <div class="header-brand">
+            <i data-lucide="stethoscope" class="icon-header"></i>
+            <h1 class="site-title">Noah PA-C's Clinical Tools</h1>
           </div>
-          <p style="font-size:1rem;color:#4a5568;line-height:1.6;font-weight:300;margin:0 0 0.75rem">
+          <p class="site-tagline">
             A free, open-access suite of clinical decision-support tools built for frontline healthcare providers. Fast, no-login. All calculations run locally in your browser.
           </p>
-          <div style="display:flex;align-items:center;gap:0.5rem">
-            <span id="status-dot" style="display:inline-block;width:8px;height:8px;border-radius:9999px;background:#22c55e;box-shadow:0 0 0 3px #dcfce7;flex-shrink:0"></span>
-            <span id="status-label" style="font-size:0.75rem;color:#4a5568;font-weight:500;letter-spacing:0.03em">Regularly updated to current guidelines</span>
+          <div class="status-line">
+            <span id="status-dot"></span>
+            <span id="status-label">Regularly updated to current guidelines</span>
           </div>
         </div>
 
-        <div style="position:relative;width:100%;max-width:20rem">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;display:flex">
-            <i data-lucide="search" style="width:16px;height:16px;stroke:#718096;stroke-width:1.5"></i>
+        <div class="search-wrap">
+          <span class="search-icon-wrap">
+            <i data-lucide="search" class="icon-search"></i>
           </span>
           <input
             id="search-input"
             type="text"
             placeholder="Search tools, drugs, calculators…"
             autocomplete="off"
-            style="width:100%;background:#fff;border:1px solid #cbd5e1;padding:0.75rem 3.5rem 0.75rem 2.5rem;font-size:0.875rem;color:#1a1f24;box-shadow:0 1px 2px rgba(0,0,0,.05);outline:none;font-family:inherit;box-sizing:border-box"
-            onfocus="this.style.borderColor='#0052cc';this.style.boxShadow='0 0 0 1px #0052cc'"
-            onblur="this.style.borderColor='#cbd5e1';this.style.boxShadow='0 1px 2px rgba(0,0,0,.05)'"
           />
-          <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:3px;pointer-events:none">
-            <kbd style="display:inline-flex;align-items:center;border:1px solid #e2e8f0;background:#f8f9fa;padding:0 4px;font-family:monospace;font-size:10px;color:#718096">⌘</kbd>
-            <kbd style="display:inline-flex;align-items:center;border:1px solid #e2e8f0;background:#f8f9fa;padding:0 4px;font-family:monospace;font-size:10px;color:#718096">K</kbd>
+          <div class="search-kbd-wrap">
+            <kbd>⌘</kbd>
+            <kbd>K</kbd>
           </div>
         </div>
       </header>
 
       <!-- Tools Grid -->
-      <main id="tools-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:3rem 3rem">
+      <main id="tools-grid">
 
         <!-- Infectious Disease -->
         <div class="category-col">
-          <h2 style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#718096;margin:0 0 1.5rem;border-left:2px solid #0052cc;padding-left:0.75rem">
-            Infectious Disease
-          </h2>
-          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+          <h2 class="cat-heading">Infectious Disease</h2>
+          <ul class="tool-list">
             <li><a href="/abx/" class="tool-row" data-search="antibiotics abx antibiotic selection guide">
-              <span class="tool-icon"><i data-lucide="pill" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="pill" class="icon-tool"></i></span>
               <span><span class="tool-name">Antibiotics (abx)</span><span class="tool-desc">Selection guide</span></span>
             </a></li>
             <li><a href="/empiric/" class="tool-row" data-search="empiric therapy infection antibiotic">
-              <span class="tool-icon"><i data-lucide="activity" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="activity" class="icon-tool"></i></span>
               <span><span class="tool-name">Empiric Therapy</span><span class="tool-desc">By infection site · local resistance rates</span></span>
             </a></li>
             <li><a href="/antibiogram/" class="tool-row" data-search="antibiogram resistance patterns local">
-              <span class="tool-icon"><i data-lucide="shield-alert" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="shield-alert" class="icon-tool"></i></span>
               <span><span class="tool-name">Antibiogram</span><span class="tool-desc">Local resistance patterns</span></span>
             </a></li>
             <li><a href="/sepsis/" class="tool-row" data-search="sepsis protocol management septic shock">
-              <span class="tool-icon"><i data-lucide="heart-pulse" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="heart-pulse" class="icon-tool"></i></span>
               <span><span class="tool-name">Sepsis</span><span class="tool-desc">Protocol &amp; management</span></span>
             </a></li>
             <li><a href="/sti-guide/" class="tool-row" data-search="sti guide sexually transmitted infection treatment guidelines diagnosis counseling doxy-PEP">
-              <span class="tool-icon"><i data-lucide="book-open" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="book-open" class="icon-tool"></i></span>
               <span><span class="tool-name">STI Guide</span><span class="tool-desc">Treatment guidelines, doxy-PEP &amp; counseling</span></span>
             </a></li>
             <li><a href="/vaccines/" class="tool-row" data-search="vaccines immunization schedule adult pediatric">
-              <span class="tool-icon"><i data-lucide="syringe" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="syringe" class="icon-tool"></i></span>
               <span><span class="tool-name">Vaccines</span><span class="tool-desc">Adult &amp; pediatric schedules</span></span>
             </a></li>
           </ul>
@@ -175,28 +96,26 @@
 
         <!-- Clinical Reference -->
         <div class="category-col">
-          <h2 style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#718096;margin:0 0 1.5rem;border-left:2px solid #0052cc;padding-left:0.75rem">
-            Clinical Reference
-          </h2>
-          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+          <h2 class="cat-heading">Clinical Reference</h2>
+          <ul class="tool-list">
             <li><a href="/drugref/" class="tool-row" data-search="drug reference information dosing medications">
-              <span class="tool-icon"><i data-lucide="book-open" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="book-open" class="icon-tool"></i></span>
               <span><span class="tool-name">Drug Reference</span><span class="tool-desc">Information &amp; dosing</span></span>
             </a></li>
             <li><a href="/lookup/" class="tool-row" data-search="drug lookup search medications quick">
-              <span class="tool-icon"><i data-lucide="search" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="search" class="icon-tool"></i></span>
               <span><span class="tool-name">Drug Lookup</span><span class="tool-desc">Quick search</span></span>
             </a></li>
             <li><a href="/labs/" class="tool-row" data-search="lab reference laboratory values normal interpretation">
-              <span class="tool-icon"><i data-lucide="flask-conical" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="flask-conical" class="icon-tool"></i></span>
               <span><span class="tool-name">Lab Reference</span><span class="tool-desc">Values &amp; interpretation</span></span>
             </a></li>
             <li><a href="/reportable/" class="tool-row" data-search="reportable diseases state guidelines mandated">
-              <span class="tool-icon"><i data-lucide="clipboard-list" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="clipboard-list" class="icon-tool"></i></span>
               <span><span class="tool-name">Reportable Diseases</span><span class="tool-desc">State guidelines</span></span>
             </a></li>
             <li><a href="/allergy/" class="tool-row" data-search="allergy management cross-reactivity reference">
-              <span class="tool-icon"><i data-lucide="alert-triangle" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="alert-triangle" class="icon-tool"></i></span>
               <span><span class="tool-name">Allergy</span><span class="tool-desc">Management reference</span></span>
             </a></li>
           </ul>
@@ -204,20 +123,18 @@
 
         <!-- Tools & Calculators -->
         <div class="category-col">
-          <h2 style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#718096;margin:0 0 1.5rem;border-left:2px solid #0052cc;padding-left:0.75rem">
-            Tools &amp; Calculators
-          </h2>
-          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+          <h2 class="cat-heading">Tools &amp; Calculators</h2>
+          <ul class="tool-list">
             <li><a href="/calculators/" class="tool-row" data-search="calculators bmi gfr egfr accutane dosing medical">
-              <span class="tool-icon"><i data-lucide="calculator" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="calculator" class="icon-tool"></i></span>
               <span><span class="tool-name">Medical Calculators</span><span class="tool-desc"><span id="calc-count">19</span> calculators — BMI, GFR, Accutane &amp; more</span></span>
             </a></li>
             <li><a href="/ddx/" class="tool-row" data-search="ddx lab value differential diagnosis">
-              <span class="tool-icon"><i data-lucide="file-search" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="file-search" class="icon-tool"></i></span>
               <span><span class="tool-name">Lab Value DDx</span><span class="tool-desc">Differential diagnoses for lab values</span></span>
             </a></li>
             <li><a href="/screener/" class="tool-row" data-search="screeners uspstf screening recommendations age preventive">
-              <span class="tool-icon"><i data-lucide="clipboard-list" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="clipboard-list" class="icon-tool"></i></span>
               <span><span class="tool-name">Screening by Age</span><span class="tool-desc">USPSTF recommendations by age — updated weekly</span></span>
             </a></li>
           </ul>
@@ -225,36 +142,34 @@
 
         <!-- Emergency & Special -->
         <div class="category-col">
-          <h2 style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#718096;margin:0 0 1.5rem;border-left:2px solid #0052cc;padding-left:0.75rem">
-            Emergency &amp; Special
-          </h2>
-          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+          <h2 class="cat-heading">Emergency &amp; Special</h2>
+          <ul class="tool-list">
             <li><a href="/tccc/" class="tool-row" data-search="tccc tactical combat casualty care trauma">
-              <span class="tool-icon"><i data-lucide="crosshair" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="crosshair" class="icon-tool"></i></span>
               <span><span class="tool-name">TCCC</span><span class="tool-desc">Tactical Combat Casualty Care</span></span>
             </a></li>
             <li><a href="/wound/" class="tool-row" data-search="wound care assessment management dressing">
-              <span class="tool-icon"><i data-lucide="bandage" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="bandage" class="icon-tool"></i></span>
               <span><span class="tool-name">Wound Care</span><span class="tool-desc">Assessment &amp; management</span></span>
             </a></li>
             <li><a href="/naloxone/" class="tool-row" data-search="naloxone narcan opioid overdose reversal dosing">
-              <span class="tool-icon"><i data-lucide="siren" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="siren" class="icon-tool"></i></span>
               <span><span class="tool-name">Naloxone</span><span class="tool-desc">Dosing protocols</span></span>
             </a></li>
             <li><a href="/opioids/" class="tool-row" data-search="opioids equianalgesic conversion dosing morphine">
-              <span class="tool-icon"><i data-lucide="droplets" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="droplets" class="icon-tool"></i></span>
               <span><span class="tool-name">Opioids</span><span class="tool-desc">Equianalgesic dosing</span></span>
             </a></li>
             <li><a href="/peds/" class="tool-row" data-search="pediatrics peds weight based dosing children">
-              <span class="tool-icon"><i data-lucide="baby" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="baby" class="icon-tool"></i></span>
               <span><span class="tool-name">Pediatrics</span><span class="tool-desc">Weight-based dosing</span></span>
             </a></li>
             <li><a href="/als/" class="tool-row" data-search="advanced life support als acls cardiac arrest algorithms american red cross aha">
-              <span class="tool-icon"><i data-lucide="heart-pulse" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="heart-pulse" class="icon-tool"></i></span>
               <span><span class="tool-name">ALS</span><span class="tool-desc">Advanced Life Support algorithms</span></span>
             </a></li>
             <li><a href="/pals/" class="tool-row" data-search="pediatric advanced life support pals cardiac arrest algorithms aha children">
-              <span class="tool-icon"><i data-lucide="baby" style="width:20px;height:20px;stroke:currentColor;stroke-width:1.5"></i></span>
+              <span class="tool-icon"><i data-lucide="baby" class="icon-tool"></i></span>
               <span><span class="tool-name">PALS</span><span class="tool-desc">Pediatric Advanced Life Support algorithms</span></span>
             </a></li>
           </ul>
@@ -263,90 +178,81 @@
       </main>
 
       <!-- No results -->
-      <p id="no-results" style="display:none;padding:4rem 0;text-align:center;color:#718096;font-size:0.875rem">
-        No tools match your search.
-      </p>
+      <p id="no-results">No tools match your search.</p>
 
       <!-- External References -->
-      <section style="margin-top:3.5rem;padding-top:3rem;border-top:1px solid #e2e8f0" id="ext-refs">
-        <h2 style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#718096;margin:0 0 1.25rem;border-left:2px solid #0052cc;padding-left:0.75rem">External References</h2>
-        <div style="display:flex;flex-direction:column">
+      <section id="ext-refs">
+        <h2 class="cat-heading">External References</h2>
+        <div class="ext-list">
           <a href="https://www.uptodate.com" target="_blank" rel="noopener" class="ext-row">
-            <span class="ext-icon"><i data-lucide="book-open" style="width:18px;height:18px;stroke:currentColor;stroke-width:1.5"></i></span>
+            <span class="ext-icon"><i data-lucide="book-open" class="icon-ext"></i></span>
             <span class="ext-body">
               <span class="ext-name">UpToDate</span>
               <span class="ext-desc">Evidence-based clinical decision support &amp; drug information</span>
             </span>
-            <span class="ext-arrow"><i data-lucide="external-link" style="width:13px;height:13px;stroke:currentColor;stroke-width:2"></i></span>
+            <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
           </a>
           <a href="https://www.droracle.ai" target="_blank" rel="noopener" class="ext-row">
-            <span class="ext-icon"><i data-lucide="cpu" style="width:18px;height:18px;stroke:currentColor;stroke-width:1.5"></i></span>
+            <span class="ext-icon"><i data-lucide="cpu" class="icon-ext"></i></span>
             <span class="ext-body">
               <span class="ext-name">Dr Oracle</span>
               <span class="ext-desc">AI-powered clinical question answering with cited sources</span>
             </span>
-            <span class="ext-arrow"><i data-lucide="external-link" style="width:13px;height:13px;stroke:currentColor;stroke-width:2"></i></span>
+            <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
           </a>
           <a href="https://humanatlas.io" target="_blank" rel="noopener" class="ext-row">
-            <span class="ext-icon"><i data-lucide="scan" style="width:18px;height:18px;stroke:currentColor;stroke-width:1.5"></i></span>
+            <span class="ext-icon"><i data-lucide="scan" class="icon-ext"></i></span>
             <span class="ext-body">
               <span class="ext-name">Open Human Atlas</span>
               <span class="ext-desc">3D reference atlas of human anatomy and organ systems</span>
             </span>
-            <span class="ext-arrow"><i data-lucide="external-link" style="width:13px;height:13px;stroke:currentColor;stroke-width:2"></i></span>
+            <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
           </a>
         </div>
       </section>
 
       <!-- Footer -->
-      <footer style="margin-top:5rem;padding-top:2rem;border-top:1px solid #e2e8f0;font-size:0.75rem;color:#718096;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem">
-        <p style="margin:0">&copy; <span id="year"></span> Noah PA-C. All rights reserved.</p>
-        <div style="display:flex;gap:1rem">
-          <a href="#" id="aboutLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">About</a>
-          <a href="#" id="disclaimerLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Disclaimer</a>
-          <a href="#" id="contactLink" style="color:#718096;text-decoration:none" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'">Contact</a>
+      <footer>
+        <p>&copy; <span id="year"></span> Noah PA-C. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#" id="aboutLink">About</a>
+          <a href="#" id="disclaimerLink">Disclaimer</a>
+          <a href="#" id="contactLink">Contact</a>
         </div>
       </footer>
 
     </div>
 
-    <dialog id="aboutDialog" style="border:none;border-radius:12px;padding:0;max-width:480px;width:calc(100% - 2rem);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#fff;color:#1a1f24">
-      <div style="padding:1.75rem">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem">
-          <h2 style="font-size:0.875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#718096;margin:0">About</h2>
-          <button id="aboutClose" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:#718096;font-size:1.25rem">&times;</button>
+    <dialog id="aboutDialog" class="portal-dialog">
+      <div class="dialog-inner">
+        <div class="dialog-header">
+          <h2 class="dialog-title">About</h2>
+          <button id="aboutClose" class="dialog-close">&times;</button>
         </div>
-        <p style="font-size:0.9375rem;line-height:1.7;margin:0 0 0.875rem;color:#1a1f24"><strong>Noah</strong> is a Physician Associate-Certified (PA-C) practicing in outpatient primary care. This site is a personal reference project — fast, offline-capable tools built for frontline providers who need guidelines, calculators, and drug references at the point of care, without logins or paywalls.</p>
-        <p style="font-size:0.9375rem;line-height:1.7;margin:0 0 0.875rem;color:#1a1f24">All calculations run entirely in your browser. No data is collected or transmitted. Content reflects current published guidelines and validated clinical tools.</p>
-        <p style="font-size:0.9375rem;line-height:1.7;margin:0 0 1rem;color:#1a1f24">Guideline content is regularly updated through automated API integrations and scheduled data pulls from authoritative sources — so recommendations stay current without manual maintenance.</p>
-        <a href="https://github.com/jamjop/noahpac-portal" target="_blank" rel="noopener" style="font-size:0.8125rem;color:#718096;text-decoration:none;display:inline-flex;align-items:center;gap:0.375rem" onmouseover="this.style.color='#1a1f24'" onmouseout="this.style.color='#718096'"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>jamjop/noahpac-portal</a>
+        <div class="dialog-body">
+          <p><strong>Noah</strong> is a Physician Associate-Certified (PA-C) practicing in outpatient primary care. This site is a personal reference project — fast, offline-capable tools built for frontline providers who need guidelines, calculators, and drug references at the point of care, without logins or paywalls.</p>
+          <p>All calculations run entirely in your browser. No data is collected or transmitted. Content reflects current published guidelines and validated clinical tools.</p>
+          <p>Guideline content is regularly updated through automated API integrations and scheduled data pulls from authoritative sources — so recommendations stay current without manual maintenance.</p>
+          <a href="https://github.com/jamjop/noahpac-portal" target="_blank" rel="noopener" class="dialog-gh-link"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>jamjop/noahpac-portal</a>
+        </div>
       </div>
     </dialog>
 
-    <dialog id="disclaimerDialog" style="border:none;border-radius:12px;padding:0;max-width:480px;width:calc(100% - 2rem);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#fff;color:#1a1f24">
-      <div style="padding:1.75rem">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem">
-          <h2 style="font-size:0.875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#718096;margin:0">Disclaimer</h2>
-          <button id="disclaimerClose" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:#718096;font-size:1.25rem">&times;</button>
+    <dialog id="disclaimerDialog" class="portal-dialog">
+      <div class="dialog-inner">
+        <div class="dialog-header">
+          <h2 class="dialog-title">Disclaimer</h2>
+          <button id="disclaimerClose" class="dialog-close">&times;</button>
         </div>
-        <p style="font-size:0.9375rem;line-height:1.7;margin:0;color:#1a1f24">Not medical advice. These tools summarize published guidelines and validated scoring systems for reference use only. Always apply clinical judgment, read primary sources, and individualize care. Verify calculator results before guiding treatment decisions.</p>
+        <div class="dialog-body">
+          <p>Not medical advice. These tools summarize published guidelines and validated scoring systems for reference use only. Always apply clinical judgment, read primary sources, and individualize care. Verify calculator results before guiding treatment decisions.</p>
+        </div>
       </div>
     </dialog>
-    <style>
-      #disclaimerDialog::backdrop,#aboutDialog::backdrop{background:rgba(0,0,0,.45)}
-      @media(prefers-color-scheme:dark){
-        #disclaimerDialog,#aboutDialog{background:#1a2030 !important;color:#e2e8f0 !important}
-        #disclaimerDialog p,#aboutDialog p{color:#e2e8f0 !important}
-        #disclaimerDialog h2,#aboutDialog h2{color:#64748b !important}
-        #disclaimerDialog button,#aboutDialog button{color:#64748b !important}
-      }
-    </style>
 
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
-        // When a new SW activates and calls clients.claim(), reload once so
-        // the page is served by the updated worker (and picks up fresh assets).
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           window.location.reload();
         });
@@ -406,7 +312,6 @@
         grid.style.display = anyVisible ? 'grid' : 'none';
       });
 
-      // Live-update calculator count from app.js so it stays correct when new ones are added
       fetch('/calculators/app.js')
         .then(r => r.text())
         .then(text => {

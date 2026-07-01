@@ -1,0 +1,179 @@
+/* ── Custom properties ─────────────────────────────────────────── */
+:root {
+  --bg:             #f8f9fa;
+  --surface:        #ffffff;
+  --ink:            #1a1f24;
+  --ink-head:       #0b1015;
+  --ink-soft:       #4a5568;
+  --ink-muted:      #718096;
+  --line:           #e2e8f0;
+  --line-input:     #cbd5e1;
+  --accent:         #0052cc;
+  --hover-bg:       #ffffff;
+  --hover-sh:       0 1px 3px rgba(0,0,0,.08);
+  --status-glow:    #dcfce7;
+  --tool-icon-clr:  #1a1f24;
+  --tool-icon-op:   0.4;
+  --ext-icon-clr:   #718096;
+  --ext-icon-op:    0.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:             #0f1117;
+    --surface:        #1a2030;
+    --ink:            #e2e8f0;
+    --ink-head:       #e2e8f0;
+    --ink-soft:       #a0aec0;
+    --ink-muted:      #64748b;
+    --line:           #2d3748;
+    --line-input:     #2d3748;
+    --accent:         #4d94ff;
+    --hover-bg:       #1a2030;
+    --hover-sh:       0 1px 3px rgba(0,0,0,.3);
+    --status-glow:    rgba(34,197,94,.25);
+    --tool-icon-clr:  #a0aec0;
+    --tool-icon-op:   0.75;
+    --ext-icon-clr:   #a0aec0;
+    --ext-icon-op:    0.75;
+  }
+}
+
+/* ── Base ── */
+* { -webkit-font-smoothing: antialiased; }
+::selection { background: #0052cc; color: #fff; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Page wrapper ── */
+.page-wrap { max-width: 80rem; margin: 0 auto; padding: 3rem 1.5rem; }
+
+/* ── Header ── */
+.site-header {
+  margin-bottom: 5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2rem;
+  gap: 1.5rem;
+}
+.header-lead    { max-width: 36rem; }
+.header-brand   { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.site-title     { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; color: var(--ink-head); margin: 0; }
+.site-tagline   { font-size: 1rem; color: var(--ink-soft); line-height: 1.6; font-weight: 300; margin: 0 0 0.75rem; }
+.status-line    { display: flex; align-items: center; gap: 0.5rem; }
+#status-dot     { display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #22c55e; box-shadow: 0 0 0 3px var(--status-glow); flex-shrink: 0; }
+#status-label   { font-size: 0.75rem; color: var(--ink-soft); font-weight: 500; letter-spacing: 0.03em; }
+
+/* ── Search ── */
+.search-wrap     { position: relative; width: 100%; max-width: 20rem; }
+.search-icon-wrap {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; display: flex; color: var(--ink-muted);
+}
+#search-input {
+  width: 100%; background: var(--surface); border: 1px solid var(--line-input);
+  padding: 0.75rem 3.5rem 0.75rem 2.5rem; font-size: 0.875rem; color: var(--ink);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); outline: none; font-family: inherit; box-sizing: border-box;
+}
+#search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.search-kbd-wrap {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  display: flex; gap: 3px; pointer-events: none;
+}
+kbd {
+  display: inline-flex; align-items: center; border: 1px solid var(--line);
+  background: var(--bg); padding: 0 4px; font-family: monospace; font-size: 10px; color: var(--ink-muted);
+}
+
+/* ── Tools grid ── */
+#tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 3rem; }
+
+/* ── Category heading ── */
+.cat-heading {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--ink-muted); margin: 0 0 1.5rem; border-left: 2px solid var(--accent); padding-left: 0.75rem;
+}
+
+/* ── Tool list + rows ── */
+.tool-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.tool-row {
+  display: flex; align-items: flex-start; padding: 0.75rem;
+  margin-left: -0.75rem; margin-right: -0.75rem;
+  transition: background 0.1s, box-shadow 0.1s; text-decoration: none; border-radius: 6px;
+}
+.tool-row:hover                { background: var(--hover-bg); box-shadow: var(--hover-sh); }
+.tool-row:hover .tool-icon     { opacity: 1; color: var(--accent); }
+.tool-row:hover .tool-name     { color: var(--accent); }
+.tool-icon  { margin-top: 2px; margin-right: 1rem; opacity: var(--tool-icon-op); transition: opacity 0.1s, color 0.1s; color: var(--tool-icon-clr); flex-shrink: 0; }
+.tool-name  { display: block; font-size: 0.875rem; font-weight: 500; color: var(--ink); transition: color 0.1s; }
+.tool-desc  { display: block; font-size: 0.75rem; color: var(--ink-muted); margin-top: 2px; }
+.hidden-tool { display: none !important; }
+
+/* ── No results ── */
+#no-results { display: none; padding: 4rem 0; text-align: center; color: var(--ink-muted); font-size: 0.875rem; margin: 0; }
+
+/* ── External references ── */
+#ext-refs { margin-top: 3.5rem; padding-top: 3rem; border-top: 1px solid var(--line); }
+.ext-list { display: flex; flex-direction: column; }
+.ext-row {
+  display: flex; align-items: center; gap: 0.875rem; padding: 0.75rem;
+  margin-left: -0.75rem; margin-right: -0.75rem;
+  text-decoration: none; border-radius: 8px; transition: background 0.1s, box-shadow 0.1s; color: inherit;
+}
+.ext-row:hover              { background: var(--hover-bg); box-shadow: var(--hover-sh); }
+.ext-icon                   { color: var(--ext-icon-clr); opacity: var(--ext-icon-op); flex-shrink: 0; transition: opacity 0.1s, color 0.1s; }
+.ext-row:hover .ext-icon    { opacity: 1; color: var(--accent); }
+.ext-body                   { flex: 1; min-width: 0; }
+.ext-name                   { display: block; font-size: 0.875rem; font-weight: 500; color: var(--ink); transition: color 0.1s; }
+.ext-row:hover .ext-name    { color: var(--accent); }
+.ext-desc                   { display: block; font-size: 0.75rem; color: var(--ink-muted); margin-top: 1px; }
+.ext-arrow                  { color: var(--line-input); flex-shrink: 0; transition: color 0.1s; }
+.ext-row:hover .ext-arrow   { color: var(--accent); }
+
+/* ── Footer ── */
+footer {
+  margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--line);
+  font-size: 0.75rem; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;
+}
+footer p { margin: 0; }
+footer a { color: var(--ink-muted); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+.footer-links { display: flex; gap: 1rem; }
+
+/* ── Dialogs ── */
+.portal-dialog {
+  border: none; border-radius: 12px; padding: 0;
+  max-width: 480px; width: calc(100% - 2rem);
+  box-shadow: 0 8px 40px rgba(0,0,0,.18);
+  background: var(--surface); color: var(--ink);
+}
+.portal-dialog::backdrop { background: rgba(0,0,0,.45); }
+.dialog-inner  { padding: 1.75rem; }
+.dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.dialog-title  { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-muted); margin: 0; }
+.dialog-close  { background: none; border: none; cursor: pointer; padding: 0; line-height: 1; color: var(--ink-muted); font-size: 1.25rem; }
+.dialog-close:hover { color: var(--ink-soft); }
+.dialog-body p { font-size: 0.9375rem; line-height: 1.7; margin: 0 0 0.875rem; color: var(--ink); }
+.dialog-body p:last-child { margin-bottom: 0; }
+.dialog-gh-link {
+  font-size: 0.8125rem; color: var(--ink-muted); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.375rem; margin-top: 1rem;
+}
+.dialog-gh-link:hover { color: var(--ink); }
+#disclaimerDialog .dialog-header { margin-bottom: 1rem; }
+
+/* ── Icons (sized via CSS; Lucide transfers class to the generated SVG) ── */
+.icon-header { width: 28px; height: 28px; stroke-width: 1.5; flex-shrink: 0; stroke: var(--accent); }
+.icon-tool   { width: 20px; height: 20px; stroke-width: 1.5; }
+.icon-ext    { width: 18px; height: 18px; stroke-width: 1.5; }
+.icon-search { width: 16px; height: 16px; stroke-width: 1.5; }
+.icon-arrow  { width: 13px; height: 13px; stroke-width: 2; }
