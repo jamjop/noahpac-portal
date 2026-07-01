@@ -4,7 +4,7 @@ const ABX_BLOODSTREAM = [
   {
     id:'sepsis', cat:'bloodstream',
     name:'Sepsis / Septic Shock — Empiric', organism:'Gram-positive and gram-negative bacteria; source-dependent (see notes)',
-    source:'Surviving Sepsis Campaign 2021',
+    source:'Surviving Sepsis Campaign 2026',
     regimens:[
       {label:'Community-acquired sepsis (unknown source)', cls:'fl', drugs:[
         {name:'Piperacillin-tazobactam', dose:'4.5 g IV q6h (extended 4h infusion preferred)', note:'Broad gram-positive + gram-negative + anaerobic coverage; preferred if Pseudomonas possible'},
@@ -24,7 +24,7 @@ const ABX_BLOODSTREAM = [
         {name:'Add Antifungal (Caspofungin)', dose:'70 mg IV load then 50 mg daily: if prolonged fever ≥4–5 days, persistent neutropenia'},
       ]},
     ],
-    notes:'Hour-1 bundle (SSC 2018): blood cultures × 2 BEFORE antibiotics, antibiotics within 1 hour of sepsis recognition, IV fluid 30 mL/kg crystalloid if hypoperfusion, vasopressors if MAP <65 after fluid. De-escalation: reassess at 24–48h once culture data available — narrow spectrum. Duration: typically 7–10 days; shorter acceptable if rapid source control. Hydrocortisone 200 mg IV/day (continuous infusion) for septic shock refractory to vasopressors. Source control within 6–12h.',
+    notes:'SSC 2026 bundle: blood cultures × 2 BEFORE antibiotics; antimicrobials immediately (ideally ≤1h) for probable/definite sepsis, or within 3h for possible sepsis after reassessment; IV fluid ≥30 mL/kg balanced crystalloid (not NS, except TBI) if hypoperfusion; vasopressors if MAP <65 after fluid. Vasopressors: norepinephrine first-line; add vasopressin when NE doses escalate. De-escalation: reassess at 24–48h once culture data available — narrow spectrum (stewardship emphasized in 2026 update). Duration: typically 7–10 days; shorter acceptable if rapid source control. Hydrocortisone 200 mg IV/day (continuous infusion) for septic shock refractory to vasopressors. Source control within 6–12h. 2026 SSC guidelines include 129 recommendations (46 new); antibiotic choices unchanged — stewardship, timing nuance, and balanced crystalloids are the key updates.',
   },
 
   {

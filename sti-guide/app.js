@@ -83,7 +83,7 @@ const DATA = [
     pregnancy:[
       {drug:"Benzathine Penicillin G", dose:"2.4 million units IM × 1 dose", note:"Desensitize if penicillin-allergic — no alternatives in pregnancy"},
     ],
-    notes:"Jarisch-Herxheimer reaction common in first 24h — fever, chills, myalgia. Treat partners exposed within 90 days. Follow-up RPR at 6 and 12 months."
+    notes:"Jarisch-Herxheimer reaction common in first 24h — fever, chills, myalgia. Treat partners exposed within 90 days. Follow-up RPR at 6 and 12 months. SUPPLY ALERT (Apr 2026): Bicillin L-A shortage — next shipment not expected until Oct 2026, recovery Q4 2027. Authorized import alternatives: Lentocilin (Mar 2026) or Extencillin. Prioritize remaining Bicillin L-A for pregnant patients. Jurisdiction-level guidance via CDC at stdshortages@cdc.gov."
   },
   {
     cat:"Syphilis", name:"Syphilis — Late Latent (>1 year or unknown duration) / Tertiary (non-neurosyphilis)",
@@ -96,7 +96,7 @@ const DATA = [
     pregnancy:[
       {drug:"Benzathine Penicillin G", dose:"2.4 million units IM weekly × 3 doses", note:"Desensitize if allergic"},
     ],
-    notes:"CSF exam recommended if neurological symptoms, treatment failure, or HIV with late syphilis."
+    notes:"CSF exam recommended if neurological symptoms, treatment failure, or HIV with late syphilis. SUPPLY ALERT (Apr 2026): Bicillin L-A shortage — 3-dose course requires 7.2 million units total; prioritize stock for pregnant patients. Authorized import alternatives: Lentocilin or Extencillin (contact stdshortages@cdc.gov for access)."
   },
   {
     cat:"Syphilis", name:"Neurosyphilis / Ocular / Otosyphilis",

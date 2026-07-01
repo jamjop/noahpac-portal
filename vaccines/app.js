@@ -3,7 +3,9 @@
    JYNNEOS mpox added (ACIP 2023, PMID 40531798); Penbraya source updated (PMID 41505372);
    influenza ≥65 high-dose/adjuvanted preference added (ACIP 2025-26, PMID 40879559).
    ACOG source added 2026-06-27: RSV maternal vaccine (Abrysvo), Tdap 27-32wk optimal,
-   HPV deferred in pregnancy. */
+   HPV deferred in pregnancy.
+   2026-06-30: RSV real-world effectiveness added (JAMA Pediatr 2026, PMID 41428480) — 64%
+   maternal vaccine vs ARI, 70% vs hospitalization; nirsevimab 81% vs hospitalization. */
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -95,7 +97,7 @@ const VACCINES = [
     id:"rsv_infant", name:"RSV Immunoprophylaxis — Infant", abbr:"RSV-mAb",
     routine:{min:0,max:7},
     doses:"1 dose", freq:"birth – 7 months (first RSV season)",
-    detail:"Nirsevimab (Beyfortus, ACIP 2023) or clesrovimab (Enwina, ACIP 2025) recommended for all infants ≤7 months entering their first RSV season. Single IM dose before or at start of RSV season (typically Oct–Nov in ND). Children 8–19 months at high risk for severe RSV disease (chronic lung disease of prematurity, hemodynamically significant CHD, severe immunocompromise) may receive a dose in their second RSV season.",
+    detail:"Nirsevimab (Beyfortus, ACIP 2023) or clesrovimab (Enwina, ACIP 2025) recommended for all infants ≤7 months entering their first RSV season. Single IM dose before or at start of RSV season (typically Oct–Nov in ND). Real-world effectiveness (JAMA Pediatr 2026, PMID 41428480): nirsevimab 81% effective vs RSV hospitalization; combined with maternal vaccine impact, RSV hospitalizations declined 41–51% overall in infants 0–11 months. Children 8–19 months at high risk for severe RSV disease (chronic lung disease of prematurity, hemodynamically significant CHD, severe immunocompromise) may receive a dose in their second RSV season.",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["immunocompromised","lungDz","heartDz"], note:"High-risk: second-season dose may be indicated (ages 8–19 months)"}],
   },
@@ -104,7 +106,7 @@ const VACCINES = [
     routine:{min:9999,max:9998},
     sexSpecific:"female",
     doses:"1 dose", freq:"32–36 weeks gestation (Oct 1–Jan 31 birth window)",
-    detail:"Abrysvo (RSV bivalent prefusion F, Pfizer) given at 32–36 weeks gestational age protects the newborn via transplacental antibody transfer through the first 6 months of life. ACOG endorses routine maternal RSV vaccination. If Abrysvo is administered during pregnancy, infant nirsevimab (Beyfortus) or clesrovimab (Enwina) is generally not needed. Do not co-administer with other injections at the same visit if possible. Year-round administration is an option; greatest benefit for births during RSV season (Oct–Mar).",
+    detail:"Abrysvo (RSV bivalent prefusion F, Pfizer) given at 32–36 weeks gestational age protects the newborn via transplacental antibody transfer through the first 6 months of life. ACOG endorses routine maternal RSV vaccination. Real-world effectiveness (JAMA Pediatr 2026, PMID 41428480): maternal vaccine 64% effective vs medically attended RSV illness and 70% effective vs RSV hospitalization in infants <6 months; nirsevimab (Beyfortus) 81% effective vs RSV hospitalization. Combined impact: RSV hospitalizations declined 41–51% in infants 0–11 months (56–63% in those 0–2 months) in the first season of both products. If Abrysvo is administered during pregnancy, infant nirsevimab (Beyfortus) or clesrovimab (Enwina) is generally not needed. Do not co-administer with other injections at the same visit if possible. Year-round administration is an option; greatest benefit for births during RSV season (Oct–Mar).",
     requires:[], conditionExtra:[{conds:["pregnant"], note:"ACOG: administer Abrysvo at 32–36 weeks gestation to protect newborn via transplacental antibody transfer; infant monoclonal antibody RSV prophylaxis generally not needed if maternal vaccine given"}],
     acogOnly: true,
   },

@@ -272,12 +272,13 @@ const SECTIONS = [
     render() { return `
       <div class="sec-title"><span class="sec-letter warn">P</span> Pain Management</div>
 
-      ${callout('info', 'Pain Tier System', `
+      ${callout('info', 'Two-Step Pain Management Model (Guideline Change 25-03, Jun 2026)', `
         <ul>
-          <li><strong>Mission capable</strong> (still combat-effective): TCCC Combat Wound Medication Pack (CWMP)</li>
-          <li><strong>Non-mission capable</strong> (cannot stay in fight): CWMP + ketamine or esketamine (TCCC medical personnel)</li>
-          <li>Document all medications with doses and times on DD Form 1380. Disarm casualties who receive ketamine.</li>
+          <li><strong>Step 1 — Mission capable</strong> (still combat-effective): TCCC Combat Wound Medication Pack (CWMP) — non-opioid pill pack with suzetrigine</li>
+          <li><strong>Step 2 — Non-mission capable</strong> (cannot stay in fight): Fixed-dose ketamine or esketamine + CWMP (TCCC medical personnel); buprenorphine SL is a recognized alternative</li>
+          <li>Document all medications with doses and times on DD Form 1380. Disarm casualties who receive ketamine or opioid analgesics.</li>
           <li>Goal: tolerable pain preserving airway patency, respiratory drive, and mentation — not complete pain elimination</li>
+          <li><em>OTFC (oral transmucosal fentanyl citrate) removed from TCCC formulary per Guideline Change 25-03</em></li>
         </ul>`
       )}
 
@@ -291,7 +292,8 @@ const SECTIONS = [
         'Direct casualty to take CWMP if not already done',
         '<strong>Ketamine 100 mg IM</strong>  —or—  <strong>Ketamine 50 mg IN</strong>  —or—  <strong>Ketamine 25 mg (0.2–0.3 mg/kg) IV/IO</strong> slow push over 1 min',
         '—or— <strong>Esketamine 14 or 28 mg IN × 1</strong>',
-        'Repeat doses q30 min PRN',
+        '—or— <strong>Buprenorphine 200 mcg SL × 1</strong> (when ketamine/esketamine unavailable)',
+        'Repeat doses q30 min PRN (buprenorphine: repeat once after 60 min PRN)',
         'Endpoint: reduction of pain or onset of nystagmus (rhythmic eye movement)',
       ])}
 
@@ -496,6 +498,18 @@ const SECTIONS = [
             {l:'Repeat', v:'q30 min PRN'},
           ],
           note:'Do NOT co-administer with benzodiazepines. Disarm casualty before administration.',
+        })}
+
+        ${drugCard({
+          name:'Buprenorphine (SL)',
+          tag:'PAIN', tagColor:'warn',
+          rows:[
+            {l:'Indication', v:'Non-mission capable — recognized alternative to OTFC (Guideline Change 25-03)'},
+            {l:'Dose SL', v:'200 mcg (0.2 mg) sublingual × 1'},
+            {l:'Repeat', v:'200 mcg SL after 60 min × 1 if needed'},
+            {l:'Onset', v:'15–30 min'},
+          ],
+          note:'Partial mu-opioid agonist — lower respiratory depression risk than full opioids. Do NOT co-administer with benzodiazepines. Disarm casualty before administration. Have naloxone available.',
         })}
 
         ${drugCard({
