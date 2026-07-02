@@ -8,8 +8,13 @@ export default defineConfig({
   fullyParallel: false,
   retries: 1,
   reporter: 'list',
+  webServer: {
+    command: 'PORT=5000 node ../server.js',
+    port: 5000,
+    reuseExistingServer: true,
+  },
   use: {
-    baseURL: 'http://localhost:80',
+    baseURL: 'http://localhost:5000',
     headless: true,
   },
   projects: [

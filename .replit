@@ -33,7 +33,8 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pnpm --filter @workspace/noahpac run dev"
+args = "node server.js"
+waitForPort = 5000
 
 [[workflows.workflow]]
 name = "check-css-tokens"
