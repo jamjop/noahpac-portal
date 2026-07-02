@@ -253,4 +253,34 @@ test.describe('Empiric Therapy Tool – stale-data warning', () => {
     await expect(page.locator('#stale-warning')).not.toBeVisible();
   });
 
+  // ── shared.css failure resilience ─────────────────────────────────────────
+  //
+  // Simulates a broken connection to shared.css by aborting the network
+  // request.  empiric/style.css defines its own fallback :root tokens so the
+  // page must remain functional: key structural panels visible and the
+  // facility / site selectors still usable.
+
+  test('page stays usable when shared.css fails to load', async ({ page }) => {
+    await page.route('**/shared.css', route => route.abort());
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_FAC_B })
+    );
+
+    await page.goto(EMPIRIC_URL);
+
+    // Key structural panels must be visible without shared.css tokens
+    await expect(page.locator('.page-body')).toBeVisible();
+    await expect(page.locator('.criteria-col')).toBeVisible();
+
+    // Facility and site selectors must render and be interactive
+    await expect(page.locator('#fac-sel')).toBeVisible();
+    await expect(page.locator('#site-sel')).toBeVisible();
+  });
+
 });

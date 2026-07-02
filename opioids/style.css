@@ -1,3 +1,47 @@
+:root{
+  /* ── Fallback design tokens ─────────────────────────────────────────────────
+     These mirror the values in /shared.css so the page remains legible if
+     shared.css fails to load (slow connection, wrong path, CDN outage).
+     When shared.css loads successfully its :root block takes precedence
+     because it appears earlier in the <head> and cascades normally.       */
+  --bg:#f8f9fa; --surface:#ffffff;
+  --ink:#1a1f24; --ink-soft:#4a5568; --ink-muted:#718096;
+  --line:#e2e8f0;
+  --purple:#0052cc; --purple-soft:#ebf2ff; --purple-mid:#6699cc;
+  --teal:#0891B2; --teal-soft:#e0f2fe; --teal-ink:#0369a1;
+  --ok:#1A8A5A; --ok-soft:#E3F5EC; --ok-ink:#065f46;
+  --warn:#D4820A; --warn-soft:#FEF3DA; --warn-ink:#92400e;
+  --risk:#C53030; --risk-soft:#FDE8E8;
+  --sh:0 2px 8px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh-lg:0 8px 24px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);
+  --r:8px; --r-sm:6px;
+  --callout-danger-ink:#7f1d1d; --callout-warn-ink:#78350f;
+  --callout-ok-ink:#14532d; --callout-info-ink:#0c4a6e;
+  --callout-purple-ink:#1e1b4b;
+}
+
+/* ── Dark-mode fallback overrides ────────────────────────────────────────────
+   Re-applies dark token values so dark mode stays correct even when this
+   style.css is parsed after shared.css (and its light-mode :root would
+   otherwise silently undo shared.css's own dark-mode @media block).        */
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1117; --surface:#1a2030;
+    --ink:#e2e8f0; --ink-soft:#a0aec0; --ink-muted:#64748b;
+    --line:#2d3748;
+    --purple:#4d94ff; --purple-soft:#0d1e3d; --purple-mid:#2e5fa3;
+    --teal:#22d3ee; --teal-soft:#0c2a42; --teal-ink:#22d3ee;
+    --ok:#34d399; --ok-soft:#064e3b; --ok-ink:#6ee7b7;
+    --warn:#fbbf24; --warn-soft:#1c1300; --warn-ink:#fbbf24;
+    --risk:#fc8181; --risk-soft:#3b1515;
+    --sh:0 1px 3px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.25);
+    --sh-lg:0 4px 16px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.25);
+    --callout-danger-ink:#fca5a5; --callout-warn-ink:#fde68a;
+    --callout-ok-ink:#6ee7b7; --callout-info-ink:#7dd3fc;
+    --callout-purple-ink:#c4b5fd;
+  }
+}
+
 /* ── Layout ── */
 .header-inner{max-width:1000px;margin:0 auto;padding:22px 16px 18px}
 
