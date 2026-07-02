@@ -1,5 +1,3 @@
-:root{--blue:#1B5FAF;--blue-soft:#DBEAFE}
-
 /* ── Layout ── */
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px;display:flex;align-items:flex-start;justify-content:space-between}
 

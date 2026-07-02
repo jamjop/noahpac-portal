@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { resolve, join, dirname } from "node:path";
+import { resolve, join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -248,4 +248,114 @@ if (hexErrors > 0) {
   process.exit(1);
 } else {
   console.log("\nNo hardcoded hex colors found in page stylesheets.");
+}
+
+// ── Check 3: cross-page duplicate token definitions ───────────────────────────
+//
+// Detects CSS custom properties that are defined in two or more page stylesheets.
+// These should either be consolidated into shared.css (when values are identical)
+// or have a comment in each file explaining why the values intentionally differ.
+//
+// Tokens that exist in shared.css are excluded from this check — page-level
+// redefinitions of shared tokens are acceptable fallbacks (see peds/style.css).
+
+console.log("\n──────────────────────────────────────────────────────────────");
+console.log("Checking for cross-page duplicate token definitions...\n");
+
+/**
+ * Extract all CSS custom-property definitions as { name, value } pairs.
+ * Strips comments before scanning so commented-out definitions are ignored.
+ * Captures only the *first* value token per definition (stops at ; or }).
+ */
+function extractTokenDefinitions(css: string): Map<string, string> {
+  const defs = new Map<string, string>();
+  // Remove block comments
+  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const re = /--([\w-]+)\s*:\s*([^;{}]+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(stripped)) !== null) {
+    const name = `--${m[1]}`;
+    // Normalise: collapse whitespace, lowercase
+    const value = m[2].trim().replace(/\s+/g, " ").toLowerCase();
+    if (!defs.has(name)) {
+      defs.set(name, value);
+    }
+  }
+  return defs;
+}
+
+// Build map: tokenName → list of { file, value }
+const crossPageMap = new Map<string, Array<{ file: string; value: string }>>();
+
+for (const sheet of stylesheets) {
+  const rel = sheet.replace(projectRoot + "/", "");
+  let css: string;
+  try {
+    css = readFileSync(sheet, "utf8");
+  } catch {
+    continue;
+  }
+  const defs = extractTokenDefinitions(css);
+  for (const [name, value] of defs) {
+    // Skip tokens that are already defined in shared.css — local redefinitions
+    // of shared tokens are expected as offline/load-failure fallbacks.
+    if (sharedTokens.has(name)) continue;
+    if (!crossPageMap.has(name)) {
+      crossPageMap.set(name, []);
+    }
+    crossPageMap.get(name)!.push({ file: rel, value });
+  }
+}
+
+let crossErrors = 0;
+const crossErrorLines: string[] = [];
+const crossWarnLines: string[] = [];
+
+for (const [token, entries] of crossPageMap) {
+  if (entries.length < 2) continue;
+  const uniqueValues = new Set(entries.map((e) => e.value));
+  if (uniqueValues.size === 1) {
+    // All pages agree on the value → should be in shared.css
+    const value = [...uniqueValues][0];
+    crossErrorLines.push(`  ${token}  (value: ${value})`);
+    for (const e of entries) {
+      crossErrorLines.push(`    defined in: ${e.file}`);
+    }
+    crossErrors++;
+  } else {
+    // Values differ → possible unintentional drift
+    crossWarnLines.push(`  ${token}  (values differ across pages)`);
+    for (const e of entries) {
+      crossWarnLines.push(`    ${e.file}  →  ${e.value}`);
+    }
+  }
+}
+
+if (crossWarnLines.length > 0) {
+  console.log("TOKENS WITH DIFFERING VALUES ACROSS PAGES (review for drift):\n");
+  for (const line of crossWarnLines) {
+    console.log(line);
+  }
+  console.log(
+    "\nIf the difference is intentional, add a comment in each page's :root block\n" +
+    "explaining why the value diverges from the other page(s).\n"
+  );
+}
+
+if (crossErrors > 0) {
+  console.log("CROSS-PAGE DUPLICATE TOKENS DETECTED (identical value in multiple pages):\n");
+  for (const line of crossErrorLines) {
+    console.log(line);
+  }
+  console.log(
+    `\n${crossErrors} token(s) with identical values found in multiple page stylesheets.`
+  );
+  console.log(
+    "Move these tokens into shared.css so they are defined once and cannot drift.\n" +
+    "If a page intentionally diverges, add a comment in its :root block and the\n" +
+    "values will appear under the 'differing values' warning above instead."
+  );
+  process.exit(1);
+} else if (crossWarnLines.length === 0) {
+  console.log("No cross-page duplicate token definitions found.");
 }

@@ -1,3 +1,8 @@
+/* Intentional divergence: --preg/--preg-soft are pregnancy-specific accent tokens
+   used to label contraindicated antibiotics. They share the same hue as --women
+   but use a slightly different dark-mode soft value (#3d0a22 vs #4a0e2d) chosen
+   for better contrast against the dark drug-card background. Keep these local
+   rather than aliasing to --women to preserve the distinct clinical meaning. */
 :root{--preg:#BE185D;--preg-soft:#FCE7F3}
 
 /* ── Layout ── */

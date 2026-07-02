@@ -18,6 +18,12 @@
   --teal-soft:#e0f2fe; --teal-ink:#0369a1;
   --warn-ink:#92400e; --ok-ink:#065f46;
   --phase-bg:#d4e5ff;
+  /* ── Sex/gender & print tokens shared by screener, vaccines ── */
+  --women:#BE185D; --women-soft:#FCE7F3;
+  --men:#0369A1;   --men-soft:#E0F2FE;
+  --print-border:#ccc; --print-border-dim:#999; --print-border-soft:#eee;
+  /* ── Blue accent shared by vaccines and ddx pages ── */
+  --blue:#1B5FAF; --blue-soft:#DBEAFE;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -165,6 +171,9 @@ h1{
     --teal-soft:#0c2a42; --teal-ink:#22d3ee;
     --warn-ink:#fbbf24; --ok-ink:#6ee7b7;
     --phase-bg:#0d1e3d;
+    /* ── Sex/gender dark overrides (mirrors screener + vaccines pages) ── */
+    --women:#f472b6; --women-soft:#4a0e2d;
+    --men:#38bdf8;   --men-soft:#0c2a42;
     /* dark badge/letter backgrounds used by als, pals, tccc */
     --badge-danger-dark:#7f1d1d; --badge-ok-dark:#166534;
     --badge-teal-dark:#0e7490; --badge-warn-dark:#92400e;
