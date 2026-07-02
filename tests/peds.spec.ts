@@ -282,7 +282,63 @@ test.describe('Pediatric Dosing Calculator', () => {
     expect(suxNote, 'Sux note should confirm infant branch for 7.5 kg').toContain('infant');
   });
 
-  // ── 12. Dose cards stay legible when shared.css fails to load ─────────────
+  // ── 12. Age-estimated weights stay within 1–150 kg for all valid UI inputs ─
+  //
+  // Sweeps every age the UI supports (months 0–23, years 0–14 in 0.5 increments)
+  // through estimateWeight() in the page context.  Any non-null result outside
+  // 1–150 kg would cause a confusing generic validation error instead of a clear
+  // clinical message — so this test pins the formula's output range.
+
+  test('estimateWeight returns values within 1–150 kg for all valid UI-supported ages', async ({ page }) => {
+    await page.goto(PEDS_URL);
+
+    const outOfRange = await page.evaluate(() => {
+      const bad: string[] = [];
+      // months: 0–23 (upper limit of the months input)
+      for (let mo = 0; mo <= 23; mo++) {
+        const wt = (window as unknown as Record<string, (a: number, u: string) => number | null>)['estimateWeight'](mo, 'mo');
+        if (wt !== null && (wt < 1 || wt > 150)) bad.push(`${mo} mo → ${wt} kg`);
+      }
+      // years: 0–14 in 0.5-year steps (covers all formula branches)
+      for (let step = 0; step <= 28; step++) {
+        const ageYr = step * 0.5;
+        const wt = (window as unknown as Record<string, (a: number, u: string) => number | null>)['estimateWeight'](ageYr, 'yr');
+        if (wt !== null && (wt < 1 || wt > 150)) bad.push(`${ageYr} yr → ${wt} kg`);
+      }
+      return bad;
+    });
+
+    expect(
+      outOfRange,
+      `These age-estimated weights fall outside 1–150 kg: ${outOfRange.join(', ')}`
+    ).toHaveLength(0);
+  });
+
+  // ── 13. Age 14 yr (max the UI supports) renders dose cards without error ───
+  //
+  // estimateWeight(14, 'yr') = 3*14+7 = 49 kg — confirms the formula's maximum
+  // output stays in range and dose cards are rendered (not a validation error).
+
+  test('age 14 years (max UI-supported age) renders dose cards with estimated weight 49 kg', async ({ page }) => {
+    await page.fill('#wtKg', '');
+    await page.fill('#ageNum', '14');
+    await page.selectOption('#ageUnit', 'yr');
+    await page.click('#calcBtn');
+
+    // Weight banner must show the estimated value
+    const wtText = await page.locator('#broseWeight').textContent();
+    expect(wtText!.trim(), 'Estimated weight for 14 yr should be 49 kg').toBe('49 kg');
+
+    // Must render dose cards — not an error message
+    const content = await page.locator('#content').textContent();
+    expect(content, '#content must not show an error for age 14 yr').not.toContain('outside the supported range');
+
+    const vals = await page.locator('.dose-val').allTextContents();
+    const numericCount = vals.filter(v => v.trim() !== '—').length;
+    expect(numericCount, 'Dose cards must populate for age 14 yr (49 kg)').toBeGreaterThan(10);
+  });
+
+  // ── 14. Dose cards stay legible when shared.css fails to load ─────────────
   //
   // Simulates a slow/broken connection by aborting the /shared.css network
   // request.  peds/style.css defines its own fallback :root tokens so the

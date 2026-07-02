@@ -329,6 +329,10 @@ function go() {
       document.getElementById('content').innerHTML = '<div class="err">Could not estimate weight. Enter weight directly or use age 0–14 years.</div>';
       return;
     }
+    if (wt < 1 || wt > 150) {
+      document.getElementById('content').innerHTML = `<div class="err">Age-estimated weight (${fmt(wt, 1)} kg) is outside the supported range (1–150 kg). Enter weight directly.</div>`;
+      return;
+    }
     document.getElementById('wtKg').value = '';
   } else {
     document.getElementById('content').innerHTML = '<div class="err">Enter a weight (kg) or age to calculate.</div>';
