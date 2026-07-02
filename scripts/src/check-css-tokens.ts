@@ -448,28 +448,34 @@ console.log("\n─────────────────────�
 console.log("Checking for cross-page duplicate token definitions...\n");
 
 /**
- * Extract all CSS custom-property definitions as { name, value } pairs.
- * Strips comments before scanning so commented-out definitions are ignored.
- * Captures only the *first* value token per definition (stops at ; or }).
+ * Extract all CSS custom-property definitions as composite-keyed { name:mode, value } pairs,
+ * tracking light-mode and dark-mode values separately.
+ *
+ * Light-mode tokens (from the top-level :root block, outside any @media rule) are
+ * keyed as "--token:light".  Dark-mode tokens (from :root inside
+ * @media (prefers-color-scheme: dark)) are keyed as "--token:dark".
+ *
+ * This allows Check 4 to detect drift in dark-mode values even when two pages
+ * share identical light-mode values for the same token.
+ *
+ * Depends on extractRootBlock / extractDarkRootBlock / parseTokenBlock which are
+ * defined later in this file; function declarations are hoisted so the call order
+ * is safe.
  */
 function extractTokenDefinitions(css: string): Map<string, string> {
   const defs = new Map<string, string>();
-  // Remove block comments
-  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const re = /--([\w-]+)\s*:\s*([^;{}]+)/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(stripped)) !== null) {
-    const name = `--${m[1]}`;
-    // Normalise: collapse whitespace, lowercase
-    const value = m[2].trim().replace(/\s+/g, " ").toLowerCase();
-    if (!defs.has(name)) {
-      defs.set(name, value);
-    }
+  const lightTokens = extractRootBlock(css);
+  const darkTokens  = extractDarkRootBlock(css);
+  for (const [name, value] of lightTokens) {
+    defs.set(`${name}:light`, value);
+  }
+  for (const [name, value] of darkTokens) {
+    defs.set(`${name}:dark`, value);
   }
   return defs;
 }
 
-// Build map: tokenName → list of { file, value }
+// Build map: compositeKey ("--token:light" | "--token:dark") → list of { file, value }
 const crossPageMap = new Map<string, Array<{ file: string; value: string }>>();
 
 for (const sheet of stylesheets) {
@@ -481,14 +487,17 @@ for (const sheet of stylesheets) {
     continue;
   }
   const defs = extractTokenDefinitions(css);
-  for (const [name, value] of defs) {
-    // Skip tokens that are already defined in shared.css — local redefinitions
-    // of shared tokens are expected as offline/load-failure fallbacks.
-    if (sharedTokens.has(name)) continue;
-    if (!crossPageMap.has(name)) {
-      crossPageMap.set(name, []);
+  for (const [compositeKey, value] of defs) {
+    // compositeKey is "--token:light" or "--token:dark"
+    // Extract base token name (everything before the last colon) for the
+    // shared.css lookup — shared tokens are expected fallback redefinitions.
+    const modeIdx = compositeKey.lastIndexOf(":");
+    const baseName = compositeKey.slice(0, modeIdx);
+    if (sharedTokens.has(baseName)) continue;
+    if (!crossPageMap.has(compositeKey)) {
+      crossPageMap.set(compositeKey, []);
     }
-    crossPageMap.get(name)!.push({ file: rel, value });
+    crossPageMap.get(compositeKey)!.push({ file: rel, value });
   }
 }
 
@@ -496,20 +505,24 @@ let crossErrors = 0;
 const crossErrorLines: string[] = [];
 const crossWarnLines: string[] = [];
 
-for (const [token, entries] of crossPageMap) {
+for (const [compositeKey, entries] of crossPageMap) {
   if (entries.length < 2) continue;
+  const modeIdx = compositeKey.lastIndexOf(":");
+  const baseName = compositeKey.slice(0, modeIdx);   // "--token"
+  const mode     = compositeKey.slice(modeIdx + 1);  // "light" or "dark"
+
   const uniqueValues = new Set(entries.map((e) => e.value));
   if (uniqueValues.size === 1) {
     // All pages agree on the value → should be in shared.css
     const value = [...uniqueValues][0];
-    crossErrorLines.push(`  ${token}  (value: ${value})`);
+    crossErrorLines.push(`  ${baseName}  [${mode}]  (value: ${value})`);
     for (const e of entries) {
       crossErrorLines.push(`    defined in: ${e.file}`);
     }
     crossErrors++;
   } else {
     // Values differ → possible unintentional drift
-    crossWarnLines.push(`  ${token}  (values differ across pages)`);
+    crossWarnLines.push(`  ${baseName}  [${mode}]  (values differ across pages)`);
     for (const e of entries) {
       crossWarnLines.push(`    ${e.file}  →  ${e.value}`);
     }
