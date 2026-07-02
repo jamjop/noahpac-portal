@@ -33,5 +33,5 @@
 
 @media(prefers-color-scheme:dark){
   .route-chip{background:color-mix(in srgb,var(--ok-soft) 80%,var(--surface) 20%);color:var(--teal)}
-  .cls-chip{color:var(--warn)}
+  .cls-chip{background:var(--warn-soft);color:var(--warn)}
 }

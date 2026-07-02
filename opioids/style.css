@@ -122,4 +122,8 @@
 /* ── Dark mode ── */
 @media(prefers-color-scheme:dark){
   .field select,.field input[type=number]{background:var(--surface)}
+  .disclaimer-box{background:var(--warn-soft)}
+  .ref-table tr.warn-row td{background:var(--warn-soft)}
+  .mme-flag.warn{background:var(--warn-soft)}
+  .conv-warning{background:var(--warn-soft)}
 }
