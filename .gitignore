@@ -65,7 +65,10 @@ attached_assets/
 
 # Cursor/GitHub Copilot AI rules (Replit-generated, not nginx content)
 .cursor/
-.github/
+.github/*
+!.github/workflows/
+.github/workflows/*
+!.github/workflows/*.yml
 
 # Live data files — written by cron jobs, not source
 screener/data/
