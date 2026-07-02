@@ -1,0 +1,17 @@
+name: Antibiogram Freshness Check
+
+on:
+  schedule:
+    # Runs every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check-freshness:
+    name: Check antibiogram data freshness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check antibiogram freshness
+        run: node scripts/check-antibiogram-freshness.cjs
