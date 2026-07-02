@@ -18,7 +18,7 @@ h1{font-size:clamp(26px,4.5vw,38px);margin:5px 0 12px;color:#fff;letter-spacing:
 .tool-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
 .tool-card:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .tool-card.c-teal{--bar:#0891B2}
-.tool-card.c-blue{--bar:#1B2E6B}
+.tool-card.c-blue{--bar:#0052cc}
 .tool-card.c-green{--bar:#1A8A5A}
 .tool-card.c-red{--bar:#C53030}
 .tool-card.c-crimson{--bar:#991B1B}
