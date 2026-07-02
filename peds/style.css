@@ -4,14 +4,14 @@
      shared.css fails to load (slow connection, wrong path, CDN outage).
      When shared.css loads successfully its :root block takes precedence
      because it appears earlier in the <head> and cascades normally.       */
-  --bg:#EFF3FA; --surface:#ffffff;
-  --ink:#0D1E3F; --ink-soft:#4A5A7A; --ink-muted:#8895B3;
-  --line:#D8E0EE;
-  --purple:#1B2E6B; --purple-soft:#E8EDF7;
+  --bg:#f8f9fa; --surface:#ffffff;
+  --ink:#1a1f24; --ink-soft:#4a5568; --ink-muted:#718096;
+  --line:#e2e8f0;
+  --purple:#0052cc; --purple-soft:#ebf2ff;
   --teal:#0891B2; --teal-soft:#e0f2fe;
   --warn:#D4820A; --warn-soft:#FEF3DA;
   --risk:#C53030;
-  --sh:0 2px 8px rgba(13,30,63,.07),0 1px 2px rgba(13,30,63,.04);
+  --sh:0 2px 8px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
   --r:8px; --r-sm:6px;
   --callout-warn-ink:#78350f; --callout-info-ink:#0c4a6e;
 
