@@ -250,7 +250,192 @@ if (hexErrors > 0) {
   console.log("\nNo hardcoded hex colors found in page stylesheets.");
 }
 
-// ── Check 3: cross-page duplicate token definitions ───────────────────────────
+// ── Check 3: hardcoded rgba/rgb, hsl/hsla, and named colors ──────────────────
+//
+// Hardcoded rgba/rgb, hsl/hsla, or named CSS color values in rule bodies are
+// equally problematic for dark-mode as hex colors.
+//
+// Allowlisted exceptions (do not require tokenisation):
+//   rgba(0,0,0,…)       – pure-black alpha overlay (shadows, borders) — inherently scheme-aware
+//   rgba(255,255,255,…)  – pure-white alpha overlay (glassy overlays on dark surfaces) — scheme-aware
+//   rgb(0,0,0)           – equivalent to #000
+//   rgb(255,255,255)     – equivalent to #fff
+//   black / white        – equivalent to #000/#fff
+//   transparent          – not a chromatic color
+//   currentcolor         – computed from inherited color, not hardcoded
+//   inherit/initial/unset/revert – CSS-wide keywords
+
+/** rgba() values whose color components are pure black or pure white are allowed. */
+function isAllowedRgba(raw: string): boolean {
+  const s = raw.replace(/\s+/g, "").toLowerCase();
+  return /^rgba?\((0,0,0|255,255,255)(,[.\d]+)?\)$/.test(s);
+}
+
+const RGBA_RE = /\brgba?\s*\([^)]*\)/gi;
+const HSL_RE = /\bhsla?\s*\([^)]*\)/gi;
+
+/**
+ * Full W3C CSS named-color keyword list (excluding black/white which are
+ * explicitly allowed above).  Any of these appearing in a rule body is a flag.
+ */
+const CSS_NAMED_COLORS = new Set([
+  "aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque",
+  "blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue",
+  "chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson",
+  "cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen",
+  "darkgrey","darkkhaki","darkmagenta","darkolivegreen","darkorange",
+  "darkorchid","darkred","darksalmon","darkseagreen","darkslateblue",
+  "darkslategray","darkslategrey","darkturquoise","darkviolet","deeppink",
+  "deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite",
+  "forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray",
+  "green","greenyellow","grey","honeydew","hotpink","indianred","indigo",
+  "ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon",
+  "lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgray",
+  "lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen",
+  "lightskyblue","lightslategray","lightslategrey","lightsteelblue",
+  "lightyellow","lime","limegreen","linen","magenta","maroon",
+  "mediumaquamarine","mediumblue","mediumorchid","mediumpurple",
+  "mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise",
+  "mediumvioletred","midnightblue","mintcream","mistyrose","moccasin",
+  "navajowhite","navy","oldlace","olive","olivedrab","orange","orangered",
+  "orchid","palegoldenrod","palegreen","paleturquoise","palevioletred",
+  "papayawhip","peachpuff","peru","pink","plum","powderblue","purple",
+  "rebeccapurple","red","rosybrown","royalblue","saddlebrown","salmon",
+  "sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue",
+  "slategray","slategrey","snow","springgreen","steelblue","tan","teal",
+  "thistle","tomato","turquoise","violet","wheat","yellow","yellowgreen",
+]);
+
+/** CSS-wide keywords and color-scheme-safe named values that are always allowed. */
+const ALLOWED_NAMED_COLORS = new Set([
+  "black","white","transparent","currentcolor","inherit","initial","unset","revert",
+]);
+
+/** Matches any CSS named color or allowed keyword as a whole word. */
+const NAMED_COLOR_RE = new RegExp(
+  `\\b(${[...CSS_NAMED_COLORS, ...ALLOWED_NAMED_COLORS].join("|")})\\b`,
+  "gi"
+);
+
+interface NonHexColorHit {
+  file: string;
+  lineNo: number;
+  value: string;
+  kind: "rgba" | "hsl" | "named";
+  lineText: string;
+}
+
+function findHardcodedNonHexColors(cssText: string): NonHexColorHit[] {
+  const hits: NonHexColorHit[] = [];
+  const lines = cssText.split("\n");
+  let inBlockComment = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+
+    if (inBlockComment) {
+      if (line.includes("*/")) {
+        line = line.slice(line.indexOf("*/") + 2);
+        inBlockComment = false;
+      } else {
+        continue;
+      }
+    }
+
+    line = line.replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g, "");
+
+    if (line.includes("/*")) {
+      line = line.slice(0, line.indexOf("/*"));
+      inBlockComment = true;
+    }
+
+    // Strip variable-definition segments so we don't flag colors inside --token: value
+    const withoutVarDefs = line.replace(/--[\w-]+\s*:\s*[^;{}]*/g, "");
+
+    // ── rgba / rgb ────────────────────────────────────────────────────────────
+    RGBA_RE.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = RGBA_RE.exec(withoutVarDefs)) !== null) {
+      if (!isAllowedRgba(m[0])) {
+        hits.push({ file: "", lineNo: i + 1, value: m[0].trim(), kind: "rgba", lineText: lines[i].trim() });
+      }
+    }
+
+    // ── hsl / hsla ────────────────────────────────────────────────────────────
+    HSL_RE.lastIndex = 0;
+    while ((m = HSL_RE.exec(withoutVarDefs)) !== null) {
+      hits.push({ file: "", lineNo: i + 1, value: m[0].trim(), kind: "hsl", lineText: lines[i].trim() });
+    }
+
+    // ── named colors ─────────────────────────────────────────────────────────
+    // Only flag named colors that appear in a property-value context:
+    // the stripped line must contain a colon (i.e. be inside a rule body),
+    // and the match must appear after the colon (right-hand side of a declaration).
+    const colonIdx = withoutVarDefs.indexOf(":");
+    if (colonIdx === -1) continue;
+    // Strip var(…) calls so color words inside token names (var(--purple), var(--teal))
+    // are not mistakenly flagged as hardcoded named colors.
+    const rhs = withoutVarDefs.slice(colonIdx + 1).replace(/var\([^)]*\)/g, "");
+
+    NAMED_COLOR_RE.lastIndex = 0;
+    while ((m = NAMED_COLOR_RE.exec(rhs)) !== null) {
+      const word = m[1].toLowerCase();
+      if (!ALLOWED_NAMED_COLORS.has(word)) {
+        hits.push({ file: "", lineNo: i + 1, value: m[1], kind: "named", lineText: lines[i].trim() });
+      }
+    }
+  }
+
+  return hits;
+}
+
+console.log("\n──────────────────────────────────────────────────────────────");
+console.log("Checking for hardcoded rgba/hsl/named colors in page stylesheets...\n");
+
+let nonHexErrors = 0;
+const nonHexErrorLines: string[] = [];
+
+for (const sheet of stylesheets) {
+  const rel = sheet.replace(projectRoot + "/", "");
+  let css: string;
+  try {
+    css = readFileSync(sheet, "utf8");
+  } catch {
+    console.warn(`  WARN: Could not read ${rel} — skipping`);
+    continue;
+  }
+
+  const hits = findHardcodedNonHexColors(css);
+  if (hits.length === 0) {
+    console.log(`  ✓  ${rel}`);
+  } else {
+    nonHexErrorLines.push(`  ${rel}`);
+    for (const h of hits) {
+      nonHexErrorLines.push(`    ✗ line ${h.lineNo} [${h.kind}]: ${h.value}  →  ${h.lineText}`);
+    }
+    nonHexErrors += hits.length;
+  }
+}
+
+if (nonHexErrors > 0) {
+  console.log("\nHARDCODED NON-HEX COLORS DETECTED:\n");
+  for (const line of nonHexErrorLines) {
+    console.log(line);
+  }
+  const fileCount = nonHexErrorLines.filter((l) => !l.startsWith("    ")).length;
+  console.log(`\n${nonHexErrors} hardcoded non-hex color(s) found across ${fileCount} file(s).`);
+  console.log(
+    "Define each color as a CSS custom property in shared.css or the page's own :root block,\n" +
+    "then reference it via var(--token-name).\n" +
+    "Exceptions: rgba/rgb with pure black/white components (0,0,0 or 255,255,255),\n" +
+    "the keywords transparent/currentcolor/inherit/initial/unset, and black/white."
+  );
+  process.exit(1);
+} else {
+  console.log("\nNo hardcoded rgba/hsl/named colors found in page stylesheets.");
+}
+
+// ── Check 4: cross-page duplicate token definitions ───────────────────────────
 //
 // Detects CSS custom properties that are defined in two or more page stylesheets.
 // These should either be consolidated into shared.css (when values are identical)
