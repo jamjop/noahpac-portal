@@ -55,6 +55,10 @@ Thumbs.db
 
 # Replit Express wrapper (serves workspace root in dev; not needed in git)
 artifacts/
+# Track the noahpac React app source so CSS token fallbacks are versioned
+!artifacts/noahpac/
+!artifacts/noahpac/src/
+!artifacts/noahpac/src/index.css
 
 # Replit file attachments
 attached_assets/
