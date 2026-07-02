@@ -24,6 +24,10 @@ args = "Start application"
 task = "workflow.run"
 args = "check-css-tokens"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "dark-mode"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -46,6 +50,17 @@ isValidation = true
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pnpm --filter @workspace/scripts run check-css-tokens"
+
+[[workflows.workflow]]
+name = "dark-mode"
+author = "agent"
+
+[workflows.workflow.metadata]
+isValidation = true
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm --filter @workspace/tests exec bash run-tests.sh dark-mode"
 
 [agent]
 stack = "PNPM_WORKSPACE"

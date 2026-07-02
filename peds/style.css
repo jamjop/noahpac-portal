@@ -27,6 +27,27 @@
   --brose-green:#6EE7B7;
 }
 
+/* ── Dark-mode fallback overrides ────────────────────────────────────────────
+   The :root block above re-declares light-mode token values so the page still
+   looks correct if shared.css fails to load.  Those declarations appear after
+   shared.css in the cascade, so they would silently undo shared.css's own
+   dark-mode @media block.  This mirror block re-applies the dark values for
+   every token peds overrides, keeping dark-mode correct even when style.css
+   loads after shared.css.                                                    */
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1117; --surface:#1a2030;
+    --ink:#e2e8f0; --ink-soft:#a0aec0; --ink-muted:#64748b;
+    --line:#2d3748;
+    --purple:#4d94ff; --purple-soft:#0d1e3d;
+    --teal:#22d3ee; --teal-soft:#0c2a42;
+    --warn:#fbbf24; --warn-soft:#1c1300;
+    --risk:#fc8181;
+    --sh:0 1px 3px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.25);
+    --callout-warn-ink:#fde68a; --callout-info-ink:#7dd3fc;
+  }
+}
+
 /* ── Layout ── */
 .header-inner{max-width:960px;margin:0 auto;padding:22px 16px 18px}
 .content{max-width:960px;margin:0 auto;padding:20px 16px 60px}
