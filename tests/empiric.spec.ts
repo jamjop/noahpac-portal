@@ -13,6 +13,22 @@
 
 import { test, expect } from '@playwright/test';
 
+// ── colour helpers (shared with dark-mode.spec.ts pattern) ───────────────────
+
+function parseRgb(color: string): [number, number, number] | null {
+  const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (!m) return null;
+  return [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
+}
+
+function isTransparent(color: string): boolean {
+  return /rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(color) || color === 'transparent';
+}
+
+function isDark(rgb: [number, number, number]): boolean {
+  return Math.max(rgb[0], rgb[1], rgb[2]) < 200;
+}
+
 const EMPIRIC_URL = '/empiric/';
 
 const VALID_MANIFEST = JSON.stringify({ facilities: ['fac_a', 'fac_b'] });
@@ -283,4 +299,60 @@ test.describe('Empiric Therapy Tool – stale-data warning', () => {
     await expect(page.locator('#site-sel')).toBeVisible();
   });
 
+});
+
+// ── Dark-mode stale-data banner ───────────────────────────────────────────────
+//
+// The #stale-warning banner uses .state.warn which relies on --warn-soft and
+// --warn tokens.  Dark-mode overrides for these tokens exist in both shared.css
+// and the empiric/style.css fallback block, but the banner has never been
+// explicitly tested in dark mode.  This block confirms:
+//   • the banner is visible when stale data is loaded in dark mode
+//   • its computed background-color is NOT a bright light-mode colour
+//     (max RGB channel must be < 200; the dark-mode --warn-soft is #1c1300
+//     which resolves to rgb(28,19,0) — max channel 28)
+
+test.describe('Empiric Therapy Tool – stale-data banner in dark mode', () => {
+  test.use({ colorScheme: 'dark' });
+
+  test('#stale-warning banner has a dark background in dark mode', async ({ page }) => {
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    // fac_a has period '2020-Q1' (ended Mar 31 2020 — well over 60 days ago)
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: STALE_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_FAC_B })
+    );
+
+    await page.goto(EMPIRIC_URL);
+
+    // Banner must be visible
+    const staleEl = page.locator('#stale-warning');
+    await expect(staleEl).toBeVisible({ timeout: 10_000 });
+
+    // Background must be non-transparent and not a bright light-mode colour.
+    // A transparent result would mean --warn-soft wasn't applied at all, which
+    // is itself a regression worth catching.
+    const bgColor: string = await staleEl.evaluate(el =>
+      getComputedStyle(el).backgroundColor
+    );
+
+    expect(
+      isTransparent(bgColor),
+      `#stale-warning dark mode: background is transparent — --warn-soft token was not applied`,
+    ).toBe(false);
+
+    const rgb = parseRgb(bgColor);
+    expect(
+      rgb,
+      `#stale-warning: could not parse background-color "${bgColor}"`,
+    ).not.toBeNull();
+    expect(
+      isDark(rgb!),
+      `#stale-warning dark mode: background "${bgColor}" is too bright (max channel ${Math.max(...rgb!)} ≥ 200) — --warn-soft token not overridden for dark mode`,
+    ).toBe(true);
+  });
 });
