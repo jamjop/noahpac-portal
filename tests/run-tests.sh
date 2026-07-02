@@ -35,4 +35,9 @@ done
 
 export LD_LIBRARY_PATH="${LIB_PATHS}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
+# Install Chromium if not already present (skipped when CI handles install separately)
+if [ -z "${CI:-}" ]; then
+  pnpm exec playwright install chromium
+fi
+
 exec pnpm exec playwright test "$@"
