@@ -2,6 +2,26 @@
 
 let FACILITY_SUSC = {};
 
+/**
+ * Parse a period string ("YYYY" or "YYYY-Q#") and return the Date at the end
+ * of that period.  Returns null if the format is unrecognised.
+ */
+function periodEndDate(period) {
+  const yearOnly = /^(\d{4})$/.exec(period);
+  if (yearOnly) {
+    return new Date(parseInt(yearOnly[1], 10), 11, 31); // Dec 31
+  }
+  const quarterMatch = /^(\d{4})-Q([1-4])$/.exec(period);
+  if (quarterMatch) {
+    const year = parseInt(quarterMatch[1], 10);
+    const q    = parseInt(quarterMatch[2], 10);
+    const qEndMonth = [2, 5, 8, 11][q - 1]; // 0-indexed month of quarter end
+    const qEndDay   = [31, 30, 30, 31][q - 1];
+    return new Date(year, qEndMonth, qEndDay);
+  }
+  return null;
+}
+
 const ABX_NAME = {
   amp:"Ampicillin",ams:"Amp/Sulbactam",ptz:"Pip/Tazo",cfz:"Cefazolin",cfx:"Cefoxitin",
   cxm:"Cefuroxime",cro:"Ceftriaxone",caz:"Ceftazidime",fep:"Cefepime",
@@ -267,7 +287,10 @@ async function loadFacilities() {
     )
   );
 
-  const failedIds = [];
+  const failedIds    = [];
+  const staleFacIds  = [];
+  const STALE_DAYS   = 60;
+
   results.forEach((result, i) => {
     if (result.status !== 'fulfilled') {
       failedIds.push(facilityIds[i]);
@@ -282,6 +305,14 @@ async function loadFacilities() {
         label: `${f.name} — ${f.location} (${f.period})`,
         data,
       };
+
+      const endDate = periodEndDate(f.period);
+      if (endDate) {
+        const daysSinceEnd = (Date.now() - endDate.getTime()) / 86_400_000;
+        if (daysSinceEnd > STALE_DAYS) {
+          staleFacIds.push(f.name || f.id);
+        }
+      }
     } catch (e) {
       failedIds.push(facilityIds[i]);
     }
@@ -299,6 +330,17 @@ async function loadFacilities() {
     warn.id = 'load-warning';
     warn.textContent = `Data unavailable for: ${failedIds.join(', ')}. Results may be incomplete.`;
     document.getElementById("result-area").before(warn);
+  }
+
+  if (staleFacIds.length) {
+    const staleWarn = document.createElement('div');
+    staleWarn.className = 'state warn stale-warn';
+    staleWarn.id = 'stale-warning';
+    staleWarn.textContent =
+      `⚠ Antibiogram data may be outdated (${staleFacIds.join(', ')}). ` +
+      `The data is more than ${STALE_DAYS} days past its stated period — ` +
+      `verify current resistance rates with your pharmacy or infection control team.`;
+    document.getElementById("result-area").before(staleWarn);
   }
 
   if (!FACILITY_SUSC[selectedFacility]) {

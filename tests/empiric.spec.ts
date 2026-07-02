@@ -37,6 +37,47 @@ const VALID_FAC_B = JSON.stringify({
   ],
 });
 
+// A facility whose period ended well over 60 days ago (Q1 2020 = Mar 31 2020).
+const STALE_FAC_A = JSON.stringify({
+  id: 'fac_a',
+  name: 'Test Hospital A',
+  location: 'Test City, ND',
+  period: '2020-Q1',
+  organisms: [
+    { name: 'E. coli', s: { cip: 72, sxt: 68 } },
+  ],
+});
+
+// Build a period string that is current (within 60 days of today) so we can
+// confirm NO stale banner for fresh data.  We use a YYYY-Q# value whose end
+// date is at most a few days ago by computing this quarter.
+function currentQuarterPeriod(): string {
+  const now  = new Date();
+  const year = now.getFullYear();
+  const q    = Math.ceil((now.getMonth() + 1) / 3);
+  return `${year}-Q${q}`;
+}
+
+const FRESH_FAC_A = JSON.stringify({
+  id: 'fac_a',
+  name: 'Test Hospital A',
+  location: 'Test City, ND',
+  period: currentQuarterPeriod(),
+  organisms: [
+    { name: 'E. coli', s: { cip: 72, sxt: 68 } },
+  ],
+});
+
+const FRESH_FAC_B = JSON.stringify({
+  id: 'fac_b',
+  name: 'Test Hospital B',
+  location: 'Other City, ND',
+  period: currentQuarterPeriod(),
+  organisms: [
+    { name: 'E. coli', s: { cip: 80, sxt: 75 } },
+  ],
+});
+
 test.describe('Empiric Therapy Tool – data-load error states', () => {
 
   // ── 1. All facility files fail → visible error ───────────────────────────
@@ -134,6 +175,82 @@ test.describe('Empiric Therapy Tool – data-load error states', () => {
 
     await expect(page.locator('.reg-tbl')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#load-warning')).not.toBeVisible();
+  });
+
+});
+
+test.describe('Empiric Therapy Tool – stale-data warning', () => {
+
+  // ── 6. Old period → stale-data banner visible ────────────────────────────
+
+  test('shows stale-data warning when a facility period is more than 60 days old', async ({ page }) => {
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    // fac_a has period '2020-Q1' (ended Mar 31 2020 — well over 60 days ago)
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: STALE_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_FAC_B })
+    );
+
+    await page.goto(EMPIRIC_URL);
+
+    const staleEl = page.locator('#stale-warning');
+    await expect(staleEl).toBeVisible({ timeout: 10_000 });
+    const text = await staleEl.textContent();
+    expect(text!.toLowerCase()).toMatch(/outdated/);
+    expect(text).toContain('Test Hospital A');
+  });
+
+  // ── 7. Both facilities stale → banner lists both ─────────────────────────
+
+  test('lists all stale facilities in the warning banner', async ({ page }) => {
+    const STALE_FAC_B = JSON.stringify({
+      id: 'fac_b',
+      name: 'Test Hospital B',
+      location: 'Other City, ND',
+      period: '2019',
+      organisms: [{ name: 'E. coli', s: { cip: 80 } }],
+    });
+
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: STALE_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: STALE_FAC_B })
+    );
+
+    await page.goto(EMPIRIC_URL);
+
+    const staleEl = page.locator('#stale-warning');
+    await expect(staleEl).toBeVisible({ timeout: 10_000 });
+    const text = await staleEl.textContent();
+    expect(text).toContain('Test Hospital A');
+    expect(text).toContain('Test Hospital B');
+  });
+
+  // ── 8. Current-quarter period → no stale banner ──────────────────────────
+
+  test('does NOT show stale-data warning when facility period is within 60 days', async ({ page }) => {
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: FRESH_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: FRESH_FAC_B })
+    );
+
+    await page.goto(EMPIRIC_URL);
+
+    await expect(page.locator('.reg-tbl')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('#stale-warning')).not.toBeVisible();
   });
 
 });
