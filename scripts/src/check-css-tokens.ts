@@ -544,3 +544,157 @@ if (crossErrors > 0) {
 } else if (crossWarnLines.length === 0) {
   console.log("No cross-page duplicate token definitions found.");
 }
+
+// ── Check 5: index.css fallback tokens vs shared.css ────────────────────────
+//
+// The home page (index.css at the project root) embeds a fallback :root block
+// that mirrors key tokens from shared.css.  Because the two files are edited
+// independently, values can silently drift.  This check extracts matching
+// tokens from both files — comparing light-mode and dark-mode values
+// separately — and fails if any value diverges.
+//
+// Token name mapping:
+//   index.css --accent  ↔  shared.css --purple
+//   All other bridged tokens share the same name in both files.
+
+console.log("\n──────────────────────────────────────────────────────────────");
+console.log("Checking index.css fallback tokens against shared.css...\n");
+
+/**
+ * Tokens that must stay in sync between index.css and shared.css.
+ * Key   = token name as it appears in index.css
+ * Value = token name as it appears in shared.css
+ */
+const HOME_TOKEN_MAP: Record<string, string> = {
+  "--bg":       "--bg",
+  "--surface":  "--surface",
+  "--ink":      "--ink",
+  "--ink-soft": "--ink-soft",
+  "--ink-muted":"--ink-muted",
+  "--line":     "--line",
+  "--accent":   "--purple",
+};
+
+/**
+ * Extract all CSS custom-property definitions from a block of CSS text,
+ * restricted to the content of the FIRST top-level :root {} block found
+ * (i.e. outside any @media rule).  Returns a map of name → normalised value.
+ */
+function extractRootBlock(css: string): Map<string, string> {
+  // Strip comments first
+  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  // Find :root { ... } — scan for the block, handling nested braces
+  const rootIdx = stripped.search(/:root\s*\{/);
+  if (rootIdx === -1) return new Map();
+  const openBrace = stripped.indexOf("{", rootIdx);
+  if (openBrace === -1) return new Map();
+  let depth = 1;
+  let pos = openBrace + 1;
+  while (pos < stripped.length && depth > 0) {
+    if (stripped[pos] === "{") depth++;
+    else if (stripped[pos] === "}") depth--;
+    pos++;
+  }
+  return parseTokenBlock(stripped.slice(openBrace + 1, pos - 1));
+}
+
+/**
+ * Same as extractRootBlock but for the :root block inside
+ * @media (prefers-color-scheme: dark) { ... }.
+ */
+function extractDarkRootBlock(css: string): Map<string, string> {
+  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const mediaIdx = stripped.search(/@media\s*\([^)]*prefers-color-scheme\s*:\s*dark/);
+  if (mediaIdx === -1) return new Map();
+  // Find the opening brace of the @media block
+  const mediaOpen = stripped.indexOf("{", mediaIdx);
+  if (mediaOpen === -1) return new Map();
+  // Now find :root inside that @media block
+  const afterMedia = stripped.slice(mediaOpen + 1);
+  return extractRootBlock(afterMedia);
+}
+
+function parseTokenBlock(block: string): Map<string, string> {
+  const map = new Map<string, string>();
+  const re = /--([\w-]+)\s*:\s*([^;{}]+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(block)) !== null) {
+    const name = `--${m[1]}`;
+    const value = m[2].trim().replace(/\s+/g, " ").toLowerCase();
+    if (!map.has(name)) map.set(name, value);
+  }
+  return map;
+}
+
+const indexCssPath = join(projectRoot, "index.css");
+let indexCss: string;
+try {
+  indexCss = readFileSync(indexCssPath, "utf8");
+} catch {
+  console.error(`ERROR: Cannot read index.css at ${indexCssPath}`);
+  process.exit(1);
+}
+
+const homeLight = extractRootBlock(indexCss);
+const homeDark  = extractDarkRootBlock(indexCss);
+const sharedLight = extractRootBlock(sharedCss);
+const sharedDark  = extractDarkRootBlock(sharedCss);
+
+let syncErrors = 0;
+const syncErrorLines: string[] = [];
+
+for (const [homeToken, sharedToken] of Object.entries(HOME_TOKEN_MAP)) {
+  for (const mode of ["light", "dark"] as const) {
+    const homeMap   = mode === "light" ? homeLight  : homeDark;
+    const sharedMap = mode === "light" ? sharedLight : sharedDark;
+
+    const homeVal   = homeMap.get(homeToken);
+    const sharedVal = sharedMap.get(sharedToken);
+
+    if (homeVal === undefined && sharedVal === undefined) continue;
+
+    if (homeVal === undefined) {
+      syncErrorLines.push(
+        `  ✗ [${mode}] index.css missing ${homeToken}` +
+        `  (shared.css ${sharedToken} = ${sharedVal})`
+      );
+      syncErrors++;
+    } else if (sharedVal === undefined) {
+      syncErrorLines.push(
+        `  ✗ [${mode}] shared.css missing ${sharedToken}` +
+        `  (index.css ${homeToken} = ${homeVal})`
+      );
+      syncErrors++;
+    } else if (homeVal !== sharedVal) {
+      const sharedLabel = sharedToken !== homeToken
+        ? `${sharedToken} (shared.css)`
+        : `${sharedToken}`;
+      syncErrorLines.push(
+        `  ✗ [${mode}] ${homeToken} diverged:`
+      );
+      syncErrorLines.push(`      index.css  : ${homeVal}`);
+      syncErrorLines.push(`      shared.css ${sharedLabel}: ${sharedVal}`);
+      syncErrors++;
+    } else {
+      console.log(`  ✓  [${mode}] ${homeToken}${sharedToken !== homeToken ? ` (↔ ${sharedToken})` : ""}`);
+    }
+  }
+}
+
+if (syncErrors > 0) {
+  console.log("\nINDEX.CSS / SHARED.CSS TOKEN DRIFT DETECTED:\n");
+  for (const line of syncErrorLines) {
+    console.log(line);
+  }
+  console.log(
+    `\n${syncErrors} diverged token(s) between index.css and shared.css.`
+  );
+  console.log(
+    "Update the matching token in index.css to re-sync with shared.css.\n" +
+    "Token mapping: index.css --accent ↔ shared.css --purple;\n" +
+    "all other bridged tokens share the same name in both files."
+  );
+  process.exit(1);
+} else {
+  console.log("\nindex.css fallback tokens are in sync with shared.css.");
+}
