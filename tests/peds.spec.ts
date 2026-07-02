@@ -219,7 +219,70 @@ test.describe('Pediatric Dosing Calculator', () => {
     expect(content!.trim().length).toBeGreaterThan(0);
   });
 
-  // ── 10. Dose cards stay legible when shared.css fails to load ─────────────
+  // ── 10. Age-estimated weight (2 mo → 4 kg) uses infant succinylcholine branch
+  //
+  // estimateWeight(2, 'mo'): ageNum=2 < 3 → 4 kg (infant, <10 kg)
+  // Succinylcholine: 2 mg/kg → clamp(4×2, 5, 150) = 8 mg → "8"
+  //   note must say "2 mg/kg (infant)" confirming the infant branch fired
+  // Epinephrine (cardiac arrest): clamp(4×0.01, 0.01, 1) = 0.04 → "0.04"
+  // #broseWeight must display the estimated weight "4 kg"
+
+  test('age 2 months → estimated 4 kg → succinylcholine infant branch (8 mg) and correct epi dose (0.04 mg)', async ({ page }) => {
+    // Clear weight, enter 2 months
+    await page.fill('#wtKg', '');
+    await page.fill('#ageNum', '2');
+    await page.selectOption('#ageUnit', 'mo');
+    await page.click('#calcBtn');
+
+    // Estimated weight must appear in #broseWeight as "4 kg"
+    const wtText = await page.locator('#broseWeight').textContent();
+    expect(wtText!.trim(), 'Estimated weight for 2 months should be 4 kg').toBe('4 kg');
+
+    // Succinylcholine must use infant branch: 2 mg/kg × 4 kg = 8 mg
+    const suxDose = await getDoseVal(page, 'Succinylcholine');
+    expect(suxDose!.trim(), 'Infant sux dose (2 mo, 4 kg) should be 8 mg (2 mg/kg)').toBe('8');
+
+    // The dose note must confirm the infant 2 mg/kg branch — not the child 1.5 mg/kg branch
+    const suxCard = page.locator('.dose-card', { hasText: 'Succinylcholine' }).first();
+    const suxNote = await suxCard.locator('.dose-note').first().textContent();
+    expect(suxNote, 'Sux note should say 2 mg/kg (infant)').toContain('2 mg/kg');
+    expect(suxNote, 'Sux note should identify the infant branch').toContain('infant');
+
+    // Epinephrine (cardiac arrest) must equal 0.04 mg at 4 kg (0.01 mg/kg, unclamped)
+    const epiDose = await getDoseVal(page, 'Epinephrine (cardiac arrest)');
+    expect(epiDose!.trim(), 'Epi dose (2 mo, 4 kg) should be 0.04 mg (0.01 mg/kg)').toBe('0.04');
+  });
+
+  // ── 11. Age-estimated weight just below 10 kg still uses infant sux branch ─
+  //
+  // 12 months: estimateWeight(12, 'mo') → ageNum=12 ≤ 12 → (12+9)/2 = 10.5 kg
+  // That crosses into the child (≥10 kg) branch.
+  // Use 6 months instead: (6+9)/2 = 7.5 kg → infant branch
+  // Succinylcholine: clamp(7.5×2, 5, 150) = 15 mg → "15"
+  // Epinephrine: clamp(7.5×0.01, 0.01, 1) = 0.075 → fmt(0.075,2) = "0.08" (toFixed rounds)
+  //
+  // This confirms age-path doesn't silently reuse a stale weight or bypass infant logic.
+
+  test('age 6 months → estimated 7.5 kg → still infant succinylcholine branch (15 mg)', async ({ page }) => {
+    await page.fill('#wtKg', '');
+    await page.fill('#ageNum', '6');
+    await page.selectOption('#ageUnit', 'mo');
+    await page.click('#calcBtn');
+
+    // estimateWeight(6, 'mo'): ageNum=6, 3 < 6 ≤ 12 → round((6+9)/2 × 10)/10 = round(7.5) = 7.5 kg
+    const wtText = await page.locator('#broseWeight').textContent();
+    expect(wtText!.trim(), 'Estimated weight for 6 months should be 7.5 kg').toBe('7.5 kg');
+
+    // Infant branch: 2 mg/kg × 7.5 = 15 mg
+    const suxDose = await getDoseVal(page, 'Succinylcholine');
+    expect(suxDose!.trim(), 'Sux dose (6 mo, 7.5 kg) should be 15 mg (infant 2 mg/kg)').toBe('15');
+
+    const suxCard = page.locator('.dose-card', { hasText: 'Succinylcholine' }).first();
+    const suxNote = await suxCard.locator('.dose-note').first().textContent();
+    expect(suxNote, 'Sux note should confirm infant branch for 7.5 kg').toContain('infant');
+  });
+
+  // ── 12. Dose cards stay legible when shared.css fails to load ─────────────
   //
   // Simulates a slow/broken connection by aborting the /shared.css network
   // request.  peds/style.css defines its own fallback :root tokens so the
