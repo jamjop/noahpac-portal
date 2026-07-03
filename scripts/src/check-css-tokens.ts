@@ -711,3 +711,93 @@ if (syncErrors > 0) {
 } else {
   console.log("\nindex.css fallback tokens are in sync with shared.css.");
 }
+
+// ── Check 6: page :root tokens missing dark-mode overrides ───────────────────
+//
+// Any CSS custom property defined in a page's top-level :root block cascades
+// AFTER shared.css (which is loaded first).  This means the page's light-mode
+// :root value silently overrides shared.css's @media(prefers-color-scheme:dark)
+// value for the same token — breaking dark mode without any error.
+//
+// Every token defined in a page-level :root must therefore have a matching
+// entry in the same file's @media(prefers-color-scheme:dark) :root block so
+// that the correct dark value is restored when dark mode is active.
+//
+// The peds-style "full mirror" pattern (all shared tokens in both light and
+// dark blocks) already satisfies this rule and will pass unchanged.
+
+console.log("\n──────────────────────────────────────────────────────────────");
+console.log("Checking page :root tokens for missing dark-mode overrides...\n");
+
+let darkOverrideErrors = 0;
+const darkOverrideErrorLines: string[] = [];
+
+for (const sheet of stylesheets) {
+  const rel = sheet.replace(projectRoot + "/", "");
+  let css: string;
+  try {
+    css = readFileSync(sheet, "utf8");
+  } catch {
+    console.warn(`  WARN: Could not read ${rel} — skipping`);
+    continue;
+  }
+
+  const lightRootTokens = extractRootBlock(css);
+  if (lightRootTokens.size === 0) {
+    console.log(`  ✓  ${rel}  (no :root tokens)`);
+    continue;
+  }
+
+  // Only flag tokens whose values are chromatic colors (contain a # hex code).
+  // Non-color tokens such as border-radius (--r:8px), spacing, or box-shadow
+  // values that use only pure-black/white rgba() do not need dark-mode overrides.
+  const colorRootTokens = new Map<string, string>();
+  for (const [name, value] of lightRootTokens) {
+    if (value.includes("#")) {
+      colorRootTokens.set(name, value);
+    }
+  }
+  if (colorRootTokens.size === 0) {
+    console.log(`  ✓  ${rel}  (no color :root tokens)`);
+    continue;
+  }
+
+  const darkRootTokens = extractDarkRootBlock(css);
+  const missing: string[] = [];
+  for (const tokenName of colorRootTokens.keys()) {
+    if (!darkRootTokens.has(tokenName)) {
+      missing.push(tokenName);
+    }
+  }
+
+  if (missing.length > 0) {
+    missing.sort();
+    darkOverrideErrorLines.push(`  ${rel}`);
+    for (const t of missing) {
+      darkOverrideErrorLines.push(
+        `    ✗ ${t}  (in :root but missing from @media(prefers-color-scheme:dark) :root)`
+      );
+    }
+    darkOverrideErrors += missing.length;
+  } else {
+    console.log(`  ✓  ${rel}`);
+  }
+}
+
+if (darkOverrideErrors > 0) {
+  console.log("\nPAGE :ROOT TOKENS WITHOUT DARK-MODE OVERRIDES DETECTED:\n");
+  for (const line of darkOverrideErrorLines) {
+    console.log(line);
+  }
+  const fileCount = darkOverrideErrorLines.filter((l) => !l.startsWith("    ")).length;
+  console.log(`\n${darkOverrideErrors} token(s) missing dark-mode overrides across ${fileCount} file(s).`);
+  console.log(
+    "Each token defined in a page's :root must also appear in a\n" +
+    "@media (prefers-color-scheme: dark) { :root { ... } } block in the same file.\n" +
+    "Without a dark-mode override, the page's light value silences shared.css's\n" +
+    "dark value and breaks dark mode for that token."
+  );
+  process.exit(1);
+} else {
+  console.log("\nAll page :root tokens have corresponding dark-mode overrides.");
+}

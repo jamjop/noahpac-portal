@@ -45,6 +45,19 @@
     --risk:#fc8181;
     --sh:0 1px 3px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.25);
     --callout-warn-ink:#fde68a; --callout-info-ink:#7dd3fc;
+    /* ── Broselow band colours — scheme-invariant (match physical colour-coded
+       tape; must not change between light and dark mode).  Repeated here so
+       this :root block does not silence shared.css's dark-mode block for the
+       tokens listed above it. ── */
+    --brose-grey:#9CA3AF;
+    --brose-pink:#F9A8D4;
+    --brose-red:#FCA5A5;
+    --brose-purple:#C4B5FD;
+    --brose-yellow:#FDE68A;
+    --brose-white:#E5E7EB;
+    --brose-blue:#93C5FD;
+    --brose-orange:#FD9B72;
+    --brose-green:#6EE7B7;
   }
 }
 

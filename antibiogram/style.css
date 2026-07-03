@@ -51,6 +51,8 @@
     --c-hi-bg:#064e3b;--c-hi-ink:#6ee7b7;
     --c-mid-bg:#1c1300;--c-mid-ink:#fde68a;
     --c-lo-bg:#3b1515;--c-lo-ink:#fca5a5;
+    --dot-green:#34d399;
+    --import-req:#fca5a5;
     --import-ok:#34d399;
     --import-err:#fc8181;
   }
