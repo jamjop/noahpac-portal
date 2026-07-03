@@ -43,7 +43,7 @@ body{
   background:var(--surface);
   color:var(--ink);
   border-top:3px solid var(--purple);
-  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  box-shadow:var(--sh);
   padding:0;
 }
 

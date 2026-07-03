@@ -390,10 +390,29 @@ function findHardcodedNonHexColors(cssText: string): NonHexColorHit[] {
 }
 
 console.log("\n──────────────────────────────────────────────────────────────");
-console.log("Checking for hardcoded rgba/hsl/named colors in page stylesheets...\n");
+console.log("Checking for hardcoded rgba/hsl/named colors in shared.css and page stylesheets...\n");
 
 let nonHexErrors = 0;
 const nonHexErrorLines: string[] = [];
+
+// ── Scan shared.css itself ────────────────────────────────────────────────────
+// shared.css defines tokens but also contains rule bodies (e.g. box-shadow on
+// .app-header).  Any rgba/hsl value used outside a CSS variable definition in
+// shared.css is a dark-mode risk and must either be tokenised (reference an
+// existing var()) or be pure-black/white alpha (already allowlisted by
+// isAllowedRgba).
+{
+  const sharedHits = findHardcodedNonHexColors(sharedCss);
+  if (sharedHits.length === 0) {
+    console.log("  ✓  shared.css");
+  } else {
+    nonHexErrorLines.push("  shared.css");
+    for (const h of sharedHits) {
+      nonHexErrorLines.push(`    ✗ line ${h.lineNo} [${h.kind}]: ${h.value}  →  ${h.lineText}`);
+    }
+    nonHexErrors += sharedHits.length;
+  }
+}
 
 for (const sheet of stylesheets) {
   const rel = sheet.replace(projectRoot + "/", "");
