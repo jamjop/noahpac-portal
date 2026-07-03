@@ -80,5 +80,6 @@ screener/data/
 # Antibiogram API token — server-only, never commit
 antibiogram/api-config.js
 
-# Playwright ephemeral output — generated per run, not source
-tests/test-results/
+# Playwright tests and ephemeral output — not part of deployed content
+tests/
+test-results/
