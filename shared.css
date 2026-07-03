@@ -78,17 +78,16 @@ h1{
 
 .update-cadence{
   display:inline;
-  font-size:9px;
+  font-size:10px;
   letter-spacing:.09em;
   text-transform:uppercase;
   color:var(--ink-muted);
   font-weight:500;
-  opacity:.7;
   margin-left:6px;
 }
 .update-cadence::before{
   content:" · ";
-  opacity:.5;
+  opacity:.6;
   letter-spacing:0;
 }
 
