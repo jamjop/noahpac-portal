@@ -81,4 +81,4 @@ screener/data/
 antibiogram/api-config.js
 
 # Playwright ephemeral output — generated per run, not source
-tests/test-results/
+test-results/
