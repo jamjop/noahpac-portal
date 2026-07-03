@@ -345,6 +345,45 @@ test.describe('Allergy page – dark mode', () => {
   });
 });
 
+// ── NALOXONE ─────────────────────────────────────────────────────────────────
+
+test.describe('Naloxone page – dark mode', () => {
+  test('body and header have dark backgrounds', async ({ page }) => {
+    await page.goto('/naloxone/');
+    await page.waitForLoadState('domcontentloaded');
+    await assertBgIsDark(page, 'body', 'naloxone body');
+    await assertBgIsDark(page, 'header.app-header', 'naloxone header');
+  });
+
+  test('dose-card has dark background in dark mode', async ({ page }) => {
+    await page.goto('/naloxone/');
+    // .dose-card elements are static HTML — no tab click or data fetch needed.
+    await waitForSelector(page, '.dose-card');
+    // .dose-card → background:var(--bg); dark token is #0f1117
+    await assertBgIsDark(page, '.dose-card', 'naloxone .dose-card');
+  });
+});
+
+// ── ANTIBIOGRAM ───────────────────────────────────────────────────────────────
+
+test.describe('Antibiogram page – dark mode', () => {
+  test('body and header have dark backgrounds', async ({ page }) => {
+    await page.goto('/antibiogram/');
+    await page.waitForLoadState('domcontentloaded');
+    await assertBgIsDark(page, 'body', 'antibiogram body');
+    await assertBgIsDark(page, 'header.app-header', 'antibiogram header');
+  });
+
+  test('abgram table th has dark background after data renders', async ({ page }) => {
+    await page.goto('/antibiogram/');
+    // Facility data is bundled in app.js — no network mock needed.
+    // Wait for app.js to inject column headers into #thead.
+    await waitForChildren(page, '#thead');
+    // .abgram th → background:var(--bg); dark token is #0f1117
+    await assertBgIsDark(page, '.abgram th', 'antibiogram .abgram th');
+  });
+});
+
 // ── EXAMPLE: adding new pages with a single call ──────────────────────────────
 //
 // The pages below were added with `smokeTestPageDarkMode('slug')`.
@@ -358,6 +397,8 @@ test.describe('Allergy page – dark mode', () => {
 import { smokeTestPageDarkMode } from './dark-mode-helpers.js';
 
 // Naloxone reference page — static content, no mocking required.
+// The smoke test below provides generic body/header/component checks;
+// the explicit describe block above adds the dose-card element check.
 smokeTestPageDarkMode('naloxone');
 
 // ABx (antibiotic quick-reference) page.
