@@ -46,12 +46,34 @@
  * ───────────────────
  * Build/tooling dirs and pages that require API mocking (empiric — covered by
  * dark-mode.spec.ts) are excluded.
+ *
+ * HOW TO ADD A NEW PAGE
+ * ─────────────────────
+ * Option A (automatic — zero changes needed):
+ *   Create `<page>/index.html` and `<page>/style.css`.  The page is discovered
+ *   and tested on the next test run.  No edit to this file is required.
+ *
+ * Option B (explicit named smoke test — one call):
+ *   In any *.spec.ts file, import `smokeTestPageDarkMode` from
+ *   `./dark-mode-helpers.js` and call it at module scope:
+ *
+ *     import { smokeTestPageDarkMode } from './dark-mode-helpers.js';
+ *     smokeTestPageDarkMode('my-new-page');
+ *
+ * Option C (custom interaction tests):
+ *   Import helpers from `./dark-mode-helpers.js` and write a full
+ *   `test.describe` block, just like the blocks in `dark-mode.spec.ts`.
  */
 
 import { test, expect } from '@playwright/test';
 import { readdirSync, statSync, existsSync } from 'fs';
 import { join, resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import {
+  type ColorScheme,
+  assertBgCompliant,
+  assertFgCompliant,
+} from './dark-mode-helpers.js';
 
 // ── Filesystem discovery ──────────────────────────────────────────────────────
 
@@ -92,108 +114,6 @@ function discoverPages(root: string): string[] {
 }
 
 const discoveredPages = discoverPages(projectRoot);
-
-// ── Colour helpers ────────────────────────────────────────────────────────────
-
-type ColorScheme = 'light' | 'dark';
-
-function parseRgb(color: string): [number, number, number] | null {
-  const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-  if (!m) return null;
-  return [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
-}
-
-function isTransparent(color: string): boolean {
-  return /rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(color) || color === 'transparent';
-}
-
-/**
- * True when the background is appropriate for the scheme:
- *   dark  → max channel < 200 (not near-white)
- *   light → max channel > 100 (not near-black)
- */
-function bgIsCompliant(rgb: [number, number, number], scheme: ColorScheme): boolean {
-  const max = Math.max(...rgb);
-  return scheme === 'dark' ? max < 200 : max > 100;
-}
-
-/**
- * True when the foreground text color is readable for the scheme:
- *   dark  → max channel > 80  (near-black text is invisible on dark bg)
- *   light → max channel < 240 (near-white text is invisible on light bg)
- */
-function fgIsCompliant(rgb: [number, number, number], scheme: ColorScheme): boolean {
-  const max = Math.max(...rgb);
-  return scheme === 'dark' ? max > 80 : max < 240;
-}
-
-/** Evaluate a CSS property on the first matching element, or null if absent. */
-async function getComputedProp(
-  page: import('@playwright/test').Page,
-  selector: string,
-  prop: 'backgroundColor' | 'color',
-): Promise<string | null> {
-  const el = await page.$(selector);
-  if (!el) return null;
-  return el.evaluate(
-    (node: Element, p: string) => getComputedStyle(node)[p as 'backgroundColor'],
-    prop,
-  );
-}
-
-/**
- * Assert background-color of `selector` is scheme-appropriate.
- * Silently skips if the element is absent or transparent.
- */
-async function assertBgCompliant(
-  page: import('@playwright/test').Page,
-  selector: string,
-  label: string,
-  scheme: ColorScheme,
-): Promise<void> {
-  const color = await getComputedProp(page, selector, 'backgroundColor');
-  if (!color || isTransparent(color)) return;
-  const rgb = parseRgb(color);
-  expect(rgb, `${label} bg: could not parse "${color}"`).not.toBeNull();
-  const max = Math.max(...rgb!);
-  const direction = scheme === 'dark'
-    ? `too bright for dark mode (max channel ${max} ≥ 200)`
-    : `too dark for light mode (max channel ${max} ≤ 100)`;
-  expect(
-    bgIsCompliant(rgb!, scheme),
-    `${label}: background "${color}" is ${direction}. ` +
-    (scheme === 'dark'
-      ? 'Add @media (prefers-color-scheme: dark) token overrides.'
-      : 'Ensure dark-mode token overrides are not leaking into light mode.'),
-  ).toBe(true);
-}
-
-/**
- * Assert text color (foreground) of `selector` is readable for the scheme.
- * Silently skips if the element is absent, transparent, or not present.
- */
-async function assertFgCompliant(
-  page: import('@playwright/test').Page,
-  selector: string,
-  label: string,
-  scheme: ColorScheme,
-): Promise<void> {
-  const color = await getComputedProp(page, selector, 'color');
-  if (!color || isTransparent(color)) return;
-  const rgb = parseRgb(color);
-  expect(rgb, `${label} fg: could not parse "${color}"`).not.toBeNull();
-  const max = Math.max(...rgb!);
-  const direction = scheme === 'dark'
-    ? `near-black text in dark mode (max channel ${max} ≤ 80) — invisible on dark bg`
-    : `near-white text in light mode (max channel ${max} ≥ 240) — invisible on light bg`;
-  expect(
-    fgIsCompliant(rgb!, scheme),
-    `${label}: text color "${color}" is ${direction}. ` +
-    (scheme === 'dark'
-      ? 'Check --ink / color token dark-mode overrides.'
-      : 'Ensure light-mode text tokens are not overridden by dark values.'),
-  ).toBe(true);
-}
 
 // ── Selector lists ────────────────────────────────────────────────────────────
 

@@ -11,78 +11,36 @@
  *
  * Pages covered: als, pals, tccc, sepsis, opioids, vaccines, labs, empiric,
  * lookup, allergy.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ADDING A NEW PAGE
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Option A (automatic — zero changes needed):
+ *   Any page directory that ships with both `index.html` and `style.css` is
+ *   automatically covered by `dark-mode-new-pages.spec.ts`.  No edit required.
+ *
+ * Option B (explicit one-liner):
+ *   Import `smokeTestPageDarkMode` from `./dark-mode-helpers.js` and call it
+ *   at module scope:
+ *
+ *     import { smokeTestPageDarkMode } from './dark-mode-helpers.js';
+ *     smokeTestPageDarkMode('my-new-page');
+ *
+ * Option C (full custom suite):
+ *   Use the shared helpers below (assertBgIsDark, assertBgCompliant, etc.) to
+ *   write detailed per-page interaction tests, just like the blocks below.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
 import { test, expect } from '@playwright/test';
-
-// ── colour helpers ────────────────────────────────────────────────────────────
-
-/** Parse a computed `rgb(…)` / `rgba(…)` string into [r, g, b] or null. */
-function parseRgb(color: string): [number, number, number] | null {
-  const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-  if (!m) return null;
-  return [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
-}
-
-/** Returns true when the alpha channel is 0 (element is see-through). */
-function isTransparent(color: string): boolean {
-  return /rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(color) || color === 'transparent';
-}
-
-/**
- * Returns true when the colour is dark enough for dark-mode.
- * Threshold: no channel exceeds 200 (catches near-white backgrounds).
- */
-function isDark(rgb: [number, number, number]): boolean {
-  return Math.max(rgb[0], rgb[1], rgb[2]) < 200;
-}
-
-/**
- * Asserts that the computed background-color of `selector` is either
- * transparent (acceptable) or is a dark colour.
- */
-async function assertBgIsDark(
-  page: import('@playwright/test').Page,
-  selector: string,
-  label: string,
-): Promise<void> {
-  const color: string = await page.$eval(selector, el =>
-    getComputedStyle(el).backgroundColor,
-  );
-  if (isTransparent(color)) return;
-  const rgb = parseRgb(color);
-  expect(rgb, `${label}: could not parse background colour "${color}"`).not.toBeNull();
-  expect(
-    isDark(rgb!),
-    `${label}: background "${color}" is too bright for dark mode (max channel ${Math.max(...rgb!)} ≥ 200)`,
-  ).toBe(true);
-}
-
-/** Wait for a CSS selector to exist in the DOM (not necessarily visible). */
-async function waitForSelector(
-  page: import('@playwright/test').Page,
-  selector: string,
-  timeout = 10_000,
-): Promise<void> {
-  await page.waitForFunction(
-    (sel: string) => !!document.querySelector(sel),
-    selector,
-    { timeout },
-  );
-}
-
-/** Wait for at least one child to appear inside `parentSelector`. */
-async function waitForChildren(
-  page: import('@playwright/test').Page,
-  parentSelector: string,
-  timeout = 10_000,
-): Promise<void> {
-  await page.waitForFunction(
-    (sel: string) => (document.querySelector(sel)?.childElementCount ?? 0) > 0,
-    parentSelector,
-    { timeout },
-  );
-}
+import {
+  parseRgb,
+  isTransparent,
+  assertBgIsDark,
+  assertBgCompliant,
+  waitForSelector,
+  waitForChildren,
+} from './dark-mode-helpers.js';
 
 // ── shared setup ─────────────────────────────────────────────────────────────
 
@@ -117,7 +75,7 @@ test.describe('ALS page – dark mode', () => {
       if (!isTransparent(color)) {
         const rgb = parseRgb(color);
         expect(rgb).not.toBeNull();
-        expect(isDark(rgb!), `als .callout: background "${color}" is too bright`).toBe(true);
+        expect(rgb![0] < 200 && rgb![1] < 200 && rgb![2] < 200, `als .callout: background "${color}" is too bright`).toBe(true);
       }
     }
   });
@@ -199,7 +157,7 @@ test.describe('Sepsis page – dark mode', () => {
     if (!isTransparent(color)) {
       const rgb = parseRgb(color);
       expect(rgb, `sepsis #qsofa-result: could not parse "${color}"`).not.toBeNull();
-      expect(isDark(rgb!), `sepsis #qsofa-result: background "${color}" is too bright`).toBe(true);
+      expect(rgb![0] < 200 && rgb![1] < 200 && rgb![2] < 200, `sepsis #qsofa-result: background "${color}" is too bright`).toBe(true);
     }
   });
 });
@@ -322,7 +280,7 @@ test.describe('Empiric page – dark mode', () => {
     if (!isTransparent(color)) {
       const rgb = parseRgb(color);
       expect(rgb, `empiric susc cell: could not parse "${color}"`).not.toBeNull();
-      expect(isDark(rgb!), `empiric susc cell: background "${color}" is too bright`).toBe(true);
+      expect(rgb![0] < 200 && rgb![1] < 200 && rgb![2] < 200, `empiric susc cell: background "${color}" is too bright`).toBe(true);
     }
   });
 });
@@ -382,7 +340,28 @@ test.describe('Allergy page – dark mode', () => {
     if (!isTransparent(color)) {
       const rgb = parseRgb(color);
       expect(rgb, `allergy result box: could not parse "${color}"`).not.toBeNull();
-      expect(isDark(rgb!), `allergy result box: background "${color}" is too bright`).toBe(true);
+      expect(rgb![0] < 200 && rgb![1] < 200 && rgb![2] < 200, `allergy result box: background "${color}" is too bright`).toBe(true);
     }
   });
 });
+
+// ── EXAMPLE: adding new pages with a single call ──────────────────────────────
+//
+// The pages below were added with `smokeTestPageDarkMode('slug')`.
+// This is Option B from the ADDING A NEW PAGE instructions at the top.
+// Each call registers two tests (structural + component backgrounds).
+//
+// Pages already covered by auto-discovery in dark-mode-new-pages.spec.ts don't
+// *need* to be listed here, but adding them explicitly gives them a stable,
+// named test entry that appears clearly in CI output.
+
+import { smokeTestPageDarkMode } from './dark-mode-helpers.js';
+
+// Naloxone reference page — static content, no mocking required.
+smokeTestPageDarkMode('naloxone');
+
+// ABx (antibiotic quick-reference) page.
+smokeTestPageDarkMode('abx');
+
+// Wound care reference page.
+smokeTestPageDarkMode('wound');
