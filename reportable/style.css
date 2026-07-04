@@ -10,7 +10,6 @@ body{padding-bottom:50px}
 h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .last-checked{display:inline;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted)}
 .last-checked .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dot-ok);margin-right:5px;vertical-align:middle}
-.header-inner .last-checked::before{content:" · ";opacity:.6;letter-spacing:0}
 
 .search-box{width:100%;box-sizing:border-box;margin:16px 0 12px;padding:11px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:14px;font-family:inherit}
 .search-box:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
