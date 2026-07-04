@@ -13,7 +13,7 @@
       var d = new Date(data.date + 'T00:00:00');
       var formatted = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
       targets.forEach(function (target) {
-        target.innerHTML = '<span class="dot"></span>Last checked ' + formatted;
+        target.innerHTML = '<span class="dot"></span>Last checked for updates: ' + formatted;
       });
     })
     .catch(function () {});
