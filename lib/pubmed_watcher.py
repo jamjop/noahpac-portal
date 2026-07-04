@@ -70,6 +70,19 @@ def write_heartbeat(job: str) -> None:
         print(f"WARNING: could not write heartbeat for {job}: {exc}", file=sys.stderr)
 
 
+def save_last_checked(app_dir: Path, status: str) -> None:
+    """Record that a check ran, for the frontend's 'last checked' tag."""
+    f = app_dir / "last_checked.json"
+    try:
+        f.write_text(json.dumps({
+            "date": datetime.date.today().isoformat(),
+            "status": status,
+        }, indent=2))
+        f.chmod(0o644)
+    except Exception as exc:
+        print(f"WARNING: could not write last_checked.json: {exc}", file=sys.stderr)
+
+
 def load_state(state_file: Path) -> dict:
     return json.loads(state_file.read_text()) if state_file.exists() else {}
 

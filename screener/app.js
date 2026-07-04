@@ -72,7 +72,8 @@ const els = {
   datasource: document.getElementById('datasource'),
   flagGrid: document.getElementById('flagGrid'),
   copyBar: document.getElementById('copyBar'),
-  copyBtn: document.getElementById('copyBtn')
+  copyBtn: document.getElementById('copyBtn'),
+  footerDate: document.getElementById('footer-date')
 };
 
 function esc(s) {
@@ -246,9 +247,11 @@ fetch('data/uspstf.json', {cache:'no-cache'})
       DATA = j;
       els.datasource.classList.add('live');
       els.datasource.innerHTML = `<span class="dot"></span>Live data · USPSTF Prevention TaskForce API · updated ${esc(j.meta?.updated||"?")}`;
+      if (els.footerDate) els.footerDate.textContent = j.meta?.updated || BUILTIN.meta.updated;
     } else throw 0;
   })
   .catch(() => {
     els.datasource.innerHTML = `<span class="dot"></span>Built-in dataset · verified ${esc(BUILTIN.meta.updated)} · run update_uspstf.py for live data`;
+    if (els.footerDate) els.footerDate.textContent = BUILTIN.meta.updated;
   })
   .finally(render);

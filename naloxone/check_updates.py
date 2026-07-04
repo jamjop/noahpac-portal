@@ -28,6 +28,7 @@ SOURCES = {
 
 PUSHOVER_API = "https://api.pushover.net/1/messages.json"
 STATE_FILE   = Path(__file__).resolve().parent / "known_state.json"
+LAST_CHECKED_FILE = Path(__file__).resolve().parent / "last_checked.json"
 
 OVERDOSE_KEYWORDS = ["overdose", "naloxone", "opioid", "fentanyl", "death", "fatal"]
 
@@ -62,6 +63,15 @@ def load_state() -> dict:
 def save_state(state: dict) -> None:
     STATE_FILE.write_text(json.dumps(state, indent=2))
     STATE_FILE.chmod(0o644)
+
+
+def save_last_checked(status: str) -> None:
+    """Record that a check ran, for the frontend's 'last checked' tag."""
+    LAST_CHECKED_FILE.write_text(json.dumps({
+        "date": date.today().isoformat(),
+        "status": status,
+    }, indent=2))
+    LAST_CHECKED_FILE.chmod(0o644)
 
 
 def push_notify(user: str, token: str, title: str, message: str, url: str) -> None:
@@ -113,6 +123,7 @@ def main() -> int:
     if not all_new:
         print(f"No new files detected ({date.today()})")
         save_state(new_state)
+        save_last_checked("no_change")
         return 0
 
     lines = [f"• [{label}] {url.split('/')[-1]}" for label, url, _ in all_new]
@@ -121,7 +132,7 @@ def main() -> int:
     message = f"{len(all_new)} new file(s) detected:\n" + "\n".join(lines)
     if overdose_hits:
         message += (f"\n\n⚠ {len(overdose_hits)} may contain updated overdose/naloxone stats "
-                    f"— review and update /var/www/naloxone/index.html if figures changed.")
+                    f"— review and update /var/www/noahpac-portal/naloxone/index.html if figures changed.")
 
     title = "ND Overdose/Naloxone Data Update"
     if overdose_hits:
@@ -131,6 +142,7 @@ def main() -> int:
     push_notify(user, token, title, message,
                 SOURCES["nd_bh_data"]["url"])
     save_state(new_state)
+    save_last_checked("changed")
     print("Notification sent.")
     return 0
 
