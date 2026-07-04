@@ -41,6 +41,7 @@ h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:13px;background:var(--surface);border:2px dashed var(--line);border-radius:var(--r-sm);margin-top:10px}
 footer{max-width:880px;margin:30px auto 0;padding:12px 16px;border-top:1px solid var(--line);font-size:10.5px;color:var(--ink-muted)}
 footer a{color:var(--purple)}
+footer .last-checked{font-family:inherit;font-size:inherit;margin-top:0}
 
 @media(prefers-color-scheme:dark){
   /* Repeat :root token dark values so the light-mode :root above cannot silence
