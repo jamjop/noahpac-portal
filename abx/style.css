@@ -15,7 +15,7 @@
   .page-body>.pane{flex:1;min-width:0;max-width:none;margin:0;padding:0}
 }
 @media(max-width:799px){
-  .cat-nav{display:block;background:var(--surface);border-bottom:1px solid var(--line);padding:8px 12px 4px}
+  .cat-nav{display:block;background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:8px 12px 4px;margin:16px 16px 0}
 }
 
 /* ── Collapsible nav sections ── */
