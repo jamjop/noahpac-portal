@@ -69,7 +69,6 @@ const els = {
   age: document.getElementById('age'),
   sexSeg: document.getElementById('sexSeg'),
   results: document.getElementById('results'),
-  datasource: document.getElementById('datasource'),
   flagGrid: document.getElementById('flagGrid'),
   copyBar: document.getElementById('copyBar'),
   copyBtn: document.getElementById('copyBtn'),
@@ -252,13 +251,10 @@ fetch('data/uspstf.json', {cache:'no-cache'})
   .then(j => {
     if (j && Array.isArray(j.recs) && j.recs.length) {
       DATA = j;
-      els.datasource.classList.add('live');
-      els.datasource.innerHTML = `<span class="dot"></span>Live data · USPSTF Prevention TaskForce API · updated ${esc(j.meta?.updated||"?")}`;
       renderLastChecked(j.meta?.updated || BUILTIN.meta.updated);
     } else throw 0;
   })
   .catch(() => {
-    els.datasource.innerHTML = `<span class="dot"></span>Built-in dataset · verified ${esc(BUILTIN.meta.updated)} · run update_uspstf.py for live data`;
     renderLastChecked(BUILTIN.meta.updated);
   })
   .finally(render);
