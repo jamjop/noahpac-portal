@@ -95,7 +95,7 @@ h1{
 /* ── "Last checked for updates" indicator — uniform across every page,
    always the first element in the footer, styled as a visible status
    badge rather than muted fine print. ── */
-footer{display:flex;flex-direction:column}
+footer{display:flex;flex-direction:column;max-width:880px;margin:0 auto;padding:12px 16px}
 footer .last-checked{
   display:flex;
   align-items:center;
