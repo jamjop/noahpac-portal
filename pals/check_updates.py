@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'lib'))
 import pubmed_watcher as pw
 
 APP_ID      = 'pals'
+APP_DIR      = Path(__file__).resolve().parent
 APP_NAME    = 'Pediatric Advanced Life Support'
 APP_URL     = 'https://noahpac.com/pals/'
 STATE_FILE  = Path(__file__).resolve().parent / 'known_pmids.json'
@@ -99,6 +100,7 @@ def main() -> int:
     if not findings:
         print(f'No new guideline publications detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
+        pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
     lines = [f'{len(findings)} new guideline publication(s) — review for PALS algorithm updates:\n']
@@ -113,6 +115,7 @@ def main() -> int:
          'journal': m['journal'], 'pubdate': m['pubdate']}
         for name, m in findings
     ])
+    pw.save_last_checked(APP_DIR, 'changed')
     print('Notification sent.')
     return 0
 

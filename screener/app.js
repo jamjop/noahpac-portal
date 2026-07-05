@@ -73,8 +73,15 @@ const els = {
   flagGrid: document.getElementById('flagGrid'),
   copyBar: document.getElementById('copyBar'),
   copyBtn: document.getElementById('copyBtn'),
-  footerDate: document.getElementById('footer-date')
+  footerLastChecked: document.querySelector('footer .last-checked')
 };
+
+function renderLastChecked(dateStr) {
+  if (!els.footerLastChecked || !dateStr) return;
+  var d = new Date(dateStr + 'T00:00:00');
+  var formatted = isNaN(d) ? dateStr : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  els.footerLastChecked.innerHTML = '<span class="dot"></span>Last checked for updates: ' + formatted;
+}
 
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -247,11 +254,11 @@ fetch('data/uspstf.json', {cache:'no-cache'})
       DATA = j;
       els.datasource.classList.add('live');
       els.datasource.innerHTML = `<span class="dot"></span>Live data · USPSTF Prevention TaskForce API · updated ${esc(j.meta?.updated||"?")}`;
-      if (els.footerDate) els.footerDate.textContent = j.meta?.updated || BUILTIN.meta.updated;
+      renderLastChecked(j.meta?.updated || BUILTIN.meta.updated);
     } else throw 0;
   })
   .catch(() => {
     els.datasource.innerHTML = `<span class="dot"></span>Built-in dataset · verified ${esc(BUILTIN.meta.updated)} · run update_uspstf.py for live data`;
-    if (els.footerDate) els.footerDate.textContent = BUILTIN.meta.updated;
+    renderLastChecked(BUILTIN.meta.updated);
   })
   .finally(render);

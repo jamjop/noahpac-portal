@@ -54,4 +54,3 @@ h1{font-size:clamp(20px,4vw,28px);line-height:1.1;margin:5px 0 4px}
 .resource-link:hover{background:var(--purple);color:#fff}
 
 footer{max-width:880px;margin:30px auto 0;padding:12px 16px;border-top:1px solid var(--line);font-size:10.5px;color:var(--ink-muted)}
-footer .last-checked .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#6ee7b7;margin-right:5px;vertical-align:middle}

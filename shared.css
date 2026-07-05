@@ -92,6 +92,34 @@ h1{
   letter-spacing:0;
 }
 
+/* ── "Last checked for updates" indicator — uniform across every page,
+   always the first element in the footer, styled as a visible status
+   badge rather than muted fine print. ── */
+footer{display:flex;flex-direction:column}
+footer .last-checked{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  order:-1;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:600;
+  color:var(--ok-ink);
+  background:var(--ok-soft);
+  border-radius:var(--r-sm);
+  padding:8px 12px;
+  margin-bottom:12px;
+  width:fit-content;
+}
+footer .last-checked .dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--ok);
+  flex-shrink:0;
+}
+
 /* ── Search on light header (higher specificity beats tool-level .tab-search) ── */
 .app-header .tab-search,header .tab-search{
   font-family:'IBM Plex Mono',monospace;
