@@ -2,11 +2,19 @@
 // footer note) from that page's own last_checked.json, written by its
 // check_updates.py on each cron run. Silently does nothing if the file
 // doesn't exist yet or fetch fails.
+//
+// A page can override the source via data-source on its own script tag,
+// e.g. <script src="/assets/last-checked.js" data-source="/antibiogram/last_checked.json" defer>
+// — for pages whose content is actually sourced live from another app's
+// data at runtime (empiric reads /antibiogram/data/*.json directly), so
+// their real freshness signal is that app's check, not their own.
 (function () {
   var targets = document.querySelectorAll('.last-checked');
   if (!targets.length) return;
 
-  fetch('./last_checked.json', { cache: 'no-store' })
+  var src = (document.currentScript && document.currentScript.dataset.source) || './last_checked.json';
+
+  fetch(src, { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (data) {
       if (!data || !data.date) return;
