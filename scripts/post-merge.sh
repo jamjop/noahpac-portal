@@ -2,6 +2,7 @@
 set -e
 pnpm install --frozen-lockfile
 pnpm --filter db push
+pnpm --filter @workspace/scripts run check-css-tokens
 
 # ── Single-source-of-truth for static page assets ────────────────────────────
 # The page folders (abx, sti, labs, drugref, tccc, lookup) live at the workspace
