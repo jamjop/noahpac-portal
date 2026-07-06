@@ -3,7 +3,7 @@
   "name": "Jamestown Regional Medical Center",
   "location": "Jamestown, ND",
   "period": "2025",
-  "sourceNote": "ND HHS Archive \u00b7 Jamestown Regional Medical Center Antibiogram 2025 \u00b7 % susceptible, 1st isolate/patient/year",
+  "sourceNote": "ND HHS Archive · Jamestown Regional Medical Center Antibiogram 2025 · % susceptible, 1st isolate/patient/year",
   "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/public-health/hai/2025-jamestown-regional-medical-center-antibiogram-archive.pdf",
   "organisms": [
     {
@@ -115,7 +115,7 @@
       }
     },
     {
-      "name": "Sheep pneumoniae",
+      "name": "Strep pneumoniae",
       "gram": "positive",
       "isolates": 4,
       "note": null,

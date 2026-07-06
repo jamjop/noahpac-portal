@@ -2,6 +2,37 @@
 
 let FACILITY_SUSC = {};
 
+// Each facility's antibiogram is extracted from a different PDF, so the same
+// organism appears under many spellings ("E. coli" / "Escherichia coli",
+// "MRSA" / "Staphylococcus aureus (MRSA)" / "MR Staph aureus", …). This app
+// looks susceptibility up by empiric's own fixed short labels, so without
+// aliasing a facility that spells it differently silently shows no data
+// (e.g. Sanford lists "Escherichia coli" → the "E. coli" UTI lookup found
+// nothing). This maps each known spelling to empiric's canonical label.
+//
+// DELIBERATELY OMITTED — do NOT add these; they are clinically distinct
+// subpopulations with their own resistance profiles, not synonyms:
+//   "Escherichia coli ESBL", "Klebsiella pneumoniae ESBL", "Proteus mirabilis ESBL",
+//   "Enterococcus faecium VRE", and aggregate S. aureus rows that aren't
+//   specifically MSSA or MRSA ("S. aureus", "Total Staph aureus",
+//   "Staph aureus (All strains)"). They stay unmapped and show no data,
+//   which is correct — empiric has no selector for them.
+const ORG_ALIASES = {
+  "E. coli":                  ["E. coli", "Escherichia coli"],
+  "Klebsiella pneumoniae":    ["K. pneumoniae", "Klebsiella pneumoniae"],
+  "Proteus mirabilis":        ["P. mirabilis", "Proteus mirabilis"],
+  "Enterococcus faecalis":    ["E. faecalis", "Enterococcus faecalis"],
+  "Pseudomonas aeruginosa":   ["P. aeruginosa", "Pseudomonas", "Pseudomonas aeruginosa"],
+  "Staph aureus (MSSA)":      ["Staph aureus (MSSA)", "Staphylococcus aureus (MSSA)", "MS Staph aureus"],
+  "Staph aureus (MRSA)":      ["Staph aureus (MRSA)", "Staphylococcus aureus (MRSA)", "MR Staph aureus", "MRSA", "Methicillin Resistant Staphylococcus aureus"],
+  "Streptococcus pneumoniae": ["S. pneumoniae", "Strep pneumoniae", "Streptococcus pneumoniae"],
+};
+// Reverse lookup: raw antibiogram name (lowercased) -> canonical empiric label.
+const ORG_CANONICAL = {};
+for (const [label, variants] of Object.entries(ORG_ALIASES)) {
+  for (const v of variants) ORG_CANONICAL[v.toLowerCase()] = label;
+}
+
 /**
  * Parse a period string ("YYYY" or "YYYY-Q#") and return the Date at the end
  * of that period.  Returns null if the format is unrecognised.
@@ -300,7 +331,19 @@ async function loadFacilities() {
     try {
       if (!f || !Array.isArray(f.organisms)) throw new Error('Unexpected data shape');
       const data = {};
-      f.organisms.forEach(org => { data[org.name] = org.s; });
+      const hasVals = v => v && Object.keys(v).length > 0;
+      // Store under a key, but never let an empty row overwrite populated data
+      // — some facilities list the same organism twice (e.g. essentia has both
+      // a populated "Pseudomonas" and an empty "Pseudomonas aeruginosa"), and
+      // both the exact name and an aliased spelling can collide on one key.
+      const put = (key, s) => {
+        if (!data[key] || (!hasVals(data[key]) && hasVals(s))) data[key] = s;
+      };
+      f.organisms.forEach(org => {
+        put(org.name, org.s);                                 // original spelling
+        const canon = ORG_CANONICAL[String(org.name).toLowerCase()];
+        if (canon) put(canon, org.s);                         // empiric's canonical label
+      });
       FACILITY_SUSC[f.id] = {
         label: `${f.name} — ${f.location} (${f.period})`,
         data,
