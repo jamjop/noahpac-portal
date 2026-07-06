@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'lib'))
 import pubmed_watcher as pw
 
 APP_ID      = 'tccc'
+APP_DIR      = Path(__file__).resolve().parent
 APP_NAME    = 'TCCC / CoTCCC Guidelines'
 APP_URL     = 'https://noahpac.com/tccc/'
 STATE_FILE  = Path(__file__).resolve().parent / 'known_pmids.json'
@@ -119,6 +120,7 @@ def main() -> int:
         total = sum(len(v) for k, v in state.items() if isinstance(v, list))
         print(f'  PubMed: {total} PMIDs initialised across {len(SEARCHES)} searches.')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
+        pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
     for search_name, m in new_findings:
@@ -130,6 +132,7 @@ def main() -> int:
     if not alerts:
         print(f'No TCCC guideline changes detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
+        pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
     message = f'{len(new_findings)} new CoTCCC/TCCC publication(s) — review for guideline updates:\n\n'
@@ -138,6 +141,7 @@ def main() -> int:
     print(message)
     pw.push_notify(user, token, ALERT_TITLE, message, ALLOGY_PAGE_URL, 'Official CoTCCC Guidelines')
     pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'changed', findings)
+    pw.save_last_checked(APP_DIR, 'changed')
     print('Notification sent.')
     return 0
 

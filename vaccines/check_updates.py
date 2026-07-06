@@ -42,7 +42,8 @@ import pubmed_watcher as pw
 APP_ID        = 'vaccines'
 APP_NAME      = 'ACIP/AAP/ACOG Vaccine Schedules'
 APP_URL       = 'https://noahpac.com/vaccines/'
-STATE_FILE    = Path(__file__).resolve().parent / 'known_pmids.json'
+APP_DIR       = Path(__file__).resolve().parent
+STATE_FILE    = APP_DIR / 'known_pmids.json'
 USER_AGENT    = 'noahpac-vaccines-monitor/1.0'
 ALERT_TITLE   = 'ACIP/AAP/ACOG Vaccine Schedule Update'
 CDC_SCHED_URL = 'https://www.cdc.gov/vaccines/schedules/'
@@ -194,6 +195,7 @@ def main() -> int:
     if not new_findings and not page_changed:
         print(f'No ACIP/AAP vaccine schedule changes detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
+        pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
     lines = []
@@ -218,6 +220,7 @@ def main() -> int:
         for name, m in new_findings
     )
     pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'changed', findings)
+    pw.save_last_checked(APP_DIR, 'changed')
     print('Notification sent.')
     return 0
 

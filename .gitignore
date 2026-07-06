@@ -76,10 +76,10 @@ screener/data/
 **/known_pmids.json
 **/known_state.json
 **/known_files.json
+**/last_checked.json
 
 # Antibiogram API token — server-only, never commit
 antibiogram/api-config.js
 
-# Playwright tests and ephemeral output — not part of deployed content
-tests/
+# Playwright ephemeral output — generated per run, not source
 test-results/

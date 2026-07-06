@@ -21,6 +21,7 @@ PDF_URL  = "https://www.hhs.nd.gov/sites/default/files/documents/DOH%20Legacy/re
 PAGE_URL = "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/reportable-conditions"
 PUSHOVER_API = "https://api.pushover.net/1/messages.json"
 STATE_FILE   = Path(__file__).resolve().parent / "known_state.json"
+LAST_CHECKED_FILE = Path(__file__).resolve().parent / "last_checked.json"
 
 
 def get_pdf_headers(url: str) -> dict:
@@ -43,6 +44,15 @@ def load_state() -> dict:
 def save_state(state: dict) -> None:
     STATE_FILE.write_text(json.dumps(state, indent=2))
     STATE_FILE.chmod(0o644)
+
+
+def save_last_checked(status: str) -> None:
+    """Record that a check ran, for the frontend's 'last checked' tag."""
+    LAST_CHECKED_FILE.write_text(json.dumps({
+        "date": date.today().isoformat(),
+        "status": status,
+    }, indent=2))
+    LAST_CHECKED_FILE.chmod(0o644)
 
 
 def push_notify(user: str, token: str, title: str, message: str) -> None:
@@ -83,18 +93,20 @@ def main() -> int:
     if not changed:
         print(f"No change detected ({date.today()})")
         save_state(current)
+        save_last_checked("no_change")
         return 0
 
     message = (
         f"ND HHS reportable conditions PDF may have been updated.\n"
         f"  Last-Modified : {current['last_modified']} (was: {known.get('last_modified', 'unknown')})\n"
         f"  Size          : {current['content_length']} bytes (was: {known.get('content_length', 'unknown')})\n\n"
-        f"Review the updated list and update /var/www/reportable/app.js if conditions changed."
+        f"Review the updated list and update /var/www/noahpac-portal/reportable/app.js if conditions changed."
     )
 
     print(message)
     push_notify(user, token, "ND Reportable Conditions Update", message)
     save_state(current)
+    save_last_checked("changed")
     print("Notification sent.")
     return 0
 

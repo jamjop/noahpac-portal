@@ -46,6 +46,20 @@ def _write_report_result(status: str, findings: list) -> None:
             print(f"WARNING: could not write report ({prefix}): {exc}", file=sys.stderr)
 
 
+def _write_last_checked(status: str) -> None:
+    """Record that a check ran, for the frontend's 'last checked' tag."""
+    import datetime as _dt
+    f = LIVE_DIR / "last_checked.json"
+    try:
+        f.write_text(json.dumps({
+            "date": _dt.date.today().isoformat(),
+            "status": status,
+        }, indent=2))
+        f.chmod(0o644)
+    except Exception as exc:
+        print(f"WARNING: could not write last_checked.json: {exc}", file=sys.stderr)
+
+
 def _write_heartbeat() -> None:
     import time as _time
     dst = Path("/var/lib/node_exporter/textfile_collector/cron_antibiogram.prom")
@@ -371,6 +385,7 @@ def main() -> int:
         print(f"No facility updates needed ({date.today()})")
         save_state(current)
         _write_report_result('no_change', [])
+        _write_last_checked('no_change')
         _write_heartbeat()
         return 0
 
@@ -398,6 +413,7 @@ def main() -> int:
         _write_report_result('error', [
             {'detail': f"Extraction failed for: {', '.join(failed_names)}"}
         ])
+        _write_last_checked('error')
         return 1
 
     # Rebuild app.js
@@ -449,6 +465,7 @@ def main() -> int:
     if failed_names:
         findings.append({'detail': f"Extraction failed: {', '.join(failed_names)}"})
     _write_report_result('changed' if not failed_names else 'error', findings)
+    _write_last_checked('changed' if not failed_names else 'error')
 
     save_state(current)
     if not failed_names:

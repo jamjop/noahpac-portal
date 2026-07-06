@@ -1,29 +1,18 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { resolve, join, dirname, basename } from "node:path";
+import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  extractDefinedTokens,
+  extractUsedTokens,
+  extractRootBlock,
+  extractDarkRootBlock,
+  findHardcodedHexColors,
+  findHardcodedNonHexColors,
+  ALLOWED_HEX,
+} from "./check-css-tokens.lib.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..", "..");
-
-function extractDefinedTokens(css: string): Set<string> {
-  const defined = new Set<string>();
-  const re = /--([\w-]+)\s*:/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(css)) !== null) {
-    defined.add(`--${m[1]}`);
-  }
-  return defined;
-}
-
-function extractUsedTokens(css: string): Set<string> {
-  const used = new Set<string>();
-  const re = /var\((--[\w-]+)/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(css)) !== null) {
-    used.add(m[1]);
-  }
-  return used;
-}
 
 function findPageStylesheets(root: string): string[] {
   const results: string[] = [];
@@ -123,89 +112,6 @@ if (totalErrors > 0) {
 
 // ── Check 2: hardcoded hex color values ──────────────────────────────────────
 
-/**
- * Hex colors that are acceptable without a CSS variable:
- *   #fff / #ffffff  – pure white (contrast on fixed-color backgrounds)
- *   #000 / #000000  – pure black
- * Everything else must be expressed as var(--token).
- */
-const ALLOWED_HEX = new Set(["#fff", "#ffffff", "#000", "#000000"]);
-
-/** Matches CSS hex colours: #RGB, #RGBA, #RRGGBB, #RRGGBBAA */
-const HEX_RE = /#[0-9a-fA-F]{3,8}/g;
-
-/** Matches a CSS *variable definition* – the property name starts with -- */
-const VAR_DEF_RE = /--[\w-]+\s*:/;
-
-interface HardcodedHit {
-  file: string;
-  lineNo: number;
-  hex: string;
-  lineText: string;
-}
-
-function findHardcodedHexColors(cssText: string): HardcodedHit[] {
-  const hits: HardcodedHit[] = [];
-  const lines = cssText.split("\n");
-  let inBlockComment = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-
-    // Track multi-line block comments
-    if (inBlockComment) {
-      if (line.includes("*/")) {
-        line = line.slice(line.indexOf("*/") + 2);
-        inBlockComment = false;
-      } else {
-        continue;
-      }
-    }
-
-    // Strip inline block comments  /* … */
-    line = line.replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g, "");
-
-    // Open a new block comment that hasn't closed yet
-    if (line.includes("/*")) {
-      line = line.slice(0, line.indexOf("/*"));
-      inBlockComment = true;
-    }
-
-    // Skip lines that only contain CSS variable definitions (--var: value)
-    // e.g.  :root{--preg:#BE185D;--preg-soft:#FCE7F3}
-    // If every color-bearing segment of the line is a var def, it's safe.
-    // Simple heuristic: if the stripped line has no property assignment that
-    // doesn't begin with --, skip it.  We check by removing all var-def
-    // segments and then looking for any remaining hex.
-    const withoutVarDefs = line.replace(/--[\w-]+\s*:\s*[^;{}]*/g, "");
-    if (!withoutVarDefs.includes("#")) {
-      continue;
-    }
-
-    // If the only hex colours left are in var() definitions on this line, skip.
-    if (!VAR_DEF_RE.test(withoutVarDefs) && VAR_DEF_RE.test(line)) {
-      // All hex colors were inside variable definitions
-      continue;
-    }
-
-    // Find hex colours in the "non-var-def" portion
-    HEX_RE.lastIndex = 0;
-    let match: RegExpExecArray | null;
-    while ((match = HEX_RE.exec(withoutVarDefs)) !== null) {
-      const hex = match[0].toLowerCase();
-      // Normalise 3-digit shorthand for allowlist check
-      const normalised =
-        hex.length === 4
-          ? "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3]
-          : hex;
-      if (ALLOWED_HEX.has(normalised)) continue;
-      hits.push({ file: "", lineNo: i + 1, hex: match[0], lineText: lines[i].trim() });
-    }
-  }
-
-  return hits;
-}
-
 console.log("\n──────────────────────────────────────────────────────────────");
 console.log("Checking for hardcoded hex colors in page stylesheets...\n");
 
@@ -251,143 +157,6 @@ if (hexErrors > 0) {
 }
 
 // ── Check 3: hardcoded rgba/rgb, hsl/hsla, and named colors ──────────────────
-//
-// Hardcoded rgba/rgb, hsl/hsla, or named CSS color values in rule bodies are
-// equally problematic for dark-mode as hex colors.
-//
-// Allowlisted exceptions (do not require tokenisation):
-//   rgba(0,0,0,…)       – pure-black alpha overlay (shadows, borders) — inherently scheme-aware
-//   rgba(255,255,255,…)  – pure-white alpha overlay (glassy overlays on dark surfaces) — scheme-aware
-//   rgb(0,0,0)           – equivalent to #000
-//   rgb(255,255,255)     – equivalent to #fff
-//   black / white        – equivalent to #000/#fff
-//   transparent          – not a chromatic color
-//   currentcolor         – computed from inherited color, not hardcoded
-//   inherit/initial/unset/revert – CSS-wide keywords
-
-/** rgba() values whose color components are pure black or pure white are allowed. */
-function isAllowedRgba(raw: string): boolean {
-  const s = raw.replace(/\s+/g, "").toLowerCase();
-  return /^rgba?\((0,0,0|255,255,255)(,[.\d]+)?\)$/.test(s);
-}
-
-const RGBA_RE = /\brgba?\s*\([^)]*\)/gi;
-const HSL_RE = /\bhsla?\s*\([^)]*\)/gi;
-
-/**
- * Full W3C CSS named-color keyword list (excluding black/white which are
- * explicitly allowed above).  Any of these appearing in a rule body is a flag.
- */
-const CSS_NAMED_COLORS = new Set([
-  "aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque",
-  "blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue",
-  "chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson",
-  "cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen",
-  "darkgrey","darkkhaki","darkmagenta","darkolivegreen","darkorange",
-  "darkorchid","darkred","darksalmon","darkseagreen","darkslateblue",
-  "darkslategray","darkslategrey","darkturquoise","darkviolet","deeppink",
-  "deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite",
-  "forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray",
-  "green","greenyellow","grey","honeydew","hotpink","indianred","indigo",
-  "ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon",
-  "lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgray",
-  "lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen",
-  "lightskyblue","lightslategray","lightslategrey","lightsteelblue",
-  "lightyellow","lime","limegreen","linen","magenta","maroon",
-  "mediumaquamarine","mediumblue","mediumorchid","mediumpurple",
-  "mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise",
-  "mediumvioletred","midnightblue","mintcream","mistyrose","moccasin",
-  "navajowhite","navy","oldlace","olive","olivedrab","orange","orangered",
-  "orchid","palegoldenrod","palegreen","paleturquoise","palevioletred",
-  "papayawhip","peachpuff","peru","pink","plum","powderblue","purple",
-  "rebeccapurple","red","rosybrown","royalblue","saddlebrown","salmon",
-  "sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue",
-  "slategray","slategrey","snow","springgreen","steelblue","tan","teal",
-  "thistle","tomato","turquoise","violet","wheat","yellow","yellowgreen",
-]);
-
-/** CSS-wide keywords and color-scheme-safe named values that are always allowed. */
-const ALLOWED_NAMED_COLORS = new Set([
-  "black","white","transparent","currentcolor","inherit","initial","unset","revert",
-]);
-
-/** Matches any CSS named color or allowed keyword as a whole word. */
-const NAMED_COLOR_RE = new RegExp(
-  `\\b(${[...CSS_NAMED_COLORS, ...ALLOWED_NAMED_COLORS].join("|")})\\b`,
-  "gi"
-);
-
-interface NonHexColorHit {
-  file: string;
-  lineNo: number;
-  value: string;
-  kind: "rgba" | "hsl" | "named";
-  lineText: string;
-}
-
-function findHardcodedNonHexColors(cssText: string): NonHexColorHit[] {
-  const hits: NonHexColorHit[] = [];
-  const lines = cssText.split("\n");
-  let inBlockComment = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-
-    if (inBlockComment) {
-      if (line.includes("*/")) {
-        line = line.slice(line.indexOf("*/") + 2);
-        inBlockComment = false;
-      } else {
-        continue;
-      }
-    }
-
-    line = line.replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g, "");
-
-    if (line.includes("/*")) {
-      line = line.slice(0, line.indexOf("/*"));
-      inBlockComment = true;
-    }
-
-    // Strip variable-definition segments so we don't flag colors inside --token: value
-    const withoutVarDefs = line.replace(/--[\w-]+\s*:\s*[^;{}]*/g, "");
-
-    // ── rgba / rgb ────────────────────────────────────────────────────────────
-    RGBA_RE.lastIndex = 0;
-    let m: RegExpExecArray | null;
-    while ((m = RGBA_RE.exec(withoutVarDefs)) !== null) {
-      if (!isAllowedRgba(m[0])) {
-        hits.push({ file: "", lineNo: i + 1, value: m[0].trim(), kind: "rgba", lineText: lines[i].trim() });
-      }
-    }
-
-    // ── hsl / hsla ────────────────────────────────────────────────────────────
-    HSL_RE.lastIndex = 0;
-    while ((m = HSL_RE.exec(withoutVarDefs)) !== null) {
-      hits.push({ file: "", lineNo: i + 1, value: m[0].trim(), kind: "hsl", lineText: lines[i].trim() });
-    }
-
-    // ── named colors ─────────────────────────────────────────────────────────
-    // Only flag named colors that appear in a property-value context:
-    // the stripped line must contain a colon (i.e. be inside a rule body),
-    // and the match must appear after the colon (right-hand side of a declaration).
-    const colonIdx = withoutVarDefs.indexOf(":");
-    if (colonIdx === -1) continue;
-    // Strip var(…) calls so color words inside token names (var(--purple), var(--teal))
-    // are not mistakenly flagged as hardcoded named colors.
-    const rhs = withoutVarDefs.slice(colonIdx + 1).replace(/var\([^)]*\)/g, "");
-
-    NAMED_COLOR_RE.lastIndex = 0;
-    while ((m = NAMED_COLOR_RE.exec(rhs)) !== null) {
-      const word = m[1].toLowerCase();
-      if (!ALLOWED_NAMED_COLORS.has(word)) {
-        hits.push({ file: "", lineNo: i + 1, value: m[1], kind: "named", lineText: lines[i].trim() });
-      }
-    }
-  }
-
-  return hits;
-}
 
 console.log("\n──────────────────────────────────────────────────────────────");
 console.log("Checking for hardcoded rgba/hsl/named colors in shared.css and page stylesheets...\n");
@@ -395,12 +164,6 @@ console.log("Checking for hardcoded rgba/hsl/named colors in shared.css and page
 let nonHexErrors = 0;
 const nonHexErrorLines: string[] = [];
 
-// ── Scan shared.css itself ────────────────────────────────────────────────────
-// shared.css defines tokens but also contains rule bodies (e.g. box-shadow on
-// .app-header).  Any rgba/hsl value used outside a CSS variable definition in
-// shared.css is a dark-mode risk and must either be tokenised (reference an
-// existing var()) or be pure-black/white alpha (already allowlisted by
-// isAllowedRgba).
 {
   const sharedHits = findHardcodedNonHexColors(sharedCss);
   if (sharedHits.length === 0) {
@@ -455,13 +218,6 @@ if (nonHexErrors > 0) {
 }
 
 // ── Check 4: cross-page duplicate token definitions ───────────────────────────
-//
-// Detects CSS custom properties that are defined in two or more page stylesheets.
-// These should either be consolidated into shared.css (when values are identical)
-// or have a comment in each file explaining why the values intentionally differ.
-//
-// Tokens that exist in shared.css are excluded from this check — page-level
-// redefinitions of shared tokens are acceptable fallbacks (see peds/style.css).
 
 console.log("\n──────────────────────────────────────────────────────────────");
 console.log("Checking for cross-page duplicate token definitions...\n");
@@ -469,17 +225,6 @@ console.log("Checking for cross-page duplicate token definitions...\n");
 /**
  * Extract all CSS custom-property definitions as composite-keyed { name:mode, value } pairs,
  * tracking light-mode and dark-mode values separately.
- *
- * Light-mode tokens (from the top-level :root block, outside any @media rule) are
- * keyed as "--token:light".  Dark-mode tokens (from :root inside
- * @media (prefers-color-scheme: dark)) are keyed as "--token:dark".
- *
- * This allows Check 4 to detect drift in dark-mode values even when two pages
- * share identical light-mode values for the same token.
- *
- * Depends on extractRootBlock / extractDarkRootBlock / parseTokenBlock which are
- * defined later in this file; function declarations are hoisted so the call order
- * is safe.
  */
 function extractTokenDefinitions(css: string): Map<string, string> {
   const defs = new Map<string, string>();
@@ -494,7 +239,6 @@ function extractTokenDefinitions(css: string): Map<string, string> {
   return defs;
 }
 
-// Build map: compositeKey ("--token:light" | "--token:dark") → list of { file, value }
 const crossPageMap = new Map<string, Array<{ file: string; value: string }>>();
 
 for (const sheet of stylesheets) {
@@ -507,9 +251,6 @@ for (const sheet of stylesheets) {
   }
   const defs = extractTokenDefinitions(css);
   for (const [compositeKey, value] of defs) {
-    // compositeKey is "--token:light" or "--token:dark"
-    // Extract base token name (everything before the last colon) for the
-    // shared.css lookup — shared tokens are expected fallback redefinitions.
     const modeIdx = compositeKey.lastIndexOf(":");
     const baseName = compositeKey.slice(0, modeIdx);
     if (sharedTokens.has(baseName)) continue;
@@ -527,12 +268,11 @@ const crossWarnLines: string[] = [];
 for (const [compositeKey, entries] of crossPageMap) {
   if (entries.length < 2) continue;
   const modeIdx = compositeKey.lastIndexOf(":");
-  const baseName = compositeKey.slice(0, modeIdx);   // "--token"
-  const mode     = compositeKey.slice(modeIdx + 1);  // "light" or "dark"
+  const baseName = compositeKey.slice(0, modeIdx);
+  const mode     = compositeKey.slice(modeIdx + 1);
 
   const uniqueValues = new Set(entries.map((e) => e.value));
   if (uniqueValues.size === 1) {
-    // All pages agree on the value → should be in shared.css
     const value = [...uniqueValues][0];
     crossErrorLines.push(`  ${baseName}  [${mode}]  (value: ${value})`);
     for (const e of entries) {
@@ -540,7 +280,6 @@ for (const [compositeKey, entries] of crossPageMap) {
     }
     crossErrors++;
   } else {
-    // Values differ → possible unintentional drift
     crossWarnLines.push(`  ${baseName}  [${mode}]  (values differ across pages)`);
     for (const e of entries) {
       crossWarnLines.push(`    ${e.file}  →  ${e.value}`);
@@ -578,25 +317,10 @@ if (crossErrors > 0) {
 }
 
 // ── Check 5: index.css fallback tokens vs shared.css ────────────────────────
-//
-// The home page (index.css at the project root) embeds a fallback :root block
-// that mirrors key tokens from shared.css.  Because the two files are edited
-// independently, values can silently drift.  This check extracts matching
-// tokens from both files — comparing light-mode and dark-mode values
-// separately — and fails if any value diverges.
-//
-// Token name mapping:
-//   index.css --accent  ↔  shared.css --purple
-//   All other bridged tokens share the same name in both files.
 
 console.log("\n──────────────────────────────────────────────────────────────");
 console.log("Checking index.css fallback tokens against shared.css...\n");
 
-/**
- * Tokens that must stay in sync between index.css and shared.css.
- * Key   = token name as it appears in index.css
- * Value = token name as it appears in shared.css
- */
 const HOME_TOKEN_MAP: Record<string, string> = {
   "--bg":       "--bg",
   "--surface":  "--surface",
@@ -607,57 +331,6 @@ const HOME_TOKEN_MAP: Record<string, string> = {
   "--accent":   "--purple",
 };
 
-/**
- * Extract all CSS custom-property definitions from a block of CSS text,
- * restricted to the content of the FIRST top-level :root {} block found
- * (i.e. outside any @media rule).  Returns a map of name → normalised value.
- */
-function extractRootBlock(css: string): Map<string, string> {
-  // Strip comments first
-  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  // Find :root { ... } — scan for the block, handling nested braces
-  const rootIdx = stripped.search(/:root\s*\{/);
-  if (rootIdx === -1) return new Map();
-  const openBrace = stripped.indexOf("{", rootIdx);
-  if (openBrace === -1) return new Map();
-  let depth = 1;
-  let pos = openBrace + 1;
-  while (pos < stripped.length && depth > 0) {
-    if (stripped[pos] === "{") depth++;
-    else if (stripped[pos] === "}") depth--;
-    pos++;
-  }
-  return parseTokenBlock(stripped.slice(openBrace + 1, pos - 1));
-}
-
-/**
- * Same as extractRootBlock but for the :root block inside
- * @media (prefers-color-scheme: dark) { ... }.
- */
-function extractDarkRootBlock(css: string): Map<string, string> {
-  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const mediaIdx = stripped.search(/@media\s*\([^)]*prefers-color-scheme\s*:\s*dark/);
-  if (mediaIdx === -1) return new Map();
-  // Find the opening brace of the @media block
-  const mediaOpen = stripped.indexOf("{", mediaIdx);
-  if (mediaOpen === -1) return new Map();
-  // Now find :root inside that @media block
-  const afterMedia = stripped.slice(mediaOpen + 1);
-  return extractRootBlock(afterMedia);
-}
-
-function parseTokenBlock(block: string): Map<string, string> {
-  const map = new Map<string, string>();
-  const re = /--([\w-]+)\s*:\s*([^;{}]+)/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(block)) !== null) {
-    const name = `--${m[1]}`;
-    const value = m[2].trim().replace(/\s+/g, " ").toLowerCase();
-    if (!map.has(name)) map.set(name, value);
-  }
-  return map;
-}
-
 const indexCssPath = join(projectRoot, "index.css");
 let indexCss: string;
 try {
@@ -667,8 +340,8 @@ try {
   process.exit(1);
 }
 
-const homeLight = extractRootBlock(indexCss);
-const homeDark  = extractDarkRootBlock(indexCss);
+const homeLight  = extractRootBlock(indexCss);
+const homeDark   = extractDarkRootBlock(indexCss);
 const sharedLight = extractRootBlock(sharedCss);
 const sharedDark  = extractDarkRootBlock(sharedCss);
 
@@ -732,18 +405,6 @@ if (syncErrors > 0) {
 }
 
 // ── Check 6: page :root tokens missing dark-mode overrides ───────────────────
-//
-// Any CSS custom property defined in a page's top-level :root block cascades
-// AFTER shared.css (which is loaded first).  This means the page's light-mode
-// :root value silently overrides shared.css's @media(prefers-color-scheme:dark)
-// value for the same token — breaking dark mode without any error.
-//
-// Every token defined in a page-level :root must therefore have a matching
-// entry in the same file's @media(prefers-color-scheme:dark) :root block so
-// that the correct dark value is restored when dark mode is active.
-//
-// The peds-style "full mirror" pattern (all shared tokens in both light and
-// dark blocks) already satisfies this rule and will pass unchanged.
 
 console.log("\n──────────────────────────────────────────────────────────────");
 console.log("Checking page :root tokens for missing dark-mode overrides...\n");
@@ -767,9 +428,6 @@ for (const sheet of stylesheets) {
     continue;
   }
 
-  // Only flag tokens whose values are chromatic colors (contain a # hex code).
-  // Non-color tokens such as border-radius (--r:8px), spacing, or box-shadow
-  // values that use only pure-black/white rgba() do not need dark-mode overrides.
   const colorRootTokens = new Map<string, string>();
   for (const [name, value] of lightRootTokens) {
     if (value.includes("#")) {
@@ -820,3 +478,7 @@ if (darkOverrideErrors > 0) {
 } else {
   console.log("\nAll page :root tokens have corresponding dark-mode overrides.");
 }
+
+// Satisfy TypeScript: ALLOWED_HEX is imported but only used in the lib; re-export
+// via a dead reference so the import is not pruned by aggressive type checkers.
+void ALLOWED_HEX;

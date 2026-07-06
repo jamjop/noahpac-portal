@@ -23,8 +23,9 @@ APP_ID       = 'sti-guide'
 APP_NAME     = 'STI Treatment Guidelines'
 APP_URL      = 'https://noahpac.com/sti-guide/'
 PAGE_URL     = 'https://www.cdc.gov/std/treatment-guidelines/default.htm'
-PAGE_STATE   = Path(__file__).resolve().parent / 'known_state.json'
-PMID_STATE   = Path(__file__).resolve().parent / 'known_pmids.json'
+APP_DIR      = Path(__file__).resolve().parent
+PAGE_STATE   = APP_DIR / 'known_state.json'
+PMID_STATE   = APP_DIR / 'known_pmids.json'
 USER_AGENT   = 'noahpac-sti-guide-monitor/1.0'
 ALERT_TITLE  = 'CDC STI Guidelines Update'
 UPDATE_HINT  = 'Review and update /var/www/noahpac-portal/sti-guide/app.js if regimens changed.'
@@ -144,6 +145,7 @@ def main() -> int:
     if not alerts:
         print(f'No changes detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
+        pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
     message = 'CDC STI guidelines update detected:\n\n' + '\n'.join(f'• {a}' for a in alerts)
@@ -151,6 +153,7 @@ def main() -> int:
     print(message)
     pw.push_notify(user, token, ALERT_TITLE, message, PAGE_URL, 'CDC STI Treatment Guidelines')
     pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'changed', findings)
+    pw.save_last_checked(APP_DIR, 'changed')
     print('Notification sent.')
     return 0
 

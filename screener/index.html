@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Screening Recommendations</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
@@ -14,7 +14,7 @@
     <div class="eyebrow">USPSTF Preventive Services · Patient Screener</div>
     <h1>Screening Recommendations</h1>
     <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="datasource" id="datasource"><span class="dot"></span>Loading dataset…</div>
+    <div class="update-cadence">↻ Updated weekly</div>
   </div>
 </header>
 
@@ -79,9 +79,10 @@
 </div>
 
 <footer>
-  <p><strong>Not medical advice.</strong> Summarizes USPSTF recommendations for average-risk screening; read each full recommendation statement and individualize with clinical judgment. Built-in dataset verified June 2026; connect the update script for live data from the Prevention TaskForce API.</p>
+  <p class="last-checked"></p>
+  <p><strong>Not medical advice.</strong> Summarizes USPSTF recommendations for average-risk screening; read each full recommendation statement and individualize with clinical judgment.</p>
 </footer>
 
-<script src="app.js"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

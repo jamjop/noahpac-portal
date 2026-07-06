@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sepsis Screening</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <header class="app-header">
@@ -136,14 +136,17 @@
 
   </div>
 
-  <div class="result-col">
-    <div class="source-note">
-      Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥ 2 warrants further evaluation; SOFA ≥ 2 from baseline indicates organ dysfunction. Not medical advice.
-    </div>
-  </div>
 
 </div>
 
-<script src="app.js"></script>
+<footer>
+  <p class="last-checked"></p>
+  <p class="source-note">
+    Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥ 2 warrants further evaluation; SOFA ≥ 2 from baseline indicates organ dysfunction. Not medical advice.
+  </p>
+</footer>
+
+<script src="app.js?v=2"></script>
+<script src="/assets/last-checked.js" defer></script>
 </body>
 </html>
