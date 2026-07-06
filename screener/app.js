@@ -80,6 +80,11 @@ function renderLastChecked(dateStr) {
   var d = new Date(dateStr + 'T00:00:00');
   var formatted = isNaN(d) ? dateStr : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   els.footerLastChecked.innerHTML = '<span class="dot"></span>Last checked for updates: ' + formatted;
+  // Mirror assets/last-checked.js: yellow once the data is older than the
+  // header's "↻ Updated weekly" promise (8 days, matching the server-side
+  // cron-health threshold for weekly jobs).
+  var stale = !isNaN(d) && (Date.now() - d.getTime()) > 8 * 86400000;
+  els.footerLastChecked.classList.toggle('stale', stale);
 }
 
 function esc(s) {

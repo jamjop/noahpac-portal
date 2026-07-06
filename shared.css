@@ -119,6 +119,16 @@ footer .last-checked .dot{
   background:var(--ok);
   flex-shrink:0;
 }
+/* Yellow variant: last check is older than the cadence promised by the
+   page's "↻ Reviewed/Updated <cadence>" header tag (class set by
+   assets/last-checked.js). */
+footer .last-checked.stale{
+  color:var(--warn-ink);
+  background:var(--warn-soft);
+}
+footer .last-checked.stale .dot{
+  background:var(--warn);
+}
 
 /* ── Search on light header (higher specificity beats tool-level .tab-search) ── */
 .app-header .tab-search,header .tab-search{
