@@ -55,6 +55,28 @@ def save_last_checked(status: str) -> None:
     LAST_CHECKED_FILE.chmod(0o644)
 
 
+def write_heartbeat(job: str) -> None:
+    """Atomically update the Prometheus textfile heartbeat for this cron job.
+    HELP/TYPE headers must match the other cron_*.prom files exactly —
+    node_exporter drops files whose shared metric family metadata conflicts."""
+    import time
+    from pathlib import Path
+    d = Path("/var/lib/node_exporter/textfile_collector")
+    if not d.exists():
+        return
+    tmp, dst = d / f"cron_{job}.prom.tmp", d / f"cron_{job}.prom"
+    try:
+        tmp.write_text(
+            '# HELP cron_last_success_timestamp_seconds Unix timestamp of last successful run\n'
+            '# TYPE cron_last_success_timestamp_seconds gauge\n'
+            f'cron_last_success_timestamp_seconds{{job="{job}"}} {int(time.time())}\n'
+        )
+        tmp.rename(dst)
+    except Exception as exc:
+        print(f"WARNING: could not write heartbeat for {job}: {exc}", file=sys.stderr)
+
+
+
 def push_notify(user: str, token: str, title: str, message: str) -> None:
     payload = json.dumps({
         "token": token, "user": user,
@@ -94,6 +116,7 @@ def main() -> int:
         print(f"No change detected ({date.today()})")
         save_state(current)
         save_last_checked("no_change")
+        write_heartbeat("reportable")
         return 0
 
     message = (
@@ -107,6 +130,7 @@ def main() -> int:
     push_notify(user, token, "ND Reportable Conditions Update", message)
     save_state(current)
     save_last_checked("changed")
+    write_heartbeat("reportable")
     print("Notification sent.")
     return 0
 
