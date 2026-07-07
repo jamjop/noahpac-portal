@@ -1,0 +1,225 @@
+{
+  "id": "wramc",
+  "name": "Walter Reed National Military Medical Center",
+  "location": "Bethesda, MD",
+  "period": "2025",
+  "sourceNote": "DHA Antimicrobial Stewardship App · Walter Reed National Military Medical Center 2025 Antibiogram (Outpatient) · % susceptible, Jan 1 – Dec 31, 2025. Organisms below the facility's own 30-isolate threshold are shown as intrinsic-resistance markers only where applicable. 5% of E. coli and 8% of Klebsiella pneumoniae are ESBL. \"Staphylococcus aureus (All strains)\" is a mixed MSSA+MRSA aggregate, distinct from the MSSA-only row.",
+  "sourceUrl": "https://mobile.health.mil/mobile_apps/asp/outpatient-mtfantibiograms/outpatient-antibiogram",
+  "organisms": [
+    {
+      "name": "Citrobacter freundii",
+      "gram": "negative",
+      "isolates": 18,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Citrobacter koseri",
+      "gram": "negative",
+      "isolates": 33,
+      "note": null,
+      "s": {
+        "amp": 0
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 706,
+      "note": null,
+      "s": {
+        "gen": 91,
+        "tob": 79,
+        "ams": 63,
+        "ptz": 98,
+        "fep": 80,
+        "caz": 93,
+        "cro": 93,
+        "sxt": 76,
+        "nit": 98,
+        "mem": 99,
+        "amp": 58,
+        "cip": 72,
+        "lvx": 83
+      }
+    },
+    {
+      "name": "Klebsiella aerogenes",
+      "gram": "negative",
+      "isolates": 30,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 166,
+      "note": null,
+      "s": {
+        "gen": 93,
+        "tob": 89,
+        "ams": 84,
+        "ptz": 92,
+        "fep": 77,
+        "caz": 90,
+        "cro": 90,
+        "sxt": 88,
+        "nit": 49,
+        "mem": 100,
+        "amp": 0,
+        "cip": 87
+      }
+    },
+    {
+      "name": "Morganella morganii",
+      "gram": "negative",
+      "isolates": 23,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "nit": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 76,
+      "note": null,
+      "s": {
+        "gen": 100,
+        "ams": 89,
+        "cro": 94,
+        "sxt": 84,
+        "nit": 0,
+        "amp": 84,
+        "cip": 91,
+        "tet": 0
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 83,
+      "note": null,
+      "s": {
+        "tob": 100,
+        "ams": 0,
+        "ptz": 93,
+        "fep": 90,
+        "caz": 93,
+        "cro": 0,
+        "sxt": 0,
+        "mem": 95,
+        "amp": 0,
+        "cip": 87,
+        "lvx": 87,
+        "tet": 0
+      }
+    },
+    {
+      "name": "Serratia marcescens",
+      "gram": "negative",
+      "isolates": 10,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "nit": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Stenotrophomonas maltophilia",
+      "gram": "negative",
+      "isolates": 3,
+      "note": null,
+      "s": {
+        "gen": 0,
+        "tob": 0,
+        "ams": 0,
+        "ptz": 0,
+        "sxt": 0,
+        "tet": 0
+      }
+    },
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 109,
+      "note": null,
+      "s": {
+        "gen": 0,
+        "tob": 0,
+        "cfz": 0,
+        "fep": 0,
+        "caz": 0,
+        "cro": 0,
+        "sxt": 0,
+        "van": 100,
+        "cli": 0,
+        "dap": 84,
+        "amp": 100
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "gen": 0,
+        "tob": 0,
+        "cfz": 0,
+        "fep": 0,
+        "caz": 0,
+        "cro": 0,
+        "sxt": 0,
+        "cli": 0
+      }
+    },
+    {
+      "name": "Staph aureus (MSSA)",
+      "gram": "positive",
+      "isolates": 171,
+      "note": null,
+      "s": {
+        "sxt": 92,
+        "van": 100,
+        "cli": 73,
+        "dap": 98,
+        "ery": 60,
+        "lzd": 98,
+        "oxa": 100,
+        "pen": 0,
+        "tet": 87
+      }
+    },
+    {
+      "name": "Staphylococcus aureus (All strains)",
+      "gram": "positive",
+      "isolates": 207,
+      "note": null,
+      "s": {
+        "sxt": 91,
+        "van": 100,
+        "cli": 74,
+        "dap": 98,
+        "ery": 54,
+        "lzd": 98,
+        "oxa": 86,
+        "pen": 0,
+        "tet": 84
+      }
+    }
+  ]
+}

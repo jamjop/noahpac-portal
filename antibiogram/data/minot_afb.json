@@ -1,0 +1,165 @@
+{
+  "id": "minot_afb",
+  "name": "5th Medical Group - Minot AFB",
+  "location": "Minot AFB, ND",
+  "period": "2025",
+  "sourceNote": "DHA Antimicrobial Stewardship App · AF-C-5th MEDGRP-MINOT 2025 Antibiogram (Outpatient) · % susceptible, Jan 1 – Dec 31, 2025. Most organisms below the facility's own 30-isolate reporting threshold this period (shown as intrinsic-resistance markers only, where applicable); only E. coli has a full reportable susceptibility profile. 5% of E. coli are ESBL.",
+  "sourceUrl": "https://mobile.health.mil/mobile_apps/asp/outpatient-mtfantibiograms/outpatient-antibiogram/chart",
+  "organisms": [
+    {
+      "name": "Citrobacter freundii",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Citrobacter koseri",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "amp": 0
+      }
+    },
+    {
+      "name": "E. coli",
+      "gram": "negative",
+      "isolates": 51,
+      "note": null,
+      "s": {
+        "gen": 96,
+        "tob": 98,
+        "ptz": 100,
+        "cfz": 95,
+        "fep": 100,
+        "cro": 96,
+        "sxt": 86,
+        "nit": 98,
+        "mem": 100,
+        "amp": 72,
+        "cip": 92,
+        "lvx": 92,
+        "tet": 88
+      }
+    },
+    {
+      "name": "Klebsiella aerogenes",
+      "gram": "negative",
+      "isolates": 2,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Klebsiella pneumoniae",
+      "gram": "negative",
+      "isolates": 4,
+      "note": null,
+      "s": {
+        "amp": 0
+      }
+    },
+    {
+      "name": "Morganella morganii",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "nit": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Proteus mirabilis",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "nit": 0,
+        "tet": 0
+      }
+    },
+    {
+      "name": "Pseudomonas aeruginosa",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cro": 0,
+        "sxt": 0,
+        "amp": 0,
+        "tet": 0
+      }
+    },
+    {
+      "name": "Serratia marcescens",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "ams": 0,
+        "cfz": 0,
+        "nit": 0,
+        "amp": 0
+      }
+    },
+    {
+      "name": "Stenotrophomonas maltophilia",
+      "gram": "negative",
+      "isolates": 0,
+      "note": null,
+      "s": {
+        "gen": 0,
+        "tob": 0,
+        "ams": 0,
+        "ptz": 0,
+        "cfz": 0,
+        "amp": 0,
+        "tet": 0
+      }
+    },
+    {
+      "name": "Enterococcus faecalis",
+      "gram": "positive",
+      "isolates": 8,
+      "note": null,
+      "s": {
+        "gen": 0,
+        "tob": 0,
+        "ptz": 0,
+        "cfz": 0,
+        "fep": 0,
+        "caz": 0,
+        "cro": 0,
+        "cli": 0
+      }
+    },
+    {
+      "name": "Enterococcus faecium",
+      "gram": "positive",
+      "isolates": 1,
+      "note": null,
+      "s": {
+        "gen": 0,
+        "tob": 0,
+        "ptz": 0,
+        "cfz": 0,
+        "fep": 0,
+        "caz": 0,
+        "cro": 0,
+        "cli": 0
+      }
+    }
+  ]
+}

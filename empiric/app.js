@@ -13,17 +13,22 @@ let FACILITY_SUSC = {};
 // DELIBERATELY OMITTED — do NOT add these; they are clinically distinct
 // subpopulations with their own resistance profiles, not synonyms:
 //   "Escherichia coli ESBL", "Klebsiella pneumoniae ESBL", "Proteus mirabilis ESBL",
-//   "Enterococcus faecium VRE", and aggregate S. aureus rows that aren't
-//   specifically MSSA or MRSA ("S. aureus", "Total Staph aureus",
-//   "Staph aureus (All strains)"). They stay unmapped and show no data,
-//   which is correct — empiric has no selector for them.
+//   "Enterococcus faecium VRE", and TRUE aggregate S. aureus rows that combine
+//   MSSA + MRSA ("S. aureus" [altru], "Total Staph aureus" [west_river],
+//   "Staph aureus (All strains)"). They stay unmapped and show no data —
+//   correct, since empiric has no selector for them.
+//   NOTE the one exception below: essentia's bare "Staphylococcus aureus" is
+//   NOT an aggregate — its own footnote defines it as MSSA ("isolates
+//   identified as Staphylococcus aureus are considered methicillin
+//   susceptible"). It's a distinct string from altru's "S. aureus", so mapping
+//   it to MSSA is safe and doesn't touch altru's genuine aggregate row.
 const ORG_ALIASES = {
   "E. coli":                  ["E. coli", "Escherichia coli"],
   "Klebsiella pneumoniae":    ["K. pneumoniae", "Klebsiella pneumoniae"],
   "Proteus mirabilis":        ["P. mirabilis", "Proteus mirabilis"],
   "Enterococcus faecalis":    ["E. faecalis", "Enterococcus faecalis"],
   "Pseudomonas aeruginosa":   ["P. aeruginosa", "Pseudomonas", "Pseudomonas aeruginosa"],
-  "Staph aureus (MSSA)":      ["Staph aureus (MSSA)", "Staphylococcus aureus (MSSA)", "MS Staph aureus"],
+  "Staph aureus (MSSA)":      ["Staph aureus (MSSA)", "Staphylococcus aureus (MSSA)", "MS Staph aureus", "Staphylococcus aureus"],
   "Staph aureus (MRSA)":      ["Staph aureus (MRSA)", "Staphylococcus aureus (MRSA)", "MR Staph aureus", "MRSA", "Methicillin Resistant Staphylococcus aureus"],
   "Streptococcus pneumoniae": ["S. pneumoniae", "Strep pneumoniae", "Streptococcus pneumoniae"],
 };
@@ -193,7 +198,7 @@ const SITES = [
 
 let selectedSite     = SITES[0].id;
 let selectedOrg      = null;
-let selectedFacility = 'trinity';
+let selectedFacility = 'sanford_bismarck';
 
 function resistCell(val) {
   if (val === null || val === undefined) return "";
@@ -391,7 +396,14 @@ async function loadFacilities() {
   }
 
   const facSel = document.getElementById("fac-sel");
-  Object.entries(FACILITY_SUSC).forEach(([id, f]) => {
+  // "5th Medical Group" (Minot AFB) pinned to the top of empiric's own dropdown —
+  // doesn't touch manifest.json order, which the antibiogram page's selector also uses.
+  const facEntries = Object.entries(FACILITY_SUSC).sort(([idA], [idB]) => {
+    if (idA === "minot_afb") return -1;
+    if (idB === "minot_afb") return 1;
+    return 0;
+  });
+  facEntries.forEach(([id, f]) => {
     const opt = document.createElement("option");
     opt.value = id;
     opt.textContent = f.label;

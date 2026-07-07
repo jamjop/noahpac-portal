@@ -295,6 +295,59 @@ def _dedup_organisms(organisms: list) -> list:
     return list(seen.values())
 
 
+# ── Plausibility validation ────────────────────────────────────────────────
+# Catches the classes of extraction error found during the 2026-07-06 manual
+# audit (column-shift misalignment, cross-table gram+/gram- schema bleeding,
+# full drug names used instead of abbreviated IDs). None of these are perfect
+# — they're deliberately narrow, high-confidence checks that flag biologically
+# implausible results rather than trying to catch everything. A flagged
+# facility is held for manual review instead of auto-deployed.
+
+# Drugs with no meaningful gram-negative role in this app's context — their
+# presence on a gram-negative organism means columns bled in from a
+# neighboring gram-positive table (e.g. west_river_urine's original bug).
+# Checked against every currently-corrected facility with zero false positives.
+#
+# NOTE: the mirror-image check (cephalosporins forbidden on gram-positive
+# organisms) was tried and dropped — Enterococcus's intrinsic cephalosporin
+# resistance is real and legitimately reported (caz/fep at minot_afb and
+# wramc, both user-confirmed against source images), and some Strep panels
+# genuinely test cefepime (essentia, also user-confirmed). Gram-positive
+# contamination isn't checked here; it wasn't a clean enough signal.
+_GRAM_NEG_FORBIDDEN = {"van", "dap", "lzd", "rif", "cli", "ery", "azi", "pen", "oxa"}
+
+
+def validate_facility(facility_data: dict) -> list[str]:
+    """Return a list of human-readable plausibility flags; empty = looks clean."""
+    from pdf_to_js import ABX_MAP
+    flags = []
+    for org in facility_data.get("organisms", []):
+        name = org.get("name", "?")
+        gram = org.get("gram")
+        s = org.get("s") or {}
+
+        for key, val in s.items():
+            if key not in ABX_MAP:
+                flags.append(f"{name}: unknown antibiotic ID '{key}' (not one of the 28 canonical keys)")
+            if isinstance(val, (int, float)) and not (0 <= val <= 100):
+                flags.append(f"{name}: {key}={val} is out of the 0-100 range")
+
+        if gram == "negative":
+            for key in _GRAM_NEG_FORBIDDEN:
+                if s.get(key) is not None:
+                    drug = ABX_MAP.get(key, key)
+                    flags.append(f"{name} ({gram}): has a value for {drug} ({key}) — "
+                                 f"implausible for this organism, likely cross-table contamination")
+
+        if "klebsiella" in name.lower():
+            amp_val = s.get("amp")
+            if isinstance(amp_val, (int, float)) and amp_val > 20:
+                flags.append(f"{name}: ampicillin={amp_val}% — Klebsiella is intrinsically "
+                             f"ampicillin-resistant (chromosomal beta-lactamase), expected ~0%")
+
+    return flags
+
+
 def extract_facility(urls: list[str], fac: dict, year: int) -> dict | None:
     """Download one or more PDFs, extract, merge, and return facility dict."""
     sys.path.insert(0, str(DIR))
@@ -390,7 +443,11 @@ def main() -> int:
         return 0
 
     updated_names = []
+    updated_ids   = []
+    held          = []   # list of (label, flags) — extracted but flagged, not deployed
     failed_names  = []
+
+    pending_dir = DIR / "data" / "pending"
 
     for urls, fac, year in to_update:
         print(f"\nUpdating {fac['id']} ({year}) from {len(urls)} PDF(s) …")
@@ -399,15 +456,31 @@ def main() -> int:
             if facility_data is None:
                 failed_names.append(fac["id"])
                 continue
+
+            flags = validate_facility(facility_data)
+            label = f"{fac['name']} ({year})"
+            if flags:
+                pending_dir.mkdir(parents=True, exist_ok=True)
+                pending_path = pending_dir / f"{fac['id']}.json"
+                pending_path.write_text(json.dumps(facility_data, indent=2))
+                pending_path.chmod(0o644)
+                held.append((label, flags))
+                print(f"  HELD for review ({len(flags)} flag(s)) — saved to {pending_path}")
+                print(f"  Live data/{fac['id']}.json NOT changed.")
+                for fl in flags:
+                    print(f"    ⚠ {fl}")
+                continue
+
             data_path = DIR / "data" / f"{fac['id']}.json"
             data_path.write_text(json.dumps(facility_data, indent=2))
             print(f"  Saved {data_path}")
-            updated_names.append(f"{fac['name']} ({year})")
+            updated_names.append(label)
+            updated_ids.append(fac["id"])
         except Exception as exc:
             print(f"  ERROR extracting {fac['id']}: {exc}", file=sys.stderr)
             failed_names.append(fac["id"])
 
-    if not updated_names:
+    if not updated_names and not held:
         print("All extractions failed — not rebuilding app.js")
         save_state(current)
         _write_report_result('error', [
@@ -415,6 +488,26 @@ def main() -> int:
         ])
         _write_last_checked('error')
         return 1
+
+    if not updated_names:
+        # Everything either failed or was held for review — nothing new to deploy.
+        print("Nothing to deploy (all extractions held for review or failed).")
+        save_state(current)
+        findings = [
+            {'detail': f"HELD (needs your review): {label} — {'; '.join(flags)}"}
+            for label, flags in held
+        ]
+        if failed_names:
+            findings.append({'detail': f"Extraction failed: {', '.join(failed_names)}"})
+        _write_report_result('held_for_review', findings)
+        _write_last_checked('held_for_review')
+        held_msg = "\n".join(f"• {label}: {'; '.join(flags)}" for label, flags in held)
+        push_notify(
+            pushover_user, pushover_token, "ND Antibiogram — Review Needed",
+            f"{len(held)} facility antibiogram(s) extracted but held for your review "
+            f"(saved under data/pending/, live site unchanged):\n{held_msg}",
+        )
+        return 0
 
     # Rebuild app.js
     print("\nRebuilding app.js …")
@@ -432,11 +525,14 @@ def main() -> int:
     live_js.write_text((DIR / "app.js").read_text())
     print(f"Deployed to {live_js}")
 
-    # Git commit and push
+    # Git commit and push — only the facilities that passed validation.
+    # data/pending/*.json (held facilities) is deliberately NOT staged: it's
+    # not live data, and shouldn't land in history until a human promotes it.
     git = lambda *args: subprocess.run(
         ["git", "-C", str(REPO_DIR), *args], capture_output=True, text=True
     )
-    git("add", "app.js", "data/")
+    git("add", "app.js", "data/manifest.json",
+        *[f"data/{fid}.json" for fid in updated_ids])
     commit_msg = (
         f"antibiogram: auto-update {', '.join(updated_names)}\n\n"
         f"Extracted via Claude vision from ND HHS archive.\n"
@@ -455,6 +551,9 @@ def main() -> int:
 
     # Notify
     lines = [f"• {n}" for n in updated_names]
+    if held:
+        lines.append(f"• HELD for review (not live): " +
+                     "; ".join(f"{label} [{'; '.join(flags)}]" for label, flags in held))
     if failed_names:
         lines.append(f"• FAILED: {', '.join(failed_names)}")
     msg = f"{len(updated_names)} facility antibiogram(s) updated:\n" + "\n".join(lines)
@@ -462,10 +561,15 @@ def main() -> int:
     print("Pushover notification sent.")
 
     findings = [{'detail': f"Updated: {n}"} for n in updated_names]
+    findings += [
+        {'detail': f"HELD (needs your review): {label} — {'; '.join(flags)}"}
+        for label, flags in held
+    ]
     if failed_names:
         findings.append({'detail': f"Extraction failed: {', '.join(failed_names)}"})
-    _write_report_result('changed' if not failed_names else 'error', findings)
-    _write_last_checked('changed' if not failed_names else 'error')
+    overall_status = 'held_for_review' if held else ('changed' if not failed_names else 'error')
+    _write_report_result(overall_status, findings)
+    _write_last_checked(overall_status)
 
     save_state(current)
     if not failed_names:

@@ -3,7 +3,7 @@
   "name": "CHI St. Alexius Health",
   "location": "Devils Lake, ND",
   "period": "2025",
-  "sourceNote": "ND HHS Archive \u00b7 CHI St. Alexius Health Antibiogram 2025 \u00b7 % susceptible, 1st isolate/patient/year",
+  "sourceNote": "ND HHS Archive · CHI St. Alexius Health Antibiogram 2025 · % susceptible, 1st isolate/patient/year",
   "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/public-health/hai/2025-chi-stalexius-devilslake-antibiogram-archive.pdf",
   "organisms": [
     {
@@ -12,14 +12,14 @@
       "isolates": 121,
       "note": null,
       "s": {
-        "oxacillin": 100,
-        "gentamicin": 100,
-        "tobramycin": 91,
-        "vancomycin": 100,
-        "doxycycline": 95,
-        "dap": 100,
-        "nit": 99,
-        "rif": 100
+        "oxa": 100,
+        "gen": 100,
+        "lvx": 91,
+        "van": 100,
+        "cli": 95,
+        "sxt": 100,
+        "dox": 99,
+        "nit": 100
       }
     },
     {
@@ -28,14 +28,14 @@
       "isolates": 53,
       "note": null,
       "s": {
-        "oxacillin": 0,
-        "gentamicin": 100,
-        "tobramycin": 30,
-        "vancomycin": 100,
-        "doxycycline": 77,
-        "dap": 90,
-        "nit": 96,
-        "rif": 100
+        "oxa": 0,
+        "gen": 100,
+        "lvx": 30,
+        "van": 100,
+        "cli": 77,
+        "sxt": 90,
+        "dox": 96,
+        "nit": 100
       }
     },
     {
@@ -44,14 +44,14 @@
       "isolates": 174,
       "note": null,
       "s": {
-        "oxacillin": 70,
-        "gentamicin": 100,
-        "tobramycin": 72,
-        "vancomycin": 100,
-        "doxycycline": 89,
-        "dap": 97,
-        "nit": 98,
-        "rif": 100
+        "oxa": 70,
+        "gen": 100,
+        "lvx": 72,
+        "van": 100,
+        "cli": 89,
+        "sxt": 97,
+        "dox": 98,
+        "nit": 100
       }
     },
     {
@@ -60,14 +60,14 @@
       "isolates": 58,
       "note": null,
       "s": {
-        "oxacillin": 43,
-        "gentamicin": 95,
-        "tobramycin": 81,
-        "vancomycin": 98,
-        "doxycycline": 52,
-        "dap": 69,
-        "nit": 88,
-        "rif": 100
+        "oxa": 43,
+        "gen": 95,
+        "lvx": 81,
+        "van": 98,
+        "cli": 52,
+        "sxt": 69,
+        "dox": 88,
+        "nit": 100
       }
     },
     {
@@ -77,12 +77,11 @@
       "note": "S - Gentamicin synergy only",
       "s": {
         "pen": 100,
-        "cfz": 70,
-        "caz": 96,
-        "fep": 92,
-        "vancomycin": 100,
-        "doxycycline": 85,
-        "nit": 52
+        "cro": 96,
+        "lvx": 100,
+        "van": 100,
+        "sxt": 85,
+        "dox": 52
       }
     },
     {
@@ -92,10 +91,10 @@
       "note": null,
       "s": {
         "pen": 78,
-        "caz": 98,
-        "tobramycin": 91,
-        "vancomycin": 100,
-        "doxycycline": 83
+        "cro": 98,
+        "lvx": 91,
+        "van": 100,
+        "cli": 83
       }
     },
     {
@@ -105,11 +104,11 @@
       "note": null,
       "s": {
         "amp": 100,
-        "gentamicin": 76,
-        "tobramycin": 87,
-        "vancomycin": 87,
-        "doxycycline": 99,
-        "nit": 33
+        "gen": 76,
+        "lvx": 87,
+        "cip": 87,
+        "van": 99,
+        "sxt": 33
       }
     },
     {
@@ -119,11 +118,11 @@
       "note": null,
       "s": {
         "amp": 19,
-        "gentamicin": 100,
-        "tobramycin": 13,
-        "vancomycin": 7,
-        "doxycycline": 42,
-        "nit": 40
+        "gen": 100,
+        "lvx": 13,
+        "cip": 7,
+        "van": 42,
+        "sxt": 40
       }
     },
     {
@@ -136,16 +135,15 @@
         "ams": 22,
         "ptz": 94,
         "cfz": 61,
-        "cfx": 89,
+        "cfz_u": 89,
         "cro": 91,
-        "caz": 91,
-        "fep": 99,
-        "cip": 96,
-        "lvx": 93,
-        "gen": 77,
-        "tob": 79,
-        "doxycycline": 87,
-        "rif": 96
+        "fep": 91,
+        "mem": 99,
+        "gen": 96,
+        "tob": 93,
+        "lvx": 77,
+        "cip": 79,
+        "nit": 96
       }
     },
     {
@@ -154,18 +152,19 @@
       "isolates": 128,
       "note": null,
       "s": {
-        "amp": 93,
+        "ams": 93,
         "ptz": 93,
         "cfz": 66,
-        "cfx": 86,
+        "cfz_u": 86,
         "cro": 88,
-        "caz": 88,
-        "cip": 95,
-        "lvx": 93,
-        "gen": 86,
-        "tob": 87,
-        "doxycycline": 87,
-        "rif": 26
+        "fep": 88,
+        "mem": 100,
+        "gen": 95,
+        "tob": 93,
+        "lvx": 86,
+        "cip": 87,
+        "sxt": 87,
+        "nit": 26
       }
     },
     {
@@ -174,19 +173,19 @@
       "isolates": 32,
       "note": null,
       "s": {
-        "amp": 100,
+        "ams": 100,
         "ptz": 84,
         "cfz": 0,
-        "cfx": 0,
+        "cfz_u": 0,
         "cro": 84,
-        "caz": 100,
         "fep": 100,
-        "cip": 100,
-        "lvx": 100,
-        "gen": 89,
+        "mem": 100,
+        "gen": 100,
         "tob": 100,
-        "doxycycline": 100,
-        "rif": 93
+        "lvx": 89,
+        "cip": 100,
+        "sxt": 100,
+        "nit": 93
       }
     },
     {
@@ -196,18 +195,19 @@
       "note": null,
       "s": {
         "amp": 81,
+        "ams": 100,
         "ptz": 100,
-        "cfz": 100,
-        "cfx": 16,
-        "cro": 93,
-        "caz": 97,
+        "cfz": 16,
+        "cfz_u": 93,
+        "cro": 97,
         "fep": 100,
-        "cip": 100,
-        "lvx": 100,
-        "gen": 96,
-        "tob": 83,
-        "doxycycline": 80,
-        "rif": 0
+        "mem": 100,
+        "gen": 100,
+        "tob": 96,
+        "lvx": 83,
+        "cip": 80,
+        "sxt": 80,
+        "nit": 0
       }
     },
     {
@@ -217,15 +217,15 @@
       "note": null,
       "s": {
         "ptz": 63,
-        "cfx": 0,
-        "caz": 83,
-        "fep": 97,
-        "cip": 94,
-        "lvx": 95,
-        "gen": 81,
-        "tob": 89,
-        "doxycycline": 89,
-        "rif": 50
+        "cfz_u": 0,
+        "fep": 83,
+        "mem": 97,
+        "gen": 94,
+        "tob": 95,
+        "lvx": 81,
+        "cip": 89,
+        "sxt": 89,
+        "nit": 50
       }
     },
     {
@@ -235,16 +235,17 @@
       "note": null,
       "s": {
         "ptz": 73,
-        "cfx": 0,
+        "cfz": 0,
+        "cfz_u": 0,
         "cro": 84,
-        "caz": 100,
         "fep": 100,
-        "cip": 100,
-        "lvx": 100,
-        "gen": 89,
+        "mem": 100,
+        "gen": 100,
         "tob": 100,
-        "doxycycline": 100,
-        "rif": 13
+        "lvx": 89,
+        "cip": 100,
+        "sxt": 100,
+        "nit": 13
       }
     },
     {
@@ -254,16 +255,17 @@
       "note": null,
       "s": {
         "ptz": 89,
-        "cfx": 0,
+        "cfz": 0,
+        "cfz_u": 0,
         "cro": 66,
-        "caz": 100,
         "fep": 100,
-        "cip": 100,
-        "lvx": 100,
+        "mem": 100,
         "gen": 100,
         "tob": 100,
-        "doxycycline": 100,
-        "rif": 90
+        "lvx": 100,
+        "cip": 100,
+        "sxt": 100,
+        "nit": 90
       }
     },
     {
@@ -273,9 +275,9 @@
       "note": null,
       "s": {
         "ptz": 88,
-        "caz": 97,
-        "fep": 90,
-        "cip": 100,
+        "fep": 97,
+        "mem": 90,
+        "tob": 100,
         "lvx": 79
       }
     }

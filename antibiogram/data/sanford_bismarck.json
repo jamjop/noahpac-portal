@@ -3,7 +3,7 @@
   "name": "Sanford Health",
   "location": "Bismarck, ND",
   "period": "2025",
-  "sourceNote": "ND HHS Archive \u00b7 Sanford Health Antibiogram 2025 \u00b7 % susceptible, 1st isolate/patient/year",
+  "sourceNote": "ND HHS Archive · Sanford Health Antibiogram 2025 · % susceptible, 1st isolate/patient/year",
   "sourceUrl": "https://www.hhs.nd.gov/sites/default/files/documents/public-health/hai/2025-sanford-bismarck-inpatient-outpatient-antibiogram-archive.pdf",
   "organisms": [
     {
@@ -12,17 +12,15 @@
       "isolates": 200,
       "note": null,
       "s": {
-        "amp": 89,
-        "ptz": 1.5,
-        "cfz": 99,
-        "cfz_u": 0,
-        "cxm": 85,
+        "ptz": 89,
+        "fep": 99,
+        "caz": 85,
         "cro": 81,
-        "gen": 100,
+        "mem": 100,
         "cip": 96,
         "lvx": 96,
-        "dox": 99,
-        "tet": 99,
+        "gen": 99,
+        "tob": 99,
         "nit": 87,
         "sxt": 97
       }
@@ -33,17 +31,15 @@
       "isolates": 179,
       "note": null,
       "s": {
-        "amp": 77,
-        "ptz": 3.4,
-        "cfz": 95,
-        "cfz_u": 2.8,
-        "cxm": 80,
+        "ptz": 77,
+        "fep": 95,
+        "caz": 80,
         "cro": 77,
-        "gen": 99,
+        "mem": 99,
         "cip": 95,
         "lvx": 95,
-        "dox": 99,
-        "tet": 99,
+        "gen": 99,
+        "tob": 99,
         "nit": 24,
         "sxt": 94
       }
@@ -56,19 +52,17 @@
       "s": {
         "amp": 62,
         "ptz": 98,
-        "ams": 0.3,
         "cfz": 92,
-        "cfz_u": 98,
-        "cxm": 0.8,
-        "cro": 92,
-        "gen": 95,
-        "cip": 100,
+        "fep": 98,
+        "caz": 92,
+        "cro": 95,
+        "mem": 100,
+        "cip": 83,
         "lvx": 83,
-        "dox": 83,
-        "tet": 95,
-        "nit": 95,
-        "sxt": 97,
-        "rif": 84
+        "gen": 95,
+        "tob": 95,
+        "nit": 97,
+        "sxt": 84
       }
     },
     {
@@ -77,17 +71,15 @@
       "isolates": 117,
       "note": null,
       "s": {
-        "amp": 84,
-        "ptz": 0.9,
-        "cfz": 100,
-        "cfz_u": 0,
-        "cxm": 85,
+        "ptz": 84,
+        "fep": 100,
+        "caz": 85,
         "cro": 86,
-        "gen": 100,
+        "mem": 100,
         "cip": 96,
         "lvx": 95,
-        "dox": 100,
-        "tet": 100,
+        "gen": 100,
+        "tob": 100,
         "nit": 12,
         "sxt": 99
       }
@@ -98,17 +90,15 @@
       "isolates": 164,
       "note": null,
       "s": {
-        "amp": 95,
-        "ptz": 3.0,
-        "cfz": 98,
-        "cfz_u": 0.6,
-        "cxm": 94,
+        "ptz": 95,
+        "fep": 98,
+        "caz": 94,
         "cro": 96,
-        "gen": 100,
+        "mem": 100,
         "cip": 96,
         "lvx": 98,
-        "dox": 98,
-        "tet": 98,
+        "gen": 98,
+        "tob": 98,
         "nit": 84,
         "sxt": 96
       }
@@ -119,18 +109,16 @@
       "isolates": 661,
       "note": null,
       "s": {
-        "amp": 93,
-        "ptz": 4.8,
-        "ams": 92,
-        "cfz": 98,
-        "cfz_u": 0.9,
-        "cxm": 91,
+        "ptz": 93,
+        "cfz": 92,
+        "fep": 98,
+        "caz": 91,
         "cro": 96,
-        "gen": 99,
+        "mem": 99,
         "cip": 92,
         "lvx": 91,
-        "dox": 98,
-        "tet": 98,
+        "gen": 98,
+        "tob": 98,
         "nit": 26,
         "sxt": 94
       }
@@ -143,17 +131,15 @@
       "s": {
         "amp": 89,
         "ptz": 100,
-        "ams": 0,
         "cfz": 83,
-        "cfz_u": 98,
-        "cxm": 1.4,
-        "cro": 99,
-        "gen": 98,
-        "cip": 100,
-        "lvx": 88,
-        "dox": 87,
-        "tet": 97,
-        "nit": 97,
+        "fep": 98,
+        "caz": 99,
+        "cro": 98,
+        "mem": 100,
+        "cip": 88,
+        "lvx": 87,
+        "gen": 97,
+        "tob": 97,
         "sxt": 92
       }
     },
@@ -164,17 +150,12 @@
       "note": null,
       "s": {
         "ptz": 86,
-        "ams": null,
-        "cfz": 93,
-        "cfz_u": null,
-        "cxm": 92,
-        "gen": 91,
+        "fep": 93,
+        "caz": 92,
+        "mem": 91,
         "cip": 87,
         "lvx": 81,
-        "dox": null,
-        "tet": 97,
-        "nit": null,
-        "sxt": null
+        "tob": 97
       }
     },
     {
@@ -183,18 +164,14 @@
       "isolates": 49,
       "note": "Instrument does not give data for S. marcescens and pip/tazo",
       "s": {
-        "amp": null,
-        "ptz": null,
-        "cfz": 100,
-        "cfz_u": 0,
-        "cxm": 94,
+        "fep": 100,
+        "caz": 94,
         "cro": 88,
-        "gen": 100,
+        "mem": 100,
         "cip": 90,
         "lvx": 90,
-        "dox": 100,
-        "tet": 86,
-        "nit": null,
+        "gen": 100,
+        "tob": 86,
         "sxt": 100
       }
     },
@@ -204,18 +181,7 @@
       "isolates": 30,
       "note": "S. maltophilia minocycline: 100% S",
       "s": {
-        "amp": null,
-        "ptz": null,
-        "cfz": null,
-        "cfz_u": null,
-        "cxm": null,
-        "cro": null,
-        "gen": null,
-        "cip": null,
         "lvx": 63,
-        "dox": null,
-        "tet": null,
-        "nit": null,
         "sxt": 100
       }
     },
@@ -225,19 +191,7 @@
       "isolates": 34,
       "note": null,
       "s": {
-        "amp": 88,
-        "ptz": null,
-        "cfz": null,
-        "cfz_u": null,
-        "cxm": null,
-        "cro": null,
-        "gen": null,
-        "cip": null,
-        "lvx": null,
-        "dox": null,
-        "tet": null,
-        "nit": null,
-        "sxt": null
+        "amp": 88
       }
     },
     {
@@ -247,11 +201,11 @@
       "note": null,
       "s": {
         "amp": 100,
-        "cro": 92,
+        "cip": 92,
         "lvx": 93,
-        "ery": 99,
+        "nit": 99,
         "lzd": 96,
-        "dap": 99
+        "van": 99
       }
     },
     {
@@ -261,11 +215,11 @@
       "note": null,
       "s": {
         "amp": 18,
-        "cro": 7,
+        "cip": 7,
         "lvx": 7,
-        "ery": 26,
+        "nit": 26,
         "lzd": 95,
-        "dap": 49
+        "van": 49
       }
     },
     {
@@ -275,13 +229,13 @@
       "note": null,
       "s": {
         "oxa": 100,
-        "gen": 97,
-        "cip": 71,
-        "ery": 99,
-        "cli": 92,
+        "cli": 97,
+        "ery": 71,
+        "nit": 99,
+        "tet": 92,
         "sxt": 97,
         "lzd": 100,
-        "dap": 100
+        "van": 100
       }
     },
     {
@@ -291,13 +245,13 @@
       "note": "2025 inpatient + outpatient MRSA rate: 26%",
       "s": {
         "oxa": 0,
-        "gen": 92,
-        "cip": 20,
-        "ery": 99,
-        "cli": 87,
+        "cli": 92,
+        "ery": 20,
+        "nit": 99,
+        "tet": 87,
         "sxt": 95,
         "lzd": 100,
-        "dap": 100
+        "van": 100
       }
     },
     {
@@ -307,31 +261,30 @@
       "note": null,
       "s": {
         "oxa": 40,
-        "gen": 69,
-        "cip": 36,
-        "ery": 100,
-        "cli": 86,
+        "cli": 69,
+        "ery": 36,
+        "nit": 100,
+        "tet": 86,
         "sxt": 62,
         "lzd": 100,
-        "dap": 100
+        "van": 100
       }
     },
     {
       "name": "Streptococcus pneumoniae",
       "gram": "positive",
       "isolates": 48,
-      "note": null,
+      "note": "Penicillin/ceftriaxone shown at non-meningitis breakpoints; meningitis breakpoints: penicillin 71%, ceftriaxone 83%.",
       "s": {
-        "amp": 100,
-        "pen": 71,
-        "cfz": 100,
-        "cro": 98,
-        "cip": 88,
+        "pen": 100,
+        "cro": 100,
+        "lvx": 98,
+        "cli": 88,
         "ery": 60,
         "tet": 83,
         "sxt": 79,
         "lzd": 100,
-        "dap": 100
+        "van": 100
       }
     }
   ]

@@ -3,7 +3,7 @@
   "name": "CHI St. Alexius Health",
   "location": "Bismarck, ND",
   "period": "2024",
-  "sourceNote": "ND HHS Archive \u00b7 CHI St. Alexius Health Bismarck Antibiogram (Jan 1 \u2013 Dec 31, 2024) \u00b7 inpatient \u00b7 % susceptible",
+  "sourceNote": "ND HHS Archive · CHI St. Alexius Health Bismarck Antibiogram (Jan 1 – Dec 31, 2024) · inpatient · % susceptible",
   "organisms": [
     {
       "name": "Staph aureus (MSSA)",
@@ -72,6 +72,7 @@
         "pen": 96,
         "cro": 96,
         "lvx": 100,
+        "van": 100,
         "sxt": 80,
         "dox": 58
       }
@@ -119,10 +120,11 @@
       "gram": "negative",
       "isolates": 536,
       "s": {
-        "ptz": 50,
-        "cfz_u": 96,
-        "cro": 91,
-        "caz": 93,
+        "ams": 50,
+        "ptz": 96,
+        "cfz": 0,
+        "cfz_u": 91,
+        "cro": 93,
         "fep": 99,
         "mem": 100,
         "tob": 95,
@@ -137,10 +139,11 @@
       "gram": "negative",
       "isolates": 103,
       "s": {
-        "ptz": 100,
-        "cfz_u": 91,
-        "cro": 85,
-        "caz": 87,
+        "ams": 100,
+        "ptz": 91,
+        "cfz": 6,
+        "cfz_u": 85,
+        "cro": 87,
         "fep": 89,
         "mem": 99,
         "tob": 94,
@@ -154,9 +157,10 @@
       "gram": "negative",
       "isolates": 28,
       "s": {
-        "cfz_u": 94,
+        "ptz": 94,
+        "cfz": 0,
+        "cfz_u": 0,
         "cro": 96,
-        "caz": 100,
         "fep": 100,
         "mem": 100,
         "tob": 100,
@@ -171,15 +175,17 @@
       "gram": "negative",
       "isolates": 55,
       "s": {
-        "cfz_u": 100,
+        "ptz": 100,
+        "cfz": 0,
+        "cfz_u": 98,
         "cro": 98,
-        "caz": 98,
         "fep": 100,
         "mem": 100,
-        "tob": 100,
+        "tob": 98,
         "lvx": 75,
         "cip": 75,
-        "sxt": 90
+        "sxt": 90,
+        "nit": 0
       }
     },
     {
@@ -188,7 +194,7 @@
       "isolates": 38,
       "s": {
         "ptz": 65,
-        "caz": "nr",
+        "cfz_u": 0,
         "fep": 89,
         "mem": 95,
         "tob": 97,
@@ -204,7 +210,8 @@
       "isolates": 19,
       "s": {
         "ptz": 71,
-        "caz": "nr",
+        "cfz_u": 0,
+        "cro": 79,
         "fep": 100,
         "mem": 100,
         "tob": 100,
@@ -221,7 +228,8 @@
       "note": "n<30; interpret with caution",
       "s": {
         "ptz": 85,
-        "caz": "nr",
+        "cfz_u": 0,
+        "cro": 60,
         "fep": 100,
         "mem": 100,
         "tob": 100,
