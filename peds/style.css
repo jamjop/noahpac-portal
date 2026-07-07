@@ -69,6 +69,12 @@
    page's 960px header/content — override so the footer lines up. */
 footer{max-width:960px}
 
+.source-note{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;color:var(--ink-muted);
+  line-height:1.55;padding:0 2px;
+}
+
 /* ── Input panel ── */
 .criterion{
   background:var(--surface);border-radius:var(--r);
