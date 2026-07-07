@@ -17,6 +17,12 @@ footer{max-width:960px}
   .page-body{display:flex;padding:24px 16px 60px;gap:24px;align-items:flex-start}
   .cat-nav{width:180px;flex-shrink:0;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
   .page-body>.pane{flex:1;min-width:0;max-width:none;margin:0;padding:0}
+  /* Above this breakpoint .page-body is nav (180px) + gap (24px) + .pane —
+     footer should align with .pane specifically, not the nav+pane combo, so
+     it needs the same left offset the nav+gap consume (16px base padding
+     + 180px nav + 24px gap = 220px). Below 800px the nav stacks above the
+     pane instead of beside it, so no offset is needed there. */
+  footer{padding-left:220px}
 }
 @media(max-width:799px){
   .cat-nav{display:block;background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:8px 12px 4px;margin:16px 16px 0}
