@@ -3575,7 +3575,7 @@ const FACILITIES = [
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────
-let activeFacilityId = "trinity";
+let activeFacilityId = "sanford_bismarck";
 let activeGram       = "positive";
 
 function getFacility() {
@@ -3643,7 +3643,14 @@ function render() {
 // ── Facility selector ──────────────────────────────────────────────────────
 function buildFacilitySelect() {
   const sel = document.getElementById("facility-select");
-  sel.innerHTML = FACILITIES.map(f =>
+  // "5th Medical Group" (Minot AFB) pinned to the top of this dropdown —
+  // display-order only, doesn't touch the underlying FACILITIES array/manifest.
+  const ordered = [...FACILITIES].sort((a, b) => {
+    if (a.id === "minot_afb") return -1;
+    if (b.id === "minot_afb") return 1;
+    return 0;
+  });
+  sel.innerHTML = ordered.map(f =>
     `<option value="${f.id}"${f.id === activeFacilityId ? " selected" : ""}>${f.name} — ${f.location} (${f.period})</option>`
   ).join("");
   sel.onchange = () => { activeFacilityId = sel.value; render(); };
