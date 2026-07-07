@@ -65,6 +65,10 @@
 .header-inner{max-width:960px;margin:0 auto;padding:22px 16px 18px}
 .content{max-width:960px;margin:0 auto;padding:20px 16px 60px}
 
+/* shared.css's footer defaults to max-width:880px, which doesn't match this
+   page's 960px header/content — override so the footer lines up. */
+footer{max-width:960px}
+
 /* ── Input panel ── */
 .criterion{
   background:var(--surface);border-radius:var(--r);
