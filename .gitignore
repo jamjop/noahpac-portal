@@ -81,8 +81,6 @@ antibiogram/data/pending/
 **/known_files.json
 **/last_checked.json
 
-# Antibiogram API token — server-only, never commit
-antibiogram/api-config.js
 
 # Playwright ephemeral output — generated per run, not source
 test-results/

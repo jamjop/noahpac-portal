@@ -11,9 +11,11 @@ API key read from ANTHROPIC_API_KEY env var (set in systemd unit).
 
 import base64
 import io
+import ipaddress
 import json
 import os
 import re
+import socket
 import sys
 import tempfile
 import urllib.request
@@ -33,7 +35,23 @@ app = Flask(__name__)
 MAX_PDF_BYTES = 30 * 1024 * 1024  # 30 MB
 ALLOWED_EXTENSIONS = {".pdf"}
 TIMEOUT_DOWNLOAD = 30
+MAX_REDIRECTS = 5
 MODEL = os.environ.get("EXTRACT_MODEL", "claude-haiku-4-5-20251001")
+
+
+def _is_public_host(hostname: str) -> bool:
+    """Resolve hostname and reject if any address is private/loopback/link-local/
+    reserved — this endpoint fetches arbitrary user-submitted URLs server-side,
+    so without this check it's an SSRF vector into the local network."""
+    try:
+        infos = socket.getaddrinfo(hostname, None)
+    except socket.gaierror:
+        return False
+    for family, _, _, _, sockaddr in infos:
+        ip = ipaddress.ip_address(sockaddr[0])
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+            return False
+    return True
 
 
 def validate_url(url: str) -> str | None:
@@ -47,12 +65,29 @@ def validate_url(url: str) -> str | None:
     ext = Path(p.path).suffix.lower()
     if ext not in ALLOWED_EXTENSIONS:
         return f"URL must point to a PDF file (got '{ext}')"
+    if not p.hostname or not _is_public_host(p.hostname):
+        return "URL must resolve to a public address"
     return None
+
+
+class _SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Re-validates every redirect hop against the same public-host check —
+    otherwise a server could pass initial validation then 302 to an internal
+    address and urllib would follow it with no further checks."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        host = urlparse(newurl).hostname
+        if not host or not _is_public_host(host):
+            raise urllib.error.URLError(f"Redirect to non-public host blocked: {newurl}")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_opener = urllib.request.build_opener(_SafeRedirectHandler())
 
 
 def download_pdf(url: str) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "nd-antibiogram-import/1.0"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT_DOWNLOAD) as resp:
+    with _opener.open(req, timeout=TIMEOUT_DOWNLOAD) as resp:
         content_type = resp.headers.get("Content-Type", "")
         data = resp.read(MAX_PDF_BYTES + 1)
     if len(data) > MAX_PDF_BYTES:
@@ -116,20 +151,13 @@ def clean_organisms(organisms: list) -> list:
     return cleaned
 
 
-def _check_token() -> bool:
-    """Return True if request carries the correct API token."""
-    expected = os.environ.get("EXTRACT_TOKEN", "").strip()
-    if not expected:
-        return True  # token not configured — allow (backwards compat during deploy)
-    provided = request.headers.get("X-Api-Token", "").strip()
-    return provided == expected
-
-
 @app.route("/extract", methods=["POST"])
 def extract():
-    if not _check_token():
-        return jsonify({"error": "Unauthorized"}), 401
-
+    # No token check here — a client-side token shipped to the browser (as this
+    # one was, in api-config.js) isn't a real access control, since anyone can
+    # read it from page source. The actual defense against abuse is the nginx
+    # rate limit in front of this endpoint (2 req/min/IP, burst 4 — see
+    # /etc/nginx/conf.d/noahpac.com.conf). Removed 2026-07-07.
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
     if not api_key:
         return jsonify({"error": "Server not configured (missing API key)"}), 503
