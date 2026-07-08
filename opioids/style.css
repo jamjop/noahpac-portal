@@ -171,7 +171,12 @@ footer{max-width:1000px}
 
 /* ── Mobile ── */
 @media(max-width:700px){
-  .page-body{flex-direction:column}
+  /* Base rule sets align-items:flex-start for the desktop row layout —
+     without this reset, flex items shrink-to-fit their content's intrinsic
+     width instead of stretching to the column's full width once
+     flex-direction switches to column (latent overflow risk if any
+     .criteria-col content is ever wider than the viewport). */
+  .page-body{flex-direction:column;align-items:stretch}
   .result-col{width:100%;position:static;flex-direction:row;flex-wrap:wrap}
   .result-panel{flex:1;min-width:200px}
 }

@@ -19,6 +19,7 @@ footer{max-width:1000px}
   border-radius:var(--r);
   padding:18px 20px;
   box-shadow:var(--sh);
+  min-width:0;
 }
 .ref-card-inner{background:var(--bg)}
 
@@ -85,7 +86,14 @@ footer{max-width:1000px}
 
 /* ── Mobile ── */
 @media(max-width:700px){
-  .page-body{flex-direction:column}
+  /* Base rule sets align-items:flex-start for the desktop row layout — with
+     no reset here, flex items shrink-to-fit their content's intrinsic width
+     instead of stretching to the column's full width once flex-direction
+     switches to column. .result-col has its own explicit width:100% below
+     so it's unaffected, but .criteria-col has no such override, so its
+     wide reference table (white-space:nowrap headers) was forcing it — and
+     the whole page — 67px wider than the viewport. */
+  .page-body{flex-direction:column;align-items:stretch}
   .result-col{width:100%;position:static}
 }
 
