@@ -35,17 +35,18 @@ footer{max-width:1000px}
 .c-name{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .c-desc{font-size:11.5px;color:var(--ink-muted);line-height:1.45}
 
-/* ── Pill seg buttons (dynamic, many options) ── */
-.seg{display:flex;flex-wrap:wrap;gap:5px}
-.seg-btn{
-  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;
-  padding:6px 12px;border-radius:50px;
-  border:1.5px solid var(--line);
-  background:var(--surface);color:var(--ink-soft);
-  cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap
+/* ── Drug select dropdown (matches empiric's .site-select) ── */
+.site-select{
+  width:100%;padding:10px 36px 10px 14px;
+  border:1.5px solid var(--line);border-radius:var(--r-sm);
+  background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  transition:border-color .15s;
 }
-.seg-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
-.seg-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.site-select:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
 
 /* ── Reference table ── */
 .tbl-wrap{overflow-x:auto}
@@ -90,7 +91,6 @@ footer{max-width:1000px}
 
 /* ── Dark mode ── */
 @media(prefers-color-scheme:dark){
-  .seg-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
   .res-ok{background:var(--ok-soft)}
   .res-warn{background:var(--warn-soft)}
   .res-crit{background:var(--risk-soft)}

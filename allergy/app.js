@@ -129,20 +129,14 @@ function renderSegs() {
   const pEl = document.getElementById("seg-proposed");
 
   aEl.innerHTML = ALLERGY_DRUGS.map(d =>
-    `<button class="seg-btn${d===selectedAllergy?" active":""}" data-drug="${d}">${d}</button>`
+    `<option value="${d}"${d===selectedAllergy?" selected":""}>${d}</option>`
   ).join("");
   pEl.innerHTML = ALL_DRUGS.map(d =>
-    `<button class="seg-btn${d===selectedProposed?" active":""}" data-drug="${d}">${d}</button>`
+    `<option value="${d}"${d===selectedProposed?" selected":""}>${d}</option>`
   ).join("");
 
-  aEl.querySelectorAll(".seg-btn").forEach(btn => btn.addEventListener("click", () => {
-    selectedAllergy = btn.dataset.drug;
-    renderSegs(); renderResult();
-  }));
-  pEl.querySelectorAll(".seg-btn").forEach(btn => btn.addEventListener("click", () => {
-    selectedProposed = btn.dataset.drug;
-    renderSegs(); renderResult();
-  }));
+  aEl.onchange = () => { selectedAllergy = aEl.value; renderResult(); };
+  pEl.onchange = () => { selectedProposed = pEl.value; renderResult(); };
 }
 
 function renderResult() {
