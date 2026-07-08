@@ -42,7 +42,7 @@
   }
 }
 
-.header-inner{max-width:860px;margin:0 auto;padding:20px 22px 16px}
+.header-inner{max-width:860px;margin:0 auto;padding:22px 16px 18px}
 
 .panel{background:var(--surface);border-radius:var(--r);padding:14px 22px;box-shadow:var(--sh);margin-bottom:18px}
 .tab-pills{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
