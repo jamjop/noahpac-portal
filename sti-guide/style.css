@@ -26,9 +26,9 @@ body{padding-bottom:50px}
 .reg-label.fl{color:var(--ok);border-color:var(--ok)}
 .reg-label.preg{color:var(--preg-ink);border-color:var(--preg-ink)}
 
-.reg-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:5px;padding:6px 10px;background:var(--bg);border-radius:var(--r-sm)}
-.reg-row.fl{box-shadow:0 0 0 2px var(--ok);background:var(--surface)}
-.reg-row.preg{box-shadow:0 0 0 2px var(--preg-ink);background:var(--surface)}
+.reg-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:8px;padding:16px 18px;background:var(--bg);border-radius:var(--r);box-shadow:var(--sh)}
+.reg-row.fl{box-shadow:0 0 0 2px var(--ok),var(--sh);background:var(--surface)}
+.reg-row.preg{box-shadow:0 0 0 2px var(--preg-ink),var(--sh);background:var(--surface)}
 .reg-drug{font-weight:700;font-size:13px;color:var(--ink)}
 .reg-dose{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink);flex-basis:100%}
 .reg-note{font-size:11.5px;color:var(--ink-muted);font-style:italic;flex-basis:100%}
