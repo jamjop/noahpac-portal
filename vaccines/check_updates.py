@@ -30,9 +30,7 @@ Usage:
 """
 
 import os
-import re
 import sys
-import urllib.request
 from datetime import date
 from pathlib import Path
 
@@ -137,25 +135,6 @@ PAGE_SOURCES = [
 ]
 
 
-def check_page(page_cfg: dict, known_date: str) -> tuple[str, bool]:
-    """Fetch a page and check for date changes using configured patterns."""
-    try:
-        req = urllib.request.Request(
-            page_cfg['url'],
-            headers={'User-Agent': USER_AGENT},
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            html = resp.read().decode('utf-8', errors='replace')
-        for pat in page_cfg['date_patterns']:
-            m = re.search(pat, html, re.IGNORECASE)
-            if m:
-                current = m.group(1).strip()
-                return current, (current != known_date and bool(known_date))
-    except Exception as exc:
-        print(f"  WARNING: could not fetch {page_cfg['name']}: {exc}", file=sys.stderr)
-    return known_date, False
-
-
 def main() -> int:
     user  = os.environ.get('PUSHOVER_USER', '').strip()
     token = os.environ.get('PUSHOVER_TOKEN', '').strip()
@@ -170,13 +149,19 @@ def main() -> int:
 
     page_changed = False
     page_notes: list[str] = []
+    page_errors: list[str] = []
 
     for page_cfg in PAGE_SOURCES:
         known = state.get(page_cfg['id'], '')
         print(f"Checking {page_cfg['name']} …")
-        current, changed = check_page(page_cfg, known)
+        result = pw.check_page_source(page_cfg['name'], page_cfg['url'],
+                                       page_cfg['date_patterns'], known, USER_AGENT)
+        current = result['value']
         print(f"  Page date: {current or '(not found)'}")
-        if changed and not first_run:
+        if result['error']:
+            print(f"  ERROR: {result['error']}", file=sys.stderr)
+            page_errors.append(result['error'])
+        elif result['changed'] and not first_run:
             page_changed = True
             note = f"{page_cfg['name']} date → {current}"
             page_notes.append(note)
@@ -192,16 +177,33 @@ def main() -> int:
         print('No notification sent on first run.')
         return 0
 
-    if not new_findings and not page_changed:
+    if not new_findings and not page_changed and not page_errors:
         print(f'No ACIP/AAP vaccine schedule changes detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
         pw.save_last_checked(APP_DIR, 'no_change')
+        return 0
+
+    if not new_findings and not page_changed and page_errors:
+        # Nothing content-wise to report, but one or more page checks are
+        # broken (e.g. blocked fetch) — surface as 'error', not 'no_change'.
+        msg = 'Page check error(s):\n' + '\n'.join(f'• {e}' for e in page_errors)
+        print(msg)
+        pw.push_notify(user, token, ALERT_TITLE, msg, APP_URL, APP_NAME)
+        pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'error',
+                                   [{'detail': e} for e in page_errors])
+        pw.save_last_checked(APP_DIR, 'error')
+        print('Notification sent.')
         return 0
 
     lines = []
     for note in page_notes:
         lines.append(note)
     if page_notes:
+        lines.append('')
+    if page_errors:
+        lines.append('Page check error(s) (unrelated to findings below):')
+        for e in page_errors:
+            lines.append(f'• {e}')
         lines.append('')
     if new_findings:
         lines.append(f'{len(new_findings)} new publication(s):\n')
@@ -214,6 +216,7 @@ def main() -> int:
     print(message)
     pw.push_notify(user, token, ALERT_TITLE, message, APP_URL, APP_NAME)
     findings = [{'detail': n} for n in page_notes]
+    findings.extend({'detail': f'Page check error: {e}'} for e in page_errors)
     findings.extend(
         {'search': name, 'title': m['title'], 'pmid': m['pmid'],
          'journal': m['journal'], 'pubdate': m['pubdate']}

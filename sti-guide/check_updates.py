@@ -93,6 +93,7 @@ def main() -> int:
 
     alerts: list[str] = []
     findings: list[dict] = []
+    page_error: str | None = None
 
     # ── Page check ────────────────────────────────────────────────────────────
     print(f"Fetching {PAGE_URL} …")
@@ -119,8 +120,12 @@ def main() -> int:
 
         pw.save_state(PAGE_STATE, {'links': sorted(current_links), 'last_reviewed': current_reviewed})
     except Exception as exc:
+        # Do NOT let this fall through silently — a page that failed to load
+        # is not the same as a page that hasn't changed. Without an explicit
+        # 'error' status, a fetch failure here (e.g. Akamai bot-blocking the
+        # host) would previously be indistinguishable from a clean run.
+        page_error = f'CDC STI page fetch failed: {exc}'
         print(f"  ERROR fetching page: {exc}", file=sys.stderr)
-        findings.append({'detail': f'Page fetch error: {exc}'})
 
     # ── PubMed checks ─────────────────────────────────────────────────────────
     pmid_state = pw.load_state(PMID_STATE)
@@ -142,11 +147,25 @@ def main() -> int:
                          'pubdate': m['pubdate']})
 
     # ── Report ────────────────────────────────────────────────────────────────
-    if not alerts:
+    if not alerts and not page_error:
         print(f'No changes detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
         pw.save_last_checked(APP_DIR, 'no_change')
         return 0
+
+    if not alerts and page_error:
+        # Nothing content-wise to report, but the page check itself is
+        # broken — surface as 'error' (red) rather than 'no_change' (green).
+        print(page_error)
+        pw.push_notify(user, token, ALERT_TITLE, page_error, PAGE_URL, 'CDC STI Treatment Guidelines')
+        pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'error', [{'detail': page_error}])
+        pw.save_last_checked(APP_DIR, 'error')
+        print('Notification sent.')
+        return 0
+
+    if page_error:
+        alerts.insert(0, f'WARNING: {page_error}')
+        findings.insert(0, {'detail': page_error})
 
     message = 'CDC STI guidelines update detected:\n\n' + '\n'.join(f'• {a}' for a in alerts)
     message += f'\n\n{UPDATE_HINT}'

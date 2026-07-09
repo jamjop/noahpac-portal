@@ -25,6 +25,16 @@ USER_AGENT  = 'noahpac-sepsis-monitor/1.0'
 ALERT_TITLE = 'Sepsis Guidelines Update'
 UPDATE_HINT = 'Review and update /var/www/noahpac-portal/sepsis/app.js if Sepsis-3 criteria or bundle recommendations changed.'
 
+# SSC publishes a new numbered guideline revision every several years (2016,
+# 2021, 2026) rather than dating a page — the version year itself is the
+# change signal, so we regex for it instead of a "last updated" string.
+SCCM_ADULT_URL = 'https://www.sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines'
+SCCM_DATE_PATTERNS = [
+    r'Guidelines for Management of Sepsis and Septic Shock\s+(\d{4})',
+    r'(\d{4})\s+SSC Adult Guidelines Update',
+    r'(\d{4})\s+adult guidelines update',
+]
+
 SEARCHES = [
     {
         'id':      'surviving_sepsis',
@@ -62,6 +72,20 @@ def main() -> int:
 
     state     = pw.load_state(STATE_FILE)
     first_run = not state
+
+    known_version = state.get('sccm_adult_version', '')
+    print(f"Checking {SCCM_ADULT_URL} …")
+    page_result = pw.check_page_source('SSC Adult Guidelines', SCCM_ADULT_URL,
+                                        SCCM_DATE_PATTERNS, known_version, USER_AGENT)
+    print(f"  Guideline version: {page_result['value'] or '(not found)'}")
+    page_changed = bool(page_result['changed'] and not first_run)
+    page_error   = page_result['error']
+    if page_error:
+        print(f"  ERROR: {page_error}", file=sys.stderr)
+    elif page_changed:
+        print(f"  Version changed: {known_version!r} → {page_result['value']!r}")
+    state['sccm_adult_version'] = page_result['value']
+
     if first_run:
         print('First run — initialising state (no alert will be sent).')
 
@@ -69,30 +93,53 @@ def main() -> int:
     pw.save_state(STATE_FILE, state)
 
     if first_run:
-        total = sum(len(v) for v in state.values())
+        total = sum(len(v) for v in state.values() if isinstance(v, list))
         print(f'State initialised with {total} PMIDs across {len(SEARCHES)} searches.')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
         pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
-    if not findings:
+    if not findings and not page_changed and not page_error:
         print(f'No changes detected ({date.today()}).')
         pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'no_change', [])
         pw.save_last_checked(APP_DIR, 'no_change')
         return 0
 
-    lines = [f'{len(findings)} new guideline publication(s) — review for sepsis guideline updates:\n']
-    lines.append(pw.format_findings(findings))
+    if not findings and not page_changed and page_error:
+        # SSC page check is broken but nothing else to report — surface as
+        # 'error', not 'no_change', so a blocked fetch isn't hidden.
+        msg = f'SSC guideline page check error: {page_error}'
+        print(msg)
+        pw.push_notify(user, token, ALERT_TITLE, msg, APP_URL, APP_NAME)
+        pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'error', [{'detail': msg}])
+        pw.save_last_checked(APP_DIR, 'error')
+        print('Notification sent.')
+        return 0
+
+    lines = []
+    if page_changed:
+        lines.append(f"SSC Adult Guidelines version changed: {known_version!r} → {page_result['value']!r}\n")
+    if page_error:
+        lines.append(f'(Page check error, unrelated to findings below: {page_error})\n')
+    if findings:
+        lines.append(f'{len(findings)} new guideline publication(s) — review for sepsis guideline updates:\n')
+        lines.append(pw.format_findings(findings))
     lines.append(UPDATE_HINT)
     message = '\n'.join(lines)
 
     print(message)
     pw.push_notify(user, token, ALERT_TITLE, message, APP_URL, APP_NAME)
-    pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'changed', [
+    report_findings = []
+    if page_changed:
+        report_findings.append({'detail': f"SSC Adult Guidelines version changed: {known_version!r} → {page_result['value']!r}"})
+    if page_error:
+        report_findings.append({'detail': f'Page check error: {page_error}'})
+    report_findings.extend(
         {'search': name, 'title': m['title'], 'pmid': m['pmid'],
          'journal': m['journal'], 'pubdate': m['pubdate']}
         for name, m in findings
-    ])
+    )
+    pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, 'changed', report_findings)
     pw.save_last_checked(APP_DIR, 'changed')
     print('Notification sent.')
     return 0

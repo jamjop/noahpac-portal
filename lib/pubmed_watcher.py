@@ -6,6 +6,7 @@ own SEARCHES list, app metadata, and notification strings. All HTTP, state
 I/O, and Pushover logic lives here.
 """
 import json
+import re
 import sys
 import time
 import urllib.request
@@ -191,6 +192,42 @@ def run_searches(
         time.sleep(0.4)
 
     return state, findings
+
+
+def check_page_source(name: str, url: str, date_patterns: list[str], known_value: str,
+                      user_agent: str = 'noahpac-monitor/1.0', timeout: int = 30) -> dict:
+    """
+    Fetch a page and look for a date/version marker among date_patterns.
+
+    Returns {'value': str, 'changed': bool, 'error': str|None}.
+
+    `changed` is only True when a value was successfully extracted AND
+    differs from a non-empty known_value (so first-run never alerts).
+
+    On fetch failure or a pattern miss, `value` is left as known_value
+    (state is not corrupted) and `error` is set — callers MUST check
+    `error` and surface it (e.g. write_quarterly_result status='error'),
+    since a page that fails to load is NOT the same as a page that hasn't
+    changed. Silently treating a fetch failure as "no change" hides a real
+    monitoring gap behind a false-clean report.
+    """
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': user_agent})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            html = resp.read().decode('utf-8', errors='replace')
+    except Exception as exc:
+        return {'value': known_value, 'changed': False,
+                'error': f'{name}: fetch failed — {exc}'}
+
+    for pat in date_patterns:
+        m = re.search(pat, html, re.IGNORECASE)
+        if m:
+            current = m.group(1).strip()
+            changed = bool(known_value) and current != known_value
+            return {'value': current, 'changed': changed, 'error': None}
+
+    return {'value': known_value, 'changed': False,
+            'error': f'{name}: no date/version pattern matched (page structure may have changed)'}
 
 
 def format_findings(findings: list[tuple[str, dict]]) -> str:
