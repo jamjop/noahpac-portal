@@ -69,7 +69,7 @@ footer{max-width:1000px}
     "convert    tapering"
     "equiv      tapering"
     "dose       tapering"
-    "reference  reference";
+    "reference  .";
   gap:12px 28px;
   align-items:start;
 }
