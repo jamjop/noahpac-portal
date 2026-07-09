@@ -12,7 +12,6 @@ import os
 import re
 import sys
 import time
-import urllib.request
 from datetime import date
 from pathlib import Path
 
@@ -66,12 +65,6 @@ SEARCHES = [
 ]
 
 
-def fetch_page(url: str) -> str:
-    req = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return resp.read().decode('utf-8', errors='replace')
-
-
 def extract_links(html: str) -> set[str]:
     hrefs = re.findall(r'href="([^"]+)"', html, re.IGNORECASE)
     return {h.strip() for h in hrefs
@@ -79,9 +72,11 @@ def extract_links(html: str) -> set[str]:
 
 
 def extract_last_reviewed(html: str) -> str:
-    m = re.search(r'(?:last\s+reviewed|updated)[:\s]+([A-Za-z]+\s+\d+,?\s+\d{4})',
-                  html, re.IGNORECASE)
-    return m.group(1).strip() if m else ''
+    for pat in pw.CDC_DATE_PATTERNS:
+        m = re.search(pat, html, re.IGNORECASE)
+        if m:
+            return m.group(1).strip()
+    return ''
 
 
 def main() -> int:
@@ -98,7 +93,7 @@ def main() -> int:
     # ── Page check ────────────────────────────────────────────────────────────
     print(f"Fetching {PAGE_URL} …")
     try:
-        html             = fetch_page(PAGE_URL)
+        html             = pw.fetch_page(PAGE_URL, USER_AGENT)
         current_links    = extract_links(html)
         current_reviewed = extract_last_reviewed(html)
         print(f"  {len(current_links)} guideline links; last reviewed: {current_reviewed or '(not found)'}")

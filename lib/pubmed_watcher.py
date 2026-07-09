@@ -17,6 +17,19 @@ from pathlib import Path
 PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
 EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 TEXTFILE_DIR  = Path("/var/lib/node_exporter/textfile_collector")
+WAYBACK_SAVE_BASE = "https://web.archive.org/save/"
+
+# CDC's WCMS embeds machine-readable <meta name="cdc:last_published"
+# content="2026-03-10T16:57:04Z"/> and cdc:last_reviewed tags on every page
+# — confirmed present across sti-guide/vaccines/opioids' CDC pages
+# (2026-07-09). Far more reliable than scraping prose "last reviewed" text,
+# which varies in phrasing/placement and can false-match unrelated dates.
+# Any check_updates.py targeting a cdc.gov page should use this list.
+CDC_DATE_PATTERNS = [
+    r'cdc:last_published"\s+content="([^"]+)"',
+    r'cdc:last_reviewed"\s+content="([^"]+)"',
+    r'(?:last\s+reviewed|updated)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
+]
 
 
 def esearch(query: str, reldate: int,
@@ -194,10 +207,55 @@ def run_searches(
     return state, findings
 
 
+def fetch_page(url: str, user_agent: str = 'noahpac-monitor/1.0', timeout: int = 30) -> str:
+    """
+    Fetch a page's HTML directly. If the direct fetch fails (e.g. blocked
+    by the target's bot protection), fall back to an on-demand Wayback
+    Machine capture — archive.org's crawler is often not blocked even when
+    this host's direct requests are (confirmed for cdc.gov, 2026-07-09:
+    every cdc.gov path 403s this host's outbound IP via Akamai regardless
+    of User-Agent, but web.archive.org/save/<url> can still reach it).
+
+    Raises on total failure (both direct and Wayback fetch failed) — the
+    original direct-fetch exception is chained via `from`.
+
+    Same-origin hrefs in a Wayback-served copy get their `/web/<ts>/`
+    rewrite prefix stripped so extracted links match the format a direct
+    fetch would have produced. Without this, the first run that falls back
+    to Wayback would see every link on the page as "new" purely from the
+    URL-prefix change, not any real content change. Wayback's rewriter has
+    several inconsistent forms though (a trailing `*` changes-view marker,
+    nested `/screenshot/` preview links, and canonical/og:url meta tags
+    that get domain-swapped to web.archive.org without the usual `/web/
+    <ts>/` prefix at all) — rather than pattern-match every variant, any
+    href that still contains "archive.org" after the main substitution is
+    dropped outright, since a direct fetch would never produce one.
+    """
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': user_agent})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.read().decode('utf-8', errors='replace')
+    except Exception as direct_exc:
+        try:
+            wb_req = urllib.request.Request(WAYBACK_SAVE_BASE + url, headers={'User-Agent': user_agent})
+            with urllib.request.urlopen(wb_req, timeout=45) as resp:
+                html = resp.read().decode('utf-8', errors='replace')
+        except Exception as wayback_exc:
+            raise RuntimeError(
+                f'direct fetch failed ({direct_exc}); Wayback Machine fallback also failed ({wayback_exc})'
+            ) from direct_exc
+        print(f"  (direct fetch of {url} failed: {direct_exc}; used Wayback Machine fallback)", file=sys.stderr)
+        host = urllib.parse.urlparse(url).netloc.removeprefix('www.')
+        html = re.sub(rf'/web/\d{{10,14}}[a-z_*]*/https?://(?:www\.)?{re.escape(host)}', '', html)
+        html = re.sub(r'href="[^"]*archive\.org[^"]*"', 'href=""', html)
+        return html
+
+
 def check_page_source(name: str, url: str, date_patterns: list[str], known_value: str,
                       user_agent: str = 'noahpac-monitor/1.0', timeout: int = 30) -> dict:
     """
-    Fetch a page and look for a date/version marker among date_patterns.
+    Fetch a page (via fetch_page, including its Wayback fallback) and look
+    for a date/version marker among date_patterns.
 
     Returns {'value': str, 'changed': bool, 'error': str|None}.
 
@@ -212,9 +270,7 @@ def check_page_source(name: str, url: str, date_patterns: list[str], known_value
     monitoring gap behind a false-clean report.
     """
     try:
-        req = urllib.request.Request(url, headers={'User-Agent': user_agent})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            html = resp.read().decode('utf-8', errors='replace')
+        html = fetch_page(url, user_agent, timeout)
     except Exception as exc:
         return {'value': known_value, 'changed': False,
                 'error': f'{name}: fetch failed — {exc}'}

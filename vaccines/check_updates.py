@@ -107,10 +107,7 @@ PAGE_SOURCES = [
         'id':   'cdc_page_date',
         'name': 'CDC Vaccine Schedules page',
         'url':  CDC_SCHED_URL,
-        'date_patterns': [
-            r'(?:updated?|reviewed?)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
-            r'(20\d{2}-\d{2}-\d{2})',
-        ],
+        'date_patterns': pw.CDC_DATE_PATTERNS,
     },
     {
         'id':   'aap_page_date',
