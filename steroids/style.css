@@ -52,7 +52,7 @@ footer{max-width:1000px}
 .page-body{
   max-width:1000px;margin:0 auto;
   padding:28px 16px 60px;
-  display:flex;gap:28px;align-items:flex-start;
+  display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;
 }
 
 /* ── Criteria column ── */
@@ -102,7 +102,7 @@ footer{max-width:1000px}
 .ref-card{
   background:var(--surface);border-radius:var(--r);
   padding:18px 20px;box-shadow:var(--sh);margin-top:4px;
-  min-width:0;
+  min-width:0;flex-basis:100%;
 }
 .ref-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--purple);margin-bottom:12px;display:flex;align-items:baseline;gap:8px}
 .ref-note{font-size:9px;color:var(--ink-muted);font-weight:400;letter-spacing:.04em;text-transform:none}
@@ -197,7 +197,13 @@ footer{max-width:1000px}
      width instead of stretching to the column's full width once
      flex-direction switches to column (latent overflow risk if any
      .criteria-col content is ever wider than the viewport). */
-  .page-body{flex-direction:column;align-items:stretch}
+  /* flex-wrap:wrap (added for the desktop ref-card full-width row) wraps
+     into new COLUMNS, not rows, when combined with flex-direction:column —
+     wrap operates on the cross-axis regardless of main-axis direction, and
+     with no fixed height the effect is a horizontal overflow of stacked
+     columns rather than a simple vertical stack. Must be reset to nowrap
+     here. */
+  .page-body{flex-direction:column;flex-wrap:nowrap;align-items:stretch}
   .result-col{width:100%;position:static;flex-direction:row;flex-wrap:wrap}
   .result-panel{flex:1;min-width:200px}
 }
