@@ -114,8 +114,18 @@ footer{max-width:960px}
    painted entirely within the visible area. Without its own border-radius
    here, the ring rendered with hard corners while sitting inside an otherwise
    rounded card, on every calculator using this shared ok/warn/risk pattern
-   (not just RCRI/PECARN — affects any tab whose result uses these classes). */
-.result-card{padding:16px 18px;border-radius:var(--r)}
+   (not just RCRI/PECARN — affects any tab whose result uses these classes).
+
+   Top corners only: every calculator's result-card is immediately followed
+   by .copy-btn-wrap inside the same .result-panel (buildResultColumn() in
+   app.js always appends it when a .copy-btn exists, which is all 19 of
+   them) — rounding all 4 corners left result-card's bottom corners curving
+   inward while copy-btn-wrap's sharp top corners sat directly beneath,
+   flush with the panel edge, creating a small square nub visible right at
+   the seam between the two. Bottom stays 0 so it's flush with copy-btn-wrap
+   instead, and the panel's own overflow:hidden still correctly rounds the
+   true bottom corners where copy-btn-wrap meets the panel's edge. */
+.result-card{padding:16px 18px;border-radius:var(--r) var(--r) 0 0}
 .result-card.ok{box-shadow:0 0 0 2px var(--ok) inset}
 .result-card.warn{box-shadow:0 0 0 2px var(--warn) inset}
 .result-card.risk{box-shadow:0 0 0 2px var(--risk) inset}
