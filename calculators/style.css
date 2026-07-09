@@ -75,6 +75,7 @@ footer{max-width:960px}
 /* Inputs inside criterion */
 .fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 16px}
 .field{display:flex;flex-direction:column;gap:5px}
+.field.full-width{grid-column:1/-1}
 .field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
 .field input[type=number],.field input[type=date],.field select{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;width:100%;padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink)}
 .field input:focus,.field select:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}

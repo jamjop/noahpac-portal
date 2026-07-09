@@ -218,6 +218,63 @@ const CALCS = [
     }
   },
 
+  /* 9b. Gupta Perioperative Risk (MICA) */
+  {
+    id:"gupta", name:"Gupta Perioperative Risk (MICA)", num:"19",
+    eyebrow:"Perioperative Cardiac Risk", source:"Gupta et al. 2011 (Circulation) · NSQIP-derived",
+    render: pane => {
+      pane.innerHTML = calcHeader("Gupta Perioperative Risk (MICA)","Perioperative Cardiac Risk","Myocardial infarction or cardiac arrest within 30 days · Gupta et al. 2011") + `
+      <div class="fields">
+        ${field("Age","gupta-age","number","years","65","18","110")}
+        ${selectField("Functional Status","gupta-func",[
+          ["independent","Independent"],
+          ["partial","Partially dependent"],
+          ["totally","Totally dependent"]])}
+        ${selectField("ASA Class","gupta-asa",[
+          ["1","ASA I — Normal healthy patient"],
+          ["2","ASA II — Mild systemic disease"],
+          ["3","ASA III — Severe systemic disease"],
+          ["4","ASA IV — Severe disease, constant threat to life"],
+          ["5","ASA V — Moribund, not expected to survive without operation"]])}
+        ${selectField("Creatinine","gupta-cr",[
+          ["normal","Normal (≤1.5 mg/dL)"],
+          ["elevated","Elevated (>1.5 mg/dL)"],
+          ["unknown","Unknown"]])}
+        <div class="field full-width">
+          <label class="field-label" for="gupta-proc">Procedure Type</label>
+          <select id="gupta-proc">
+            <option value="">Select procedure category…</option>
+            <option value="anorectal">Anorectal</option>
+            <option value="aortic">Aortic</option>
+            <option value="bariatric">Bariatric</option>
+            <option value="brain">Brain</option>
+            <option value="breast">Breast</option>
+            <option value="cardiac">Cardiac</option>
+            <option value="ent">Ear, Nose, or Throat (ENT)</option>
+            <option value="foregut">Foregut or Hepatopancreatobiliary</option>
+            <option value="gallbladder">Gallbladder, Appendix, Adrenals, or Spleen</option>
+            <option value="hernia">Hernia</option>
+            <option value="intestinal">Intestinal</option>
+            <option value="neck">Neck (Thyroid or Parathyroid)</option>
+            <option value="obgyn">Obstetric or Gynecologic</option>
+            <option value="ortho">Orthopedic (Non-Spine)</option>
+            <option value="otherabd">Other Abdominal</option>
+            <option value="pvasc">Peripheral Vascular</option>
+            <option value="skin">Skin</option>
+            <option value="spine">Spine</option>
+            <option value="thoracic">Thoracic (Non-Cardiac)</option>
+            <option value="urology">Urology (Non-Renal)</option>
+            <option value="vein">Vein</option>
+          </select>
+        </div>
+      </div>
+      <div id="gupta-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="gupta-copy">&#x2398; Copy result</button>
+      <p class="note">Predicts risk of MI or cardiac arrest within 30 days of non-cardiac surgery. NSQIP-derived logistic model, 21 procedure categories. A risk ≥1% is the conventional threshold for further preoperative cardiac risk stratification (ACC/AHA). Complements RCRI — Gupta MICA generally shows better discrimination in validation studies but requires knowing the specific procedure category.</p>`;
+      addListeners("gupta", calcGupta);
+    }
+  },
+
   /* 10. HEART Score */
   {
     id:"heart", name:"HEART Score", num:"11",
@@ -810,6 +867,46 @@ function calcGad7(){
   else if(total<=14){riskClass='warn';label='Score '+total+' — Moderate';detail='Moderate anxiety. Counseling and/or pharmacotherapy recommended. Reassess in 2–4 weeks.';}
   else{riskClass='risk';label='Score '+total+' — Severe';detail='Severe anxiety. Active treatment indicated. Consider specialist referral for CBT and/or pharmacotherapy.';}
   setResult('gad7-result',resultCard(String(total),label,detail,riskClass),riskClass);
+}
+
+// Gupta Perioperative Risk (MICA) — logistic model, coefficients from
+// Gupta PK et al. "Development and validation of a risk calculator for
+// prediction of cardiac risk after surgery." Circulation. 2011;124(4):381-7.
+// Cross-checked against 3 independent secondary sources before implementing
+// (age coefficient specifically — one source had an apparent 10x decimal
+// typo, 0.2 instead of 0.02; the other two, plus expected clinical
+// behavior of the score, confirmed 0.02).
+const GUPTA_ASA = {1:-5.17, 2:-3.29, 3:-1.92, 4:-0.95, 5:0};
+const GUPTA_FUNC = {independent:0, partial:0.65, totally:1.03};
+const GUPTA_CR = {normal:0, elevated:0.61, unknown:-0.10};
+const GUPTA_PROC = {
+  anorectal:-0.16, aortic:1.6, bariatric:-0.25, brain:1.4, breast:-1.61,
+  cardiac:1.01, ent:0.71, foregut:1.39, gallbladder:0.59, hernia:0,
+  intestinal:1.14, neck:0.18, obgyn:0.76, ortho:0.8, otherabd:1.13,
+  pvasc:0.86, skin:0.54, spine:0.21, thoracic:0.4, urology:-0.26, vein:-1.09,
+};
+function calcGupta(){
+  const age = num('gupta-age');
+  const func = sel('gupta-func'), asa = sel('gupta-asa'), cr = sel('gupta-cr'), proc = sel('gupta-proc');
+  const el = document.getElementById('gupta-result');
+  if(isNaN(age) || age<18 || age>110 || !func || !asa || !cr || !proc){
+    el.innerHTML='<div class="result-placeholder">Enter values</div>'; el.className='result-card'; return;
+  }
+  const x = -5.25 + (0.02*age) + GUPTA_FUNC[func] + GUPTA_ASA[asa] + GUPTA_CR[cr] + GUPTA_PROC[proc];
+  const risk = (Math.exp(x) / (1 + Math.exp(x))) * 100;
+  const riskFmt = risk < 0.1 ? '<0.1%' : risk.toFixed(risk<1?2:1)+'%';
+  let riskClass,label,detail;
+  if(risk<1){
+    riskClass='ok'; label=riskFmt+' — Low Risk';
+    detail='Below the ≥1% threshold conventionally used to trigger further preoperative cardiac risk stratification (ACC/AHA). Proceed per standard perioperative care.';
+  } else if(risk<5){
+    riskClass='warn'; label=riskFmt+' — Elevated Risk';
+    detail='At or above the 1% threshold for further cardiac risk stratification. Consider functional capacity assessment, further workup, and perioperative optimization per ACC/AHA guidelines.';
+  } else {
+    riskClass='risk'; label=riskFmt+' — High Risk';
+    detail='High predicted risk of perioperative MI or cardiac arrest within 30 days. Strongly consider cardiology consultation, further preoperative risk stratification, and shared decision-making regarding surgical timing/approach.';
+  }
+  setResult('gupta-result',resultCard(riskFmt,label,detail,riskClass),riskClass);
 }
 
 function calcHeart(){
