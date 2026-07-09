@@ -54,6 +54,12 @@ SEARCHES = [
         'query':   '("American College of Cardiology" OR "American Heart Association") AND ("perioperative" OR "noncardiac surgery" OR "preoperative cardiac") AND (guideline[pt] OR update[ti] OR statement[pt])',
         'reldate': 400,
     },
+    {
+        'id':      'gupta_mica',
+        'name':    'Gupta / NSQIP Perioperative MICA Risk Score — Validation & Updates',
+        'query':   'Gupta[ti] AND (cardiac[tiab] OR myocardial[tiab] OR MICA[tiab]) AND (perioperative[tiab] OR surgery[tiab] OR surgical[tiab])',
+        'reldate': 730,
+    },
 
     # ── VTE ─────────────────────────────────────────────────────────────────
     {
