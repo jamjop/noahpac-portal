@@ -11,6 +11,11 @@ out-tsc
 # dependencies
 node_modules
 
+# Python bytecode cache — each app's check_updates.py generates its own
+# __pycache__/ on every cron run; never source, shouldn't be committed
+__pycache__/
+*.pyc
+
 # IDEs and editors
 /.idea
 .project
