@@ -49,14 +49,35 @@
    page's 1000px header/content — override so the footer lines up. */
 footer{max-width:1000px}
 
+/* ── Layout grid ──
+   Desktop: 2 columns (main 1fr + 240px sidebar), cards placed by name via
+   grid-template-areas rather than relying on DOM/source order — lets the
+   sidebar hold Tapering Guidance + the reference table while the main
+   column holds the two inputs plus the "Convert To" results, independent
+   of what order they appear in the HTML. Mobile overrides this to a
+   single column with its own area order (see media query below) — much
+   more direct than the flex-wrap tricks this used before, which broke
+   in the flex-direction:column context (wrap operates on the cross-axis
+   regardless of main-axis direction). */
 .page-body{
   max-width:1000px;margin:0 auto;
   padding:28px 16px 60px;
-  display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;
+  display:grid;
+  grid-template-columns:1fr 240px;
+  grid-template-areas:
+    "steroid  tapering"
+    "convert  tapering"
+    "equiv    reference"
+    "dose     reference";
+  gap:12px 28px;
+  align-items:start;
 }
-
-/* ── Criteria column ── */
-.criteria-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.gc-steroid{grid-area:steroid}
+.gc-convert{grid-area:convert}
+.gc-tapering{grid-area:tapering}
+.gc-equiv{grid-area:equiv}
+.gc-dose{grid-area:dose}
+.gc-reference{grid-area:reference}
 
 .criterion{
   background:var(--surface);
@@ -98,20 +119,25 @@ footer{max-width:1000px}
 .dose-row input{flex:1}
 .unit-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-muted);white-space:nowrap;flex-shrink:0}
 
-/* ── Reference card ── */
+/* ── Reference card ──
+   Lives in the narrow 240px sidebar (see .gc-reference) — the table is
+   wider than that at full size, so it scrolls horizontally within
+   .tbl-wrap rather than being force-fit or losing columns. Sizing here
+   is deliberately more compact than a full-width reference table would
+   need, to fit the sidebar context. */
 .ref-card{
   background:var(--surface);border-radius:var(--r);
-  padding:18px 20px;box-shadow:var(--sh);margin-top:4px;
-  min-width:0;flex-basis:100%;
+  padding:14px 16px;box-shadow:var(--sh);
+  min-width:0;
 }
-.ref-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--purple);margin-bottom:12px;display:flex;align-items:baseline;gap:8px}
+.ref-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--purple);margin-bottom:10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
 .ref-note{font-size:9px;color:var(--ink-muted);font-weight:400;letter-spacing:.04em;text-transform:none}
 .tbl-wrap{overflow-x:auto}
-.ref-table{width:100%;border-collapse:collapse;font-size:12px}
-.ref-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;padding:4px 10px 8px;text-align:left;border-bottom:1.5px solid var(--line)}
-.ref-table td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft);line-height:1.4}
+.ref-table{width:100%;border-collapse:collapse;font-size:10.5px}
+.ref-table th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;padding:3px 8px 6px;text-align:left;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.ref-table td{padding:5px 8px;border-bottom:1px solid var(--line);color:var(--ink-soft);line-height:1.4;white-space:nowrap}
 .ref-table td:first-child{color:var(--ink);font-weight:600}
-.ref-table td.mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:var(--ink)}
+.ref-table td.mono{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--ink)}
 .ref-table tr:last-child td{border-bottom:none}
 .ref-table tr.warn-row td{background:var(--warn-soft)}
 
@@ -130,13 +156,6 @@ footer{max-width:1000px}
   font-family:'IBM Plex Mono',monospace;
   font-size:9.5px;color:var(--ink-muted);
   line-height:1.55;padding:0 2px;
-}
-
-/* ── Result column ── */
-.result-col{
-  width:240px;flex-shrink:0;
-  position:sticky;top:20px;
-  display:flex;flex-direction:column;gap:12px;
 }
 
 .result-panel{
@@ -192,20 +211,21 @@ footer{max-width:1000px}
 
 /* ── Mobile ── */
 @media(max-width:700px){
-  /* Base rule sets align-items:flex-start for the desktop row layout —
-     without this reset, flex items shrink-to-fit their content's intrinsic
-     width instead of stretching to the column's full width once
-     flex-direction switches to column (latent overflow risk if any
-     .criteria-col content is ever wider than the viewport). */
-  /* flex-wrap:wrap (added for the desktop ref-card full-width row) wraps
-     into new COLUMNS, not rows, when combined with flex-direction:column —
-     wrap operates on the cross-axis regardless of main-axis direction, and
-     with no fixed height the effect is a horizontal overflow of stacked
-     columns rather than a simple vertical stack. Must be reset to nowrap
-     here. */
-  .page-body{flex-direction:column;flex-wrap:nowrap;align-items:stretch}
-  .result-col{width:100%;position:static;flex-direction:row;flex-wrap:wrap}
-  .result-panel{flex:1;min-width:200px}
+  /* Single column, reordered independently of desktop's grid-template-areas
+     (and independent of DOM/source order) — Tapering Guidance stays right
+     after the inputs since it's the primary feature (taper SIG generation
+     doesn't depend on "Convert To" at all), Convert To's own results
+     (equiv/dose) follow, and the reference table is a trailing appendix. */
+  .page-body{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "steroid"
+      "convert"
+      "tapering"
+      "equiv"
+      "dose"
+      "reference";
+  }
 }
 
 /* ── Dark mode ── */

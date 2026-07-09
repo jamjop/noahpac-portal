@@ -19,76 +19,72 @@
 
 <div class="page-body">
 
-  <div class="criteria-col">
-
-    <div class="criterion">
-      <div class="c-header">
-        <span class="c-letter">1</span>
-        <div>
-          <div class="c-name">Current Steroid</div>
-          <div class="c-desc">Corticosteroid being taken now, dose per administration, frequency, and duration of therapy</div>
-        </div>
-      </div>
-      <div class="field-grid">
-        <div class="field">
-          <label class="field-label" for="fromDrug">Steroid</label>
-          <select id="fromDrug"></select>
-        </div>
-        <div class="field">
-          <label class="field-label" for="fromDose">Dose per administration</label>
-          <div class="dose-row">
-            <input type="number" id="fromDose" min="0" step="any" placeholder="0">
-            <span class="unit-label">mg</span>
-          </div>
-        </div>
-        <div class="field">
-          <label class="field-label" for="fromFreq">Frequency</label>
-          <select id="fromFreq"></select>
-        </div>
-        <div class="field">
-          <label class="field-label" for="fromDuration">Duration of therapy</label>
-          <select id="fromDuration">
-            <option value="short">Under 3 weeks</option>
-            <option value="long" selected>3 weeks or longer</option>
-          </select>
-        </div>
+  <div class="criterion gc-steroid">
+    <div class="c-header">
+      <span class="c-letter">1</span>
+      <div>
+        <div class="c-name">Current Steroid</div>
+        <div class="c-desc">Corticosteroid being taken now, dose per administration, frequency, and duration of therapy</div>
       </div>
     </div>
-
-    <div class="criterion">
-      <div class="c-header">
-        <span class="c-letter" style="background:var(--bg);color:var(--ink-muted)">⇄</span>
-        <div>
-          <div class="c-name">Convert To <span class="c-opt">(optional)</span></div>
-          <div class="c-desc">Separate, one-time lookup — e.g. converting an inpatient IV dose to an outpatient oral agent at discharge. Not required for the taper schedule above, which uses the current steroid entered in Section 1.</div>
+    <div class="field-grid">
+      <div class="field">
+        <label class="field-label" for="fromDrug">Steroid</label>
+        <select id="fromDrug"></select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="fromDose">Dose per administration</label>
+        <div class="dose-row">
+          <input type="number" id="fromDose" min="0" step="any" placeholder="0">
+          <span class="unit-label">mg</span>
         </div>
       </div>
-      <div class="field-grid">
-        <div class="field full-width">
-          <label class="field-label" for="toDrug">Target steroid</label>
-          <select id="toDrug"></select>
-        </div>
+      <div class="field">
+        <label class="field-label" for="fromFreq">Frequency</label>
+        <select id="fromFreq"></select>
       </div>
-    </div>
-
-  </div>
-
-  <div class="result-col">
-    <div class="result-panel">
-      <div class="result-panel-head">Tapering Guidance</div>
-      <div id="taperResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
-    </div>
-    <div class="result-panel">
-      <div class="result-panel-head">Hydrocortisone-Equivalent</div>
-      <div id="currentEquiv" class="result-panel-body mme-display"><span class="mme-placeholder">—</span></div>
-    </div>
-    <div class="result-panel">
-      <div class="result-panel-head">Converted Dose</div>
-      <div id="convResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
+      <div class="field">
+        <label class="field-label" for="fromDuration">Duration of therapy</label>
+        <select id="fromDuration">
+          <option value="short">Under 3 weeks</option>
+          <option value="long" selected>3 weeks or longer</option>
+        </select>
+      </div>
     </div>
   </div>
 
-  <div class="ref-card">
+  <div class="criterion gc-convert">
+    <div class="c-header">
+      <span class="c-letter" style="background:var(--bg);color:var(--ink-muted)">⇄</span>
+      <div>
+        <div class="c-name">Convert To <span class="c-opt">(optional)</span></div>
+        <div class="c-desc">Separate, one-time lookup — e.g. converting an inpatient IV dose to an outpatient oral agent at discharge. Not required for the taper schedule above, which uses the current steroid entered in Section 1.</div>
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field full-width">
+        <label class="field-label" for="toDrug">Target steroid</label>
+        <select id="toDrug"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-panel gc-equiv">
+    <div class="result-panel-head">Hydrocortisone-Equivalent</div>
+    <div id="currentEquiv" class="result-panel-body mme-display"><span class="mme-placeholder">—</span></div>
+  </div>
+
+  <div class="result-panel gc-dose">
+    <div class="result-panel-head">Converted Dose</div>
+    <div id="convResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
+  </div>
+
+  <div class="result-panel gc-tapering">
+    <div class="result-panel-head">Tapering Guidance</div>
+    <div id="taperResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
+  </div>
+
+  <div class="ref-card gc-reference">
     <div class="ref-panel-head">Corticosteroid Equivalency Reference <span class="ref-note">(approximate)</span></div>
     <div class="tbl-wrap">
       <table class="ref-table" id="refTable"></table>
