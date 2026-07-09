@@ -99,7 +99,7 @@ SEARCHES = [
     {
         'id':      'acog_rsv_pregnancy',
         'name':    'ACOG RSV / Maternal Vaccine Guidance',
-        'query':   '"respiratory syncytial virus" AND (pregnancy[ti] OR maternal[ti] OR obstetric[ti]) AND (vaccine[ti] OR vaccination[ti] OR immunization[ti])',
+        'query':   '"respiratory syncytial virus"[ti] AND (pregnancy[ti] OR maternal[ti]) AND vaccin*[ti] AND (ACOG[tiab] OR "American College of Obstetricians"[tiab] OR ACIP[tiab] OR CDC[tiab] OR guideline[tiab] OR recommendation[tiab])',
         'reldate': 400,
     },
 ]

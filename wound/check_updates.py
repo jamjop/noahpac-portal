@@ -35,25 +35,25 @@ SEARCHES = [
     {
         'id':      'tetanus_wound',
         'name':    'Tetanus Wound Prophylaxis Evidence',
-        'query':   'tetanus AND ("wound management" OR prophylaxis OR "immunoglobulin" OR TIG) AND (guideline OR recommendation OR update)[ti]',
+        'query':   'tetanus[ti] AND ("wound management"[tiab] OR prophylaxis[ti] OR immunoglobulin[ti] OR TIG[ti]) AND (guideline OR recommendation OR update)',
         'reldate': 400,
     },
     {
         'id':      'wound_classification',
         'name':    'Surgical Wound Classification / SSI Prevention',
-        'query':   '("wound classification" OR "surgical site infection") AND (guideline OR recommendation) AND (CDC OR IDSA OR ACS OR WHO)',
+        'query':   '("wound classification"[ti] OR "surgical site infection"[ti]) AND (guideline OR "practice guideline")[pt] AND (CDC[tiab] OR IDSA[tiab] OR ACS[tiab] OR WHO[tiab])',
         'reldate': 400,
     },
     {
         'id':      'wound_care_guidelines',
         'name':    'Wound Care / Irrigation Guidelines',
-        'query':   '("wound care" OR "wound irrigation" OR "wound management") AND (guideline OR recommendation OR "clinical practice") AND (emergency OR trauma OR laceration)',
+        'query':   '("wound care"[ti] OR "wound irrigation"[ti] OR "wound management"[ti]) AND (guideline OR "practice guideline" OR consensus)[pt] AND (emergency[tiab] OR trauma[tiab] OR laceration[tiab])',
         'reldate': 400,
     },
     {
         'id':      'wound_closure',
         'name':    'Wound Closure / Laceration Repair Guidelines',
-        'query':   '("wound closure" OR "laceration repair" OR "primary closure" OR "delayed primary closure") AND (guideline OR recommendation OR "clinical practice") AND (emergency OR trauma)',
+        'query':   '("wound closure"[ti] OR "laceration repair"[ti] OR "primary closure"[ti]) AND (guideline OR "practice guideline" OR consensus)[pt] AND (emergency[tiab] OR trauma[tiab])',
         'reldate': 400,
     },
     {

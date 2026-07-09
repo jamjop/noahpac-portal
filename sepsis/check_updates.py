@@ -29,13 +29,13 @@ SEARCHES = [
     {
         'id':      'surviving_sepsis',
         'name':    'Surviving Sepsis Campaign Guidelines',
-        'query':   '"Surviving Sepsis Campaign" AND (guideline OR recommendation OR bundle OR update)',
+        'query':   '"Surviving Sepsis Campaign"[ti]',
         'reldate': 400,
     },
     {
         'id':      'sepsis3_definition',
         'name':    'Sepsis-3 Definition / SOFA Updates',
-        'query':   '("Sepsis-3" OR "sepsis definition" OR SOFA OR qSOFA) AND (guideline OR consensus OR update OR revision)[ti]',
+        'query':   '("Sepsis-3"[ti] OR "sepsis definition"[ti] OR "SOFA score"[ti] OR qSOFA[ti]) AND (guideline OR consensus OR update OR revision OR redefin*)',
         'reldate': 400,
     },
     {
@@ -47,7 +47,7 @@ SEARCHES = [
     {
         'id':      'septic_shock',
         'name':    'Septic Shock Management Guidelines',
-        'query':   '"septic shock" AND (vasopressor OR norepinephrine OR "fluid resuscitation") AND (guideline OR recommendation OR "clinical practice")',
+        'query':   '"septic shock"[ti] AND (management[ti] OR treatment[ti] OR resuscitation[ti]) AND (guideline OR "practice guideline" OR consensus)[pt]',
         'reldate': 400,
     },
 ]

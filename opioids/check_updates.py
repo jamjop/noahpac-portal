@@ -47,13 +47,13 @@ SEARCHES = [
     {
         'id':      'methadone_guidance',
         'name':    'Methadone Dosing / Safety Guidance',
-        'query':   'methadone AND (guideline OR recommendation OR "QTc" OR "cardiac safety" OR "dose conversion") AND (opioid OR "pain management" OR "opioid use disorder")',
+        'query':   'methadone[ti] AND (dosing[tiab] OR QTc[tiab] OR "cardiac safety"[tiab] OR "dose conversion"[tiab]) AND (guideline OR "practice guideline" OR consensus)[pt]',
         'reldate': 400,
     },
     {
         'id':      'opioid_risk_thresholds',
         'name':    'Opioid Risk Thresholds (50/90 MME)',
-        'query':   'opioid AND ("high dose" OR "90 MME" OR "50 MME" OR "high-dose opioid") AND (overdose OR risk OR mortality OR outcome)',
+        'query':   '("90 MME"[tiab] OR "50 MME"[tiab] OR "morphine milligram equivalent"[ti]) AND opioid[tiab] AND (threshold[tiab] OR risk[ti] OR mortality[ti])',
         'reldate': 400,
     },
 ]

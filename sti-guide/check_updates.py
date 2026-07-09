@@ -48,7 +48,7 @@ SEARCHES = [
     {
         'id':      'doxy_pep',
         'name':    'Doxycycline PEP (STI post-exposure prophylaxis)',
-        'query':   '("doxycycline post-exposure" OR "doxy-PEP" OR "doxycycline PEP") AND (STI OR STD OR gonorrhea OR chlamydia OR syphilis)',
+        'query':   '("doxycycline post-exposure"[tiab] OR "doxy-PEP"[tiab] OR "doxycycline PEP"[tiab]) AND (guideline OR "practice guideline" OR consensus OR recommendation)[pt]',
         'reldate': 400,
     },
     {
