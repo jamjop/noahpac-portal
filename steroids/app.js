@@ -272,7 +272,7 @@ function buildRefTable() {
       <td>${esc(s.duration)}</td>
     </tr>`;
   }
-  tbl.innerHTML += `<tr><td colspan="5" style="font-size:9.5px;color:var(--ink-muted);padding:6px 8px;white-space:normal">Equivalent doses referenced to hydrocortisone 20 mg. Potency is relative to hydrocortisone = 1×. Source: Endocrine Society, standard clinical pharmacology references.</td></tr>`;
+  tbl.innerHTML += `<tr><td colspan="5" style="font-size:11px;color:var(--ink-muted);padding:6px 10px">Equivalent doses referenced to hydrocortisone 20 mg. Potency is relative to hydrocortisone = 1×. Source: Endocrine Society, standard clinical pharmacology references.</td></tr>`;
 }
 
 function wireListeners() {

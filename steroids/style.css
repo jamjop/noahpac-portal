@@ -52,8 +52,8 @@ footer{max-width:1000px}
 /* ── Layout grid ──
    Desktop: 2 columns (main 1fr + 240px sidebar), cards placed by name via
    grid-template-areas rather than relying on DOM/source order — lets the
-   sidebar hold Tapering Guidance + the reference table while the main
-   column holds the two inputs plus the "Convert To" results, independent
+   sidebar hold just Tapering Guidance while the main column holds both
+   inputs, the "Convert To" results, and the reference table, independent
    of what order they appear in the HTML. Mobile overrides this to a
    single column with its own area order (see media query below) — much
    more direct than the flex-wrap tricks this used before, which broke
@@ -65,10 +65,11 @@ footer{max-width:1000px}
   display:grid;
   grid-template-columns:1fr 240px;
   grid-template-areas:
-    "steroid  tapering"
-    "convert  tapering"
-    "equiv    reference"
-    "dose     reference";
+    "steroid    tapering"
+    "convert    tapering"
+    "equiv      tapering"
+    "dose       tapering"
+    "reference  reference";
   gap:12px 28px;
   align-items:start;
 }
@@ -120,24 +121,22 @@ footer{max-width:1000px}
 .unit-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-muted);white-space:nowrap;flex-shrink:0}
 
 /* ── Reference card ──
-   Lives in the narrow 240px sidebar (see .gc-reference) — the table is
-   wider than that at full size, so it scrolls horizontally within
-   .tbl-wrap rather than being force-fit or losing columns. Sizing here
-   is deliberately more compact than a full-width reference table would
-   need, to fit the sidebar context. */
+   Spans the full grid width (see .gc-reference), same as the main
+   column's other cards, so this uses normal comfortable sizing rather
+   than the compact styling a narrow sidebar would need. */
 .ref-card{
   background:var(--surface);border-radius:var(--r);
-  padding:14px 16px;box-shadow:var(--sh);
+  padding:18px 20px;box-shadow:var(--sh);
   min-width:0;
 }
-.ref-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--purple);margin-bottom:10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.ref-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--purple);margin-bottom:12px;display:flex;align-items:baseline;gap:8px}
 .ref-note{font-size:9px;color:var(--ink-muted);font-weight:400;letter-spacing:.04em;text-transform:none}
 .tbl-wrap{overflow-x:auto}
-.ref-table{width:100%;border-collapse:collapse;font-size:10.5px}
-.ref-table th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;padding:3px 8px 6px;text-align:left;border-bottom:1.5px solid var(--line);white-space:nowrap}
-.ref-table td{padding:5px 8px;border-bottom:1px solid var(--line);color:var(--ink-soft);line-height:1.4;white-space:nowrap}
+.ref-table{width:100%;border-collapse:collapse;font-size:12px}
+.ref-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;padding:4px 10px 8px;text-align:left;border-bottom:1.5px solid var(--line)}
+.ref-table td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft);line-height:1.4}
 .ref-table td:first-child{color:var(--ink);font-weight:600}
-.ref-table td.mono{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--ink)}
+.ref-table td.mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:var(--ink)}
 .ref-table tr:last-child td{border-bottom:none}
 .ref-table tr.warn-row td{background:var(--warn-soft)}
 
