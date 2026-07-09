@@ -25,10 +25,13 @@ LIVE_DIR = Path("/var/www/noahpac-portal/antibiogram")
 REPO_DIR = LIVE_DIR
 
 ANTIBIOGRAM_URL = "https://noahpac.com/antibiogram/"
-REPORT_PREFIX   = "antibiogram-report"
 
 
 def _write_report_result(status: str, findings: list) -> None:
+    # Only feeds the consolidated quarterly-email-report.py run now — antibiogram
+    # used to also get its own dedicated email (antibiogram-email-report.sh,
+    # reading a separate "antibiogram-report" prefix file) but that duplicated
+    # the same status in two separate emails 2 weeks apart. Consolidated 2026-07-09.
     import datetime as _dt
     entry = {
         'app_id': 'antibiogram', 'app_name': 'ND Antibiogram',
@@ -36,14 +39,13 @@ def _write_report_result(status: str, findings: list) -> None:
         'ran_at': _dt.datetime.now().isoformat(timespec='minutes'),
     }
     today = _dt.date.today()
-    for prefix in [REPORT_PREFIX, "quarterly-report"]:
-        report_file = Path(f"/tmp/{prefix}-{today}.json")
-        try:
-            existing = json.loads(report_file.read_text()) if report_file.exists() else []
-            existing.append(entry)
-            report_file.write_text(json.dumps(existing, indent=2))
-        except Exception as exc:
-            print(f"WARNING: could not write report ({prefix}): {exc}", file=sys.stderr)
+    report_file = Path(f"/tmp/quarterly-report-{today}.json")
+    try:
+        existing = json.loads(report_file.read_text()) if report_file.exists() else []
+        existing.append(entry)
+        report_file.write_text(json.dumps(existing, indent=2))
+    except Exception as exc:
+        print(f"WARNING: could not write report: {exc}", file=sys.stderr)
 
 
 def _write_last_checked(status: str) -> None:
