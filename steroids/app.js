@@ -25,11 +25,20 @@ const STEROIDS = [
 ];
 
 const FREQS = [
-  {label:'Once daily',      val:1},
-  {label:'BID (2×/day)',    val:2},
-  {label:'TID (3×/day)',    val:3},
-  {label:'QID (4×/day)',    val:4},
+  {label:'Once daily',      val:1, sig:'once daily'},
+  {label:'BID (2×/day)',    val:2, sig:'twice daily'},
+  {label:'TID (3×/day)',    val:3, sig:'three times daily'},
+  {label:'QID (4×/day)',    val:4, sig:'four times daily'},
 ];
+
+function freqSigPhrase(freq) {
+  const f = FREQS.find(f => f.val === freq);
+  return f ? f.sig : 'once daily';
+}
+
+function roundClean(n) {
+  return Math.round(n * 100) / 100;
+}
 
 // Physiologic replacement ≈ hydrocortisone 20mg/day ≈ prednisone 5mg/day.
 const PHYSIOLOGIC_PREDNISONE_MG = 5;
@@ -88,16 +97,20 @@ function formatSigDate(date) {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function buildTaperSig(fromSt, schedule) {
+function buildTaperSig(fromSt, schedule, freq) {
+  const phrase = freqSigPhrase(freq);
   const lines = [];
-  lines.push(`${fromSt.name.toUpperCase()} TAPER — take by mouth once daily`);
+  lines.push(`${fromSt.name.toUpperCase()} TAPER — take by mouth ${phrase}`);
   lines.push('');
   const cursor = new Date();
   for (const step of schedule.steps) {
     const start = new Date(cursor);
     const end = new Date(cursor);
     end.setDate(end.getDate() + step.days - 1);
-    lines.push(`${step.dose} mg daily × ${step.days} days (${formatSigDate(start)}–${formatSigDate(end)})`);
+    const doseText = freq === 1
+      ? `${step.dose} mg ${phrase}`
+      : `${roundClean(step.dose / freq)} mg ${phrase} (${step.dose} mg/day total)`;
+    lines.push(`${doseText} × ${step.days} days (${formatSigDate(start)}–${formatSigDate(end)})`);
     cursor.setDate(cursor.getDate() + step.days);
   }
   if (schedule.endsAtZero) {
@@ -203,11 +216,11 @@ function calcAndRender() {
     currentSigText = '';
   } else {
     const fromDailyDose = fromDose * freq;
-    taperEl.innerHTML = taperGuidance(hcEquiv, duration, fromSt, fromDailyDose);
+    taperEl.innerHTML = taperGuidance(hcEquiv, duration, fromSt, fromDailyDose, freq);
   }
 }
 
-function taperGuidance(hcEquiv, duration, fromSt, fromDailyDose) {
+function taperGuidance(hcEquiv, duration, fromSt, fromDailyDose, freq) {
   const prednisoneEquiv = hcEquiv * (5 / 20);
   let noteHtml;
   let tierLabel;
@@ -240,10 +253,14 @@ function taperGuidance(hcEquiv, duration, fromSt, fromDailyDose) {
     return noteHtml;
   }
 
-  currentSigText = buildTaperSig(fromSt, schedule);
-  const rows = schedule.steps.map(s =>
-    `<tr><td class="mono">${esc(String(s.dose))} mg</td><td>daily × ${s.days} days</td></tr>`
-  ).join('');
+  currentSigText = buildTaperSig(fromSt, schedule, freq);
+  const phrase = freqSigPhrase(freq);
+  const rows = schedule.steps.map(s => {
+    const doseLabel = freq === 1
+      ? `${esc(String(s.dose))} mg`
+      : `${esc(String(roundClean(s.dose / freq)))} mg <span style="font-size:9.5px;color:var(--ink-muted)">(${esc(String(s.dose))} mg/day)</span>`;
+    return `<tr><td class="mono">${doseLabel}</td><td>${esc(phrase)} × ${s.days} days</td></tr>`;
+  }).join('');
   const finalRow = schedule.endsAtZero
     ? `<tr><td colspan="2" style="font-style:italic;color:var(--ink-muted)">then discontinue</td></tr>`
     : `<tr><td colspan="2" style="font-style:italic;color:var(--ink-muted)">then hold at ${esc(String(schedule.physiologic))} mg/day, reassess</td></tr>`;
