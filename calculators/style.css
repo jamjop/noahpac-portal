@@ -106,8 +106,16 @@ footer{max-width:960px}
   overflow:hidden;
 }
 
-/* Result card */
-.result-card{padding:16px 18px}
+/* Result card
+   .ok/.warn/.risk draw their colored ring as an inset box-shadow, which
+   follows THIS element's own border-radius (not its parent .result-panel's) —
+   overflow:hidden on the panel only clips content that extends past the
+   panel's rounded edge, it can't retroactively round a sharp-cornered shadow
+   painted entirely within the visible area. Without its own border-radius
+   here, the ring rendered with hard corners while sitting inside an otherwise
+   rounded card, on every calculator using this shared ok/warn/risk pattern
+   (not just RCRI/PECARN — affects any tab whose result uses these classes). */
+.result-card{padding:16px 18px;border-radius:var(--r)}
 .result-card.ok{box-shadow:0 0 0 2px var(--ok) inset}
 .result-card.warn{box-shadow:0 0 0 2px var(--warn) inset}
 .result-card.risk{box-shadow:0 0 0 2px var(--risk) inset}
