@@ -77,6 +77,7 @@
   background: var(--surface);
   transition: border-color .15s, box-shadow .15s;
 }
+
 #doc-search:focus {
   outline: none;
   border-color: var(--purple);
