@@ -1,17 +1,3 @@
-:root{
-  --dose-warn-bg:#fee2e2;--dose-warn-ink:#991b1b;
-  --alert-bg:#fef9c3;--alert-border:#fde047;--alert-ink:#713f12;
-  --urgent-bg:#fee2e2;--urgent-border:#fca5a5;--urgent-ink:#7f1d1d;
-}
-/* Dark-mode overrides — mirrors shared.css risk/warn semantics so these
-   page-local tokens don't silence shared.css's own dark-mode block. */
-@media(prefers-color-scheme:dark){
-  :root{
-    --dose-warn-bg:#3b1515;--dose-warn-ink:#fca5a5;
-    --alert-bg:#1c1300;--alert-border:#92400e;--alert-ink:#fde68a;
-    --urgent-bg:#3b1515;--urgent-border:#7f1d1d;--urgent-ink:#fca5a5;
-  }
-}
 body{padding-bottom:50px}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px}
 .header-inner{max-width:880px;margin:0 auto;padding:22px 16px 18px}

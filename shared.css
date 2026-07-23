@@ -24,6 +24,10 @@
   --print-border:#ccc; --print-border-dim:#999; --print-border-soft:#eee;
   /* ── Blue accent shared by vaccines and ddx pages ── */
   --blue:#1B5FAF; --blue-soft:#DBEAFE;
+  /* ── Alert / dose-warn / urgent callout tokens (naloxone, anticoag, toxicology) ── */
+  --dose-warn-bg:#fee2e2; --dose-warn-ink:#991b1b;
+  --alert-bg:#fef9c3; --alert-border:#fde047; --alert-ink:#713f12;
+  --urgent-bg:#fee2e2; --urgent-border:#fca5a5; --urgent-ink:#7f1d1d;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -216,6 +220,10 @@ footer .last-checked.stale .dot{
     --badge-danger-dark:#7f1d1d; --badge-ok-dark:#166534;
     --badge-teal-dark:#0e7490; --badge-warn-dark:#92400e;
     --badge-purple-dark:#4c1d95;
+    /* ── Alert / dose-warn / urgent dark overrides ── */
+    --dose-warn-bg:#3b1515; --dose-warn-ink:#fca5a5;
+    --alert-bg:#1c1300; --alert-border:#92400e; --alert-ink:#fde68a;
+    --urgent-bg:#3b1515; --urgent-border:#7f1d1d; --urgent-ink:#fca5a5;
   }
   .app-header,header{box-shadow:0 2px 8px rgba(0,0,0,.4);border-top-color:transparent}
 }
