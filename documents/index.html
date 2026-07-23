@@ -4,119 +4,236 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clinical Documents</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=1">
+<title>Clinical Documents</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=2">
+<script src="/lib/lucide.min.js"></script>
 </head>
 <body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Quick Access · Print in Clinic</div>
-    <h1>Clinical Documents</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-  </div>
-</header>
+<div class="page-wrap">
 
-<div class="wrap">
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
 
-  <div class="doc-search-wrap">
-    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="doc-search" placeholder="Search by diagnosis or tool name…" autocomplete="off">
-  </div>
-
-  <!-- Home Exercise Programs -->
-  <section class="card">
-    <div class="card-title">Home Exercise Programs</div>
-
-    <div class="doc-group">
-      <div class="doc-group-title">Shoulder</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="shoulder general program" href="pdfs/shoulder-general-program.pdf" target="_blank" rel="noopener">Shoulder — General Program</a>
-        <a class="doc-row" data-search="shoulder impingement syndrome" href="pdfs/shoulder-impingement-syndrome.pdf" target="_blank" rel="noopener">Shoulder Impingement Syndrome</a>
-        <a class="doc-row" data-search="shoulder post op post-operative rehabilitation" href="pdfs/post-op-shoulder-rehabilitation.pdf" target="_blank" rel="noopener">Post-Op Shoulder Rehabilitation Protocol</a>
-        <a class="doc-row doc-external" data-search="shoulder rotator cuff conditioning aaos orthoinfo" href="https://www.orthoinfo.org/recovery/rotator-cuff-and-shoulder-conditioning-program/" target="_blank" rel="noopener">Rotator Cuff &amp; Shoulder Conditioning (OrthoInfo) <span class="ext-badge">external</span></a>
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="file-text" class="icon-header"></i>
+        <h1 class="site-title">Clinical Documents</h1>
       </div>
+      <p class="site-tagline">
+        Home exercise program handouts and printable screening tools, organized for quick access and printing during clinic visits.
+      </p>
     </div>
 
-    <div class="doc-group">
-      <div class="doc-group-title">Elbow, Wrist &amp; Hand</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="cubital tunnel syndrome elbow ulnar nerve" href="pdfs/cubital-tunnel-syndrome.pdf" target="_blank" rel="noopener">Cubital Tunnel Syndrome</a>
-        <a class="doc-row" data-search="de quervains tenosynovitis wrist thumb" href="pdfs/dequervains-tenosynovitis.pdf" target="_blank" rel="noopener">De Quervain's Tenosynovitis</a>
-        <a class="doc-row" data-search="wrist tendinopathy" href="pdfs/wrist-tendinopathy.pdf" target="_blank" rel="noopener">Wrist Tendinopathy</a>
-        <a class="doc-row" data-search="carpal tunnel syndrome hand wrist" href="pdfs/carpal-tunnel-syndrome.pdf" target="_blank" rel="noopener">Carpal Tunnel Syndrome</a>
-        <a class="doc-row doc-external" data-search="epicondylitis tennis golfer elbow aaos orthoinfo" href="https://www.orthoinfo.org/globalassets/pdfs/2024-therapeutic-exercise-program-for-lateral-and-medial-epicondylitis.pdf" target="_blank" rel="noopener">Epicondylitis — Tennis/Golfer's Elbow (OrthoInfo) <span class="ext-badge">external</span></a>
-        <a class="doc-row doc-external" data-search="radial tunnel syndrome aaos orthoinfo" href="https://www.orthoinfo.org/globalassets/pdfs/2024-therapeutic-exercise-program-for-radial-tunnel-syndrome.pdf" target="_blank" rel="noopener">Radial Tunnel Syndrome (OrthoInfo) <span class="ext-badge">external</span></a>
-      </div>
+    <div class="search-wrap">
+      <span class="search-icon-wrap">
+        <i data-lucide="search" class="icon-search"></i>
+      </span>
+      <input
+        id="doc-search"
+        type="text"
+        placeholder="Search by diagnosis or tool name…"
+        autocomplete="off"
+      />
+    </div>
+  </header>
+
+  <main id="tools-grid">
+
+    <div class="category-col">
+      <h2 class="cat-heading">Shoulder</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="shoulder general program" href="pdfs/shoulder-general-program.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="dumbbell" class="icon-tool"></i></span>
+          <span class="tool-name">Shoulder — General Program</span>
+        </a></li>
+        <li><a class="tool-row" data-search="shoulder impingement syndrome" href="pdfs/shoulder-impingement-syndrome.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="dumbbell" class="icon-tool"></i></span>
+          <span class="tool-name">Shoulder Impingement Syndrome</span>
+        </a></li>
+        <li><a class="tool-row" data-search="shoulder post op post-operative rehabilitation" href="pdfs/post-op-shoulder-rehabilitation.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="dumbbell" class="icon-tool"></i></span>
+          <span class="tool-name">Post-Op Shoulder Rehabilitation Protocol</span>
+        </a></li>
+        <li><a class="tool-row" data-search="shoulder rotator cuff conditioning aaos orthoinfo" href="https://www.orthoinfo.org/recovery/rotator-cuff-and-shoulder-conditioning-program/" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="dumbbell" class="icon-tool"></i></span>
+          <span class="tool-name">Rotator Cuff &amp; Shoulder Conditioning <span class="ext-badge">OrthoInfo ↗</span></span>
+        </a></li>
+      </ul>
     </div>
 
-    <div class="doc-group">
-      <div class="doc-group-title">Low Back &amp; Sacroiliac</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="low back general program" href="pdfs/low-back-general-program.pdf" target="_blank" rel="noopener">Low Back — General Program</a>
-        <a class="doc-row" data-search="lumbar core strengthening princeton" href="pdfs/lumbar-core-strengthening-princeton.pdf" target="_blank" rel="noopener">Lumbar Core Strengthening (Princeton)</a>
-        <a class="doc-row" data-search="sacroiliac joint pain si joint" href="pdfs/sacroiliac-joint-pain.pdf" target="_blank" rel="noopener">Sacroiliac Joint Pain</a>
-      </div>
+    <div class="category-col">
+      <h2 class="cat-heading">Elbow, Wrist &amp; Hand</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="cubital tunnel syndrome elbow ulnar nerve" href="pdfs/cubital-tunnel-syndrome.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="hand" class="icon-tool"></i></span>
+          <span class="tool-name">Cubital Tunnel Syndrome</span>
+        </a></li>
+        <li><a class="tool-row" data-search="de quervains tenosynovitis wrist thumb" href="pdfs/dequervains-tenosynovitis.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="hand" class="icon-tool"></i></span>
+          <span class="tool-name">De Quervain's Tenosynovitis</span>
+        </a></li>
+        <li><a class="tool-row" data-search="wrist tendinopathy" href="pdfs/wrist-tendinopathy.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="hand" class="icon-tool"></i></span>
+          <span class="tool-name">Wrist Tendinopathy</span>
+        </a></li>
+        <li><a class="tool-row" data-search="carpal tunnel syndrome hand wrist" href="pdfs/carpal-tunnel-syndrome.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="hand" class="icon-tool"></i></span>
+          <span class="tool-name">Carpal Tunnel Syndrome</span>
+        </a></li>
+        <li><a class="tool-row" data-search="epicondylitis tennis golfer elbow aaos orthoinfo" href="https://www.orthoinfo.org/globalassets/pdfs/2024-therapeutic-exercise-program-for-lateral-and-medial-epicondylitis.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="hand" class="icon-tool"></i></span>
+          <span class="tool-name">Epicondylitis — Tennis/Golfer's Elbow <span class="ext-badge">OrthoInfo ↗</span></span>
+        </a></li>
+        <li><a class="tool-row" data-search="radial tunnel syndrome aaos orthoinfo" href="https://www.orthoinfo.org/globalassets/pdfs/2024-therapeutic-exercise-program-for-radial-tunnel-syndrome.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="hand" class="icon-tool"></i></span>
+          <span class="tool-name">Radial Tunnel Syndrome <span class="ext-badge">OrthoInfo ↗</span></span>
+        </a></li>
+      </ul>
     </div>
 
-    <div class="doc-group">
-      <div class="doc-group-title">Hip &amp; Knee</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="knee general program" href="pdfs/knee-general-program.pdf" target="_blank" rel="noopener">Knee — General Program</a>
-        <a class="doc-row" data-search="patellofemoral pain syndrome knee" href="pdfs/patellofemoral-pain-syndrome.pdf" target="_blank" rel="noopener">Patellofemoral Pain Syndrome</a>
-        <a class="doc-row" data-search="patellar tendinitis knee jumpers knee" href="pdfs/patellar-tendinitis.pdf" target="_blank" rel="noopener">Patellar Tendinitis</a>
-        <a class="doc-row" data-search="it band iliotibial band syndrome knee" href="pdfs/it-band-syndrome-knee.pdf" target="_blank" rel="noopener">IT Band Syndrome</a>
-      </div>
+    <div class="category-col">
+      <h2 class="cat-heading">Low Back &amp; Sacroiliac</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="low back general program" href="pdfs/low-back-general-program.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="activity" class="icon-tool"></i></span>
+          <span class="tool-name">Low Back — General Program</span>
+        </a></li>
+        <li><a class="tool-row" data-search="lumbar core strengthening princeton" href="pdfs/lumbar-core-strengthening-princeton.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="activity" class="icon-tool"></i></span>
+          <span class="tool-name">Lumbar Core Strengthening (Princeton)</span>
+        </a></li>
+        <li><a class="tool-row" data-search="sacroiliac joint pain si joint" href="pdfs/sacroiliac-joint-pain.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="activity" class="icon-tool"></i></span>
+          <span class="tool-name">Sacroiliac Joint Pain</span>
+        </a></li>
+      </ul>
     </div>
 
-    <div class="doc-group">
-      <div class="doc-group-title">Ankle, Foot &amp; Shin</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="ankle general program" href="pdfs/ankle-general-program.pdf" target="_blank" rel="noopener">Ankle — General Program</a>
-        <a class="doc-row" data-search="ankle sprain rehab" href="pdfs/ankle-sprain-rehab.pdf" target="_blank" rel="noopener">Ankle Sprain Rehab</a>
-        <a class="doc-row" data-search="plantar fasciitis foot heel pain" href="pdfs/plantar-fasciitis-1.pdf" target="_blank" rel="noopener">Plantar Fasciitis — Option 1</a>
-        <a class="doc-row" data-search="plantar fasciitis foot heel pain" href="pdfs/plantar-fasciitis-2.pdf" target="_blank" rel="noopener">Plantar Fasciitis — Option 2</a>
-        <a class="doc-row" data-search="shin splints medial tibial stress syndrome mtss" href="pdfs/shin-splints-mtss.pdf" target="_blank" rel="noopener">Shin Splints (MTSS)</a>
-      </div>
+    <div class="category-col">
+      <h2 class="cat-heading">Hip &amp; Knee</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="knee general program" href="pdfs/knee-general-program.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="bone" class="icon-tool"></i></span>
+          <span class="tool-name">Knee — General Program</span>
+        </a></li>
+        <li><a class="tool-row" data-search="patellofemoral pain syndrome knee" href="pdfs/patellofemoral-pain-syndrome.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="bone" class="icon-tool"></i></span>
+          <span class="tool-name">Patellofemoral Pain Syndrome</span>
+        </a></li>
+        <li><a class="tool-row" data-search="patellar tendinitis knee jumpers knee" href="pdfs/patellar-tendinitis.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="bone" class="icon-tool"></i></span>
+          <span class="tool-name">Patellar Tendinitis</span>
+        </a></li>
+        <li><a class="tool-row" data-search="it band iliotibial band syndrome knee" href="pdfs/it-band-syndrome-knee.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="bone" class="icon-tool"></i></span>
+          <span class="tool-name">IT Band Syndrome</span>
+        </a></li>
+      </ul>
     </div>
 
-    <div class="doc-group">
-      <div class="doc-group-title">Neck</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="neck general program cervical" href="pdfs/neck-general-program.pdf" target="_blank" rel="noopener">Neck — General Program</a>
-        <a class="doc-row" data-search="neck pain cervical general" href="pdfs/neck-pain-general.pdf" target="_blank" rel="noopener">Neck Pain — General</a>
-      </div>
+    <div class="category-col">
+      <h2 class="cat-heading">Ankle, Foot &amp; Shin</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="ankle general program" href="pdfs/ankle-general-program.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="footprints" class="icon-tool"></i></span>
+          <span class="tool-name">Ankle — General Program</span>
+        </a></li>
+        <li><a class="tool-row" data-search="ankle sprain rehab" href="pdfs/ankle-sprain-rehab.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="footprints" class="icon-tool"></i></span>
+          <span class="tool-name">Ankle Sprain Rehab</span>
+        </a></li>
+        <li><a class="tool-row" data-search="plantar fasciitis foot heel pain" href="pdfs/plantar-fasciitis-1.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="footprints" class="icon-tool"></i></span>
+          <span class="tool-name">Plantar Fasciitis — Option 1</span>
+        </a></li>
+        <li><a class="tool-row" data-search="plantar fasciitis foot heel pain" href="pdfs/plantar-fasciitis-2.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="footprints" class="icon-tool"></i></span>
+          <span class="tool-name">Plantar Fasciitis — Option 2</span>
+        </a></li>
+        <li><a class="tool-row" data-search="shin splints medial tibial stress syndrome mtss" href="pdfs/shin-splints-mtss.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="footprints" class="icon-tool"></i></span>
+          <span class="tool-name">Shin Splints (MTSS)</span>
+        </a></li>
+      </ul>
     </div>
 
-    <div class="doc-group">
-      <div class="doc-group-title">Other</div>
-      <div class="doc-grid">
-        <a class="doc-row" data-search="hamstring strain" href="pdfs/hamstring-strain.pdf" target="_blank" rel="noopener">Hamstring Strain</a>
-        <a class="doc-row" data-search="epley maneuver bppv vertigo dizziness" href="pdfs/epley-maneuver-bppv.pdf" target="_blank" rel="noopener">Epley Maneuver (BPPV)</a>
-        <a class="doc-row" data-search="epley foster method bppv vertigo dizziness" href="pdfs/epley-maneuver-foster-method-bppv.pdf" target="_blank" rel="noopener">Epley Maneuver — Foster Method (BPPV)</a>
-        <a class="doc-row" data-search="bodyweight cardio warmup kit general conditioning" href="pdfs/bodyweight-cardio-warmup-kit.pdf" target="_blank" rel="noopener">Bodyweight Cardio/Warmup Kit</a>
-      </div>
+    <div class="category-col">
+      <h2 class="cat-heading">Neck</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="neck general program cervical" href="pdfs/neck-general-program.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="move" class="icon-tool"></i></span>
+          <span class="tool-name">Neck — General Program</span>
+        </a></li>
+        <li><a class="tool-row" data-search="neck pain cervical general" href="pdfs/neck-pain-general.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="move" class="icon-tool"></i></span>
+          <span class="tool-name">Neck Pain — General</span>
+        </a></li>
+      </ul>
+    </div>
+
+    <div class="category-col">
+      <h2 class="cat-heading">Other</h2>
+      <ul class="tool-list">
+        <li><a class="tool-row" data-search="hamstring strain" href="pdfs/hamstring-strain.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="activity" class="icon-tool"></i></span>
+          <span class="tool-name">Hamstring Strain</span>
+        </a></li>
+        <li><a class="tool-row" data-search="epley maneuver bppv vertigo dizziness" href="pdfs/epley-maneuver-bppv.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="ear" class="icon-tool"></i></span>
+          <span class="tool-name">Epley Maneuver (BPPV)</span>
+        </a></li>
+        <li><a class="tool-row" data-search="epley foster method bppv vertigo dizziness" href="pdfs/epley-maneuver-foster-method-bppv.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="ear" class="icon-tool"></i></span>
+          <span class="tool-name">Epley Maneuver — Foster Method (BPPV)</span>
+        </a></li>
+        <li><a class="tool-row" data-search="bodyweight cardio warmup kit general conditioning" href="pdfs/bodyweight-cardio-warmup-kit.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="heart-pulse" class="icon-tool"></i></span>
+          <span class="tool-name">Bodyweight Cardio/Warmup Kit</span>
+        </a></li>
+      </ul>
+    </div>
+
+  </main>
+
+  <p id="no-results">No documents match your search.</p>
+
+  <section id="ext-refs">
+    <h2 class="cat-heading">Clinical Tools</h2>
+    <div class="ext-list">
+      <a class="ext-row" data-search="asthma control test act pulmonary" href="https://www.asthmacontroltest.com/" target="_blank" rel="noopener">
+        <span class="ext-icon"><i data-lucide="wind" class="icon-ext"></i></span>
+        <span class="ext-body">
+          <span class="ext-name">Asthma Control Test</span>
+          <span class="ext-desc">Patient self-assessment questionnaire</span>
+        </span>
+        <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
+      </a>
+      <a class="ext-row" data-search="phq-9 phq9 patient health questionnaire depression screening" href="https://www.phqscreeners.com/images/sites/g/files/g10060481/f/201412/PHQ-9_English.pdf" target="_blank" rel="noopener">
+        <span class="ext-icon"><i data-lucide="brain" class="icon-ext"></i></span>
+        <span class="ext-body">
+          <span class="ext-name">PHQ-9</span>
+          <span class="ext-desc">Depression screening</span>
+        </span>
+        <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
+      </a>
+      <a class="ext-row" data-search="gad-7 gad7 generalized anxiety disorder screening" href="https://aims.uw.edu/keyword-tagging/gad-7" target="_blank" rel="noopener">
+        <span class="ext-icon"><i data-lucide="brain" class="icon-ext"></i></span>
+        <span class="ext-body">
+          <span class="ext-name">GAD-7</span>
+          <span class="ext-desc">Anxiety screening</span>
+        </span>
+        <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
+      </a>
     </div>
   </section>
 
-  <!-- Clinical Tools -->
-  <section class="card">
-    <div class="card-title">Clinical Tools</div>
-    <div class="doc-group">
-      <div class="doc-grid">
-        <a class="doc-row doc-external" data-search="asthma control test act pulmonary" href="https://www.asthmacontroltest.com/" target="_blank" rel="noopener">Asthma Control Test <span class="ext-badge">external</span></a>
-        <a class="doc-row doc-external" data-search="phq-9 phq9 patient health questionnaire depression screening" href="https://www.phqscreeners.com/images/sites/g/files/g10060481/f/201412/PHQ-9_English.pdf" target="_blank" rel="noopener">PHQ-9 — Depression Screening <span class="ext-badge">external</span></a>
-        <a class="doc-row doc-external" data-search="gad-7 gad7 generalized anxiety disorder screening" href="https://aims.uw.edu/keyword-tagging/gad-7" target="_blank" rel="noopener">GAD-7 — Anxiety Screening <span class="ext-badge">external</span></a>
-      </div>
-    </div>
-  </section>
+  <footer>
+    <p>Handouts for quick reference and printing during clinical visits. External links open the original publisher rather than a locally hosted copy, due to redistribution licensing. <strong>Not medical advice — verify appropriateness for each patient before use.</strong></p>
+  </footer>
 
 </div>
 
-<footer>
-  <p>Home exercise program handouts for quick reference and printing during clinical visits. Entries marked <span class="ext-badge">external</span> link to the original publisher rather than a locally hosted copy, due to redistribution licensing. <strong>Not medical advice — verify appropriateness for each patient before use.</strong></p>
-</footer>
-
-<div id="doc-no-results" class="doc-no-results">No documents match your search.</div>
 <script src="app.js?v=2"></script>
 </body>
 </html>

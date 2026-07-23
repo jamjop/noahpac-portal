@@ -1,194 +1,25 @@
-/* ── Layout ── */
-.header-inner {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 20px 16px 18px;
-}
-
-.wrap {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 20px 16px 60px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* ── Search bar — card-style container ── */
-.doc-search-wrap {
-  background: var(--surface);
-  border-radius: var(--r);
-  box-shadow: var(--sh);
-  border: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 10px;
-  transition: border-color .15s, box-shadow .15s;
-}
-.doc-search-wrap:focus-within {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 1px var(--purple), var(--sh);
-}
-.doc-search-wrap svg {
-  flex-shrink: 0;
-  color: var(--ink-muted);
-}
-
-#doc-search {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 12px 0;
-  font-size: 0.9375rem;
-  font-family: inherit;
-  color: var(--ink);
-  background: transparent;
-}
-#doc-search::placeholder { color: var(--ink-muted); }
-
-/* ── Card sections ── */
-.card {
-  background: var(--surface);
-  border-radius: var(--r);
-  box-shadow: var(--sh);
-  overflow: hidden;
-}
-
-/* ── Card header ── */
-.card-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--purple);
-  padding: 14px 18px 13px;
-  border-bottom: 1px solid var(--line);
-}
-
-/* ── Groups ── */
-.doc-group {
-  padding: 14px 18px;
-}
-/* Only draw a divider *between* consecutive groups — never above the first */
-.doc-group + .doc-group {
-  border-top: 1px solid var(--line);
-}
-
-.doc-group-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--ink-muted);
-  text-transform: uppercase;
-  letter-spacing: .10em;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.doc-group-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-
-/* ── Document grid ── */
-.doc-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 6px;
-}
-
-/* ── Document rows ── */
-.doc-row {
-  display: flex;
-  align-items: center;
-  padding: 9px 11px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  text-decoration: none;
-  color: var(--ink);
-  font-size: 0.8125rem;
-  line-height: 1.35;
-  background: var(--bg);
-  transition: border-color .12s, background .12s, box-shadow .12s, color .12s;
-  gap: 8px;
-}
-/* Bullet indicator */
-.doc-row::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--line);
-  flex-shrink: 0;
-  transition: background .12s;
-}
-.doc-row:hover {
-  border-color: var(--purple);
-  background: var(--purple-soft);
-  box-shadow: var(--sh);
-  color: var(--purple);
-}
-.doc-row:hover::before {
-  background: var(--purple);
-}
-.doc-row.doc-external {
-  border-style: dashed;
-}
-
-/* ── External badge ── */
-.ext-badge {
+/* ── Back link (documents/ isn't the homepage, index.css has no equivalent) ── */
+.back-link {
   display: inline-flex;
   align-items: center;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.5625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .06em;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
   color: var(--ink-muted);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 1px 5px;
-  flex-shrink: 0;
-  margin-left: auto;
-  white-space: nowrap;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
 }
+.back-link:hover { color: var(--accent); }
+.icon-back { width: 14px; height: 14px; stroke-width: 2; }
 
-/* ── Search-driven visibility ── */
-.doc-row.doc-hidden         { display: none; }
-.doc-group.doc-group-hidden { display: none; }
-
-/* ── No-results message ── */
-.doc-no-results {
-  display: none;
-  text-align: center;
-  padding: 32px 20px;
+/* ── External-source badge (OrthoInfo etc., hosted files have none) ── */
+.ext-badge {
+  font-size: 0.6875rem;
+  font-weight: 500;
   color: var(--ink-muted);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-}
-.doc-no-results.visible { display: block; }
-
-/* ── Footer note ── */
-footer p {
-  font-size: 0.75rem;
-  color: var(--ink-muted);
-  line-height: 1.6;
+  margin-left: 0.375rem;
 }
 
-/* ── Mobile: single column ── */
-@media (max-width: 540px) {
-  .doc-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ── Print ── */
+/* ── Print: clean handout, no chrome ── */
 @media print {
-  .doc-search-wrap, header, footer, .back { display: none; }
-  .card { box-shadow: none; border: 1px solid var(--print-border); }
+  .back-link, .search-wrap, footer, #ext-refs { display: none; }
 }
