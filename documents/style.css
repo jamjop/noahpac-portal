@@ -1,0 +1,201 @@
+/* ── Layout ── */
+.header-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 22px 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tab-search {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  color: var(--ink);
+  width: 160px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 4px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.tab-search::placeholder { color: var(--ink-muted); }
+.tab-search:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 1px var(--purple);
+  background: var(--surface);
+}
+@media (max-width: 480px) { .tab-search { width: 110px; } }
+
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Card sections ── */
+.card {
+  background: var(--surface);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  overflow: hidden;
+}
+
+.card-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--purple);
+  padding: 14px 18px 0;
+  margin-bottom: 4px;
+}
+
+/* ── Search ── */
+.doc-search-wrap {
+  padding: 14px 18px 0;
+}
+
+#doc-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color .15s, box-shadow .15s;
+}
+#doc-search:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 1px var(--purple);
+}
+
+/* ── Groups ── */
+.doc-group {
+  padding: 14px 18px;
+  border-top: 1px solid var(--line);
+}
+
+.doc-group:first-of-type {
+  border-top: none;
+}
+
+.doc-group-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: .10em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.doc-group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 6px;
+}
+
+/* ── Document rows ── */
+.doc-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  background: var(--bg);
+  transition: border-color .12s, background .12s, box-shadow .12s, color .12s;
+  gap: 6px;
+}
+.doc-row::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--line);
+  flex-shrink: 0;
+  transition: background .12s;
+}
+
+.doc-row:hover {
+  border-color: var(--purple);
+  background: var(--purple-soft);
+  box-shadow: var(--sh);
+  color: var(--purple);
+}
+.doc-row:hover::before {
+  background: var(--purple);
+}
+
+.doc-row.doc-external {
+  border-style: dashed;
+}
+
+/* ── External badge ── */
+.ext-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ink-muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── Hidden state (driven by search JS) ── */
+.doc-row.doc-hidden       { display: none; }
+.doc-group.doc-group-hidden { display: none; }
+
+/* ── No-results state ── */
+.doc-no-results {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--ink-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+}
+
+/* ── Footer override: single-column content note ── */
+footer p {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* ── Print ── */
+@media print {
+  .doc-search-wrap, header, footer, .back { display: none; }
+  .card { box-shadow: none; border: 1px solid var(--print-border); }
+}

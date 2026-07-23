@@ -321,14 +321,12 @@ if (crossErrors > 0) {
 console.log("\n──────────────────────────────────────────────────────────────");
 console.log("Checking index.css fallback tokens against shared.css...\n");
 
-const HOME_TOKEN_MAP: Record<string, string> = {
-  "--bg":       "--bg",
-  "--surface":  "--surface",
-  "--ink":      "--ink",
-  "--ink-soft": "--ink-soft",
-  "--ink-muted":"--ink-muted",
-  "--line":     "--line",
-  "--accent":   "--purple",
+// Static alias map: tokens that exist in both files under DIFFERENT names.
+// Tokens that share the same name in both files are discovered automatically
+// below — no manual update needed when new shared tokens are added.
+// To add a cross-file alias: HOME_TOKEN_ALIASES["--index-name"] = "--shared-name"
+const HOME_TOKEN_ALIASES: Record<string, string> = {
+  "--accent": "--purple",
 };
 
 const indexCssPath = join(projectRoot, "index.css");
@@ -340,15 +338,50 @@ try {
   process.exit(1);
 }
 
-const homeLight  = extractRootBlock(indexCss);
-const homeDark   = extractDarkRootBlock(indexCss);
+const homeLight   = extractRootBlock(indexCss);
+const homeDark    = extractDarkRootBlock(indexCss);
 const sharedLight = extractRootBlock(sharedCss);
 const sharedDark  = extractDarkRootBlock(sharedCss);
+
+// Auto-discover tokens present in both files under the SAME name.
+// Collect every token name defined in index.css (light or dark)…
+const indexTokenNames = new Set<string>([...homeLight.keys(), ...homeDark.keys()]);
+// …then keep only those that also appear in shared.css.
+const autoDiscovered = new Set<string>();
+for (const name of indexTokenNames) {
+  if (sharedLight.has(name) || sharedDark.has(name)) {
+    autoDiscovered.add(name);
+  }
+}
+
+// Build the effective sync map: homeToken → sharedToken.
+// Auto-discovered same-name tokens + static cross-file aliases.
+// Exclude any index-side token that is already covered by an alias entry,
+// so that an alias is never double-checked as both a same-name pair and an alias.
+const aliasedIndexTokens = new Set(Object.keys(HOME_TOKEN_ALIASES));
+const syncMap = new Map<string, string>();
+for (const name of autoDiscovered) {
+  if (!aliasedIndexTokens.has(name)) {
+    syncMap.set(name, name);
+  }
+}
+for (const [homeToken, sharedToken] of Object.entries(HOME_TOKEN_ALIASES)) {
+  syncMap.set(homeToken, sharedToken);
+}
+
+console.log(
+  `Auto-discovered ${autoDiscovered.size} same-name token(s) shared by index.css and shared.css.`
+);
+console.log(
+  `Checking ${syncMap.size} token pair(s) total ` +
+  `(${autoDiscovered.size - (aliasedIndexTokens.size > 0 ? 0 : 0)} auto + ` +
+  `${Object.keys(HOME_TOKEN_ALIASES).length} alias mapping(s)).\n`
+);
 
 let syncErrors = 0;
 const syncErrorLines: string[] = [];
 
-for (const [homeToken, sharedToken] of Object.entries(HOME_TOKEN_MAP)) {
+for (const [homeToken, sharedToken] of syncMap) {
   for (const mode of ["light", "dark"] as const) {
     const homeMap   = mode === "light" ? homeLight  : homeDark;
     const sharedMap = mode === "light" ? sharedLight : sharedDark;
@@ -396,8 +429,9 @@ if (syncErrors > 0) {
   );
   console.log(
     "Update the matching token in index.css to re-sync with shared.css.\n" +
-    "Token mapping: index.css --accent ↔ shared.css --purple;\n" +
-    "all other bridged tokens share the same name in both files."
+    "Same-name tokens are compared automatically — no manual map update required.\n" +
+    "For tokens with different names across files, add an entry to HOME_TOKEN_ALIASES\n" +
+    "in scripts/src/check-css-tokens.ts (e.g. index.css --accent ↔ shared.css --purple)."
   );
   process.exit(1);
 } else {
