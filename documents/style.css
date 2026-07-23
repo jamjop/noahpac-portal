@@ -3,10 +3,6 @@
   max-width: 880px;
   margin: 0 auto;
   padding: 20px 16px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
 }
 
 .wrap {
@@ -188,10 +184,6 @@ footer p {
 @media (max-width: 540px) {
   .doc-grid {
     grid-template-columns: 1fr;
-  }
-  .header-inner {
-    flex-wrap: wrap;
-    gap: 8px;
   }
 }
 
