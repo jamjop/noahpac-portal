@@ -1,0 +1,146 @@
+/* ── Clinical semantic accents (not part of index.css — index.css has no
+   equivalent for "first-line"/"penicillin-allergy"/"pregnancy" tagging).
+   Values match shared.css's tokens so the clinical meaning stays consistent
+   with every other page that uses these colors. ── */
+:root {
+  --ok: #1A8A5A; --ok-soft: #E3F5EC; --ok-ink: #065f46;
+  --warn: #D4820A; --warn-soft: #FEF3DA; --warn-ink: #92400e;
+  --preg: #BE185D; --preg-soft: #FCE7F3;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --preg: #f472b6; --preg-soft: #3d0a22; }
+}
+
+/* ── Back link ── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+}
+.back-link:hover { color: var(--accent); }
+.icon-back { width: 14px; height: 14px; stroke-width: 2; }
+
+.update-cadence {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  opacity: .85;
+}
+
+/* ── Search input (index.css styles #search-input; this page uses #abxSearch
+   so app.js's existing element lookups don't need to change) ── */
+.search-wrap { position: relative; width: 100%; max-width: 20rem; }
+#abxSearch {
+  width: 100%; background: var(--surface); border: 1px solid var(--line-input);
+  padding: 0.75rem 1rem 0.75rem 2.5rem; font-size: 0.875rem; color: var(--ink);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); outline: none; font-family: inherit; box-sizing: border-box;
+}
+#abxSearch:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+/* ── Two-pane layout (nav sidebar + detail pane) ── */
+.page-body { margin-top: 2.5rem; }
+@media (min-width: 800px) {
+  .page-body { display: flex; gap: 2.5rem; align-items: flex-start; }
+  .cat-nav {
+    width: 220px; flex-shrink: 0; position: sticky; top: 20px;
+    max-height: calc(100vh - 40px); overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  }
+  .pane { flex: 1; min-width: 0; }
+}
+@media (max-width: 799px) {
+  .cat-nav { margin-bottom: 1.5rem; }
+}
+
+/* ── Collapsible category sections, styled like the homepage's tool-list ── */
+.nav-section { margin-bottom: 2px; }
+
+.nav-section-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; background: transparent; border: none; border-radius: 6px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--ink-muted); padding: 8px 10px; cursor: pointer;
+  transition: background .12s, color .12s; text-align: left;
+}
+.nav-section-hdr:hover { background: var(--hover-bg); box-shadow: var(--hover-sh); color: var(--ink); }
+.nav-section.open .nav-section-hdr { color: var(--accent); }
+.nav-section-label { display: flex; align-items: center; gap: 0.5rem; }
+.icon-cat { width: 15px; height: 15px; stroke-width: 1.5; opacity: 0.75; flex-shrink: 0; }
+
+.nav-chevron { display: inline-block; font-size: 12px; line-height: 1; transition: transform .18s; }
+.nav-chevron::before { content: '+'; }
+.nav-section.open .nav-chevron { transform: rotate(45deg); }
+
+.nav-section-list { display: none; padding-bottom: 4px; }
+.nav-section.open .nav-section-list { display: block; }
+
+.tab-btn {
+  display: flex; align-items: center; gap: 0.625rem;
+  width: 100%; text-align: left; background: transparent; border: none;
+  border-radius: 6px; color: var(--ink);
+  font-size: 0.8125rem; font-weight: 500;
+  padding: 8px 10px 8px 14px; cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: background .1s, box-shadow .1s, color .1s; margin-bottom: 2px;
+}
+.tab-btn:hover { background: var(--hover-bg); box-shadow: var(--hover-sh); color: var(--accent); }
+.tab-btn.active { color: var(--accent); font-weight: 600; }
+.icon-tab { width: 15px; height: 15px; stroke-width: 1.5; opacity: 0.6; flex-shrink: 0; }
+.tab-btn:hover .icon-tab, .tab-btn.active .icon-tab { opacity: 1; }
+
+/* ── Detail pane ── */
+.placeholder { padding: 3rem 0; color: var(--ink-muted); font-size: 0.875rem; }
+
+.abx-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); }
+.abx-title   { font-size: clamp(20px,3vw,26px); font-weight: 600; line-height: 1.1; margin: 4px 0 2px; letter-spacing: -.02em; }
+.abx-organism { font-size: 0.8125rem; color: var(--ink-muted); margin-bottom: 6px; font-style: italic; }
+.abx-source  { font-size: 0.75rem; color: var(--ink-muted); margin-bottom: 20px; }
+
+.reg-label {
+  font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+  padding-bottom: 4px; margin: 20px 0 10px; color: var(--ink-muted); border-bottom: 1.5px solid var(--line);
+}
+.reg-label.fl     { color: var(--ok); border-color: var(--ok); }
+.reg-label.preg   { color: var(--preg); border-color: var(--preg); }
+.reg-label.allergy{ color: var(--warn); border-color: var(--warn); }
+
+.drugs { display: flex; flex-direction: column; gap: 8px; }
+.drug {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px;
+}
+.drug.fl { box-shadow: 0 0 0 2px var(--ok); }
+.drug-name { font-weight: 600; font-size: 0.875rem; color: var(--ink); }
+.drug-dose { font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem; font-weight: 600; margin-top: 4px; color: var(--ink); line-height: 1.5; }
+.drug-note { font-size: 0.75rem; color: var(--ink-muted); margin-top: 4px; font-style: italic; }
+
+.abx-note {
+  font-size: 0.8125rem; color: var(--ink-muted); line-height: 1.55; margin-top: 18px;
+  padding: 12px 14px; background: var(--bg); border-radius: 6px; border: 1px solid var(--line);
+}
+
+.copy-btn {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.03em; padding: 8px 18px;
+  border-radius: 50px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent);
+  cursor: pointer; transition: background .15s, color .15s; margin-top: 18px; display: inline-block;
+}
+.copy-btn:hover { background: var(--accent); color: #fff; }
+.copy-btn.copied { background: var(--ok); color: #fff; border-color: var(--ok); }
+
+/* ── "Last checked for updates" badge (populated by /assets/last-checked.js) ── */
+footer .last-checked {
+  display: flex; align-items: center; gap: 7px; order: -1;
+  font-size: 0.75rem; font-weight: 600; color: var(--ok-ink); background: var(--ok-soft);
+  border-radius: 6px; padding: 8px 12px; width: fit-content;
+}
+footer .last-checked .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex-shrink: 0; }
+footer .last-checked.stale { color: var(--warn-ink); background: var(--warn-soft); }
+footer .last-checked.stale .dot { background: var(--warn); }
+
+/* ── Print ── */
+@media print {
+  .back-link, .search-wrap, footer, .cat-nav { display: none; }
+  .page-body { display: block; }
+}

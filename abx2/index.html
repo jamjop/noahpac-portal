@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antibiotic Reference</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="pill" class="icon-header"></i>
+        <h1 class="site-title">Antibiotic Reference</h1>
+      </div>
+      <p class="site-tagline">
+        Empiric therapy by condition — IDSA / ATS / CDC guidance.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon-wrap">
+        <i data-lucide="search" class="icon-search"></i>
+      </span>
+      <input type="search" id="abxSearch" placeholder="Search…" autocomplete="off" spellcheck="false">
+    </div>
+  </header>
+
+  <div class="page-body">
+    <nav class="cat-nav" id="tabNav"></nav>
+    <div class="pane" id="pane">
+      <div class="placeholder">Select a condition from the list</div>
+    </div>
+  </div>
+
+  <footer>
+    <p class="last-checked"></p>
+  </footer>
+
+</div>
+
+<script src="data/cns.js"></script>
+<script src="data/ent.js"></script>
+<script src="data/pulmonary.js"></script>
+<script src="data/cardiac.js"></script>
+<script src="data/gi.js"></script>
+<script src="data/gu.js"></script>
+<script src="data/ssti.js"></script>
+<script src="data/bone.js"></script>
+<script src="data/bloodstream.js"></script>
+<script src="data/tickborne.js"></script>
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>
