@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toxicology / Antidote Reference</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap narrow">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="skull" class="icon-header"></i>
+        <h1 class="site-title">Toxicology / Antidote Reference</h1>
+      </div>
+      <p class="site-tagline">
+        Toxin → antidote quick reference.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="alert-box alert-urgent">
+    <strong>Poison Control: 1-800-222-1222</strong> — available 24/7 nationwide. Call early, especially for unfamiliar ingestions, pediatric exposures, or when the antidote/dosing below doesn't clearly fit the clinical picture. Supportive care (airway, breathing, circulation) always takes priority over antidote administration.
+  </div>
+
+  <!-- Quick reference -->
+  <section class="ref-section">
+    <h2 class="cat-heading">Toxin → Antidote — Quick Reference</h2>
+    <div class="dose-grid">
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Acetaminophen (APAP)</div>
+        <div class="dose-product">Hepatotoxicity</div>
+        <div class="dose-amount">N-acetylcysteine (NAC)</div>
+        <div class="dose-repeat">IV: 150 mg/kg over 1h, then 50 mg/kg over 4h, then 100 mg/kg over 16h. PO: 140 mg/kg load, then 70 mg/kg q4h ×17. Treat per Rumack-Matthew nomogram — see below</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Benzodiazepines</div>
+        <div class="dose-product">CNS/respiratory depression</div>
+        <div class="dose-amount">Flumazenil 0.2 mg IV</div>
+        <div class="dose-repeat">May repeat 0.3–0.5 mg q30–60s, max 3 mg. Avoid in chronic benzo users and mixed overdose with pro-convulsants (e.g. TCAs) — can precipitate seizures. Rarely indicated in undifferentiated overdose</div>
+        <div class="dose-badge dose-warn">Use with caution</div>
+      </div>
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Tricyclic antidepressants</div>
+        <div class="dose-product">Cardiotoxicity, QRS widening</div>
+        <div class="dose-amount">Sodium bicarbonate 1–2 mEq/kg IV</div>
+        <div class="dose-repeat">Bolus for QRS &gt;100ms or ventricular arrhythmia. Repeat to target serum pH 7.50–7.55. Continuous infusion for ongoing toxicity</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Beta-blockers</div>
+        <div class="dose-product">Bradycardia, cardiogenic shock</div>
+        <div class="dose-amount">Glucagon 3–5 mg IV</div>
+        <div class="dose-repeat">Up to 10 mg bolus, then infusion 2–5 mg/hr. High-dose insulin/euglycemia therapy (HIET) for refractory shock — regular insulin 1 unit/kg bolus, then 0.5–1 unit/kg/hr with dextrose to maintain euglycemia</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Calcium channel blockers</div>
+        <div class="dose-product">Bradycardia, cardiogenic shock</div>
+        <div class="dose-amount">Calcium gluconate 3g IV</div>
+        <div class="dose-repeat">(Or calcium chloride 1g), may repeat. HIET is now considered first-line for refractory shock (same regimen as beta-blockers). Lipid emulsion for severe refractory cases, especially lipophilic agents (verapamil)</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Digoxin</div>
+        <div class="dose-product">Life-threatening arrhythmia, hyperkalemia</div>
+        <div class="dose-amount">Digoxin immune Fab (DigiFab)</div>
+        <div class="dose-repeat">Dose by ingested amount or serum level (product formula), or empiric 10–20 vials for life-threatening toxicity</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Methanol / Ethylene glycol</div>
+        <div class="dose-product">Toxic alcohol poisoning</div>
+        <div class="dose-amount">Fomepizole 15 mg/kg IV load</div>
+        <div class="dose-repeat">Then 10 mg/kg q12h ×4 doses, then 15 mg/kg q12h if continued (enzyme induction). Hemodialysis for severe acidosis/renal failure/high level. Folate (methanol) or thiamine/pyridoxine (ethylene glycol) as cofactors</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Organophosphates / Carbamates</div>
+        <div class="dose-product">Cholinergic toxicity</div>
+        <div class="dose-amount">Atropine 1–2 mg IV</div>
+        <div class="dose-repeat">Double dose q3–5min until secretions clear — may require massive cumulative doses. Add pralidoxime (2-PAM) 1–2g IV over 15–30min then infusion, most effective early; often unnecessary for carbamates alone</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Cyanide</div>
+        <div class="dose-product">Cellular hypoxia, lactic acidosis</div>
+        <div class="dose-amount">Hydroxocobalamin (Cyanokit) 5g IV</div>
+        <div class="dose-repeat">Over 15 min, may repeat once. Alternative/adjunct: sodium thiosulfate 12.5g IV</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Iron</div>
+        <div class="dose-product">GI toxicity, shock, hepatotoxicity</div>
+        <div class="dose-amount">Deferoxamine 15 mg/kg/hr IV</div>
+        <div class="dose-repeat">Continuous infusion for significant toxicity (elevated level, systemic symptoms, shock). Whole bowel irrigation if pills visible on imaging</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Isoniazid (INH)</div>
+        <div class="dose-product">Refractory seizures</div>
+        <div class="dose-amount">Pyridoxine (B6) IV</div>
+        <div class="dose-repeat">Gram-for-gram matching ingested INH dose. Empiric 5g IV if amount unknown, for INH-induced seizures/status epilepticus</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Methemoglobinemia</div>
+        <div class="dose-product">Local anesthetics, dapsone, nitrates</div>
+        <div class="dose-amount">Methylene blue 1–2 mg/kg IV</div>
+        <div class="dose-repeat">Over 5 min, may repeat in 1h if needed. Caution: can precipitate hemolysis in G6PD deficiency</div>
+        <div class="dose-badge dose-warn">Check G6PD if possible</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Local anesthetic systemic toxicity</div>
+        <div class="dose-product">Cardiovascular collapse, seizures</div>
+        <div class="dose-amount">Lipid emulsion 20%</div>
+        <div class="dose-repeat">Bolus 1.5 mL/kg IV over 1 min, then infusion 0.25 mL/kg/min. Repeat bolus for persistent cardiovascular collapse</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Sulfonylureas</div>
+        <div class="dose-product">Refractory hypoglycemia</div>
+        <div class="dose-amount">Octreotide 50–100 mcg SC/IV</div>
+        <div class="dose-repeat">Q6–12h. Suppresses insulin release — prevents rebound hypoglycemia more effectively than dextrose alone</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Opioids</div>
+        <div class="dose-product">Respiratory depression</div>
+        <div class="dose-amount">Naloxone</div>
+        <div class="dose-repeat">See the dedicated <a href="/naloxone/" target="_top">Naloxone Reference</a> for full dosing by route, renarcotization risk, and ND-specific legal information</div>
+        <div class="dose-badge">Specific antidote</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Acetaminophen nomogram -->
+  <section class="ref-section">
+    <h2 class="cat-heading">Acetaminophen — Rumack-Matthew Nomogram Guidance</h2>
+    <div class="sev-list">
+      <div class="sev-row">
+        <div class="sev-label">Single acute ingestion, known time</div>
+        <div class="sev-desc">Draw APAP level at 4h post-ingestion (or later if ingestion time uncertain — never interpret a level drawn before 4h). Plot on Rumack-Matthew nomogram; treat with NAC if above the treatment line (150 mcg/mL at 4h).</div>
+      </div>
+      <div class="sev-row sev-warn">
+        <div class="sev-label">Unknown ingestion time / staggered ingestion</div>
+        <div class="sev-desc">Nomogram does not apply. Start NAC empirically if any suggestion of a potentially toxic ingestion (e.g. &gt;7.5g or &gt;150 mg/kg cumulative over &lt;24h) while awaiting levels/LFTs — do not wait for a 4h level that will never be interpretable.</div>
+      </div>
+      <div class="sev-row sev-urgent">
+        <div class="sev-label">Delayed presentation / established hepatotoxicity</div>
+        <div class="sev-desc">Start NAC regardless of level if there's evidence of hepatic injury (elevated AST/ALT) or presentation is &gt;24h post-ingestion — NAC has benefit even in late/fulminant hepatic failure. Involve transplant hepatology early for severe cases.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- General principles -->
+  <section class="ref-section">
+    <h2 class="cat-heading">General Principles</h2>
+    <div class="legal-grid">
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="flask-conical" class="icon-legal"></i> GI decontamination</div>
+        <div class="legal-body">Activated charcoal (1 g/kg) is most beneficial within 1–2h of ingestion for appropriate toxins — not all toxins bind charcoal (e.g. iron, lithium, alcohols). Whole bowel irrigation for iron, sustained-release products, or body packers. Gastric lavage is rarely indicated today.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="hourglass" class="icon-legal"></i> Delayed presentations</div>
+        <div class="legal-body">Some ingestions look deceptively benign early — acetaminophen, sustained-release preparations, and some plant/mushroom toxins can have a symptom-free latent period before organ injury manifests. Don't be falsely reassured by an early asymptomatic exam.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="heart-pulse" class="icon-legal"></i> Supportive care first</div>
+        <div class="legal-body">Airway, breathing, circulation take priority over antidote administration in every case. Many toxidromes are managed successfully with aggressive supportive care alone even when a specific antidote isn't available or isn't yet confirmed necessary.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="circle-help" class="icon-legal"></i> When in doubt</div>
+        <div class="legal-body">Call Poison Control (1-800-222-1222) early — for unusual exposures, pediatric ingestions, unclear dosing, or antidote availability questions. Toxicology or critical care consultation for refractory or complex cases.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resources -->
+  <section id="ext-refs">
+    <h2 class="cat-heading">Resources</h2>
+    <div class="ext-list">
+      <a class="ext-row" href="tel:18002221222">
+        <span class="ext-icon"><i data-lucide="phone" class="icon-ext"></i></span>
+        <span class="ext-body"><span class="ext-name">Poison Control</span><span class="ext-desc">1-800-222-1222</span></span>
+      </a>
+      <a class="ext-row" href="https://www.aapcc.org/" target="_blank" rel="noopener">
+        <span class="ext-icon"><i data-lucide="landmark" class="icon-ext"></i></span>
+        <span class="ext-body"><span class="ext-name">America's Poison Centers (AAPCC)</span></span>
+        <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
+      </a>
+      <a class="ext-row" href="https://www.acmt.net/" target="_blank" rel="noopener">
+        <span class="ext-icon"><i data-lucide="graduation-cap" class="icon-ext"></i></span>
+        <span class="ext-body"><span class="ext-name">American College of Medical Toxicology</span></span>
+        <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p class="last-checked"></p>
+    <p>Based on American College of Medical Toxicology (ACMT) guidance, FDA product labeling for listed antidotes, and standard emergency medicine toxicology references (Goldfrank's, UpToDate). Antidote selection and dosing should account for clinical severity, co-ingestants, and local poison control/toxicology input. <strong>Not medical advice.</strong></p>
+  </footer>
+
+</div>
+
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>

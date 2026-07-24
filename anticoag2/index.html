@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anticoagulation Reversal</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap narrow">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="droplet" class="icon-header"></i>
+        <h1 class="site-title">Anticoagulation Reversal</h1>
+      </div>
+      <p class="site-tagline">
+        Anticoagulant &amp; antiplatelet reversal, periprocedural bridging.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="alert-box alert-urgent">
+    <strong>Life-threatening bleeding:</strong> Do not wait for labs to start reversal in a hemodynamically unstable patient. Give reversal agent, activate massive transfusion protocol if indicated, and pursue source control (endoscopy, surgery, IR) in parallel. Hematology consult for complex or refractory cases.
+  </div>
+
+  <!-- Quick reference -->
+  <section class="ref-section">
+    <h2 class="cat-heading">Reversal Agent — Quick Reference</h2>
+    <div class="dose-grid">
+
+      <div class="dose-card">
+        <div class="dose-route">Warfarin</div>
+        <div class="dose-product">Vitamin K antagonist</div>
+        <div class="dose-amount">4F-PCC + Vitamin K 10 mg IV</div>
+        <div class="dose-repeat">Dosing depends on INR and bleeding severity — see table below</div>
+        <div class="dose-badge">See severity table</div>
+      </div>
+
+      <div class="dose-card dose-first">
+        <div class="dose-route">Dabigatran (Pradaxa)</div>
+        <div class="dose-product">Direct thrombin inhibitor</div>
+        <div class="dose-amount">Idarucizumab (Praxbind) 5 g IV</div>
+        <div class="dose-repeat">Two 2.5 g/50 mL vials, given ≤15 min apart. Onset within minutes. If unavailable: aPCC (FEIBA) or 4F-PCC; dabigatran is dialyzable (~60% removed in 2–3h) unlike other DOACs</div>
+        <div class="dose-badge">Specific reversal agent</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Apixaban / Rivaroxaban</div>
+        <div class="dose-product">Factor Xa inhibitors</div>
+        <div class="dose-amount">4F-PCC 50 units/kg</div>
+        <div class="dose-repeat">Andexanet alfa (Andexxa) was withdrawn from the US market in 2026 and is no longer available — 4F-PCC per product labeling is now the primary reversal option in the US</div>
+        <div class="dose-badge dose-warn">No specific agent (US)</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Edoxaban (Savaysa)</div>
+        <div class="dose-product">Factor Xa inhibitor</div>
+        <div class="dose-amount">4F-PCC 50 units/kg</div>
+        <div class="dose-repeat">No FDA-approved specific reversal agent ever existed for edoxaban. 4F-PCC per manufacturer labeling, limited evidence</div>
+        <div class="dose-badge dose-warn">No specific agent</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">Aspirin</div>
+        <div class="dose-product">COX-1 inhibitor (irreversible)</div>
+        <div class="dose-amount">Platelet transfusion (1 unit)</div>
+        <div class="dose-repeat">Reserve for life-threatening bleeding or neurosurgical emergency. Consider DDAVP (desmopressin) 0.3 mcg/kg IV to improve platelet function. No specific reversal agent</div>
+        <div class="dose-badge dose-warn">No specific agent</div>
+      </div>
+
+      <div class="dose-card">
+        <div class="dose-route">P2Y12 inhibitors</div>
+        <div class="dose-product">Clopidogrel, ticagrelor, prasugrel</div>
+        <div class="dose-amount">Platelet transfusion</div>
+        <div class="dose-repeat">Ticagrelor's active drug and metabolite remain in plasma and can inhibit transfused platelets too — timing/effectiveness is less reliable than for clopidogrel/prasugrel. No specific reversal agent</div>
+        <div class="dose-badge dose-warn">No specific agent</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Warfarin by severity -->
+  <section class="ref-section">
+    <h2 class="cat-heading">Warfarin Reversal by Severity / INR</h2>
+    <div class="sev-list">
+
+      <div class="sev-row sev-urgent">
+        <div class="sev-label">Life-threatening bleeding</div>
+        <div class="sev-desc">Any INR. 4F-PCC (Kcentra) 25–50 units/kg based on INR and weight (per product labeling) <strong>plus</strong> Vitamin K 10 mg IV, given as a slow infusion (not push — risk of anaphylactoid reaction).</div>
+      </div>
+
+      <div class="sev-row sev-warn">
+        <div class="sev-label">Major bleeding, not life-threatening</div>
+        <div class="sev-desc">4F-PCC (preferred, faster correction) or FFP if PCC unavailable, plus Vitamin K 5–10 mg IV or PO.</div>
+      </div>
+
+      <div class="sev-row sev-warn">
+        <div class="sev-label">INR &gt; 10, no significant bleeding</div>
+        <div class="sev-desc">Hold warfarin. Oral Vitamin K 2.5–5 mg. Recheck INR in 24h.</div>
+      </div>
+
+      <div class="sev-row">
+        <div class="sev-label">INR 4.5–10, no significant bleeding</div>
+        <div class="sev-desc">Hold warfarin. Low-dose oral Vitamin K (1–2.5 mg) if high bleeding risk factors present; otherwise hold and recheck INR — routine Vitamin K not required for every patient in this range.</div>
+      </div>
+
+      <div class="sev-row">
+        <div class="sev-label">INR &lt; 4.5, no significant bleeding</div>
+        <div class="sev-desc">Hold or reduce dose. Vitamin K not routinely needed.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Periprocedural bridging -->
+  <section class="ref-section">
+    <h2 class="cat-heading">Periprocedural Bridging</h2>
+    <div class="legal-grid">
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="shield-off" class="icon-legal"></i> Low–moderate thromboembolic risk</div>
+        <div class="legal-body">Most non-valvular AFib (CHA₂DS₂-VASc without prior stroke/TIA), provoked VTE &gt;3 months prior. <strong>No bridging</strong> — hold anticoagulant per timing below, resume post-procedure once hemostasis is adequate. The BRIDGE trial showed bridging increases bleeding without reducing thromboembolic events in this group.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="shield-alert" class="icon-legal"></i> High thromboembolic risk</div>
+        <div class="legal-body">Mechanical mitral valve, any mechanical valve + prior stroke/TIA, VTE within 3 months, CHA₂DS₂-VASc with recent stroke. <strong>Bridge with therapeutic-dose LMWH or UFH</strong> while warfarin is held. DOACs generally still do not require bridging due to short half-life.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="clock" class="icon-legal"></i> Warfarin hold timing</div>
+        <div class="legal-body">Stop 5 days prior to procedure. Check INR the day before (or day of) — give small dose of oral Vitamin K if still elevated. Resume within 24h post-procedure if hemostasis is adequate.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="clock" class="icon-legal"></i> DOAC hold timing (apixaban/rivaroxaban)</div>
+        <div class="legal-body">Low bleed-risk procedure: hold 1–2 days. High bleed-risk procedure: hold 2–3 days. Extend by 1–2 days if CrCl &lt;50 mL/min (longer for dabigatran, which is more renally dependent). Resume 24h (low-risk) to 48–72h (high-risk) post-procedure.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- General principles -->
+  <section class="ref-section">
+    <h2 class="cat-heading">General Principles</h2>
+    <div class="legal-grid">
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="clock" class="icon-legal"></i> Time since last dose</div>
+        <div class="legal-body">DOAC half-lives are short (~12h for most). Reversal may be unnecessary for minor bleeding if &gt;2–3 half-lives have elapsed since the last dose. For major or life-threatening bleeding, reverse regardless of timing.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="droplet" class="icon-legal"></i> Renal function</div>
+        <div class="legal-body">All DOACs are partly renally cleared (dabigatran most, ~80%). Impaired renal function prolongs drug exposure and increases both bleeding risk and the likely need for reversal/dialysis consideration.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="filter" class="icon-legal"></i> Dialyzability</div>
+        <div class="legal-body">Dabigatran is dialyzable (low protein binding). Apixaban, rivaroxaban, and edoxaban are highly protein-bound and not effectively removed by dialysis — reversal agent or PCC is the primary strategy.</div>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><i data-lucide="circle-help" class="icon-legal"></i> When in doubt</div>
+        <div class="legal-body">Involve hematology early for refractory bleeding, combined anticoagulant/antiplatelet therapy, hepatic impairment, or when the reversal response is inadequate. Local hospital massive transfusion and reversal protocols take precedence over this general reference.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="last-checked"></p>
+    <p>Based on ACC/AHA, CHEST antithrombotic guidelines, ASRA periprocedural consensus, and FDA product labeling for idarucizumab. Andexanet alfa US withdrawal per The Medical Letter (Jan 2026) and Frol et al., CNS Drugs (Jun 2026). Reversal decisions should account for bleeding severity, local protocols, and hematology input. <strong>Not medical advice.</strong></p>
+  </footer>
+
+</div>
+
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>
