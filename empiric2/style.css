@@ -1,0 +1,179 @@
+/* ── Empiric + Susceptibility — redesign matching index.css's flat, minimal
+   aesthetic (no shadowed cards; 1px borders, accent focus states).
+   All fetch/parsing/recommendation logic in app.js is unchanged — this file
+   only restyles the classes/markup those render functions emit, reusing the
+   form + status vocabulary established by calculators2. ── */
+
+/* ── Semantic status accents (index.css has no ok/warn/risk vocabulary;
+   values mirror calculators2 / shared.css so clinical meaning stays
+   consistent across every page). ── */
+:root {
+  --ok:   #1A8A5A; --ok-soft:   #E3F5EC; --ok-ink:   #065f46;
+  --warn: #D4820A; --warn-soft: #FEF3DA; --warn-ink: #92400e;
+  --risk: #C0392B; --risk-soft: #FDEDEC; --risk-ink: #922B21;
+  --accent-soft: #ebf2ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ok:   #34d399; --ok-soft:   #0d2b20; --ok-ink:   #6ee7b7;
+    --warn: #fbbf24; --warn-soft: #2a1c00; --warn-ink: #fde68a;
+    --risk: #f87171; --risk-soft: #2a1010; --risk-ink: #fca5a5;
+    --accent-soft: #1a2c4d;
+  }
+}
+
+/* ── Back link (index.css has no back-nav) ── */
+.back-link {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  font-size: 0.8125rem; color: var(--ink-muted); text-decoration: none; margin-bottom: 1.5rem;
+}
+.back-link:hover { color: var(--accent); }
+.icon-back { width: 14px; height: 14px; stroke-width: 2; }
+
+.update-cadence { font-size: 0.75rem; color: var(--ink-muted); opacity: .85; }
+
+/* ── Page body (single criteria column, centered like the tool pages) ── */
+.page-body { margin-top: 2.5rem; }
+.criteria-col {
+  display: flex; flex-direction: column; gap: 1rem;
+  max-width: 760px;
+}
+
+/* ── Criterion group (flat bordered container — replaces shadowed .card and
+   the purple letter badge) ── */
+.criterion {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 16px 18px; overflow: hidden;
+}
+.c-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.c-letter {
+  font-size: 0.75rem; font-weight: 700;
+  width: 24px; height: 24px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; border: 1px solid var(--line);
+  background: var(--accent-soft); color: var(--accent);
+}
+.c-name {
+  font-size: 0.8125rem; font-weight: 700; color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.c-opt { font-weight: 400; font-size: 0.7rem; color: var(--ink-muted); }
+.c-desc { font-size: 0.75rem; color: var(--ink-muted); margin-top: 3px; line-height: 1.45; }
+
+/* ── Select inputs — the from-scratch form vocabulary from calculators2.
+   Flat: surface fill, 1px border, accent focus ring. ── */
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field select {
+  font-family: inherit; font-size: 0.9375rem; font-weight: 500; width: 100%; box-sizing: border-box;
+  padding: 9px 36px 9px 12px; border: 1px solid var(--line-input); border-radius: 6px;
+  background: var(--surface); color: var(--ink); outline: none;
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  transition: border-color .12s, box-shadow .12s;
+}
+.field select:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+/* ── Organism selector rows (calculators2 checkbox-pill pattern: bordered
+   pills that fill with --accent-soft when active) ── */
+.org-list { display: flex; flex-direction: column; gap: 6px; }
+.org-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; text-align: left;
+  padding: 9px 12px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); color: var(--ink-soft);
+  font-family: inherit; cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.org-btn:hover { border-color: var(--accent); color: var(--ink); }
+.org-btn.active { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+.org-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line-input); flex-shrink: 0; transition: background .12s;
+}
+.org-btn:hover .org-dot { background: var(--accent); }
+.org-btn.active .org-dot { background: var(--accent); }
+.org-label { font-size: 0.8125rem; font-weight: 500; font-style: italic; }
+.org-btn.active .org-label { font-weight: 600; }
+
+/* ── Result area ── */
+#result-area { margin-top: 4px; display: flex; flex-direction: column; gap: 8px; }
+
+/* Loading / error states — flat, inline icon */
+.state {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8125rem; color: var(--ink-soft); line-height: 1.5;
+  padding: 14px 16px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.state.err { color: var(--risk-ink); background: var(--risk-soft); border-color: var(--risk); }
+.state.warn { color: var(--warn-ink); background: var(--warn-soft); border-color: var(--warn); align-items: flex-start; }
+.state .icon-state { width: 16px; height: 16px; stroke-width: 2; flex-shrink: 0; }
+.state.warn .icon-state { margin-top: 1px; }
+
+/* ── Result card (flat bordered container — no shadow) ── */
+.result-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 16px 18px; overflow: hidden;
+}
+.result-head {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 1rem; margin-bottom: 8px; color: var(--ink-head);
+}
+.result-head .icon-result { width: 18px; height: 18px; stroke-width: 1.75; color: var(--accent); flex-shrink: 0; }
+.susc-note { font-size: 0.72rem; color: var(--ink-muted); margin-bottom: 12px; font-style: italic; }
+.susc-note strong { color: var(--ink); font-style: normal; }
+
+/* ── Regimen table (restyled flat; no box-shadow, 1px lines) ── */
+.tbl-wrap { overflow-x: auto; }
+.reg-tbl { border-collapse: collapse; font-size: 0.78rem; width: 100%; }
+.reg-tbl th {
+  font-size: 0.6rem; font-weight: 700; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line);
+  background: var(--bg); white-space: nowrap;
+}
+.reg-tbl td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.4; }
+.reg-tbl tr:last-child td { border-bottom: none; }
+.reg-name { font-weight: 700; font-size: 0.8125rem; white-space: nowrap; color: var(--ink); }
+.reg-dose { font-size: 0.7rem; white-space: nowrap; color: var(--ink-soft); }
+.reg-note { color: var(--ink-muted); font-size: 0.75rem; }
+.susc-col { text-align: center; white-space: nowrap; }
+.susc-src { font-size: 0.56rem; color: var(--ink-muted); font-weight: 500; display: block; text-transform: none; letter-spacing: 0; }
+
+/* ── Susceptibility badges (ok/warn/risk vocabulary) ── */
+.susc-badge {
+  font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-block;
+}
+.susc-hi  { background: var(--ok-soft);   color: var(--ok-ink); }
+.susc-mid { background: var(--warn-soft); color: var(--warn-ink); }
+.susc-lo  { background: var(--risk-soft); color: var(--risk-ink); }
+.susc-nr  { background: var(--line); color: var(--ink-muted); }
+.susc-na  { color: var(--ink-muted); font-size: 0.75rem; opacity: .45; text-align: center; }
+
+.legend-row {
+  font-size: 0.68rem; color: var(--ink-muted); margin-top: 12px;
+  display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+  padding-top: 12px; border-top: 1px dashed var(--line);
+}
+
+/* ── Source note (footer) ── */
+.source-note { font-size: 0.7rem; color: var(--ink-muted); line-height: 1.6; }
+.source-note a { color: var(--accent); text-decoration: none; }
+.source-note a:hover { text-decoration: underline; }
+
+/* ── "Last checked" footer badge (populated by /assets/last-checked.js) ── */
+footer .last-checked {
+  display: flex; align-items: center; gap: 7px; order: -1;
+  font-size: 0.75rem; font-weight: 600; color: var(--ok-ink); background: var(--ok-soft);
+  border-radius: 6px; padding: 8px 12px; width: fit-content;
+}
+footer .last-checked .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex-shrink: 0; }
+footer .last-checked.stale { color: var(--warn-ink); background: var(--warn-soft); }
+footer .last-checked.stale .dot { background: var(--warn); }
+
+/* ── Print ── */
+@media print {
+  .back-link, footer { display: none; }
+  .criterion, .result-card { break-inside: avoid; }
+}
