@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sepsis Screening</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="activity" class="icon-header"></i>
+        <h1 class="site-title">Sepsis Screening</h1>
+      </div>
+      <p class="site-tagline">
+        Sepsis-3 criteria &middot; qSOFA bedside screen, SOFA organ dysfunction, and septic shock.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="criteria-col">
+
+    <!-- qSOFA -->
+    <div class="criterion">
+      <div class="c-header">
+        <div class="c-hd-row">
+          <span class="c-letter">qSOFA</span>
+          <div class="c-hd-text">
+            <div class="c-name">Quick SOFA <span class="c-sub">Bedside Screen</span></div>
+            <div class="c-desc">Score ≥ 2 warrants further evaluation for sepsis outside the ICU</div>
+          </div>
+          <span class="score-chip" id="qsofa-badge">0 / 3</span>
+        </div>
+      </div>
+      <div class="checks" id="qsofa-checks">
+        <label><input type="checkbox" id="q-rr"> <span class="check-text"><strong>Respiratory rate</strong> ≥ 22/min</span></label>
+        <label><input type="checkbox" id="q-ams"> <span class="check-text"><strong>Altered mental status</strong> (GCS &lt; 15)</span></label>
+        <label><input type="checkbox" id="q-sbp"> <span class="check-text"><strong>Systolic BP</strong> ≤ 100 mmHg</span></label>
+      </div>
+      <div class="result-box" id="qsofa-result"></div>
+    </div>
+
+    <!-- SOFA -->
+    <div class="criterion">
+      <div class="c-header">
+        <div class="c-hd-row">
+          <span class="c-letter">SOFA</span>
+          <div class="c-hd-text">
+            <div class="c-name">Sequential Organ Failure Assessment <span class="c-sub">Organ Dysfunction</span></div>
+            <div class="c-desc">Score ≥ 2 from baseline indicates organ dysfunction. Select the value for each organ system.</div>
+          </div>
+          <span class="score-chip" id="sofa-badge">0</span>
+        </div>
+      </div>
+
+      <div class="sofa-grid">
+        <div class="sofa-row">
+          <div class="sofa-label">Respiration <span class="sofa-unit">PaO₂/FiO₂</span></div>
+          <div class="seg" id="seg-resp">
+            <button class="active" data-val="0">≥400</button>
+            <button data-val="1">300–399</button>
+            <button data-val="2">200–299*</button>
+            <button data-val="3">100–199*</button>
+            <button data-val="4">&lt;100*</button>
+          </div>
+        </div>
+        <div class="sofa-row">
+          <div class="sofa-label">Coagulation <span class="sofa-unit">Platelets ×10³/µL</span></div>
+          <div class="seg" id="seg-plt">
+            <button class="active" data-val="0">≥150</button>
+            <button data-val="1">100–149</button>
+            <button data-val="2">50–99</button>
+            <button data-val="3">20–49</button>
+            <button data-val="4">&lt;20</button>
+          </div>
+        </div>
+        <div class="sofa-row">
+          <div class="sofa-label">Liver <span class="sofa-unit">Bilirubin mg/dL</span></div>
+          <div class="seg" id="seg-bili">
+            <button class="active" data-val="0">&lt;1.2</button>
+            <button data-val="1">1.2–1.9</button>
+            <button data-val="2">2.0–5.9</button>
+            <button data-val="3">6.0–11.9</button>
+            <button data-val="4">≥12</button>
+          </div>
+        </div>
+        <div class="sofa-row">
+          <div class="sofa-label">Cardiovascular <span class="sofa-unit">MAP / vasopressors</span></div>
+          <div class="seg" id="seg-cv">
+            <button class="active" data-val="0">MAP ≥70</button>
+            <button data-val="1">MAP &lt;70</button>
+            <button data-val="2">Dopa ≤5 or Dobu</button>
+            <button data-val="3">Dopa 5–15 or NE/Epi ≤0.1</button>
+            <button data-val="4">Dopa &gt;15 or NE/Epi &gt;0.1</button>
+          </div>
+        </div>
+        <div class="sofa-row">
+          <div class="sofa-label">CNS <span class="sofa-unit">GCS</span></div>
+          <div class="seg" id="seg-gcs">
+            <button class="active" data-val="0">15</button>
+            <button data-val="1">13–14</button>
+            <button data-val="2">10–12</button>
+            <button data-val="3">6–9</button>
+            <button data-val="4">&lt;6</button>
+          </div>
+        </div>
+        <div class="sofa-row">
+          <div class="sofa-label">Renal <span class="sofa-unit">Creatinine mg/dL</span></div>
+          <div class="seg" id="seg-cr">
+            <button class="active" data-val="0">&lt;1.2</button>
+            <button data-val="1">1.2–1.9</button>
+            <button data-val="2">2.0–3.4</button>
+            <button data-val="3">3.5–4.9 or &lt;500mL/d</button>
+            <button data-val="4">&gt;5.0 or &lt;200mL/d</button>
+          </div>
+        </div>
+      </div>
+      <p class="footnote">* With respiratory support. Dopamine/norepinephrine/epinephrine in mcg/kg/min.</p>
+      <div class="result-box" id="sofa-result"></div>
+    </div>
+
+    <!-- Septic Shock -->
+    <div class="criterion">
+      <div class="c-header">
+        <div class="c-hd-row">
+          <span class="c-letter">Sh</span>
+          <div class="c-hd-text">
+            <div class="c-name">Septic Shock <span class="c-sub">Criteria</span></div>
+            <div class="c-desc">Requires both conditions to be met despite adequate resuscitation</div>
+          </div>
+        </div>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="sh-vaso"> <span class="check-text"><strong>Vasopressors required</strong> to maintain MAP ≥ 65 mmHg</span></label>
+        <label><input type="checkbox" id="sh-lac"> <span class="check-text"><strong>Lactate &gt; 2 mmol/L</strong> despite adequate resuscitation</span></label>
+      </div>
+      <div class="result-box" id="shock-result"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p class="last-checked"></p>
+    <p class="source-note">
+      Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥ 2 warrants further evaluation; SOFA ≥ 2 from baseline indicates organ dysfunction. Not medical advice.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>
