@@ -1,0 +1,199 @@
+/* ── TCCC Field Reference — redesign matching index.css's flat, minimal
+   aesthetic (no shadowed cards; 1px borders, accent focus states).
+   All MARCH-PAWS protocol content in app.js is unchanged — this file only
+   restyles the classes/markup that app.js's render() functions emit. ── */
+
+/* ── Clinical semantic accents (index.css has no ok/warn/risk/teal vocabulary;
+   values mirror shared.css / abx2 / als2 so clinical meaning stays consistent
+   across every page). The original tccc/style.css pulled these from
+   shared.css: danger/priority = risk (red), ok/first-line = ok (green),
+   warn/epi = warn (amber), info/teal = teal, phase-label/sec-note = purple.
+   shared.css's --purple is #0052cc, identical to index.css's --accent, so
+   phase-labels map straight onto --accent. --teal is a distinct clinical
+   accent preserved here. ── */
+:root {
+  --ok:   #1A8A5A; --ok-soft:   #E3F5EC; --ok-ink:   #065f46;
+  --warn: #D4820A; --warn-soft: #FEF3DA; --warn-ink: #92400e;
+  --risk: #C53030; --risk-soft: #FDE8E8; --risk-ink: #7f1d1d;
+  --teal: #0891B2; --teal-soft: #E0F2FE; --teal-ink: #0369a1;
+  --callout-danger-ink: #7f1d1d; --callout-warn-ink: #78350f;
+  --callout-ok-ink: #14532d; --callout-info-ink: #0c4a6e;
+  --phase-bg: #ebf2ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ok:   #34d399; --ok-soft:   #0d2b20; --ok-ink:   #6ee7b7;
+    --warn: #fbbf24; --warn-soft: #2a1c00; --warn-ink: #fde68a;
+    --risk: #fc8181; --risk-soft: #2a1010; --risk-ink: #fca5a5;
+    --teal: #22d3ee; --teal-soft: #0c2a42; --teal-ink: #22d3ee;
+    --callout-danger-ink: #fca5a5; --callout-warn-ink: #fde68a;
+    --callout-ok-ink: #6ee7b7; --callout-info-ink: #7dd3fc;
+    --phase-bg: #0d1e3d;
+  }
+}
+
+/* ── Back link (index.css has no back-nav) ── */
+.back-link {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  font-size: 0.8125rem; color: var(--ink-muted); text-decoration: none; margin-bottom: 1.5rem;
+}
+.back-link:hover { color: var(--accent); }
+.icon-back { width: 14px; height: 14px; stroke-width: 2; }
+
+.update-cadence { font-size: 0.75rem; color: var(--ink-muted); opacity: .85; }
+
+/* ── OFFLINE badge (real online/offline event toggle, per app.js) ── */
+.offline-badge {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+  color: #fff; background: var(--warn); border-radius: 6px;
+  padding: 5px 10px; align-self: flex-start; white-space: nowrap;
+}
+
+/* ── Search input (index.css styles #search-input; this page uses #tcccSearch
+   so app.js's element lookups stay self-contained), matching abx2's #abxSearch ── */
+.search-wrap { position: relative; width: 100%; max-width: 20rem; }
+#tcccSearch {
+  width: 100%; background: var(--surface); border: 1px solid var(--line-input);
+  padding: 0.75rem 1rem 0.75rem 2.5rem; font-size: 0.875rem; color: var(--ink);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); outline: none; font-family: inherit; box-sizing: border-box;
+}
+#tcccSearch:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+/* ── Two-pane layout (nav sidebar + detail pane), mirroring abx2/als2 ── */
+.page-body { margin-top: 2.5rem; }
+@media (min-width: 800px) {
+  .page-body { display: flex; gap: 2.5rem; align-items: flex-start; }
+  .cat-nav {
+    width: 220px; flex-shrink: 0; position: sticky; top: 20px;
+    max-height: calc(100vh - 40px); overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  }
+  .pane { flex: 1; min-width: 0; }
+}
+@media (max-width: 799px) {
+  .cat-nav { margin-bottom: 1.5rem; }
+}
+
+/* ── Collapsible category sections + rows, matching abx2's pattern ── */
+.cat-nav { display: flex; flex-direction: column; gap: 2px; }
+.nav-section { margin-bottom: 2px; }
+.nav-section-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; background: transparent; border: none; border-radius: 6px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--ink-muted); padding: 8px 10px; cursor: pointer;
+  transition: background .12s, color .12s; text-align: left;
+}
+.nav-section-hdr:hover { background: var(--hover-bg); box-shadow: var(--hover-sh); color: var(--ink); }
+.nav-section.open .nav-section-hdr { color: var(--accent); }
+.nav-section-label { display: flex; align-items: center; gap: 0.5rem; }
+.nav-chevron { display: inline-block; font-size: 12px; line-height: 1; transition: transform .18s; }
+.nav-chevron::before { content: '+'; }
+.nav-section.open .nav-chevron { transform: rotate(45deg); }
+.nav-section-list { display: none; padding-bottom: 4px; }
+.nav-section.open .nav-section-list { display: block; }
+
+.tab-btn {
+  display: flex; align-items: center; gap: 0.625rem;
+  width: 100%; text-align: left; background: transparent; border: none;
+  border-radius: 6px; color: var(--ink);
+  font-size: 0.8125rem; font-weight: 500;
+  padding: 8px 10px 8px 14px; cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: background .1s, box-shadow .1s, color .1s; margin-bottom: 2px;
+}
+.tab-btn:hover { background: var(--hover-bg); box-shadow: var(--hover-sh); color: var(--accent); }
+.tab-btn.active { color: var(--accent); font-weight: 600; }
+.icon-tab { width: 15px; height: 15px; stroke-width: 1.5; opacity: 0.6; flex-shrink: 0; }
+.tab-btn:hover .icon-tab, .tab-btn.active .icon-tab { opacity: 1; }
+.icon-cat { width: 15px; height: 15px; stroke-width: 1.5; opacity: 0.75; flex-shrink: 0; }
+
+/* ── Detail pane ── */
+.placeholder { padding: 3rem 0; color: var(--ink-muted); font-size: 0.875rem; }
+
+/* ── Section title + severity badges (semantic mapping preserved; app.js
+   emits class="sec-letter" not "sec-badge" — kept the original class name) ── */
+.sec-title { font-size: clamp(18px,3vw,24px); font-weight: 600; line-height: 1.15; margin: 0 0 20px; display: flex; align-items: center; gap: 10px; letter-spacing: -.02em; }
+.sec-letter { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; background: var(--risk); color: #fff; padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+.sec-letter.ok   { background: var(--ok); }
+.sec-letter.teal { background: var(--teal); }
+.sec-letter.warn { background: var(--warn); }
+
+/* ── Phase blocks ── */
+.phase { margin-bottom: 22px; }
+.phase-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: .13em;
+  text-transform: uppercase; font-weight: 600; color: var(--accent);
+  background: var(--phase-bg); border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0; padding: 6px 12px; margin-bottom: 10px; display: block;
+}
+.phase-label-mt { margin-top: 10px; }
+.steps { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; }
+.steps li {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 12px 16px; font-size: 0.8125rem; line-height: 1.5;
+}
+.step-num { font-size: 0.7rem; font-weight: 700; color: var(--teal); flex-shrink: 0; min-width: 18px; }
+.steps li strong { font-weight: 700; }
+.steps-ol { margin-left: 16px; line-height: 1.8; }
+.mt-sm { margin-top: 8px; }
+.meds-ol { margin-left: 16px; line-height: 1.9; font-size: 0.72rem; }
+
+/* ── Callouts (left-accent bars, flat) ── */
+.callout { border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 14px 0; font-size: 0.8125rem; }
+.callout.danger { background: var(--risk-soft); border-color: var(--risk); border-left: 4px solid var(--risk); color: var(--callout-danger-ink); }
+.callout.warn   { background: var(--warn-soft); border-color: var(--warn); border-left: 4px solid var(--warn); color: var(--callout-warn-ink); }
+.callout.info   { background: var(--teal-soft); border-color: var(--teal); border-left: 4px solid var(--teal); color: var(--callout-info-ink); }
+.callout.ok     { background: var(--ok-soft); border-color: var(--ok); border-left: 4px solid var(--ok); color: var(--callout-ok-ink); }
+.callout-label { font-size: 0.6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; opacity: .8; }
+.callout p { margin: 4px 0; line-height: 1.55; }
+.callout ul { margin: 6px 0 0 16px; line-height: 1.7; }
+.callout li { margin-bottom: 3px; }
+
+/* ── Drug cards (flat, 1px border; priority = ring, not shadow) ── */
+.drug-grid { display: flex; flex-direction: column; gap: 8px; }
+.drug-card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+.drug-card.priority { box-shadow: 0 0 0 2px var(--risk); }
+.drug-header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.drug-name { font-weight: 600; font-size: 0.9375rem; color: var(--ink); }
+.drug-tag { font-size: 0.55rem; font-weight: 700; padding: 3px 8px; border-radius: 50px; background: var(--risk-soft); color: var(--risk); letter-spacing: .04em; }
+.drug-tag.ok   { background: var(--ok-soft); color: var(--ok-ink); }
+.drug-tag.teal { background: var(--teal-soft); color: var(--teal-ink); }
+.drug-tag.warn { background: var(--warn-soft); color: var(--warn-ink); }
+.drug-row { display: grid; grid-template-columns: 120px 1fr; gap: 5px 12px; font-size: 0.78rem; margin-top: 4px; align-items: baseline; }
+.drug-row-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 600; letter-spacing: .08em; color: var(--ink-muted); text-transform: uppercase; }
+.drug-row-val { font-weight: 600; font-size: 0.78rem; color: var(--ink); }
+.drug-note { font-size: 0.75rem; color: var(--ink-muted); margin-top: 8px; font-style: italic; border-top: 1px solid var(--line); padding-top: 8px; }
+
+/* ── TQ / intervention timeline ── */
+.timeline { display: flex; flex-direction: column; gap: 0; margin: 10px 0; }
+.tl-row { display: flex; gap: 14px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.tl-row:last-child { border-bottom: none; }
+.tl-time { font-size: 0.6875rem; font-weight: 700; color: var(--risk); flex-shrink: 0; width: 72px; padding-top: 1px; }
+.tl-text { font-size: 0.8125rem; line-height: 1.55; }
+
+/* ── Section note ── */
+.sec-note {
+  font-size: 0.75rem; color: var(--ink-muted); line-height: 1.55;
+  padding: 12px 14px; background: var(--bg); border-radius: 6px;
+  border: 1px solid var(--line); margin-top: 16px;
+}
+
+/* ── "Last checked for updates" badge (populated by /assets/last-checked.js) ── */
+footer .last-checked {
+  display: flex; align-items: center; gap: 7px; order: -1;
+  font-size: 0.75rem; font-weight: 600; color: var(--ok-ink); background: var(--ok-soft);
+  border-radius: 6px; padding: 8px 12px; width: fit-content;
+}
+footer .last-checked .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex-shrink: 0; }
+footer .last-checked.stale { color: var(--warn-ink); background: var(--warn-soft); }
+footer .last-checked.stale .dot { background: var(--warn); }
+
+.source-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--ink-muted); line-height: 1.55; max-width: 40rem; }
+
+/* ── Print ── */
+@media print {
+  .back-link, .search-wrap, .offline-badge, .cat-nav { display: none; }
+  .page-body { display: block; }
+}
