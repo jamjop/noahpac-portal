@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaccines Due</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="syringe" class="icon-header"></i>
+        <h1 class="site-title">Vaccines Due</h1>
+      </div>
+      <p class="site-tagline">
+        ACIP / AAP / ACOG immunization schedule &middot; patient screener.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="input-row">
+      <div class="input-group">
+        <label class="field-label" for="age">Patient age</label>
+        <div class="age-input-row">
+          <input type="number" id="age" min="0" max="999" value="2" inputmode="numeric">
+          <div class="unit-toggle">
+            <button id="unitYr" class="active">yr</button>
+            <button id="unitMo">mo</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-group">
+        <span class="field-label">Sex</span>
+        <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
+          <button data-sex="female" class="active">Female</button>
+          <button data-sex="male">Male</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <span class="field-label">Schedule source</span>
+        <div class="seg" id="sourceSeg" role="group" aria-label="Schedule source">
+          <button data-source="acip" class="active">ACIP</button>
+          <button data-source="aap">AAP</button>
+          <button data-source="acog">ACOG</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <span class="field-label">Catch-up recs</span>
+        <div class="seg" id="catchupSeg" role="group" aria-label="Include catch-up recommendations">
+          <button id="catchupBtn">Include catch-up</button>
+        </div>
+      </div>
+    </div>
+    <details class="flags">
+      <summary>Special conditions</summary>
+      <div class="flag-grid" id="flagGrid">
+        <label data-only="female"><input type="checkbox" id="f_pregnant"> Currently pregnant</label>
+        <label><input type="checkbox" id="f_immunocompromised"> Immunocompromised (transplant, biologics, high-dose steroids)</label>
+        <label><input type="checkbox" id="f_hiv"> HIV positive</label>
+        <label><input type="checkbox" id="f_asplenia"> Asplenia / functional asplenia (incl. sickle cell)</label>
+        <label><input type="checkbox" id="f_liverDz"> Chronic liver disease (incl. HBV/HCV carrier)</label>
+        <label><input type="checkbox" id="f_ckd"> Chronic kidney disease / ESRD / dialysis</label>
+        <label><input type="checkbox" id="f_diabetes"> Diabetes mellitus</label>
+        <label><input type="checkbox" id="f_heartDz"> Chronic heart disease (incl. CHF; not HTN alone)</label>
+        <label><input type="checkbox" id="f_lungDz"> Chronic lung disease (COPD, asthma — not mild intermittent)</label>
+        <label><input type="checkbox" id="f_hcw"> Healthcare worker</label>
+        <label data-only="male"><input type="checkbox" id="f_msm"> MSM</label>
+        <label><input type="checkbox" id="f_noRecords"> No vaccination records / assume unvaccinated</label>
+      </div>
+    </details>
+  </div>
+
+  <div class="copy-bar" id="copyBar" hidden>
+    <button class="copy-btn" id="copyBtn"><i data-lucide="clipboard-copy" class="icon-copy"></i> Copy schedule</button>
+  </div>
+  <div class="results" id="results"></div>
+
+  <footer>
+    <p class="last-checked"></p>
+    <p class="disclaimer"><strong>Not medical advice.</strong> Summarizes ACIP, AAP, and ACOG immunization recommendations; verify with current schedules and individualize based on prior vaccination history, contraindications, and clinical judgment. Data reflects 2026 ACIP schedule including ACIP 2025 updates (clesrovimab/Enwina, Penbraya MenABCWY, JYNNEOS mpox, influenza 2025–26). AAP differences: HPV from age 9, LAIV preferred ages 2–8, MenB routine for all adolescents 16–23. ACOG differences: RSV maternal vaccine (Abrysvo at 32–36 weeks), Tdap optimal timing 27–32 weeks, HPV deferred during pregnancy, IIV strongly recommended over LAIV in pregnancy.</p>
+  </footer>
+
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>
