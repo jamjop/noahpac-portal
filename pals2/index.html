@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pediatric Advanced Life Support</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="baby" class="icon-header"></i>
+        <h1 class="site-title">Pediatric Advanced Life Support</h1>
+      </div>
+      <p class="site-tagline">
+        Pediatric resuscitation algorithms — American Heart Association 2020 Guidelines.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon-wrap">
+        <i data-lucide="search" class="icon-search"></i>
+      </span>
+      <input type="search" id="palsSearch" placeholder="Search algorithms…" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="offline-badge" id="offlineBadge" hidden>OFFLINE</div>
+  </header>
+
+  <div class="page-body">
+    <nav class="cat-nav" id="tabNav"></nav>
+    <div class="pane" id="content">
+      <div class="placeholder">Select an algorithm from the list</div>
+    </div>
+  </div>
+
+  <footer>
+    <p class="last-checked"></p>
+    <p class="source-note">
+      Based on American Heart Association 2020 Pediatric Advanced Life Support (PALS) Guidelines. Not medical advice.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>
