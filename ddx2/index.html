@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Value DDx</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="flask-conical" class="icon-header"></i>
+        <h1 class="site-title">Lab Value DDx</h1>
+      </div>
+      <p class="site-tagline">
+        Differential diagnosis by abnormal lab value — internal medicine reference.
+      </p>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon-wrap">
+        <i data-lucide="search" class="icon-search"></i>
+      </span>
+      <input type="search" id="ddxSearch" placeholder="Search…" autocomplete="off" spellcheck="false">
+    </div>
+  </header>
+
+  <div class="page-body">
+    <nav class="cat-nav" id="tabNav"></nav>
+    <div class="pane" id="pane">
+      <div class="placeholder">Select a lab value from the list</div>
+    </div>
+  </div>
+
+  <footer>
+    <p class="source-note">
+      Compiled from standard internal medicine differential diagnosis references (e.g., UpToDate, Harrison's Principles of Internal Medicine). Not exhaustive — verify against primary literature. Not medical advice.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
