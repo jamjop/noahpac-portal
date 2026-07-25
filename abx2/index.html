@@ -57,6 +57,14 @@
 <script src="data/bone.js"></script>
 <script src="data/bloodstream.js"></script>
 <script src="data/tickborne.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
 <script src="app.js?v=1"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
