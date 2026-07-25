@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Calculators</title>
+<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <div class="header-brand">
+        <i data-lucide="calculator" class="icon-header"></i>
+        <h1 class="site-title">Clinical Calculators</h1>
+      </div>
+      <p class="site-tagline">
+        Validated medical scores, risk indices, and dosing tools by category.
+        <span class="update-cadence">↻ Reviewed quarterly</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <nav class="cat-nav" id="tabNav"></nav>
+    <div class="pane" id="pane"></div>
+  </div>
+
+  <footer>
+    <p class="last-checked"></p>
+  </footer>
+
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>
