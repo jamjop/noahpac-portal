@@ -7,6 +7,7 @@ import base64
 import io
 import os
 import sys
+import time
 from pathlib import Path
 
 import anthropic
@@ -26,7 +27,16 @@ CHUNK_OVERLAP_CHARS = 400  # ~100 tokens
 VOYAGE_API_KEY = os.environ.get("VOYAGE_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 EMBED_MODEL = "voyage-3"
-EMBED_BATCH_SIZE = 128
+# Voyage accounts without a payment method on file are capped at 3 RPM /
+# 10K TPM (still using the same free token allowance either way). The
+# exact behavior didn't match a simple "N requests per rolling 60s"
+# model in practice (a batch that should fit under 10K TPM failed on
+# every retry regardless of how long we waited), so batches that get
+# rate limited are adaptively split smaller and retried rather than
+# assuming a fixed size/delay will always work -- see the splitting
+# logic below. These are just the starting point before any splitting.
+EMBED_BATCH_SIZE = 8
+EMBED_BATCH_DELAY_SEC = 30
 # Cheap/fast model -- this is plain OCR-style transcription, not reasoning,
 # same choice antibiogram's api_server.py makes for its own vision extraction.
 OCR_MODEL = "claude-haiku-4-5-20251001"
@@ -76,10 +86,19 @@ def extract_text(pdf_path: Path, anthropic_client: anthropic.Anthropic | None) -
     if needs_ocr_pages and anthropic_client:
         images = convert_from_path(str(pdf_path), dpi=200)
         for i in needs_ocr_pages:
-            if i < len(images):
+            if i >= len(images):
+                continue
+            try:
                 ocr_text = ocr_page(anthropic_client, images[i])
-                if ocr_text:
-                    text_parts.append((i, ocr_text))
+            except Exception as e:
+                # A single page tripping Claude's content filter (has
+                # happened on exercise-diagram pages) shouldn't drop the
+                # whole document -- just that page's text.
+                print(f"  WARNING: OCR failed on page {i}, skipping that "
+                      f"page only: {e}", file=sys.stderr)
+                continue
+            if ocr_text:
+                text_parts.append((i, ocr_text))
 
     text_parts.sort(key=lambda x: x[0])
     return "\n\n".join(t for _, t in text_parts)
@@ -159,11 +178,50 @@ def main():
         return
 
     print(f"Embedding {len(all_chunks)} chunks via Voyage AI...")
-    all_embeddings = []
-    for i in range(0, len(all_chunks), EMBED_BATCH_SIZE):
-        batch = all_chunks[i:i + EMBED_BATCH_SIZE]
-        result = vo.embed(batch, model=EMBED_MODEL, input_type="document")
-        all_embeddings.extend(result.embeddings)
+    # Adaptive: a fixed batch size + fixed wait turned out not to reliably
+    # predict Voyage's actual reduced-tier limiter (observed: a batch that
+    # should easily fit under 10K TPM failed on every retry regardless of
+    # how long we waited, while a much smaller test batch succeeded fine).
+    # Rather than guess the exact undocumented mechanism, split a failing
+    # batch in half and retry the halves -- converges to size-1 requests
+    # if needed, which should always eventually fit whatever the real
+    # constraint is.
+    embeddings_by_index = {}
+    queue = [(i, min(i + EMBED_BATCH_SIZE, len(all_chunks))) for i in range(0, len(all_chunks), EMBED_BATCH_SIZE)]
+    first_call = True
+
+    while queue:
+        start, end = queue.pop(0)
+        batch = all_chunks[start:end]
+
+        if not first_call:
+            time.sleep(EMBED_BATCH_DELAY_SEC)
+        first_call = False
+
+        try:
+            result = vo.embed(batch, model=EMBED_MODEL, input_type="document")
+            for offset, emb in enumerate(result.embeddings):
+                embeddings_by_index[start + offset] = emb
+            print(f"  Embedded chunks {start}-{end - 1} ({len(embeddings_by_index)}/{len(all_chunks)} done).")
+        except voyageai.error.RateLimitError:
+            if end - start == 1:
+                print(f"  WARNING: chunk {start} rate limited even alone -- "
+                      f"skipping it rather than retrying forever.", file=sys.stderr)
+                continue
+            mid = (start + end) // 2
+            print(f"  Chunks {start}-{end - 1} rate limited, splitting into "
+                  f"{start}-{mid - 1} and {mid}-{end - 1}.", file=sys.stderr)
+            queue.insert(0, (mid, end))
+            queue.insert(0, (start, mid))
+
+    all_embeddings = [embeddings_by_index[i] for i in sorted(embeddings_by_index)]
+    if len(all_embeddings) != len(all_chunks):
+        # Some chunks were skipped (rate limited even alone) -- keep only
+        # the ids/metadatas/documents that actually got embedded.
+        kept_indices = sorted(embeddings_by_index)
+        all_ids = [all_ids[i] for i in kept_indices]
+        all_chunks = [all_chunks[i] for i in kept_indices]
+        all_metadatas = [all_metadatas[i] for i in kept_indices]
 
     existing = collection.get()
     if existing["ids"]:
