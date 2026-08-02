@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/assets/fonts.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Assistant</title>
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="/lib/lucide.min.js"></script>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="eyebrow">Grounded in your reference documents only</div>
+    <h1>Clinical Assistant</h1>
+    <a href="/" class="back" target="_top">← noahpac</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div id="chat-log" aria-live="polite"></div>
+
+  <div id="empty-state" class="empty-state">
+    <i data-lucide="message-circle-question" class="icon-empty"></i>
+    <p>Ask a question about the reference documents indexed here (HEP handouts and any curated guideline library entries). Answers are grounded only in those documents, not general knowledge.</p>
+  </div>
+
+  <form id="ask-form" class="ask-form">
+    <input
+      id="question-input"
+      type="text"
+      placeholder="Ask a clinical question…"
+      autocomplete="off"
+      maxlength="2000"
+      required
+    />
+    <button type="submit" id="ask-submit" aria-label="Ask">
+      <i data-lucide="send" class="icon-send"></i>
+    </button>
+  </form>
+
+  <footer>
+    <p>Answers are generated from indexed reference documents only and may be incomplete or wrong. <strong>Not a substitute for clinical judgment — verify before acting on any answer.</strong></p>
+  </footer>
+
+</div>
+
+<script src="app.js?v=1"></script>
+</body>
+</html>

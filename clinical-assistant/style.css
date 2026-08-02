@@ -1,0 +1,54 @@
+:root{
+  /* ── Fallback design tokens ───────────────────────────────────────────
+     Mirror /shared.css so the page stays legible if shared.css fails to
+     load. When shared.css loads successfully its :root block takes
+     precedence (it appears earlier in <head> and cascades normally). */
+  --bg:#f8f9fa; --surface:#ffffff;
+  --ink:#1a1f24; --ink-soft:#4a5568; --ink-muted:#718096;
+  --line:#e2e8f0;
+  --purple:#0052cc; --purple-soft:#ebf2ff;
+  --sh:0 2px 8px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --r:8px; --r-sm:6px;
+}
+
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1117; --surface:#1a2030;
+    --ink:#e2e8f0; --ink-soft:#a0aec0; --ink-muted:#64748b;
+    --line:#2d3748;
+    --purple:#4d94ff; --purple-soft:#1e2a3f;
+  }
+}
+
+body{padding-bottom:24px}
+.header-inner{max-width:760px;margin:0 auto;padding:22px 16px 18px}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+#chat-log{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+
+.msg{max-width:85%;padding:12px 16px;border-radius:var(--r);line-height:1.5;font-size:14px}
+.msg-user{align-self:flex-end;background:var(--purple);color:#fff;border-bottom-right-radius:2px}
+.msg-assistant{align-self:flex-start;background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh);border-bottom-left-radius:2px}
+.msg-error{align-self:flex-start;background:#fde8e8;color:#7f1d1d;border:1px solid #f5c2c2}
+
+.msg-sources{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-muted)}
+.msg-sources-label{font-family:'IBM Plex Mono',monospace;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:10px;display:block;margin-bottom:6px}
+.msg-source{display:inline-block;margin:2px 6px 2px 0;padding:3px 8px;border-radius:50px;background:var(--purple-soft);color:var(--ink-soft);text-decoration:none;font-size:11.5px}
+.msg-source:hover{text-decoration:underline}
+.msg-source.no-link{cursor:default}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--ink-muted)}
+.icon-empty{width:32px;height:32px;opacity:.5;margin-bottom:12px}
+.empty-state p{max-width:440px;margin:0 auto;font-size:13.5px;line-height:1.5}
+
+.ask-form{display:flex;gap:8px;position:sticky;bottom:16px;background:var(--bg);padding:8px 0}
+#question-input{flex:1;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:14px}
+#question-input:focus{outline:2px solid var(--purple);outline-offset:2px;border-color:var(--purple)}
+#ask-submit{display:flex;align-items:center;justify-content:center;width:44px;border-radius:var(--r);border:none;background:var(--purple);color:#fff;cursor:pointer}
+#ask-submit:disabled{opacity:.5;cursor:default}
+#ask-submit:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.icon-send{width:18px;height:18px}
+
+.typing-indicator{align-self:flex-start;color:var(--ink-muted);font-size:13px;font-style:italic}
+
+footer{margin-top:24px;font-size:11.5px;color:var(--ink-muted);line-height:1.5}

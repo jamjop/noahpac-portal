@@ -89,3 +89,11 @@ antibiogram/data/pending/
 
 # Playwright ephemeral output — generated per run, not source
 test-results/
+
+# clinical-assistant — venv/vector store are host-specific build output;
+# library/ holds curated guideline PDFs that may carry redistribution
+# restrictions (same reasoning as documents/ page's AAOS handling)
+clinical-assistant/.venv/
+clinical-assistant/chroma_data/
+clinical-assistant/library/*
+!clinical-assistant/library/.gitkeep
