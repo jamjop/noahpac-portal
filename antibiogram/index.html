@@ -44,40 +44,6 @@
 
 </div>
 
-<section class="import-panel" id="import-panel">
-  <div class="import-header" id="import-toggle" role="button" tabindex="0" aria-expanded="false">
-    <span class="import-icon">＋</span>
-    <span>Import facility from PDF URL</span>
-    <span class="import-chevron">▾</span>
-  </div>
-  <div class="import-body" id="import-body" hidden>
-    <p class="import-hint">Paste a direct link to an antibiogram PDF (e.g. from the ND HHS archive). The PDF will be processed by Claude AI and added as a selectable facility tab for this session.</p>
-    <div class="import-fields">
-      <div class="import-field import-field-wide">
-        <label class="import-label" for="imp-url">PDF URL <span class="import-req">*</span></label>
-        <input class="import-input" id="imp-url" type="url" placeholder="https://www.hhs.nd.gov/sites/…/2025-facility-antibiogram.pdf" autocomplete="off">
-      </div>
-      <div class="import-field">
-        <label class="import-label" for="imp-name">Facility name <span class="import-opt">(optional)</span></label>
-        <input class="import-input" id="imp-name" type="text" placeholder="Auto-detected from PDF">
-      </div>
-      <div class="import-field">
-        <label class="import-label" for="imp-loc">Location <span class="import-opt">(optional)</span></label>
-        <input class="import-input" id="imp-loc" type="text" placeholder="City, ND">
-      </div>
-      <div class="import-field">
-        <label class="import-label" for="imp-period">Year / period <span class="import-opt">(optional)</span></label>
-        <input class="import-input" id="imp-period" type="text" placeholder="2025">
-      </div>
-    </div>
-    <div class="import-actions">
-      <button class="import-btn" id="import-submit">Extract &amp; add facility</button>
-      <span class="import-status" id="import-status"></span>
-    </div>
-    <pre class="import-log" id="import-log" hidden></pre>
-  </div>
-</section>
-
 <footer>
   <p class="last-checked"></p>
   <p id="source-note"></p>
