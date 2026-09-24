@@ -155,7 +155,7 @@ def extract_page(client: anthropic.Anthropic, img, model: str, page_num: int) ->
 
     message = client.messages.create(
         model=model,
-        max_tokens=8192,
+        max_tokens=20000,
         messages=[{
             "role": "user",
             "content": [
@@ -175,7 +175,12 @@ def extract_page(client: anthropic.Anthropic, img, model: str, page_num: int) ->
         }],
     )
 
-    raw = message.content[0].text.strip()
+    # Find the actual text block -- with extended-thinking-capable models,
+    # content[0] may be a ThinkingBlock instead of the text response.
+    text_blocks = [b for b in message.content if getattr(b, "type", None) == "text"]
+    if not text_blocks:
+        raise RuntimeError(f"No text block in response (got: {[getattr(b, 'type', '?') for b in message.content]})")
+    raw = text_blocks[0].text.strip()
 
     # Strip markdown code fences if model added them
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
