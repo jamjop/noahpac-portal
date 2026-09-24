@@ -122,6 +122,11 @@ Extraction rules:
 - Ignore any %SDD or "Susceptible Dose Dependent" columns.
 - If two carbapenem columns exist (e.g. Ertapenem + Meropenem), use meropenem value.
 - If combined values appear (e.g. "98/93" or "100/98"), use the lower (more conservative) value.
+- CRITICAL: if a column's drug has NO match in the ID list above (e.g. Amoxicillin/Clavulanate,
+  Ceftaroline, Imipenem), DROP that column's value entirely — do not place it under a different
+  key, and do not let it shift any other column's value out of position. Read each column's value
+  by its own header, independent of neighboring columns; never infer a value's key from its
+  position relative to a dropped column.
 - Identify gram stain from table section headers (blue/purple = gram-positive, red/pink = gram-negative),
   or from organism names (Staph/Strep/Enterococcus = positive; E.coli/Klebsiella etc = negative).
 - If the page has NO antibiogram table (e.g. cost comparison, text only), return {"organisms": []}.
@@ -150,7 +155,7 @@ def extract_page(client: anthropic.Anthropic, img, model: str, page_num: int) ->
 
     message = client.messages.create(
         model=model,
-        max_tokens=4096,
+        max_tokens=8192,
         messages=[{
             "role": "user",
             "content": [
