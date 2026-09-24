@@ -367,10 +367,6 @@ function render() {
   currentItems = filterData();
   const root = document.getElementById("list-root");
 
-  document.querySelectorAll(".cat-tab").forEach(t => {
-    t.classList.toggle("active", t.dataset.cat === (activeCat||""));
-  });
-
   if (currentItems.length === 0) {
     root.innerHTML = `<div class="empty">No results for "${activeSearch}"</div>`;
     return;
@@ -393,15 +389,13 @@ function render() {
   `).join("");
 }
 
-// Build category tabs
-const tabEl = document.getElementById("cat-tabs");
-tabEl.innerHTML = `<button class="cat-tab active" data-cat="">All</button>` +
-  CATS.map(c => `<button class="cat-tab" data-cat="${c}">${c}</button>`).join("");
-tabEl.querySelectorAll(".cat-tab").forEach(btn => {
-  btn.addEventListener("click", () => {
-    activeCat = btn.dataset.cat || null;
-    render();
-  });
+// Build category dropdown
+const catSel = document.getElementById("cat-select");
+catSel.innerHTML = `<option value="">All categories</option>` +
+  CATS.map(c => `<option value="${c}">${c}</option>`).join("");
+catSel.addEventListener("change", () => {
+  activeCat = catSel.value || null;
+  render();
 });
 
 document.getElementById("search").addEventListener("input", e => {

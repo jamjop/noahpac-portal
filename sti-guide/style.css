@@ -7,10 +7,8 @@ body{padding-bottom:50px}
 .search-box{width:100%;box-sizing:border-box;margin:16px 0 10px;padding:11px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:14px;font-family:inherit}
 .search-box:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
 
-.cat-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
-.cat-tab{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:6px 12px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
-.cat-tab.active{background:var(--purple);border-color:var(--purple);color:#fff}
-.cat-tab:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.cat-select{width:auto;min-width:220px;max-width:100%;margin-bottom:14px;padding:9px 32px 9px 12px;border-radius:var(--r-sm);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.cat-select:focus{outline:2px solid var(--purple);outline-offset:2px;border-color:var(--purple)}
 
 .guide-card{background:var(--surface);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;box-shadow:var(--sh)}
 .guide-cat{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:4px}
@@ -40,8 +38,6 @@ footer{max-width:880px;margin:30px auto 0;padding:12px 16px;border-top:1px solid
 footer a{color:var(--purple)}
 
 @media(prefers-color-scheme:dark){
-  .cat-tab{border-color:var(--line);color:var(--ink-soft)}
-  .cat-tab.active{background:var(--purple);border-color:var(--purple);color:#fff}
   .guide-card{box-shadow:var(--sh)}
   .reg-label{border-bottom-color:var(--line)}
   .reg-label.preg{color:var(--preg-ink);border-color:var(--preg-ink)}
