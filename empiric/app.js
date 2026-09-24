@@ -198,7 +198,7 @@ const SITES = [
 
 let selectedSite     = SITES[0].id;
 let selectedOrg      = null;
-let selectedFacility = 'sanford_bismarck';
+let selectedFacility = 'trinity';
 
 function resistCell(val) {
   if (val === null || val === undefined) return "";
