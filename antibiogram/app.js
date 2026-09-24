@@ -3672,7 +3672,7 @@ const FACILITIES = [
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────
-let activeFacilityId = "sanford_bismarck";
+let activeFacilityId = "trinity";
 let activeGram       = "positive";
 
 function getFacility() {

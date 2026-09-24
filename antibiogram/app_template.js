@@ -43,7 +43,7 @@ const ABX_ORDER = [
 const FACILITIES = /* __FACILITIES__ */;
 
 // ── State ──────────────────────────────────────────────────────────────────
-let activeFacilityId = "sanford_bismarck";
+let activeFacilityId = "trinity";
 let activeGram       = "positive";
 
 function getFacility() {
