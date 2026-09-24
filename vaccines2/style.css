@@ -162,13 +162,13 @@ input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin
 .chip {
   display: inline-flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 0.625rem; letter-spacing: 0.03em; min-width: 20px; height: 18px;
-  padding: 0 7px; border-radius: 50px; color: #fff; background: var(--accent);
+  padding: 0 7px; border-radius: 50px; color: #fff; background: var(--ok);
 }
 .chip.cond { background: var(--warn); }
 .chip.catchup { background: var(--ink-muted); }
 .chip.shared { background: var(--ink-muted); }
 .tag { font-size: 0.5625rem; font-weight: 700; padding: 2px 7px; border-radius: 50px; letter-spacing: 0.04em; }
-.freq { font-size: 0.6875rem; color: var(--accent); font-weight: 600; margin-left: auto; white-space: nowrap; }
+.freq { font-size: 0.6875rem; color: var(--ok); font-weight: 600; margin-left: auto; white-space: nowrap; }
 .rec-detail { font-size: 0.8125rem; color: var(--ink-soft); margin-top: 6px; line-height: 1.55; }
 .cond-note { font-size: 0.75rem; color: var(--warn-ink); margin-top: 5px; font-style: italic; }
 .empty {
