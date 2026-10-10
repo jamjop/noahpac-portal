@@ -32,6 +32,28 @@
     reference: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M8 7h8M8 11h6"/>'
   };
 
+  const THEME_ICONS = {
+    system: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/>',
+    dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+  };
+
+  function updateThemeControl(select, theme) {
+    const field = select.closest(".theme-field");
+    if (!field) return;
+    let icon = field.querySelector(".theme-field__icon");
+    if (!icon) {
+      icon = document.createElement("span");
+      icon.className = "theme-field__icon";
+      icon.setAttribute("aria-hidden", "true");
+      field.prepend(icon);
+    }
+    const label = theme.charAt(0).toUpperCase() + theme.slice(1);
+    field.dataset.activeTheme = theme;
+    field.title = `Color theme: ${label}`;
+    icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${THEME_ICONS[theme]}</svg>`;
+  }
+
   function pageFamily() {
     const body = document.body;
     if (body.classList.contains("calculator-app")) return "calculator";
@@ -96,6 +118,7 @@
     initializeReferenceOutline();
     document.querySelectorAll("[data-theme-select]").forEach((select) => {
       select.value = initialTheme;
+      updateThemeControl(select, initialTheme);
       select.addEventListener("change", () => {
         const next = THEMES.has(select.value) ? select.value : "system";
         try {
@@ -106,6 +129,7 @@
         applyTheme(next);
         document.querySelectorAll("[data-theme-select]").forEach((other) => {
           other.value = next;
+          updateThemeControl(other, next);
         });
       });
     });

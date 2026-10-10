@@ -352,7 +352,22 @@ footer .last-checked.stale .dot{
 }
 .review-status.stale::before{background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
 .app-header__bar .review-status{display:none}
-.theme-field{display:flex;align-items:center;gap:7px}
+.theme-field{
+  position:relative;
+  display:grid;
+  width:46px;
+  height:46px;
+  place-items:center;
+  border:1px solid var(--app-border-strong);
+  border-radius:999px;
+  background:var(--app-surface);
+  color:var(--app-text-secondary);
+  transition:border-color 160ms ease,background-color 160ms ease,color 160ms ease,box-shadow 160ms ease;
+}
+.theme-field:hover{border-color:var(--app-accent);color:var(--app-accent);background:var(--app-accent-soft)}
+.theme-field:focus-within{outline:3px solid var(--app-focus);outline-offset:2px}
+.theme-field__icon{display:grid;width:18px;height:18px;place-items:center;pointer-events:none}
+.theme-field__icon svg{display:block;width:18px;height:18px}
 .theme-field__label{
   position:absolute;
   width:1px;
@@ -363,13 +378,12 @@ footer .last-checked.stale .dot{
   white-space:nowrap;
 }
 .theme-select{
-  min-height:40px;
-  padding:7px 30px 7px 10px;
-  border:1px solid var(--app-border-strong);
-  border-radius:var(--app-radius-sm);
-  background:var(--app-surface);
-  color:var(--app-text);
-  font-size:13px;
+  position:absolute;
+  inset:0;
+  width:100%;
+  min-height:100%;
+  margin:0;
+  opacity:0;
   cursor:pointer;
 }
 .app-header__title{max-width:720px}
@@ -469,7 +483,7 @@ html[data-theme="dark"] .clinical-app{
   .app-header__bar{top:10px;min-height:38px}
   .app-brand{display:none}
   .review-status{display:none}
-  .theme-select{min-height:38px;padding-top:5px;padding-bottom:5px}
+  .theme-field{width:46px;height:46px}
   .clinical-app .app-header__eyebrow{min-height:38px;padding-right:110px}
   .clinical-app .app-header__title h1{font-size:28px}
   .app-header__lede{margin-top:8px;font-size:14px;line-height:1.5}
