@@ -1,0 +1,26 @@
+name: Production Site Health
+
+on:
+  schedule:
+    - cron: '15 13 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-site-health
+  cancel-in-progress: true
+
+jobs:
+  health:
+    name: Routes, links, APIs, freshness, and headers
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check production health
+        run: node scripts/check-site-health.mjs --remote

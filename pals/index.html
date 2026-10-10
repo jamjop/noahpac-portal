@@ -1,38 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Pediatric Advanced Life Support</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pediatric advanced life support quick reference for arrest, respiratory emergencies, shock, and weight-based medications.">
+  <title>Pediatric Advanced Life Support — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
-<div>
-  <header class="app-header">
-    <div class="header-inner">
-      <div>
-        <div class="eyebrow">American Heart Association · 2020 Guidelines</div>
-        <h1>Pediatric Advanced Life Support</h1>
-        <a href="/" class="back" target="_top">← noahpac</a>
-        <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app protocol-app pals-app">
+<a class="skip-link" href="#main-content">Skip to PALS protocol</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="protocol-offline offline-badge" id="offlineBadge" role="status" hidden>Offline</span>
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
       </div>
-      <div class="offline-badge" id="offlineBadge" hidden>OFFLINE</div>
     </div>
-  </header>
-  <div class="page-body">
-    <nav class="cat-nav" id="tabNav"></nav>
-    <div class="section-pane" id="content"></div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Pediatric Resuscitation</p>
+      <h1>Pediatric Advanced Life Support</h1>
+      <p class="app-header__lede">Rapid pediatric reference for arrest rhythms, respiratory failure, shock, and weight-based emergency medication dosing.</p>
+    </div>
   </div>
-</div>
-<footer>
+</header>
+
+<main class="protocol-workspace page-body" id="main-content">
+  <nav class="protocol-nav cat-nav" id="tabNav" role="tablist" aria-label="PALS protocol sections"></nav>
+  <section class="protocol-pane section-pane" id="content" role="tabpanel" tabindex="-1"></section>
+</main>
+
+<footer class="app-footer">
   <p class="last-checked"></p>
-  <p class="source-note">
-    Based on American Heart Association 2020 Pediatric Advanced Life Support (PALS) Guidelines. Not medical advice.
-  </p>
+  <div class="app-footer__source">
+    <div class="clinical-caution">
+      <strong>Verify weight and concentration.</strong> Pediatric resuscitation medications and energy settings are weight-based. Use the current local protocol and independently confirm calculations.
+    </div>
+    <p class="source-note">Based on American Heart Association 2020 Pediatric Advanced Life Support guidelines. Not medical advice.</p>
+  </div>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

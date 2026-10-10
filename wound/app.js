@@ -1,14 +1,31 @@
 // ── Tab switching ──────────────────────────────────────────────────────────
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach(b => {
+const woundTabs = Array.from(document.querySelectorAll(".tab-bar .tab-btn"));
+
+function activateWoundTab(btn, moveFocus = false) {
+    woundTabs.forEach(b => {
       b.classList.remove("active");
       b.setAttribute("aria-selected", "false");
+      b.tabIndex = -1;
     });
     document.querySelectorAll(".tab-panel").forEach(p => { p.hidden = true; });
     btn.classList.add("active");
     btn.setAttribute("aria-selected", "true");
+    btn.tabIndex = 0;
     document.getElementById("panel-" + btn.dataset.tab).hidden = false;
+    if (moveFocus) btn.focus();
+}
+
+woundTabs.forEach((btn, index) => {
+  btn.addEventListener("click", () => activateWoundTab(btn));
+  btn.addEventListener("keydown", event => {
+    let next = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % woundTabs.length;
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index - 1 + woundTabs.length) % woundTabs.length;
+    if (event.key === "Home") next = 0;
+    if (event.key === "End") next = woundTabs.length - 1;
+    if (next === null) return;
+    event.preventDefault();
+    activateWoundTab(woundTabs[next], true);
   });
 });
 

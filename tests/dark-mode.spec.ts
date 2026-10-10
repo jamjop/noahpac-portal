@@ -321,12 +321,12 @@ test.describe('Allergy page – dark mode', () => {
 
   test('result boxes use dark soft-colour backgrounds after selection', async ({ page }) => {
     await page.goto('/allergy/');
-    // Wait for seg buttons (populated by app.js)
+    // Wait for the native selectors populated by app.js.
     await waitForChildren(page, '#seg-allergy');
     await waitForChildren(page, '#seg-proposed');
 
-    await page.locator('#seg-allergy .seg-btn').first().click();
-    await page.locator('#seg-proposed .seg-btn').first().click();
+    await page.locator('#seg-allergy').selectOption({ label: 'Ceftazidime' });
+    await page.locator('#seg-proposed').selectOption({ label: 'Aztreonam' });
 
     await page.waitForFunction(
       () => !!document.querySelector('.res-ok, .res-warn, .res-crit'),

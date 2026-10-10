@@ -1,161 +1,237 @@
+/* Local fallbacks keep the assessment usable if /shared.css is unavailable. */
 :root{
-  /* ── Fallback design tokens ─────────────────────────────────────────────────
-     These mirror the values in /shared.css so the page remains legible if
-     shared.css fails to load (slow connection, wrong path, CDN outage).
-     When shared.css loads successfully its :root block takes precedence
-     because it appears earlier in the <head> and cascades normally.       */
-  --bg:#f8f9fa; --surface:#ffffff;
-  --ink:#1a1f24; --ink-soft:#4a5568; --ink-muted:#718096;
-  --line:#e2e8f0;
-  --purple:#0052cc; --purple-soft:#ebf2ff; --purple-mid:#6699cc;
-  --teal:#0891B2; --teal-soft:#e0f2fe; --teal-ink:#0369a1;
-  --ok:#1A8A5A; --ok-soft:#E3F5EC; --ok-ink:#065f46;
-  --warn:#D4820A; --warn-soft:#FEF3DA; --warn-ink:#92400e;
-  --risk:#C53030; --risk-soft:#FDE8E8;
-  --sh:0 2px 8px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
-  --sh-lg:0 8px 24px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);
-  --r:8px; --r-sm:6px;
-  --callout-danger-ink:#7f1d1d; --callout-warn-ink:#78350f;
-  --callout-ok-ink:#14532d; --callout-info-ink:#0c4a6e;
-  --callout-purple-ink:#1e1b4b;
+  --bg:#f8f9fa;--surface:#fff;--ink:#1a1f24;--ink-soft:#4a5568;--ink-muted:#5b6878;
+  --line:#e2e8f0;--purple:#0052cc;--purple-soft:#ebf2ff;--purple-mid:#6699cc;
+  --ok:#17764d;--ok-soft:#e3f5ec;--ok-ink:#065f46;
+  --warn:#b96700;--warn-soft:#fef3da;--warn-ink:#7a3e00;
+  --risk:#b4232a;--risk-soft:#fde8e8;
+  --callout-ok-ink:#14532d;--callout-warn-ink:#78350f;--callout-danger-ink:#7f1d1d;
+}
+.sepsis-app{
+  --app-canvas:var(--bg);--app-surface:var(--surface);--app-surface-subtle:#f3f6f9;
+  --app-text:var(--ink);--app-text-secondary:var(--ink-soft);--app-text-muted:var(--ink-muted);
+  --app-border:var(--line);--app-border-strong:#c8d2df;--app-accent:var(--purple);
+  --app-accent-soft:var(--purple-soft);--app-radius-sm:6px;--app-radius-md:9px;
+  --app-radius-lg:12px;--app-content:1120px;
+  margin:0;background:var(--app-canvas);color:var(--app-text);
+  font-family:'Inter',system-ui,sans-serif;
 }
 
-/* ── Dark-mode fallback overrides ────────────────────────────────────────────
-   Re-applies dark token values so dark mode stays correct even when this
-   style.css is parsed after shared.css (and its light-mode :root would
-   otherwise silently undo shared.css's own dark-mode @media block).        */
+/* Section navigation */
+.section-nav{
+  position:sticky;
+  top:0;
+  z-index:20;
+  border-bottom:1px solid var(--app-border);
+  background:color-mix(in srgb,var(--app-surface) 94%,transparent);
+  backdrop-filter:blur(10px);
+}
+.section-nav__inner{
+  display:flex;
+  width:min(100% - 32px,var(--app-content));
+  min-height:48px;
+  align-items:center;
+  gap:8px;
+  margin:0 auto;
+}
+.section-nav a{
+  display:inline-flex;
+  min-height:36px;
+  align-items:center;
+  padding:7px 12px;
+  border-radius:999px;
+  color:var(--app-text-secondary);
+  font-size:13px;
+  font-weight:650;
+  text-decoration:none;
+}
+.section-nav a:hover{background:var(--app-accent-soft);color:var(--app-accent)}
+
+/* Main workflow */
+.page-body{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 292px;
+  gap:28px;
+  width:min(100% - 32px,var(--app-content));
+  margin:0 auto;
+  padding:32px 0 72px;
+  align-items:start;
+}
+.criteria-col{display:flex;min-width:0;flex-direction:column;gap:16px}
+.criterion{
+  scroll-margin-top:68px;
+  padding:22px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-lg);
+  background:var(--app-surface);
+}
+.c-header{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:14px;
+  align-items:start;
+  margin-bottom:18px;
+}
+.c-heading{min-width:0}
+.c-letter{
+  display:inline-flex;
+  min-width:44px;
+  min-height:34px;
+  align-items:center;
+  justify-content:center;
+  padding:6px 9px;
+  border-radius:var(--app-radius-sm);
+  background:var(--app-accent-soft);
+  color:var(--app-accent);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:700;
+  line-height:1;
+}
+.c-letter--critical{background:var(--risk-soft);color:var(--risk)}
+.c-name{margin:0;color:var(--app-text);font-size:18px;font-weight:700;line-height:1.3;letter-spacing:-.015em}
+.c-desc{margin:4px 0 0;color:var(--app-text-muted);font-size:13px;line-height:1.55}
+.score-chip{
+  display:inline-flex;
+  min-width:48px;
+  min-height:34px;
+  align-items:center;
+  justify-content:center;
+  padding:5px 10px;
+  border:1px solid var(--app-border);
+  border-radius:999px;
+  background:var(--app-surface-subtle);
+  color:var(--app-text);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* Checkbox criteria */
+.check-list{display:grid;gap:9px}
+.check-row{
+  display:flex;
+  min-height:54px;
+  align-items:center;
+  gap:12px;
+  padding:10px 13px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-md);
+  background:var(--app-surface-subtle);
+  cursor:pointer;
+  transition:background .12s,border-color .12s;
+}
+.check-row:hover{border-color:var(--app-accent)}
+.check-row:has(input:checked){border-color:var(--app-accent);background:var(--app-accent-soft)}
+.check-row input{width:20px;height:20px;accent-color:var(--app-accent);flex:0 0 auto}
+.check-text{display:flex;min-width:0;flex:1;justify-content:space-between;gap:16px;color:var(--app-text);font-size:14px;line-height:1.4}
+.check-text strong{font-weight:650}
+.check-text>span{color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:right}
+
+/* SOFA choices */
+.sofa-grid{border-top:1px solid var(--app-border)}
+.sofa-row{
+  display:grid;
+  grid-template-columns:154px minmax(0,1fr);
+  gap:16px;
+  align-items:center;
+  padding:15px 0;
+  border-bottom:1px solid var(--app-border);
+}
+.sofa-label{color:var(--app-text);font-size:14px;font-weight:700;line-height:1.35}
+.sofa-unit{display:block;margin-top:3px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500}
+.seg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.seg button{
+  min-height:42px;
+  padding:6px 7px;
+  border:1px solid var(--app-border-strong);
+  border-radius:var(--app-radius-sm);
+  background:var(--app-surface);
+  color:var(--app-text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  font-weight:600;
+  line-height:1.3;
+  cursor:pointer;
+}
+.seg button:hover{border-color:var(--app-accent);background:var(--app-accent-soft);color:var(--app-text)}
+.seg button.active{border-color:var(--app-accent);background:var(--app-accent);color:#fff}
+.footnote{margin:12px 0 0;color:var(--app-text-muted);font-size:12px;line-height:1.5}
+
+/* Results and clinical states */
+.result-box{margin-top:14px;padding:13px 15px;border-left:4px solid transparent;border-radius:var(--app-radius-sm);font-size:14px;line-height:1.6}
+.result-box:empty{display:none}
+.res-ok{border-left-color:var(--ok);background:var(--ok-soft);color:var(--callout-ok-ink)}
+.res-neutral{border:1px solid var(--app-border);border-left:4px solid var(--app-text-muted);background:var(--app-surface-subtle);color:var(--app-text-secondary)}
+.res-warn{border-left-color:var(--warn);background:var(--warn-soft);color:var(--callout-warn-ink)}
+.res-crit{border-left-color:var(--risk);background:var(--risk-soft);color:var(--callout-danger-ink)}
+
+/* Persistent assessment summary */
+.result-col{position:sticky;top:68px;min-width:0}
+.summary-panel{
+  overflow:hidden;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-lg);
+  background:var(--app-surface);
+  box-shadow:var(--app-shadow-raised,0 10px 30px rgba(15,23,42,.08));
+}
+.summary-eyebrow{margin:18px 18px 3px;color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.summary-panel h2{margin:0 18px 16px;color:var(--app-text);font-size:19px;line-height:1.3;letter-spacing:-.02em}
+.summary-list{border-top:1px solid var(--app-border)}
+.summary-item{padding:13px 16px;border-bottom:1px solid var(--app-border);border-left:4px solid transparent}
+.summary-item>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.summary-item span{color:var(--app-text);font-size:13px;font-weight:700}
+.summary-item strong{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:15px}
+.summary-item p{margin:4px 0 0;color:var(--app-text-muted);font-size:12px;line-height:1.45}
+.summary-item.is-ok{border-left-color:var(--ok)}
+.summary-item.is-warn{border-left-color:var(--warn)}
+.summary-item.is-critical{border-left-color:var(--risk)}
+.summary-note{margin:0;padding:14px 16px;color:var(--app-text-muted);font-size:12px;line-height:1.55}
+.source-note{font-family:inherit}
+
 @media(prefers-color-scheme:dark){
   :root{
-    --bg:#0f1117; --surface:#1a2030;
-    --ink:#e2e8f0; --ink-soft:#a0aec0; --ink-muted:#64748b;
-    --line:#2d3748;
-    --purple:#4d94ff; --purple-soft:#0d1e3d; --purple-mid:#2e5fa3;
-    --teal:#22d3ee; --teal-soft:#0c2a42; --teal-ink:#22d3ee;
-    --ok:#34d399; --ok-soft:#064e3b; --ok-ink:#6ee7b7;
-    --warn:#fbbf24; --warn-soft:#1c1300; --warn-ink:#fbbf24;
-    --risk:#fc8181; --risk-soft:#3b1515;
-    --sh:0 1px 3px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.25);
-    --sh-lg:0 4px 16px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.25);
-    --callout-danger-ink:#fca5a5; --callout-warn-ink:#fde68a;
-    --callout-ok-ink:#6ee7b7; --callout-info-ink:#7dd3fc;
-    --callout-purple-ink:#c4b5fd;
+    --bg:#0f1117;--surface:#1a2030;--ink:#e2e8f0;--ink-soft:#aab6c7;--ink-muted:#94a3b8;
+    --line:#303a4b;--purple:#65a3ff;--purple-soft:#10264b;--purple-mid:#3d6fae;
+    --ok:#4ade9b;--ok-soft:#0b3d31;--ok-ink:#9aefca;
+    --warn:#f8bf4f;--warn-soft:#352506;--warn-ink:#ffe0a3;
+    --risk:#ff9198;--risk-soft:#461c20;
+    --callout-ok-ink:#9aefca;--callout-warn-ink:#ffe0a3;--callout-danger-ink:#ffb4b8;
   }
+  html:not([data-theme]) .sepsis-app{--app-surface-subtle:#141a26;--app-border-strong:#465268}
+}
+html[data-theme="dark"] .sepsis-app{--app-surface-subtle:#141a26;--app-border-strong:#465268}
+
+@media(max-width:900px){
+  .page-body{grid-template-columns:1fr;max-width:760px}
+  .result-col{position:static;grid-row:1}
+  .summary-panel{box-shadow:none}
+  .summary-list{display:grid;grid-template-columns:repeat(3,1fr)}
+  .summary-item{border-bottom:0;border-right:1px solid var(--app-border)}
+  .summary-item:last-child{border-right:0}
 }
 
-/* ── Layout ── */
-.header-inner{max-width:1000px;margin:0 auto;padding:22px 16px 18px}
-
-/* shared.css's footer defaults to max-width:880px, which doesn't match this
-   page's 960px header/content — override so the footer lines up. */
-footer{max-width:1000px}
-
-.page-body{
-  max-width:1000px;margin:0 auto;
-  padding:28px 16px 60px;
-  display:flex;gap:28px;align-items:flex-start;
-}
-
-.criteria-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-
-/* ── Criterion cards ── */
-.criterion{
-  background:var(--surface);
-  border-radius:var(--r);
-  padding:18px 20px;
-  box-shadow:var(--sh);
-}
-
-.c-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
-.c-badge-group{flex-shrink:0}
-.c-letter{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;font-weight:600;
-  min-width:32px;height:32px;
-  padding:0 8px;
-  display:inline-flex;align-items:center;justify-content:center;
-  border-radius:var(--r-sm);
-  background:var(--purple-soft);color:var(--purple);
-  white-space:nowrap;flex-shrink:0;
-}
-.c-name{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
-.c-sub{font-weight:400;font-size:12px;color:var(--ink-muted);margin-left:5px}
-.c-desc{font-size:11.5px;color:var(--ink-muted);line-height:1.45}
-
-.score-chip{
-  font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
-  background:var(--purple-soft);color:var(--purple);
-  padding:3px 10px;border-radius:50px;
-  margin-left:auto;flex-shrink:0;white-space:nowrap;align-self:flex-start;
-}
-
-/* ── Checkbox list ── */
-.check-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.check-row{
-  display:flex;align-items:center;gap:12px;
-  font-size:13.5px;cursor:pointer;
-  padding:9px 14px;border-radius:var(--r-sm);
-  border:1.5px solid var(--line);
-  transition:border-color .15s;
-}
-.check-row:hover{border-color:var(--purple)}
-.check-row input{width:16px;height:16px;accent-color:var(--purple);flex-shrink:0}
-.check-text{line-height:1.45}
-
-/* ── SOFA seg buttons ── */
-.sofa-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
-.sofa-row{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center}
-@media(max-width:640px){.sofa-row{grid-template-columns:1fr;gap:4px}}
-.sofa-label{font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.3}
-.sofa-unit{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);font-weight:400;margin-top:1px}
-
-.seg{display:flex;flex-wrap:wrap;gap:4px}
-.seg button{
-  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;
-  padding:6px 10px;border-radius:50px;
-  border:1.5px solid var(--line);
-  background:var(--surface);color:var(--ink-soft);
-  cursor:pointer;transition:background .12s,color .12s,border-color .12s;white-space:nowrap;
-}
-.seg button:hover{background:var(--purple-soft);border-color:var(--purple-mid);color:var(--ink)}
-.seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
-.seg button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
-
-.footnote{font-size:11px;color:var(--ink-muted);margin-top:8px;font-style:italic}
-
-/* ── Result boxes ── */
-.result-box{border-radius:var(--r-sm);padding:11px 14px;font-size:13px;line-height:1.6;transition:all .2s;margin-top:10px}
-.result-box:empty{display:none}
-.res-ok{background:var(--ok-soft);color:var(--ok)}
-.res-neutral{background:var(--bg);border:1.5px solid var(--line);color:var(--ink-soft)}
-.res-warn{background:var(--warn-soft);color:var(--warn)}
-.res-crit{background:var(--risk-soft);color:var(--risk)}
-
-/* ── Right column ── */
-.result-col{
-  width:220px;flex-shrink:0;
-  position:sticky;top:20px;
-}
-.source-note{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:9.5px;color:var(--ink-muted);
-  line-height:1.55;padding:0 2px;
-}
-
-/* ── Mobile ── */
 @media(max-width:700px){
-  /* Base rule sets align-items:flex-start for the desktop row layout —
-     without this reset, flex items shrink-to-fit their content's intrinsic
-     width instead of stretching to the column's full width once
-     flex-direction switches to column (latent overflow risk if any
-     .criteria-col content is ever wider than the viewport). */
-  .page-body{flex-direction:column;align-items:stretch}
-  .result-col{width:100%;position:static}
+  .section-nav__inner{width:calc(100% - 28px);overflow-x:auto;scrollbar-width:none}
+  .section-nav__inner::-webkit-scrollbar{display:none}
+  .section-nav a{flex:0 0 auto}
+  .page-body{width:calc(100% - 28px);padding-top:20px}
+  .criterion{padding:17px}
+  .c-header{grid-template-columns:auto minmax(0,1fr);gap:11px}
+  .score-chip{grid-column:2;justify-self:start}
+  .check-text{flex-direction:column;gap:2px}
+  .check-text>span{text-align:left}
+  .sofa-row{grid-template-columns:1fr;gap:9px;padding:16px 0}
+  .seg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .seg button{min-height:46px;font-size:12px}
+  .summary-list{grid-template-columns:1fr}
+  .summary-item{border-right:0;border-bottom:1px solid var(--app-border)}
 }
 
-/* ── Dark mode ── */
-@media(prefers-color-scheme:dark){
-  .seg button.active{background:var(--purple);border-color:var(--purple);color:#fff}
-  .res-ok{background:var(--ok-soft);color:var(--callout-ok-ink)}
-  .res-warn{background:var(--warn-soft);color:var(--callout-warn-ink)}
-  .res-crit{background:var(--risk-soft);color:var(--callout-danger-ink)}
+@media(max-width:390px){
+  .criterion{padding:14px}
+  .c-letter{grid-column:1}
+  .c-heading{grid-column:2}
+  .score-chip{grid-column:1/-1}
 }

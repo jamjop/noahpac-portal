@@ -40,17 +40,22 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 
 ## Deployment
 
-Served by nginx on the Linux server. The `main` branch reflects deployed state.
+Served by Nginx on the Linux server. The `main` branch is the source of truth and production only accepts fast-forward deployments of reviewed commits.
 
 ```bash
-# Deploy
-git -C /var/www/noahpac-portal pull
-
-# Force-reset (e.g. after Replit force-push to main)
-git -C /var/www/noahpac-portal reset --hard origin/main
+# Deploy the exact commit merged to main
+cd /var/www/noahpac-portal
+./scripts/deploy-production.sh <full-merged-commit-sha>
 ```
 
-No build step required.
+No build step is required. See [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md) for validation, rollback, and physical-device review procedures. Do not force-reset the production checkout.
+
+## Automated quality and health checks
+
+- Pull requests and pushes run the CSS token check, internal route/asset validation, and the complete Playwright regression suite.
+- The browser suite includes compact-header, dark-mode, accessibility, clinical behavior, and phone/tablet viewport checks.
+- A scheduled production monitor checks all public routes, external references, openFDA and NLM APIs, review freshness metadata, and security headers.
+- Run the checks manually with `node scripts/check-site-health.mjs --local` or `node scripts/check-site-health.mjs --remote`.
 
 ## TCCC — PWA / Service Worker
 
@@ -58,10 +63,10 @@ No build step required.
 
 ```js
 // tccc/sw.js
-const CACHE = 'tccc-v3';  // increment on each content update
+const CACHE = 'tccc-v6';  // increment on each content update
 ```
 
-Current cache version: **tccc-v3** (updated for CoTCCC 1 May 2026 guidelines).
+Current protocol cache versions: **TCCC v6**, **ALS v11**, and **PALS v10**.
 
 ## Automated Data Updates
 

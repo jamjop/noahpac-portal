@@ -4,22 +4,35 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clinical Assistant</title>
+<title>Clinical Assistant — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=1">
 <script src="/lib/lucide.min.js"></script>
 </head>
-<body>
+<body class="clinical-app legacy-app assistant-app clinical-assistant-app">
 
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Grounded in your reference documents only</div>
-    <h1>Clinical Assistant</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
+<a class="skip-link" href="#main-content">Skip to Clinical Assistant</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Document-grounded answers</p>
+      <h1>Clinical Assistant</h1>
+      <p class="app-header__lede">Ask questions against the indexed clinical reference library and verify every answer before use.</p>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
   <div id="chat-log" aria-live="polite"></div>
 
@@ -32,6 +45,7 @@
     <input
       id="question-input"
       type="text"
+      aria-label="Clinical question"
       placeholder="Ask a clinical question…"
       autocomplete="off"
       maxlength="2000"
@@ -42,9 +56,10 @@
     </button>
   </form>
 
-  <footer>
+  <footer class="app-footer legacy-footer">
     <p>Answers are generated from indexed reference documents only and may be incomplete or wrong. <strong>Not a substitute for clinical judgment — verify before acting on any answer.</strong></p>
-  </footer>
+    <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+</footer>
 
 </div>
 

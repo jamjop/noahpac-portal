@@ -1,4 +1,4 @@
-const CACHE = 'tccc-__DEPLOY_HASH__';
+const CACHE = 'tccc-v6';
 // Exact URLs as requested by index.html, including cache-busting query
 // strings -- caches.match() keys on the full request URL, so a precached
 // entry without "?v=2" is a silent miss against the real page request and
@@ -6,12 +6,13 @@ const CACHE = 'tccc-__DEPLOY_HASH__';
 const ASSETS = [
   '/tccc/',
   '/tccc/index.html',
-  '/tccc/app.js?v=2',
-  '/tccc/style.css?v=2',
+  '/tccc/app.js?v=3',
+  '/tccc/style.css?v=3',
   '/tccc/manifest.json',
   '/tccc/icon.svg',
   '/tccc/last_checked.json',
   '/shared.css',
+  '/assets/app-shell.js',
   '/assets/fonts.css',
   '/assets/last-checked.js',
 ];

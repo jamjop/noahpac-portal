@@ -20,7 +20,7 @@
   var CADENCE_MAX_DAYS = { weekly: 8, monthly: 32, quarterly: 92, annually: 370 };
 
   function maxAgeDays() {
-    var el = document.querySelector('.update-cadence');
+    var el = document.querySelector('.update-cadence, .review-status');
     if (!el) return null;
     var m = el.textContent.toLowerCase().match(/weekly|monthly|quarterly|annually/);
     return m ? CADENCE_MAX_DAYS[m[0]] : null;
@@ -42,6 +42,10 @@
       targets.forEach(function (target) {
         target.innerHTML = '<span class="dot"></span>Last checked for updates: ' + formatted;
         target.classList.toggle('stale', stale);
+      });
+      document.querySelectorAll('.review-status').forEach(function (status) {
+        status.classList.toggle('stale', stale);
+        status.title = 'Last checked for updates: ' + formatted;
       });
     })
     .catch(function () {});

@@ -61,12 +61,16 @@ function ettSize(ageYr) {
 
 function card(name, val, unit, note, variant, rangeText) {
   const cls = variant ? ` ${variant}` : '';
-  return `<div class="dose-card${cls}">
-    <div class="dose-name">${name}</div>
+  return `<article class="dose-card${cls}">
+    <h3 class="dose-name">${name}</h3>
     <div><span class="dose-val">${val}</span><span class="dose-unit">${unit}</span></div>
     ${rangeText ? `<div class="dose-range">${rangeText}</div>` : ''}
     ${note ? `<div class="dose-note">${note}</div>` : ''}
-  </div>`;
+  </article>`;
+}
+
+function sectionHeading(id, label) {
+  return `<h2 class="sec-head" id="${id}">${label}</h2>`;
 }
 
 // ── Main render ───────────────────────────────────────────────────────────────
@@ -80,7 +84,7 @@ function render(wt) {
   let html = '';
 
   // ── Equipment ──────────────────────────────────────────────────────────────
-  html += `<div class="sec-head">Airway & Equipment</div><div class="equip-row dose-grid">`;
+  html += `${sectionHeading('airway', 'Airway & Equipment')}<div class="equip-row dose-grid">`;
 
   // ETT
   if (ett) {
@@ -112,7 +116,7 @@ function render(wt) {
   html += `</div>`;
 
   // ── Fluids ────────────────────────────────────────────────────────────────
-  html += `<div class="sec-head">IV Fluids</div><div class="dose-grid">`;
+  html += `${sectionHeading('fluids', 'IV Fluids')}<div class="dose-grid">`;
 
   const bolus = round5(wt * 20);
   html += card('NS Bolus 20 mL/kg', fmt(bolus, 0), 'mL', 'Reassess after each bolus; max 3×', 'highlight');
@@ -133,7 +137,7 @@ function render(wt) {
   html += `</div>`;
 
   // ── Resuscitation drugs ────────────────────────────────────────────────────
-  html += `<div class="sec-head">Resuscitation</div><div class="dose-grid">`;
+  html += `${sectionHeading('resuscitation', 'Resuscitation')}<div class="dose-grid">`;
 
   const epi = clamp(wt * 0.01, 0.01, 1);
   html += card('Epinephrine (cardiac arrest)', fmt(epi, 2), 'mg IV/IO', '0.01 mg/kg (1:10,000) — q3–5 min');
@@ -157,7 +161,7 @@ function render(wt) {
   html += `</div>`;
 
   // ── Intubation / sedation ─────────────────────────────────────────────────
-  html += `<div class="sec-head">RSI / Procedural Sedation</div><div class="dose-grid">`;
+  html += `${sectionHeading('rsi', 'RSI / Procedural Sedation')}<div class="dose-grid">`;
 
   const sux = clamp(infant ? wt*2 : wt*1.5, 5, 150);
   html += card('Succinylcholine', fmt(sux, 0), 'mg IV', infant ? '2 mg/kg (infant)' : '1.5 mg/kg', 'risk');
@@ -180,7 +184,7 @@ function render(wt) {
   html += `</div>`;
 
   // ── Seizures ──────────────────────────────────────────────────────────────
-  html += `<div class="sec-head">Seizures</div><div class="dose-grid">`;
+  html += `${sectionHeading('seizures', 'Seizures')}<div class="dose-grid">`;
 
   const lz = clamp(wt * 0.1, 0.5, 4);
   html += card('Lorazepam', fmt(lz, 1), 'mg IV/IO', '0.1 mg/kg — may repeat ×1; rectal 0.1 mg/kg');
@@ -200,7 +204,7 @@ function render(wt) {
   html += `</div>`;
 
   // ── Pain & fever ──────────────────────────────────────────────────────────
-  html += `<div class="sec-head">Pain & Fever</div><div class="dose-grid">`;
+  html += `${sectionHeading('pain-fever', 'Pain & Fever')}<div class="dose-grid">`;
 
   const apap = clamp(wt * 15, 30, 1000);
   html += card('Acetaminophen (PO/PR)', fmt(round5(apap), 0), 'mg q6h', '15 mg/kg — max 1 g/dose, 4 g/day');
@@ -217,7 +221,7 @@ function render(wt) {
   html += `</div>`;
 
   // ── Antibiotics ───────────────────────────────────────────────────────────
-  html += `<div class="sec-head">Antibiotics</div><div class="dose-grid">`;
+  html += `${sectionHeading('antibiotics', 'Antibiotics')}<div class="dose-grid">`;
 
   const amox = clamp(wt * 90, 250, 4000);
   html += card('Amoxicillin (AOM)', fmt(round5(amox), 0), 'mg/day ÷ bid', '90 mg/kg/day — high-dose for AOM');
@@ -252,7 +256,7 @@ function render(wt) {
 function renderPlaceholder() {
   let html = '';
 
-  html += `<div class="sec-head">Airway &amp; Equipment</div><div class="equip-row dose-grid">`;
+  html += `${sectionHeading('airway', 'Airway &amp; Equipment')}<div class="equip-row dose-grid">`;
   html += card('ETT (cuffed)', '—', 'mm ID', 'Enter weight above to calculate', 'highlight');
   html += card('Laryngoscope', '—', '', '');
   html += card('LMA size', '—', '', '');
@@ -261,14 +265,14 @@ function renderPlaceholder() {
   html += card('NG tube', '—', '', '');
   html += `</div>`;
 
-  html += `<div class="sec-head">IV Fluids</div><div class="dose-grid">`;
+  html += `${sectionHeading('fluids', 'IV Fluids')}<div class="dose-grid">`;
   html += card('NS Bolus 20 mL/kg', '—', 'mL', '', 'highlight');
   html += card('D10W Bolus (hypoglycemia)', '—', 'mL', '');
   html += card('Maintenance fluids', '—', 'mL/hr', '');
   html += card('pRBC transfusion', '—', 'mL', '');
   html += `</div>`;
 
-  html += `<div class="sec-head">Resuscitation</div><div class="dose-grid">`;
+  html += `${sectionHeading('resuscitation', 'Resuscitation')}<div class="dose-grid">`;
   html += card('Epinephrine (cardiac arrest)', '—', 'mg IV/IO', '');
   html += card('Epinephrine (anaphylaxis)', '—', 'mg IM', '', 'warn');
   html += card('Atropine', '—', 'mg IV', '');
@@ -277,7 +281,7 @@ function renderPlaceholder() {
   html += card('Defibrillation', '—', 'J', '');
   html += `</div>`;
 
-  html += `<div class="sec-head">RSI / Procedural Sedation</div><div class="dose-grid">`;
+  html += `${sectionHeading('rsi', 'RSI / Procedural Sedation')}<div class="dose-grid">`;
   html += card('Succinylcholine', '—', 'mg IV', '', 'risk');
   html += card('Rocuronium', '—', 'mg IV', '');
   html += card('Ketamine (induction)', '—', 'mg IV', '');
@@ -286,7 +290,7 @@ function renderPlaceholder() {
   html += card('Fentanyl (analgesia)', '—', 'mcg IV', '');
   html += `</div>`;
 
-  html += `<div class="sec-head">Seizures</div><div class="dose-grid">`;
+  html += `${sectionHeading('seizures', 'Seizures')}<div class="dose-grid">`;
   html += card('Lorazepam', '—', 'mg IV/IO', '');
   html += card('Diazepam', '—', 'mg IV', '');
   html += card('Midazolam (status)', '—', 'mg IM/IN', '');
@@ -294,14 +298,14 @@ function renderPlaceholder() {
   html += card('Fosphenytoin', '—', 'PE IV', '');
   html += `</div>`;
 
-  html += `<div class="sec-head">Pain &amp; Fever</div><div class="dose-grid">`;
+  html += `${sectionHeading('pain-fever', 'Pain &amp; Fever')}<div class="dose-grid">`;
   html += card('Acetaminophen (PO/PR)', '—', 'mg q6h', '');
   html += card('Ibuprofen (PO)', '—', 'mg q6–8h', '');
   html += card('Morphine (IV)', '—', 'mg q2–4h PRN', '');
   html += card('Naloxone (reversal)', '—', 'mg IV/IM', '');
   html += `</div>`;
 
-  html += `<div class="sec-head">Antibiotics</div><div class="dose-grid">`;
+  html += `${sectionHeading('antibiotics', 'Antibiotics')}<div class="dose-grid">`;
   html += card('Amoxicillin (AOM)', '—', 'mg/day ÷ bid', '');
   html += card('Ampicillin-Sulbactam', '—', 'mg q6h', '');
   html += card('Ceftriaxone', '—', 'mg IV q24h', '');
@@ -326,21 +330,21 @@ function go() {
   } else if (!isNaN(ageNum) && ageNum >= 0) {
     wt = estimateWeight(ageNum, ageUnit);
     if (!wt) {
-      document.getElementById('content').innerHTML = '<div class="err">Could not estimate weight. Enter weight directly or use age 0–14 years.</div>';
+      document.getElementById('content').innerHTML = '<div class="err" role="alert">Could not estimate weight. Enter weight directly or use age 0–14 years.</div>';
       return;
     }
     if (wt < 1 || wt > 150) {
-      document.getElementById('content').innerHTML = `<div class="err">Age-estimated weight (${fmt(wt, 1)} kg) is outside the supported range (1–150 kg). Enter weight directly.</div>`;
+      document.getElementById('content').innerHTML = `<div class="err" role="alert">Age-estimated weight (${fmt(wt, 1)} kg) is outside the supported range (1–150 kg). Enter weight directly.</div>`;
       return;
     }
     document.getElementById('wtKg').value = '';
   } else {
-    document.getElementById('content').innerHTML = '<div class="err">Enter a weight (kg) or age to calculate.</div>';
+    document.getElementById('content').innerHTML = '<div class="err" role="alert">Enter a weight (kg) or age to calculate.</div>';
     return;
   }
 
   if (wt < 1 || wt > 150) {
-    document.getElementById('content').innerHTML = '<div class="err">Weight must be between 1 and 150 kg.</div>';
+    document.getElementById('content').innerHTML = '<div class="err" role="alert">Weight must be between 1 and 150 kg.</div>';
     return;
   }
 

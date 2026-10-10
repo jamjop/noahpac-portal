@@ -1,34 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Code &amp; Drug Lookup</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Search ICD-10-CM diagnoses, RxTerms drug names, and LOINC laboratory codes using live NLM data.">
+  <title>Code &amp; Drug Lookup — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">NLM Clinical Tables · Live API Search</div>
-    <h1>Code &amp; Drug Lookup</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
+<body class="clinical-app reference-app lookup-app">
+<a class="skip-link" href="#main-content">Skip to code and drug search</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Live NLM data</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Clinical Terminology</p>
+      <h1>Code &amp; Drug Lookup</h1>
+      <p class="app-header__lede">Search diagnoses, medication names, and laboratory terminology from live National Library of Medicine datasets.</p>
+    </div>
   </div>
 </header>
 
-<div class="content">
-  <div class="panel search-panel">
-    <div class="tab-pills" id="tabs"></div>
-    <div class="search-row">
-      <input type="search" id="q" autocomplete="off" spellcheck="false" maxlength="120">
-      <span class="search-icon" id="searchIcon">⌕</span>
-      <div class="spinner" id="spinner"></div>
+<main class="reference-workspace reference-workspace--narrow" id="main-content">
+  <section class="reference-search-panel search-panel panel" aria-labelledby="lookup-search-title">
+    <div class="reference-search-panel__header">
+      <div>
+        <h2 class="reference-search-panel__title" id="lookup-search-title">Choose a terminology set</h2>
+        <p class="reference-search-panel__description">Results update while you type. Use the arrow keys to move between terminology tabs.</p>
+      </div>
     </div>
+    <div class="reference-tabs tab-pills" id="tabs" role="tablist" aria-label="Terminology set"></div>
+    <div class="reference-search-field">
+      <label for="q" id="lookupSearchLabel">Search ICD-10-CM</label>
+      <div class="reference-search-control search-row">
+        <input type="search" id="q" autocomplete="off" spellcheck="false" maxlength="120"
+               aria-controls="results" aria-describedby="lookupSearchHelp">
+        <span class="search-icon" id="searchIcon" aria-hidden="true">⌕</span>
+        <span class="spinner" id="spinner" aria-hidden="true"></span>
+      </div>
+    </div>
+    <p class="reference-search-help" id="lookupSearchHelp">Press <kbd>/</kbd> to focus search. Copy results or open medication matches in Drug Reference.</p>
+  </section>
+
+  <section class="reference-results content" id="resultPanel" role="tabpanel" aria-labelledby="tab-icd">
+    <div id="results" aria-live="polite" aria-busy="false">
+      <div class="reference-status state">Type at least two characters to search live NLM data.</div>
+    </div>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <div class="app-footer__source">
+    <div class="clinical-caution">
+      <strong>Verify terminology in context.</strong> Search results support reference and documentation workflows; confirm the selected code, drug, or laboratory term against the current source set and intended clinical use.
+    </div>
+    <p class="source-note">Sources: NLM Clinical Tables — ICD-10-CM, RxTerms, and LOINC. Not medical advice.</p>
   </div>
-  <div id="results">
-    <div class="state">Type to search — or press <kbd>/</kbd> to focus<br>Results stream live from NLM as you type</div>
-  </div>
-</div>
-<script src="app.js?v=2"></script>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+</footer>
+
+<script src="app.js?v=3"></script>
 </body>
 </html>

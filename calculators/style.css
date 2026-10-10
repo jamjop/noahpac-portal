@@ -1,191 +1,317 @@
-:root{--perc-pos-ink:#92400e}
-/* ── Layout ── */
-.header-inner{max-width:960px;margin:0 auto;padding:22px 16px 18px;display:flex;align-items:flex-start;justify-content:space-between}
+.calculator-app{--perc-pos-ink:#7a3e00}
 
-/* shared.css's footer defaults to max-width:880px, which doesn't match this
-   page's 960px header/content — override so the footer lines up. */
-footer{max-width:960px}
-
-/* ── Page body (nav + pane) ── */
-.page-body{max-width:960px;margin:0 auto}
-@media(min-width:800px){
-  .page-body{display:flex;padding:24px 16px 60px;gap:20px;align-items:flex-start}
-  .cat-nav{width:160px;flex-shrink:0;position:sticky;top:20px}
-  /* Above this breakpoint .page-body is nav (160px) + gap (20px) + .pane —
-     footer should align with .pane specifically, not the nav+pane combo, so
-     it needs the same left offset the nav+gap consume (16px base padding
-     + 160px nav + 20px gap = 196px). Below 800px the nav becomes a
-     horizontal scrolling tab bar above the pane, so no offset is needed. */
-  footer{padding-left:196px}
-  .cat-nav .tab-btn{display:block;width:100%;text-align:left;background:transparent;border:none;border-radius:var(--r-sm);color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:8px 12px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:background .12s,color .12s;margin-bottom:2px}
-  .cat-nav .tab-btn:hover{background:var(--purple-soft);color:var(--purple)}
-  .cat-nav .tab-btn.active{background:var(--purple-soft);color:var(--purple);font-weight:700}
-  .page-body>.pane{flex:1;min-width:0;max-width:none;margin:0;padding:0}
+/* Page structure */
+.page-body{
+  display:grid;
+  grid-template-columns:220px minmax(0,1fr);
+  gap:36px;
+  width:min(100% - 32px,var(--app-content));
+  margin:0 auto;
+  padding:32px 0 72px;
+  align-items:start;
 }
-@media(max-width:799px){
-  .cat-nav{display:flex;overflow-x:auto;scrollbar-width:none;padding:10px 16px;gap:6px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-  .cat-nav::-webkit-scrollbar{display:none}
-  .cat-nav .tab-btn{flex-shrink:0;background:transparent;border:1.5px solid var(--line);border-radius:50px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:8px 16px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
-  .cat-nav .tab-btn:hover{border-color:var(--purple);color:var(--purple)}
-  .cat-nav .tab-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.calc-navigation{
+  position:sticky;
+  top:20px;
+  min-width:0;
 }
-
-/* ── Pane ── */
-.pane{padding:24px 16px 60px;max-width:960px;margin:0 auto}
-@media(max-width:560px){.pane{padding:16px 16px 50px}}
-
-/* ── Calc header (above two-column body) ── */
-.calc-header-area{margin-bottom:16px}
-
-/* ── Pane inner two-column layout ── */
-.pane-body{
-  display:flex;gap:24px;align-items:flex-start;
+.calc-filter{display:block;margin-bottom:14px}
+.calc-filter__label{
+  display:block;
+  margin-bottom:7px;
+  color:var(--app-text-muted);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.02em;
 }
-.criteria-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.result-col{
-  width:240px;flex-shrink:0;
-  position:sticky;top:20px;
-  display:flex;flex-direction:column;gap:12px;
+.calc-filter input{
+  width:100%;
+  min-height:44px;
+  padding:9px 11px;
+  border:1px solid var(--app-border-strong);
+  border-radius:var(--app-radius-sm);
+  background:var(--app-surface);
+  color:var(--app-text);
+  font-size:14px;
 }
-@media(max-width:720px){
-  .pane-body{flex-direction:column}
-  .result-col{width:100%;position:static}
-}
-
-/* ── Calc header ── */
-.calc-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);font-weight:600}
-.calc-title{font-size:clamp(18px,3vw,22px);font-weight:800;line-height:1.1;margin:4px 0 4px}
-.calc-source{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);margin-bottom:0}
-
-/* ── Criterion cards ── */
-.criterion{
-  background:var(--surface);
-  border-radius:var(--r);
-  padding:16px 18px;
-  box-shadow:var(--sh);
-  transition:box-shadow .15s;
+.calc-filter input::placeholder{color:var(--app-text-muted)}
+.cat-nav{display:flex;flex-direction:column;gap:2px}
+.cat-nav .tab-btn{
+  width:100%;
+  min-height:40px;
+  padding:9px 11px;
   overflow:hidden;
+  border:0;
+  border-left:2px solid transparent;
+  border-radius:0 var(--app-radius-sm) var(--app-radius-sm) 0;
+  background:transparent;
+  color:var(--app-text-secondary);
+  font-size:13px;
+  font-weight:550;
+  line-height:1.3;
+  text-align:left;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:background .12s,color .12s,border-color .12s;
 }
-.criterion:hover{box-shadow:var(--sh-lg)}
+.cat-nav .tab-btn:hover{background:var(--app-surface);color:var(--app-text)}
+.cat-nav .tab-btn.active{
+  border-left-color:var(--app-accent);
+  background:var(--app-accent-soft);
+  color:var(--app-accent);
+  font-weight:700;
+}
+.calc-nav-empty{padding:12px 4px;color:var(--app-text-muted);font-size:13px}
+.pane{min-width:0}
+.pane:focus{outline:none}
 
-.c-header{margin-bottom:12px}
-.c-name{font-size:12px;font-weight:700;color:var(--ink);letter-spacing:.04em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
-.c-desc{font-size:11px;color:var(--ink-muted);margin-top:2px;line-height:1.4}
+/* Calculator heading and two-column working area */
+.calc-header-area{
+  margin-bottom:22px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--app-border);
+}
+.calc-eyebrow{
+  color:var(--app-accent);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.calc-title{
+  margin:5px 0 5px;
+  color:var(--app-text);
+  font-size:clamp(23px,3vw,30px);
+  font-weight:650;
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+.calc-source{color:var(--app-text-muted);font-size:13px;line-height:1.5}
+.pane-body{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start}
+.criteria-col{display:flex;min-width:0;flex-direction:column;gap:12px}
+.result-col{
+  position:sticky;
+  top:20px;
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:14px;
+}
 
-/* Inputs inside criterion */
-.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 16px}
-.field{display:flex;flex-direction:column;gap:5px}
+/* Input and criteria surfaces */
+.criterion{
+  overflow:hidden;
+  padding:18px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-md);
+  background:var(--app-surface);
+}
+.c-header{margin-bottom:13px}
+.c-name{color:var(--app-text);font-size:14px;font-weight:700}
+.c-desc{margin-top:3px;color:var(--app-text-muted);font-size:13px;line-height:1.5}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:16px}
+.field{display:flex;min-width:0;flex-direction:column;gap:7px}
 .field.full-width{grid-column:1/-1}
-.field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
-.field input[type=number],.field input[type=date],.field select{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;width:100%;padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink)}
-.field input:focus,.field select:focus{outline:2px solid var(--purple);outline-offset:1px;border-color:var(--purple)}
-.field .unit{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);margin-top:2px}
-
-/* Checkboxes */
-.checks{display:flex;flex-direction:column;gap:5px}
+.field-label{
+  color:var(--app-text-secondary);
+  font-size:13px;
+  font-weight:650;
+  line-height:1.35;
+}
+.field input[type=number],.field input[type=date],.field select{
+  width:100%;
+  min-height:46px;
+  padding:9px 11px;
+  border:1px solid var(--app-border-strong);
+  border-radius:var(--app-radius-sm);
+  background:var(--app-surface-subtle);
+  color:var(--app-text);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:16px;
+  font-weight:600;
+}
+.field .unit{color:var(--app-text-muted);font-size:12px;line-height:1.3}
+.checks{display:flex;flex-direction:column;gap:8px}
 .checks label{
-  display:flex;gap:10px;align-items:flex-start;
-  padding:8px 12px;
-  border:1.5px solid var(--line);
-  border-radius:var(--r-sm);
-  background:var(--bg);
-  font-size:12.5px;color:var(--ink-soft);
+  display:flex;
+  min-height:46px;
+  align-items:flex-start;
+  gap:11px;
+  padding:11px 12px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-sm);
+  background:var(--app-surface-subtle);
+  color:var(--app-text-secondary);
+  font-size:14px;
+  line-height:1.45;
   cursor:pointer;
   transition:background .12s,border-color .12s,color .12s;
-  line-height:1.4;
 }
-.checks label:hover{background:var(--purple-soft);border-color:var(--purple-mid);color:var(--ink)}
-.checks label:has(input:checked){background:var(--purple-soft);border-color:var(--purple-mid);color:var(--ink)}
-.checks input{margin-top:2px;accent-color:var(--purple);flex-shrink:0}
-.checks .pts{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:var(--purple);flex-shrink:0;min-width:26px;text-align:right;margin-top:1px}
+.checks label:hover{border-color:var(--app-accent);color:var(--app-text)}
+.checks label:has(input:checked){border-color:var(--app-accent);background:var(--app-accent-soft);color:var(--app-text)}
+.checks input{width:18px;height:18px;margin-top:1px;accent-color:var(--app-accent);flex:0 0 auto}
+.checks .pts{
+  min-width:28px;
+  color:var(--app-accent);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:700;
+  text-align:right;
+}
 
-/* ── Result panel (in result-col) ── */
+/* Results */
 .result-panel{
-  background:var(--surface);
-  border-radius:var(--r);
-  box-shadow:var(--sh);
   overflow:hidden;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-lg);
+  background:var(--app-surface);
+  box-shadow:var(--app-shadow-raised);
 }
-
-/* Result card
-   .ok/.warn/.risk draw their colored ring as an inset box-shadow, which
-   follows THIS element's own border-radius (not its parent .result-panel's) —
-   overflow:hidden on the panel only clips content that extends past the
-   panel's rounded edge, it can't retroactively round a sharp-cornered shadow
-   painted entirely within the visible area. Without its own border-radius
-   here, the ring rendered with hard corners while sitting inside an otherwise
-   rounded card, on every calculator using this shared ok/warn/risk pattern
-   (not just RCRI/PECARN — affects any tab whose result uses these classes).
-
-   Top corners only: every calculator's result-card is immediately followed
-   by .copy-btn-wrap inside the same .result-panel (buildResultColumn() in
-   app.js always appends it when a .copy-btn exists, which is all 19 of
-   them) — rounding all 4 corners left result-card's bottom corners curving
-   inward while copy-btn-wrap's sharp top corners sat directly beneath,
-   flush with the panel edge, creating a small square nub visible right at
-   the seam between the two. Bottom stays 0 so it's flush with copy-btn-wrap
-   instead, and the panel's own overflow:hidden still correctly rounds the
-   true bottom corners where copy-btn-wrap meets the panel's edge. */
-.result-card{padding:16px 18px;border-radius:var(--r) var(--r) 0 0}
-.result-card.ok{box-shadow:0 0 0 2px var(--ok) inset}
-.result-card.warn{box-shadow:0 0 0 2px var(--warn) inset}
-.result-card.risk{box-shadow:0 0 0 2px var(--risk) inset}
-.result-num{font-family:'IBM Plex Mono',monospace;font-size:34px;font-weight:600;color:var(--ink);line-height:1}
+.result-panel::before{
+  display:block;
+  padding:12px 16px;
+  border-bottom:1px solid var(--app-border);
+  color:var(--app-text-muted);
+  content:"Calculated result";
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.result-card{padding:18px;border-left:4px solid transparent}
+.result-card.ok{border-left-color:var(--ok)}
+.result-card.warn{border-left-color:var(--warn)}
+.result-card.risk{border-left-color:var(--risk)}
+.result-card+.result-card{border-top:1px solid var(--app-border)}
+.result-num{
+  color:var(--app-text);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:34px;
+  font-weight:650;
+  line-height:1.1;
+  letter-spacing:-.04em;
+}
 .result-num.ok{color:var(--ok)}
 .result-num.warn{color:var(--warn)}
 .result-num.risk{color:var(--risk)}
-.result-label{font-weight:700;font-size:14px;margin-top:6px}
-.result-detail{font-size:12px;color:var(--ink-soft);margin-top:6px;line-height:1.55}
-.result-placeholder{font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--line)}
+.result-label{margin-top:8px;color:var(--app-text);font-size:15px;font-weight:750;line-height:1.35}
+.result-detail{margin-top:7px;color:var(--app-text-secondary);font-size:13px;line-height:1.6}
+.result-placeholder{color:var(--app-text-muted);font-size:14px;line-height:1.5}
+.sub-result{margin-top:14px;padding-top:13px;border-top:1px dashed var(--app-border);font-size:13px;line-height:1.55}
+.copy-btn-wrap{padding:12px;border-top:1px solid var(--app-border)}
+.copy-btn{
+  width:100%;
+  min-height:44px;
+  padding:9px 14px;
+  border:1px solid var(--app-accent);
+  border-radius:var(--app-radius-sm);
+  background:transparent;
+  color:var(--app-accent);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.copy-btn:hover{background:var(--app-accent);color:#fff}
+.copy-btn.copied{border-color:var(--ok);background:var(--ok);color:#081b13}
+.note{
+  padding:14px 15px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-md);
+  background:var(--app-surface);
+  color:var(--app-text-secondary);
+  font-size:12px;
+  line-height:1.65;
+}
+.note a{overflow-wrap:anywhere}
 
-.sub-result{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-soft);line-height:1.55}
+/* Inline and screening-specific elements */
+.section-label{
+  margin-bottom:10px;
+  color:var(--app-text-muted);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.section-label-gap{margin-top:18px}
+.perc-result{display:none;padding:13px 16px;border-top:1px solid var(--app-border);font-size:14px;font-weight:700;line-height:1.5}
+.perc-result.neg{display:block;background:var(--ok-soft);color:var(--ok-ink)}
+.perc-result.pos{display:block;background:var(--warn-soft);color:var(--perc-pos-ink)}
+.criterion .perc-result{margin:14px -18px -18px}
+.phq-instr{margin:0 0 12px;color:var(--app-text-secondary);font-size:14px;line-height:1.55}
+.phq-table{display:flex;flex-direction:column;gap:8px}
+.phq-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(170px,auto);
+  gap:14px;
+  align-items:center;
+  padding:10px 11px;
+  border:1px solid transparent;
+  border-radius:var(--app-radius-sm);
+  background:var(--app-surface-subtle);
+}
+.phq-row-si{border-color:var(--warn);background:var(--warn-soft)}
+.phq-q{color:var(--app-text);font-size:14px;line-height:1.45}
+.phq-num{display:inline-block;width:22px;color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700}
+.phq-sel{
+  min-height:42px;
+  padding:8px 9px;
+  border:1px solid var(--app-border-strong);
+  border-radius:var(--app-radius-sm);
+  background:var(--app-surface);
+  color:var(--app-text);
+  font-size:13px;
+}
+.calc-note{color:var(--app-text-muted);font-size:12px}
 
-/* PERC / Ottawa inline results */
-.perc-result{padding:12px 16px;border-radius:0;font-size:13px;font-weight:600;border-top:1px solid var(--line)}
-.perc-result.neg{background:var(--ok-soft);color:var(--ok-ink)}
-.perc-result.pos{background:var(--warn-soft);color:var(--perc-pos-ink)}
-.perc-result{display:none}
-.perc-result.pos,.perc-result.neg{display:block}
+html[data-theme="dark"] .calculator-app{--perc-pos-ink:#ffdc8a}
+@media(prefers-color-scheme:dark){html:not([data-theme]) .calculator-app{--perc-pos-ink:#ffdc8a}}
 
-/* When perc-result is anchored inside a criterion card */
-.criterion .perc-result{
-  margin:10px -18px -16px;
-  padding:10px 18px;
-  border-radius:0;
-  border-top:1px solid var(--line);
+@media(max-width:900px){
+  .page-body{grid-template-columns:1fr;width:100%;padding-top:0;gap:24px}
+  .calc-navigation{
+    position:sticky;
+    top:0;
+    z-index:20;
+    padding:12px 16px 10px;
+    border-bottom:1px solid var(--app-border);
+    background:var(--app-surface);
+    box-shadow:0 6px 18px rgba(15,23,42,.06);
+  }
+  .calc-filter{margin-bottom:9px}
+  .calc-filter__label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .calc-filter input{min-height:42px}
+  .cat-nav{flex-direction:row;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .cat-nav::-webkit-scrollbar{display:none}
+  .cat-nav .tab-btn{
+    width:auto;
+    min-height:40px;
+    flex:0 0 auto;
+    padding:9px 13px;
+    border:1px solid var(--app-border);
+    border-radius:999px;
+  }
+  .cat-nav .tab-btn.active{border-color:var(--app-accent);background:var(--app-accent);color:#fff}
+  .calc-nav-empty{padding:8px 0 2px}
+  .pane{width:min(100% - 32px,760px);margin:0 auto}
 }
 
-/* Copy button inside result-panel */
-.copy-btn-wrap{padding:12px 16px;border-top:1px solid var(--line)}
-.copy-btn{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.05em;padding:7px 14px;border-radius:50px;border:1.5px solid var(--purple);background:transparent;color:var(--purple);cursor:pointer;transition:background .15s,color .15s;width:100%}
-.copy-btn:hover{background:var(--purple);color:#fff}
-.copy-btn.copied{background:var(--ok);color:#fff;border-color:var(--ok)}
+@media(max-width:720px){
+  .pane-body{grid-template-columns:1fr}
+  .result-col{position:static}
+  .result-panel{box-shadow:none}
+}
 
-/* Note (below result panel) */
-.note{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink-soft);line-height:1.55;padding:10px 14px;background:var(--surface);border-radius:var(--r-sm);box-shadow:var(--sh);border:1px solid var(--line)}
-.note a{color:var(--purple)}
-
-/* Section label (within a criterion card) */
-.section-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;padding-bottom:4px;margin-bottom:8px;border-bottom:1px solid var(--line)}
-.section-label-gap{margin-top:16px}
-
-/* PHQ / GAD */
-.phq-instr{font-size:12.5px;color:var(--ink-soft);margin-bottom:10px;line-height:1.5}
-.phq-table{display:flex;flex-direction:column;gap:4px}
-.phq-row{display:flex;align-items:center;gap:12px;padding:7px 10px;background:var(--bg);border-radius:var(--r-sm);border:1px solid transparent}
-.phq-row-si{background:var(--warn-soft);border-color:var(--warn)}
-.phq-q{flex:1;font-size:12px;color:var(--ink);line-height:1.4}
-.phq-num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;color:var(--purple);margin-right:6px;width:14px;display:inline-block;text-align:right}
-.phq-sel{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 8px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);flex-shrink:0;min-width:150px}
-.phq-sel:focus{outline:2px solid var(--purple);outline-offset:1px}
-@media(max-width:540px){.phq-row{flex-direction:column;align-items:flex-start}.phq-sel{width:100%}}
-
-.calc-note{color:var(--ink-soft);font-size:10.5px}
-
-@media(prefers-color-scheme:dark){
-  :root{--perc-pos-ink:#fde68a}
-  .cat-nav .tab-btn{border-color:var(--line);color:var(--ink-soft)}
-  .cat-nav .tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
-  .checks label{background:var(--bg)}
-  .checks label:hover,.checks label:has(input:checked){background:var(--purple-soft);border-color:var(--purple-mid)}
+@media(max-width:520px){
+  .pane{width:calc(100% - 28px)}
+  .fields{grid-template-columns:1fr}
+  .criterion{padding:15px}
+  .checks label{font-size:14px}
+  .criterion .perc-result{margin:14px -15px -15px}
+  .phq-row{grid-template-columns:1fr;gap:8px}
+  .phq-sel{width:100%;font-size:16px}
+  .result-num{font-size:30px}
 }

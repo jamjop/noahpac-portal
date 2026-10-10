@@ -1,10 +1,13 @@
-const CACHE = 'pals-v7';
+const CACHE = 'pals-v10';
 const ASSETS = [
   '/pals/',
   '/pals/index.html',
-  '/pals/style.css',
-  '/pals/app.js',
+  '/pals/style.css?v=3',
+  '/pals/app.js?v=3',
   '/shared.css',
+  '/assets/app-shell.js',
+  '/assets/fonts.css',
+  '/assets/last-checked.js',
 ];
 
 self.addEventListener('install', e => {

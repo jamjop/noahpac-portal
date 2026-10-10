@@ -4,21 +4,33 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Screening Recommendations</title><link rel="stylesheet" href="/shared.css">
+<title>Screening Recommendations — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
+<body class="clinical-app legacy-app decision-app screener-app">
 
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">USPSTF Preventive Services · Patient Screener</div>
-    <h1>Screening Recommendations</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Updated weekly</div>
+<a class="skip-link" href="#main-content">Skip to Screening Recommendations</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Preventive care workflow</p>
+      <h1>Screening Recommendations</h1>
+      <p class="app-header__lede">Patient-specific USPSTF screening recommendations based on age, sex, and selected risk factors.</p>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
   <div class="input-area">
 
@@ -78,9 +90,10 @@
   <div class="results" id="results"></div>
 </div>
 
-<footer>
+<footer class="app-footer legacy-footer">
   <p class="last-checked"></p>
   <p><strong>Not medical advice.</strong> Summarizes USPSTF recommendations for average-risk screening; read each full recommendation statement and individualize with clinical judgment.</p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=3"></script>

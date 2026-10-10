@@ -3,42 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/shared.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clinical Documents</title>
+<title>Clinical Documents — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/index.css">
 <link rel="stylesheet" href="style.css?v=2">
 <script src="/lib/lucide.min.js"></script>
 </head>
-<body>
-<div class="page-wrap">
-
-  <a href="/" class="back-link" target="_top"><i data-lucide="arrow-left" class="icon-back"></i> noahpac</a>
-
-  <header class="site-header">
-    <div class="header-lead">
-      <div class="header-brand">
-        <i data-lucide="file-text" class="icon-header"></i>
-        <h1 class="site-title">Clinical Documents</h1>
+<body class="clinical-app legacy-app documents-app">
+<a class="skip-link" href="#tools-grid">Skip to Clinical Documents</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
       </div>
-      <p class="site-tagline">
-        Home exercise program handouts and printable screening tools, organized for quick access and printing during clinic visits.
-      </p>
     </div>
-
-    <div class="search-wrap">
-      <span class="search-icon-wrap">
-        <i data-lucide="search" class="icon-search"></i>
-      </span>
-      <input
-        id="doc-search"
-        type="text"
-        placeholder="Search by diagnosis or tool name…"
-        autocomplete="off"
-      />
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Patient education library</p>
+      <h1>Clinical Documents</h1>
+      <p class="app-header__lede">Exercise handouts and printable screening tools organized for quick access during clinic visits.</p>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main id="tools-grid">
+<div class="page-wrap document-workspace">
+  <label class="legacy-search-panel document-search" for="doc-search"><span class="legacy-search-label">Find a document</span><span class="search-wrap"><span class="search-icon-wrap"><i data-lucide="search" class="icon-search"></i></span><input id="doc-search" type="search" placeholder="Search by diagnosis or tool name…" autocomplete="off"></span></label>
+
+  <main id="tools-grid" tabindex="-1">
 
     <div class="category-col">
       <h2 class="cat-heading">Shoulder</h2>
@@ -213,7 +210,7 @@
         </span>
         <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
       </a>
-      <a class="ext-row" data-search="gad-7 gad7 generalized anxiety disorder screening" href="https://aims.uw.edu/keyword-tagging/gad-7" target="_blank" rel="noopener">
+      <a class="ext-row" data-search="gad-7 gad7 generalized anxiety disorder screening" href="https://aims.uw.edu/resource/generalized-anxiety-disorder-subscale-gad-7/" target="_blank" rel="noopener">
         <span class="ext-icon"><i data-lucide="brain" class="icon-ext"></i></span>
         <span class="ext-body">
           <span class="ext-name">GAD-7</span>
@@ -224,9 +221,10 @@
     </div>
   </section>
 
-  <footer>
+  <footer class="app-footer legacy-footer">
     <p>Handouts for quick reference and printing during clinical visits. External links open the original publisher rather than a locally hosted copy, due to redistribution licensing. <strong>Not medical advice — verify appropriateness for each patient before use.</strong></p>
-  </footer>
+    <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+</footer>
 
 </div>
 

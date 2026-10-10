@@ -4,20 +4,32 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Toxicology / Antidote Reference</title><link rel="stylesheet" href="/shared.css">
+<title>Toxicology / Antidote Reference — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=1">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Toxicology · Antidote Quick Reference</div>
-    <h1>Toxicology / Antidote Reference</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app legacy-app reference-app toxicology-app">
+<a class="skip-link" href="#main-content">Skip to Toxicology / Antidote Reference</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Emergency medication reference</p>
+      <h1>Toxicology / Antidote Reference</h1>
+      <p class="app-header__lede">Rapid antidote dosing, toxidrome, decontamination, and poison-control reference.</p>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
   <div class="alert-box alert-urgent">
     <strong>Poison Control: 1-800-222-1222</strong> — available 24/7 nationwide. Call early, especially for unfamiliar ingestions, pediatric exposures, or when the antidote/dosing below doesn't clearly fit the clinical picture. Supportive care (airway, breathing, circulation) always takes priority over antidote administration.
@@ -205,11 +217,12 @@
 
 </div>
 
-<footer>
+<footer class="app-footer legacy-footer">
   <p class="last-checked"></p>
   <p class="page-footer">
     Based on American College of Medical Toxicology (ACMT) guidance, FDA product labeling for listed antidotes, and standard emergency medicine toxicology references (Goldfrank's, UpToDate). Antidote selection and dosing should account for clinical severity, co-ingestants, and local poison control/toxicology input. <strong>Not medical advice.</strong>
   </p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=1"></script>

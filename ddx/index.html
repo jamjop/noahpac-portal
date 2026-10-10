@@ -4,32 +4,44 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Value DDx</title><link rel="stylesheet" href="/shared.css">
+<title>Lab Value DDx — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
+<body class="clinical-app legacy-app reference-app ddx-app">
 <div>
-  <header class="app-header">
-    <div class="header-inner">
-      <div>
-        <div class="eyebrow">Differential Diagnosis</div>
-        <h1>Lab Value DDx</h1>
-        <a href="/" class="back" target="_top">← noahpac</a>
+  <a class="skip-link" href="#main-content">Skip to Lab Value DDx</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
       </div>
-      <input type="search" id="ddxSearch" class="tab-search" placeholder="Search…" autocomplete="off" spellcheck="false">
     </div>
-  </header>
-  <div class="page-body">
-    <nav class="cat-nav" id="tabNav"></nav>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Differential diagnosis</p>
+      <h1>Lab Value DDx</h1>
+      <p class="app-header__lede">Browse common causes of high and low laboratory values by clinical category.</p>
+    </div>
+  </div>
+</header>
+  <div class="page-body legacy-main" id="main-content" role="main" tabindex="-1">
+    <label class="legacy-search-panel" for="ddxSearch"><span class="legacy-search-label">Find a laboratory value</span><input type="search" id="ddxSearch" class="tab-search" placeholder="Search laboratory values" autocomplete="off" spellcheck="false"></label>
+    <nav class="cat-nav" id="tabNav" aria-label="Laboratory values"></nav>
     <div class="pane" id="pane">
       <div class="placeholder">Select a condition from the list</div>
     </div>
   </div>
 </div>
-<footer>
+<footer class="app-footer legacy-footer">
   <p class="source-note">
     Compiled from standard internal medicine differential diagnosis references (e.g., UpToDate, Harrison's Principles of Internal Medicine). Not exhaustive — verify against primary literature. Not medical advice.
   </p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 <script src="app.js?v=2"></script>
 </body>

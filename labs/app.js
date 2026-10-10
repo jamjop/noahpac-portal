@@ -239,25 +239,45 @@ let searchQuery = '';
 
 function buildCatFilters() {
   const wrap = document.getElementById('catFilters');
+  wrap.innerHTML = '';
   const allBtn = document.createElement('button');
   allBtn.className = 'tab-btn active';
   allBtn.textContent = 'All';
   allBtn.dataset.cat = 'all';
+  allBtn.type = 'button';
+  allBtn.setAttribute('aria-pressed', 'true');
   wrap.appendChild(allBtn);
   for (const c of CATS) {
     const btn = document.createElement('button');
     btn.className = 'tab-btn';
     btn.textContent = c.label;
     btn.dataset.cat = c.id;
+    btn.type = 'button';
+    btn.setAttribute('aria-pressed', 'false');
     wrap.appendChild(btn);
   }
   wrap.addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
     if (!btn) return;
-    wrap.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
     activeCat = btn.dataset.cat;
+    wrap.querySelectorAll('.tab-btn').forEach(b => {
+      const active = b === btn;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
     render();
+  });
+  wrap.addEventListener('keydown', e => {
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key)) return;
+    e.preventDefault();
+    const buttons = [...wrap.querySelectorAll('.tab-btn')];
+    const current = buttons.indexOf(document.activeElement);
+    let next = current;
+    if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = buttons.length - 1;
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (current + 1 + buttons.length) % buttons.length;
+    else next = (current - 1 + buttons.length) % buttons.length;
+    buttons[next].focus();
   });
 }
 
@@ -272,6 +292,8 @@ function matches(lab) {
 
 function render() {
   const content = document.getElementById('labContent');
+  const summary = document.getElementById('labResultSummary');
+  content.setAttribute('aria-busy', 'true');
   const catsToShow = activeCat === 'all' ? CATS : CATS.filter(c => c.id === activeCat);
   let html = '';
   let totalCount = 0;
@@ -287,25 +309,28 @@ function render() {
         ? `<div class="td-range">${esc(l.male)}</div><div class="td-range-f">F: ${esc(l.female)}</div>`
         : `<div class="td-range">${esc(l.male)}</div>`;
       return `<tr>
-        <td class="td-name">${esc(l.name)}</td>
-        <td>${rangeHtml}</td>
-        <td class="td-units">${esc(l.units)}</td>
-        <td class="td-note">${esc(l.note)}</td>
+        <td class="td-name" data-label="Test">${esc(l.name)}</td>
+        <td data-label="Range">${rangeHtml}</td>
+        <td class="td-units" data-label="Units">${esc(l.units)}</td>
+        <td class="td-note" data-label="Clinical notes">${esc(l.note)}</td>
       </tr>`;
     }).join('');
 
-    html += `<div class="lab-section">
-      <div class="lab-section-title">${esc(cat.label)}</div>
+    const headingId = `lab-section-${cat.id}`;
+    html += `<section class="lab-section" aria-labelledby="${headingId}">
+      <h2 class="lab-section-title" id="${headingId}">${esc(cat.label)}</h2>
+      <div class="lab-table-wrap">
       <table class="lab-table">
-        <tr>
+        <thead><tr>
           <th>Test</th>
           <th>Reference Range</th>
           <th>Units</th>
           <th>Clinical Notes</th>
-        </tr>
-        ${rows}
+        </tr></thead>
+        <tbody>${rows}</tbody>
       </table>
-    </div>`;
+      </div>
+    </section>`;
   }
 
   if (!totalCount) {
@@ -313,6 +338,9 @@ function render() {
   }
 
   content.innerHTML = html;
+  content.setAttribute('aria-busy', 'false');
+  const category = activeCat === 'all' ? 'all categories' : CATS.find(c => c.id === activeCat)?.label || 'selected category';
+  summary.textContent = `${totalCount} test${totalCount === 1 ? '' : 's'} · ${category}`;
 }
 
 document.getElementById('labSearch').addEventListener('input', e => {

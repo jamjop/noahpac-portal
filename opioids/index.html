@@ -1,76 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opioid Conversion</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Opioid equianalgesic conversion with CDC morphine milligram equivalent calculation and cross-tolerance adjustment.">
+  <title>Opioid Conversion — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Equianalgesic Dosing · CDC MME</div>
-    <h1>Opioid Conversion</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app medication-tool opioid-app">
+<a class="skip-link" href="#main-content">Skip to opioid converter</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Medication Tools</p>
+      <h1>Opioid Conversion</h1>
+      <p class="app-header__lede">Estimate daily morphine milligram equivalents and apply an incomplete cross-tolerance reduction when rotating opioids.</p>
+    </div>
   </div>
 </header>
 
-<div class="page-body">
-
-  <div class="criteria-col">
-
-    <div class="criterion">
-      <div class="c-header">
-        <span class="c-letter">1</span>
-        <div>
-          <div class="c-name">Current Medication</div>
-          <div class="c-desc">Opioid being prescribed now, route, dose per administration, and frequency</div>
+<main class="tool-workspace page-body" id="main-content">
+  <div class="input-column criteria-col">
+    <section class="tool-card criterion" aria-labelledby="current-medication-title">
+      <div class="tool-card__header c-header">
+        <span class="tool-card__marker c-letter" aria-hidden="true">1</span>
+        <div class="tool-card__heading">
+          <h2 id="current-medication-title">Current medication</h2>
+          <p>Enter the opioid, route, dose per administration, and daily frequency.</p>
         </div>
       </div>
-      <div class="field-grid">
-        <div class="field">
-          <label class="field-label" for="fromDrug">Opioid</label>
+      <div class="clinical-form-grid field-grid">
+        <div class="clinical-field field">
+          <label for="fromDrug">Opioid</label>
           <select id="fromDrug"></select>
         </div>
-        <div class="field" id="fromRouteField">
-          <label class="field-label" for="fromRoute">Route</label>
+        <div class="clinical-field field" id="fromRouteField">
+          <label for="fromRoute">Route</label>
           <select id="fromRoute"></select>
         </div>
-        <div class="field">
-          <label class="field-label" for="fromDose">Dose per administration</label>
-          <div class="dose-row">
-            <input type="number" id="fromDose" min="0" step="any" placeholder="0">
-            <span class="unit-label" id="fromUnit">mg</span>
+        <div class="clinical-field field">
+          <label for="fromDose">Dose per administration</label>
+          <div class="input-with-unit dose-row">
+            <input type="number" id="fromDose" min="0" step="any" inputmode="decimal" placeholder="0" autocomplete="off">
+            <span class="input-with-unit__unit unit-label" id="fromUnit">mg</span>
           </div>
         </div>
-        <div class="field">
-          <label class="field-label" for="fromFreq">Frequency</label>
+        <div class="clinical-field field">
+          <label for="fromFreq">Frequency</label>
           <select id="fromFreq"></select>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="criterion">
-      <div class="c-header">
-        <span class="c-letter">2</span>
-        <div>
-          <div class="c-name">Convert To</div>
-          <div class="c-desc">Target opioid, route, and cross-tolerance reduction factor</div>
+    <section class="tool-card criterion" aria-labelledby="target-medication-title">
+      <div class="tool-card__header c-header">
+        <span class="tool-card__marker c-letter" aria-hidden="true">2</span>
+        <div class="tool-card__heading">
+          <h2 id="target-medication-title">Target medication</h2>
+          <p>Choose the target opioid, route, and a patient-appropriate cross-tolerance reduction.</p>
         </div>
       </div>
-      <div class="field-grid">
-        <div class="field">
-          <label class="field-label" for="toDrug">Target opioid</label>
+      <div class="clinical-form-grid field-grid">
+        <div class="clinical-field field">
+          <label for="toDrug">Target opioid</label>
           <select id="toDrug"></select>
         </div>
-        <div class="field" id="toRouteField">
-          <label class="field-label" for="toRoute">Route</label>
+        <div class="clinical-field field" id="toRouteField">
+          <label for="toRoute">Route</label>
           <select id="toRoute"></select>
         </div>
-        <div class="field full-width">
-          <label class="field-label" for="reduction">Cross-tolerance reduction</label>
+        <div class="clinical-field clinical-field--full field full-width">
+          <label for="reduction">Cross-tolerance reduction</label>
           <select id="reduction">
             <option value="0">None (0%) — same drug or route</option>
             <option value="25" selected>25% — standard rotation</option>
@@ -78,38 +102,45 @@
           </select>
         </div>
       </div>
-    </div>
-
-    <div class="ref-card">
-      <div class="ref-panel-head">Equianalgesic Reference <span class="ref-note">(approximate)</span></div>
-      <div class="tbl-wrap">
-        <table class="ref-table" id="refTable"></table>
-      </div>
-    </div>
-
+    </section>
   </div>
 
-  <div class="result-col">
-    <div class="result-panel">
-      <div class="result-panel-head">Current MME</div>
-      <div id="currentMme" class="result-panel-body mme-display"><span class="mme-placeholder">—</span></div>
+  <aside class="results-rail result-col" aria-labelledby="conversion-summary-title">
+    <div class="results-rail__intro">
+      <p class="results-rail__eyebrow">Live calculation</p>
+      <h2 id="conversion-summary-title">Conversion summary</h2>
     </div>
-    <div class="result-panel">
-      <div class="result-panel-head">Converted Dose</div>
-      <div id="convResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
+    <section class="result-panel" aria-labelledby="current-mme-title">
+      <h3 class="result-panel-head" id="current-mme-title">Current MME</h3>
+      <div id="currentMme" class="result-panel-body mme-display" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+    </section>
+    <section class="result-panel" aria-labelledby="converted-dose-title">
+      <h3 class="result-panel-head" id="converted-dose-title">Converted dose</h3>
+      <div id="convResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+    </section>
+    <p class="results-note">Conversions are estimates. Verify the target regimen, formulation, organ function, and monitoring plan before prescribing.</p>
+  </aside>
+
+  <section class="reference-card ref-card" aria-labelledby="equianalgesic-reference-title">
+    <div class="reference-card__header">
+      <h2 id="equianalgesic-reference-title">Equianalgesic reference</h2>
+      <span class="reference-card__note">Approximate values</span>
     </div>
-  </div>
+    <div class="reference-table-wrap tbl-wrap" tabindex="0" role="region" aria-label="Scrollable equianalgesic reference table">
+      <table class="reference-table ref-table" id="refTable"></table>
+    </div>
+  </section>
+</main>
 
-</div>
-
-<footer>
+<footer class="app-footer">
   <p class="last-checked"></p>
-  <div class="disclaimer-box">
-    <strong>Clinical caution required.</strong> Equianalgesic conversions are approximations based on population averages. Individual responses vary significantly. Always apply clinical judgment, reassess frequently, and titrate to effect. When rotating opioids, use the lowest reasonable conversion ratio and adjust for incomplete cross-tolerance. Consult pain management or palliative care for complex patients.
+  <div class="app-footer__source">
+    <div class="clinical-caution disclaimer-box">
+      <strong>Clinical caution required.</strong> Equianalgesic conversions are approximations based on population averages. Individual responses vary significantly. Always apply clinical judgment, reassess frequently, and titrate to effect. When rotating opioids, use the lowest reasonable conversion ratio and adjust for incomplete cross-tolerance. Consult pain management or palliative care for complex patients.
+    </div>
+    <p class="source-note">Conversion factors and MME thresholds from the CDC 2022 Clinical Practice Guideline for Prescribing Opioids for Pain, FDA labeling, and clinical references. Not medical advice.</p>
   </div>
-  <p class="source-note">
-    Conversion factors and MME thresholds from the CDC 2022 Clinical Practice Guideline for Prescribing Opioids for Pain, FDA labeling, and clinical references. Not medical advice.
-  </p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=2"></script>

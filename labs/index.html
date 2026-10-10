@@ -1,29 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Reference</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Search adult laboratory reference ranges, units, and concise clinical interpretation notes.">
+  <title>Laboratory Reference — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
-<div>
-  <header class="app-header">
-    <div class="header-inner">
-      <div>
-        <div class="eyebrow">Adult Reference Ranges</div>
-        <h1>Lab Reference</h1>
-        <a href="/" class="back" target="_top">← noahpac</a>
+<body class="clinical-app reference-app labs-app">
+<a class="skip-link" href="#main-content">Skip to laboratory reference</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
       </div>
-      <input type="search" id="labSearch" class="tab-search" placeholder="Search tests…" autocomplete="off" spellcheck="false">
     </div>
-  </header>
-  <div class="page-body">
-    <nav class="cat-nav" id="catFilters"></nav>
-    <div class="content" id="labContent"></div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Adult Reference Ranges</p>
+      <h1>Laboratory Reference</h1>
+      <p class="app-header__lede">Search common adult reference ranges, units, and concise interpretation notes across core laboratory categories.</p>
+    </div>
   </div>
-</div>
-<script src="app.js?v=2"></script>
+</header>
+
+<main class="reference-workspace labs-workspace" id="main-content">
+  <section class="reference-search-panel" aria-labelledby="lab-search-title">
+    <div class="reference-search-panel__header">
+      <div>
+        <h2 class="reference-search-panel__title" id="lab-search-title">Find a laboratory test</h2>
+        <p class="reference-search-panel__description">Search by test name, abbreviation, alias, or unit, then narrow by category.</p>
+      </div>
+      <output class="lab-result-summary" id="labResultSummary" aria-live="polite"></output>
+    </div>
+    <div class="reference-search-field">
+      <label for="labSearch">Search laboratory reference</label>
+      <div class="reference-search-control">
+        <input type="search" id="labSearch" placeholder="e.g. troponin, TSH, anion gap" autocomplete="off" spellcheck="false">
+        <span class="lab-search-icon" aria-hidden="true">⌕</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="labs-layout">
+    <nav class="cat-nav" aria-labelledby="lab-category-title">
+      <h2 class="cat-nav__title" id="lab-category-title">Categories</h2>
+      <div class="cat-nav__buttons" id="catFilters"></div>
+    </nav>
+    <div class="lab-content" id="labContent"></div>
+  </div>
+</main>
+
+<footer class="app-footer">
+  <div class="app-footer__source">
+    <div class="clinical-caution">
+      <strong>Use the reporting laboratory’s range.</strong> Reference intervals vary by assay, population, specimen, and facility. These ranges are general adult references and do not replace local results or clinical interpretation.
+    </div>
+    <p class="source-note">Educational clinical reference. Units and sex-specific ranges are shown where relevant. Not medical advice.</p>
+  </div>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+</footer>
+
+<script src="app.js?v=3"></script>
 </body>
 </html>

@@ -559,21 +559,60 @@ let current = SECTIONS[0].id;
 function buildTabs() {
   const nav = document.getElementById('tabNav');
   nav.innerHTML = SECTIONS.map(s =>
-    `<button class="tab-btn${s.id===current?' active':''}" data-id="${esc(s.id)}" data-color="${esc(s.color||'red')}">${esc(s.label)}</button>`
+    `<button class="protocol-tab tab-btn${s.id===current?' active':''}" type="button" role="tab" id="protocol-tab-${esc(s.id)}" aria-controls="content" aria-selected="${s.id===current}" tabindex="${s.id===current?'0':'-1'}" data-id="${esc(s.id)}" data-color="${esc(s.color||'red')}">${esc(s.label)}</button>`
   ).join('');
   nav.addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
     if (!btn) return;
-    current = btn.dataset.id;
-    nav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderSection();
+    activateSection(btn.dataset.id, true);
   });
+  nav.addEventListener('keydown', e => {
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key)) return;
+    e.preventDefault();
+    const tabs = [...nav.querySelectorAll('[role="tab"]')];
+    const selected = tabs.findIndex(tab => tab.getAttribute('aria-selected') === 'true');
+    const focused = tabs.indexOf(document.activeElement);
+    const index = focused >= 0 ? focused : selected;
+    let next = index;
+    if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = tabs.length - 1;
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (index + 1) % tabs.length;
+    else next = (index - 1 + tabs.length) % tabs.length;
+    tabs[next].focus();
+    activateSection(tabs[next].dataset.id, false);
+  });
+}
+
+function activateSection(id, scrollToContent) {
+  if (!SECTIONS.some(section => section.id === id)) return;
+  current = id;
+  document.querySelectorAll('#tabNav [role="tab"]').forEach(tab => {
+    const active = tab.dataset.id === current;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+  renderSection();
+  if (scrollToContent) {
+    document.getElementById('content').scrollIntoView({
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }
 }
 
 function renderSection() {
   const sec = SECTIONS.find(s => s.id === current);
-  document.getElementById('content').innerHTML = sec ? sec.render() : '';
+  const pane = document.getElementById('content');
+  pane.innerHTML = sec ? sec.render() : '';
+  pane.setAttribute('aria-labelledby', `protocol-tab-${current}`);
+  pane.dataset.section = current;
+  const title = pane.querySelector('.sec-title');
+  if (title) {
+    title.id = 'protocol-section-title';
+    title.setAttribute('role', 'heading');
+    title.setAttribute('aria-level', '2');
+  }
 }
 
 // ── Service worker registration ───────────────────────────────────────────────

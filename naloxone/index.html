@@ -4,20 +4,32 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Naloxone Reference</title><link rel="stylesheet" href="/shared.css">
+<title>Naloxone Reference — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Opioid Overdose · North Dakota</div>
-    <h1>Naloxone Reference</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app legacy-app reference-app naloxone-app">
+<a class="skip-link" href="#main-content">Skip to Naloxone Reference</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Emergency medication reference</p>
+      <h1>Naloxone Reference</h1>
+      <p class="app-header__lede">Recognition, dosing, monitoring, and discharge considerations for suspected opioid overdose.</p>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
   <!-- Recognition -->
   <section class="card">
@@ -132,9 +144,10 @@
 
 </div>
 
-<footer>
+<footer class="app-footer legacy-footer">
   <p class="last-checked"></p>
   <p>Dosing based on FDA-approved labeling and SAMHSA guidelines. ND legal information based on NDCC § 19-03.1-23.4 (Good Samaritan) and ND Board of Pharmacy standing order. <strong>Not medical advice.</strong></p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=2"></script>

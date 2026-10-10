@@ -18,7 +18,11 @@ const LABEL_SECTIONS = [
 const TRUNC = 600;
 const fullTexts = new Map();
 
-function setContent(html){document.getElementById('content').innerHTML = html;}
+function setContent(html){
+  const content = document.getElementById('content');
+  content.innerHTML = html;
+  content.setAttribute('aria-busy', 'false');
+}
 
 function spin(on){
   document.getElementById('content').innerHTML = on
@@ -28,7 +32,9 @@ function spin(on){
 
 async function search(q) {
   if (!q.trim()) return;
-  document.getElementById('content').innerHTML = '<div class="state"><div class="spinner"></div>Loading FDA label data…</div>';
+  const content = document.getElementById('content');
+  content.setAttribute('aria-busy', 'true');
+  content.innerHTML = '<div class="reference-status state" role="status"><div><span class="spinner" aria-hidden="true"></span>Loading FDA label data…</div></div>';
   try {
     const [labelRes, recallRes] = await Promise.allSettled([
       fetch(`https://api.fda.gov/drug/label.json?search=openfda.generic_name:"${encodeURIComponent(q)}"&limit=1`).then(r=>r.json()),
@@ -39,13 +45,13 @@ async function search(q) {
     const recallData = recallRes.status === 'fulfilled' ? recallRes.value : null;
 
     if (!labelData || labelData.error || !labelData.results?.length) {
-      setContent(`<div class="err">No FDA label found for "<strong>${esc(q)}</strong>". Try a generic name (e.g. metformin, lisinopril).</div>`);
+      setContent(`<div class="err" role="alert">No FDA label found for "<strong>${esc(q)}</strong>". Try a generic name (e.g. metformin, lisinopril).</div>`);
       return;
     }
 
     renderDrug(labelData.results[0], recallData?.results || [], q);
   } catch(e) {
-    setContent(`<div class="err">Network error: ${esc(e.message)}</div>`);
+    setContent(`<div class="err" role="alert">Network error: ${esc(e.message)}</div>`);
   }
 }
 
@@ -61,22 +67,22 @@ function renderDrug(label, recalls, q) {
   const title = genericNames[0] || q;
 
   // Drug header
-  let html = `<div class="drug-header-card">
-    <div class="drug-title">${esc(title)}</div>
+  let html = `<section class="drug-header-card" aria-labelledby="drug-result-title">
+    <h2 class="drug-title" id="drug-result-title">${esc(title)}</h2>
     <div class="drug-meta">
       ${routes.map(r=>`<span class="meta-pill route">${esc(r)}</span>`).join('')}
       ${brandNames.slice(0,6).map(b=>`<span class="meta-pill brand">${esc(b)}</span>`).join('')}
       ${genericNames.slice(1,4).map(g=>`<span class="meta-pill">${esc(g)}</span>`).join('')}
     </div>
-  </div>`;
+  </section>`;
 
   // Boxed warning
   if (label.boxed_warning) {
     const text = clean(Array.isArray(label.boxed_warning) ? label.boxed_warning.join('\n\n') : label.boxed_warning);
-    html += `<div class="boxed-warning">
-      <div class="boxed-warning-label">Boxed Warning (Black Box)</div>
+    html += `<section class="boxed-warning" aria-labelledby="boxed-warning-title">
+      <div class="boxed-warning-label" id="boxed-warning-title">Boxed Warning (Black Box)</div>
       <div class="boxed-warning-text">${esc(text)}</div>
-    </div>`;
+    </section>`;
   }
 
   // Label sections
@@ -92,20 +98,20 @@ function renderDrug(label, recalls, q) {
     const display = truncated ? text.slice(0, TRUNC) + '…' : text;
     if (truncated) fullTexts.set(id, text);
 
-    html += `<div class="label-section">
-      <div class="label-head" aria-expanded="false" data-sec="${esc(id)}">
+    html += `<section class="label-section">
+      <button class="label-head" type="button" aria-expanded="false" aria-controls="${esc(id)}" data-sec="${esc(id)}">
         <span class="label-title">${esc(sec.label)}</span>
-        <span class="label-chevron">▾</span>
-      </div>
-      <div class="label-body" id="${esc(id)}">
+        <span class="label-chevron" aria-hidden="true">▾</span>
+      </button>
+      <div class="label-body" id="${esc(id)}" hidden>
         <div class="label-text" id="${esc(id)}-text">${esc(display)}</div>
         ${truncated ? `<button class="show-more" data-sec="${esc(id)}">Show full section</button>` : ''}
       </div>
-    </div>`;
+    </section>`;
   }
 
   // Recalls
-  html += `<div class="recalls-section"><div class="recalls-head">Recent Recalls</div>`;
+  html += `<section class="recalls-section" aria-labelledby="recalls-title"><h2 class="recalls-head" id="recalls-title">Recent Recalls</h2>`;
   if (!recalls.length) {
     html += `<div class="no-recalls">No recent recalls found for this drug</div>`;
   } else {
@@ -125,7 +131,7 @@ function renderDrug(label, recalls, q) {
       </div>`;
     }
   }
-  html += `</div>`;
+  html += `</section>`;
 
   setContent(html);
 }
@@ -139,6 +145,7 @@ document.getElementById('content').addEventListener('click', e => {
     const open = head.getAttribute('aria-expanded') === 'true';
     head.setAttribute('aria-expanded', String(!open));
     body.classList.toggle('open', !open);
+    body.hidden = open;
     return;
   }
   const btn = e.target.closest('.show-more');
@@ -152,12 +159,10 @@ document.getElementById('content').addEventListener('click', e => {
   }
 });
 
-// Search button / enter
-document.getElementById('searchBtn').addEventListener('click', () => {
+// Search submission
+document.getElementById('drugSearchForm').addEventListener('submit', e => {
+  e.preventDefault();
   search(document.getElementById('q').value.trim());
-});
-document.getElementById('q').addEventListener('keydown', e => {
-  if (e.key === 'Enter') search(document.getElementById('q').value.trim());
 });
 
 // Deep-link: ?q=

@@ -4,27 +4,39 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wound Care</title><link rel="stylesheet" href="/shared.css">
+<title>Wound Care — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">ACIP · ACEP · CDC · Emergency Medicine</div>
-    <h1>Wound Care</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app legacy-app decision-app wound-app">
+<a class="skip-link" href="#panel-tetanus">Skip to Wound Care</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Acute care workflow</p>
+      <h1>Wound Care</h1>
+      <p class="app-header__lede">Tetanus prophylaxis, closure strategy, bite management, and rabies exposure guidance.</p>
+    </div>
   </div>
 </header>
 
 <div class="tab-bar" role="tablist" aria-label="Wound care section">
-  <button class="tab-btn active" data-tab="tetanus" role="tab" aria-selected="true" aria-controls="panel-tetanus">Tetanus</button>
-  <button class="tab-btn" data-tab="closure" role="tab" aria-selected="false" aria-controls="panel-closure">Closure</button>
-  <button class="tab-btn" data-tab="bites" role="tab" aria-selected="false" aria-controls="panel-bites">Bites</button>
+  <button class="tab-btn active" id="tab-tetanus" data-tab="tetanus" role="tab" aria-selected="true" aria-controls="panel-tetanus" tabindex="0">Tetanus</button>
+  <button class="tab-btn" id="tab-closure" data-tab="closure" role="tab" aria-selected="false" aria-controls="panel-closure" tabindex="-1">Closure</button>
+  <button class="tab-btn" id="tab-bites" data-tab="bites" role="tab" aria-selected="false" aria-controls="panel-bites" tabindex="-1">Bites</button>
 </div>
 
 <!-- ── Tetanus ── -->
-<div id="panel-tetanus" class="tab-panel page-body" role="tabpanel">
+<div id="panel-tetanus" class="tab-panel page-body" role="tabpanel" aria-labelledby="tab-tetanus" tabindex="-1">
 
   <div class="criteria-col">
 
@@ -134,7 +146,7 @@
 </div>
 
 <!-- ── Closure ── -->
-<div id="panel-closure" class="tab-panel page-body" role="tabpanel" hidden>
+<div id="panel-closure" class="tab-panel page-body" role="tabpanel" aria-labelledby="tab-closure" tabindex="-1" hidden>
 
   <div class="criteria-col">
 
@@ -213,7 +225,7 @@
 </div>
 
 <!-- ── Bites ── -->
-<div id="panel-bites" class="tab-panel page-body" role="tabpanel" hidden>
+<div id="panel-bites" class="tab-panel page-body" role="tabpanel" aria-labelledby="tab-bites" tabindex="-1" hidden>
 
   <div class="criteria-col">
 
@@ -314,8 +326,9 @@
 
 </div>
 
-<footer>
+<footer class="app-footer legacy-footer">
   <p class="last-checked"></p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=2"></script>

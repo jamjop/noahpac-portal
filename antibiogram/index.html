@@ -4,21 +4,33 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ND Antibiogram</title><link rel="stylesheet" href="/shared.css">
+<title>ND Antibiogram — Noah PA-C</title>
+<script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
 <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
+<body class="clinical-app legacy-app table-app antibiogram-app">
 
-<header class="app-header">
-  <div class="header-inner">
-    <div id="eyebrow" class="eyebrow">Trinity Hospital · Minot, ND · CY 2022</div>
-    <h1>ND Antibiogram</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<a class="skip-link" href="#main-content">Skip to ND Antibiogram</a>
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow" id="eyebrow">Local susceptibility data</p>
+      <h1>ND Antibiogram</h1>
+      <p class="app-header__lede">Compare organism susceptibility across North Dakota facilities and reporting periods.</p>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
   <select id="facility-select" class="fac-select" aria-label="Select facility"></select>
 
@@ -44,7 +56,7 @@
 
 </div>
 
-<footer>
+<footer class="app-footer legacy-footer">
   <p class="last-checked"></p>
   <p id="source-note"></p>
   <p>
@@ -54,6 +66,7 @@
     AmpC-producing organisms (Enterobacter, Klebsiella aerogenes, Citrobacter, Serratia): ~ for cephalosporins reflects inducible resistance risk.
     <strong>Not medical advice.</strong> Individualize therapy with culture results and clinical judgment.
   </p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 <script src="app.js?v=2"></script>
 <script src="/assets/last-checked.js" defer></script>

@@ -1,81 +1,124 @@
 :root{
-  /* ── Fallback design tokens ─────────────────────────────────────────────────
-     These mirror the values in /shared.css so the page remains legible if
-     shared.css fails to load (slow connection, wrong path, CDN outage).
-     When shared.css loads successfully its :root block takes precedence
-     because it appears earlier in the <head> and cascades normally.       */
-  --bg:#f8f9fa; --surface:#ffffff;
-  --ink:#1a1f24; --ink-soft:#4a5568; --ink-muted:#718096;
-  --line:#e2e8f0;
-  --purple:#0052cc; --purple-soft:#ebf2ff; --purple-mid:#6699cc;
-  --teal:#0891B2; --teal-soft:#e0f2fe; --teal-ink:#0369a1;
-  --ok:#1A8A5A; --ok-soft:#E3F5EC; --ok-ink:#065f46;
-  --warn:#D4820A; --warn-soft:#FEF3DA; --warn-ink:#92400e;
-  --risk:#C53030; --risk-soft:#FDE8E8;
-  --sh:0 2px 8px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
-  --sh-lg:0 8px 24px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);
-  --r:8px; --r-sm:6px;
-  --callout-danger-ink:#7f1d1d; --callout-warn-ink:#78350f;
-  --callout-ok-ink:#14532d; --callout-info-ink:#0c4a6e;
-  --callout-purple-ink:#1e1b4b;
+  --bg:#f8f9fa;--surface:#fff;--ink:#1a1f24;--ink-soft:#4a5568;--ink-muted:#5b6878;
+  --line:#e2e8f0;--purple:#0052cc;--purple-soft:#ebf2ff;--purple-mid:#6699cc;
+  --teal:#0891b2;--teal-soft:#e0f2fe;--teal-ink:#0369a1;
+  --ok:#1a8a5a;--ok-soft:#e3f5ec;--warn:#d4820a;--warn-soft:#fef3da;--warn-ink:#78350f;
+  --risk:#c53030;--risk-soft:#fde8e8;--callout-danger-ink:#7f1d1d;
+  --app-canvas:var(--bg);--app-surface:var(--surface);--app-surface-subtle:#f3f6f9;
+  --app-text:var(--ink);--app-text-secondary:var(--ink-soft);--app-text-muted:var(--ink-muted);
+  --app-border:var(--line);--app-border-strong:#c8d2df;--app-accent:var(--purple);
+  --app-accent-soft:var(--purple-soft);--app-accent-contrast:#fff;--app-radius-sm:6px;--app-radius-md:9px;--app-radius-lg:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'Inter',system-ui,sans-serif}
+.source-note{margin:10px 0 0;font-size:12px}
+
+/* Minimal local fallbacks keep search usable if the shared stylesheet fails. */
+.lookup-app .reference-workspace{width:min(calc(100% - 32px),920px);margin:0 auto;padding:30px 0 72px}
+.lookup-app .reference-search-panel{padding:20px;border:1px solid var(--app-border);border-radius:12px;background:var(--app-surface)}
+.lookup-app .reference-tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.lookup-app .reference-tab{
+  min-height:44px;padding:8px 14px;border:1px solid var(--app-border-strong);border-radius:999px;
+  background:transparent;color:var(--app-text-secondary);font:650 13px 'Inter',system-ui,sans-serif;cursor:pointer
+}
+.lookup-app .reference-tab[aria-selected="true"]{border-color:var(--app-accent);background:var(--app-accent);color:var(--app-accent-contrast)}
+.lookup-app .reference-search-field{display:flex;flex-direction:column;gap:7px}
+.lookup-app .reference-search-field label{color:var(--app-text-secondary);font-size:12px;font-weight:700}
+.lookup-app .reference-search-control{position:relative;display:flex}
+.lookup-app .reference-search-control input{
+  width:100%;min-height:48px;padding:11px 44px 11px 13px;border:1px solid var(--app-border-strong);
+  border-radius:9px;background:var(--app-surface);color:var(--app-text);font:15px 'Inter',system-ui,sans-serif
+}
+.lookup-app .reference-results{min-height:220px;margin-top:18px}
+
+.search-icon{
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--app-text-muted);
+  font-size:18px;
+  line-height:1;
+  pointer-events:none;
+}
+.spinner{
+  position:absolute;
+  right:15px;
+  top:50%;
+  display:none;
+  width:19px;
+  height:19px;
+  margin-top:-10px;
+  border:2px solid var(--app-accent-soft);
+  border-top-color:var(--app-accent);
+  border-radius:50%;
+  animation:spin .65s linear infinite;
+}
+.spinner.on{display:block}
+.result-count{margin:0 0 10px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.result-list{display:flex;flex-direction:column;gap:8px}
+.rrow{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  padding:14px 16px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-md);
+  background:var(--app-surface);
+}
+.rrow:hover{border-color:var(--app-border-strong)}
+.code-chip,.route-chip,.cls-chip{
+  display:inline-flex;
+  min-height:26px;
+  align-items:center;
+  padding:3px 8px;
+  border-radius:6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  font-weight:700;
+  flex:0 0 auto;
+}
+.code-chip{background:var(--app-accent-soft);color:var(--app-accent);letter-spacing:.03em}
+.route-chip{background:var(--teal-soft);color:var(--teal-ink)}
+.cls-chip{background:var(--warn-soft);color:var(--warn-ink)}
+.rname{min-width:160px;flex:1;color:var(--app-text);font-size:13px;font-weight:650;line-height:1.45}
+.rxcui{color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:9px;white-space:nowrap}
+.abtn{
+  min-height:44px;
+  padding:7px 11px;
+  border:1px solid var(--app-border-strong);
+  border-radius:var(--app-radius-sm);
+  background:transparent;
+  color:var(--app-text-secondary);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.abtn:hover{border-color:var(--app-accent);color:var(--app-accent)}
+.abtn.ext{border-color:color-mix(in srgb,var(--app-accent) 55%,var(--app-border));color:var(--app-accent)}
+.abtn.ext:hover{background:var(--app-accent-soft)}
+.abtn.copied{border-color:var(--ok);background:var(--ok);color:#fff}
+.lookup-app .err{border:1px solid color-mix(in srgb,var(--risk) 35%,transparent)}
+
+@media(max-width:600px){
+  .lookup-app .reference-workspace{width:calc(100% - 28px);padding-top:20px}
+  .lookup-app .reference-search-panel{padding:16px}
+  .lookup-app .reference-tabs{flex-wrap:nowrap;overflow-x:auto}
+  .rrow{align-items:flex-start;padding:13px}
+  .rname{min-width:calc(100% - 70px)}
+  .rxcui{width:100%}
+  .abtn{flex:1}
 }
 
-/* ── Dark-mode fallback overrides ────────────────────────────────────────────
-   Re-applies dark token values so dark mode stays correct even when this
-   style.css is parsed after shared.css (and its light-mode :root would
-   otherwise silently undo shared.css's own dark-mode @media block).        */
 @media(prefers-color-scheme:dark){
   :root{
-    --bg:#0f1117; --surface:#1a2030;
-    --ink:#e2e8f0; --ink-soft:#a0aec0; --ink-muted:#64748b;
-    --line:#2d3748;
-    --purple:#4d94ff; --purple-soft:#0d1e3d; --purple-mid:#2e5fa3;
-    --teal:#22d3ee; --teal-soft:#0c2a42; --teal-ink:#22d3ee;
-    --ok:#34d399; --ok-soft:#064e3b; --ok-ink:#6ee7b7;
-    --warn:#fbbf24; --warn-soft:#1c1300; --warn-ink:#fbbf24;
-    --risk:#fc8181; --risk-soft:#3b1515;
-    --sh:0 1px 3px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.25);
-    --sh-lg:0 4px 16px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.25);
-    --callout-danger-ink:#fca5a5; --callout-warn-ink:#fde68a;
-    --callout-ok-ink:#6ee7b7; --callout-info-ink:#7dd3fc;
-    --callout-purple-ink:#c4b5fd;
+    --bg:#0f1117;--surface:#1a2030;--ink:#e2e8f0;--ink-soft:#aab6c7;--ink-muted:#94a3b8;
+    --line:#303a4b;--purple:#65a3ff;--purple-soft:#10264b;--purple-mid:#3d6fae;
+    --teal:#22d3ee;--teal-soft:#0c2a42;--teal-ink:#67e8f9;
+    --ok:#4ade9b;--ok-soft:#0b3d31;--warn:#f8bf4f;--warn-soft:#352506;--warn-ink:#ffdc8a;
+    --risk:#ff9198;--risk-soft:#461c20;--callout-danger-ink:#ffb4b8;
+    --app-surface-subtle:#141a26;--app-border-strong:#465268;--app-accent-contrast:#07111f;
   }
-}
-
-.header-inner{max-width:860px;margin:0 auto;padding:22px 16px 18px}
-
-.panel{background:var(--surface);border-radius:var(--r);padding:14px 22px;box-shadow:var(--sh);margin-bottom:18px}
-.tab-pills{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.tab-pill{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:6px 14px;border-radius:50px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .15s}
-.tab-pill:hover{border-color:var(--purple);color:var(--purple)}
-.tab-pill.active{background:var(--purple);border-color:var(--purple);color:#fff}
-.search-row{position:relative;display:flex;gap:8px}
-.search-row input{flex:1;font-family:inherit;font-size:15px;font-weight:500;padding:11px 44px 11px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);color:var(--ink);transition:border-color .15s}
-.search-row input:focus{outline:none;border-color:var(--purple)}
-.search-row input::placeholder{color:var(--ink-muted)}
-.search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--ink-muted);font-size:18px;pointer-events:none;line-height:1}
-.spinner{display:none;position:absolute;right:16px;top:50%;width:18px;height:18px;margin-top:-9px;border:2px solid var(--purple-soft);border-top-color:var(--purple);border-radius:50%;animation:spin .6s linear infinite}
-.spinner.on{display:block}
-.content{max-width:860px;margin:0 auto;padding:18px 22px 60px}
-.result-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-muted);margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
-.result-list{display:flex;flex-direction:column;gap:7px}
-
-.rrow{background:var(--surface);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:8px;flex-wrap:wrap;transition:box-shadow .15s}
-.rrow:hover{box-shadow:var(--sh-lg)}
-.code-chip{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;background:var(--purple-soft);color:var(--purple);flex-shrink:0;letter-spacing:.04em;white-space:nowrap}
-.rname{font-size:13.5px;font-weight:600;flex:1;min-width:100px}
-.rxcui{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink-muted);flex-shrink:0}
-.route-chip{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--teal-soft);color:var(--teal-ink);flex-shrink:0}
-.cls-chip{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--warn-soft);color:var(--warn-ink);flex-shrink:0;letter-spacing:.03em}
-.abtn{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:5px 10px;border-radius:50px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .15s;flex-shrink:0;white-space:nowrap}
-.abtn:hover{border-color:var(--purple);color:var(--purple)}
-.abtn.copied{background:var(--ok);border-color:var(--ok);color:#fff}
-.abtn.ext{color:var(--purple);border-color:var(--purple-mid)}
-.abtn.ext:hover{background:var(--purple);color:#fff}
-
-.state kbd{font-family:'IBM Plex Mono',monospace;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:11px;box-shadow:0 1px 0 var(--line)}
-
-@media(prefers-color-scheme:dark){
-  .route-chip{background:color-mix(in srgb,var(--ok-soft) 80%,var(--surface) 20%);color:var(--teal)}
-  .cls-chip{background:var(--warn-soft);color:var(--warn)}
 }

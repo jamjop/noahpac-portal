@@ -377,18 +377,14 @@ test.describe('Vaccines page – dark mode token checks', () => {
     ).toBe(true);
   });
 
-  test('--teal-soft vaccines override persists in dark mode (unconditional :root wins)', async ({ page }) => {
+  test('--teal-soft uses the vaccines dark-mode override', async ({ page }) => {
     await page.goto('/vaccines/');
     await page.waitForLoadState('domcontentloaded');
 
-    // vaccines/style.css sets --teal-soft:#E0F7FA in an unconditional :root block,
-    // which loads AFTER shared.css in the cascade.  Because it has the same
-    // specificity as shared.css's dark-mode :root but comes later in source order,
-    // the vaccines value wins even in dark mode.  This is intentional: the warmer
-    // teal-soft is a visual identity choice for the vaccines page, and no dark-mode
-    // override is needed because --teal-soft is not used as a background on this page.
+    // vaccines/style.css keeps its warmer light teal but supplies a dark teal
+    // counterpart so condition notes and future teal surfaces remain legible.
     const tealSoft = await getCssProp(page, '--teal-soft');
-    expect(tealSoft.toLowerCase(), '--teal-soft should remain the vaccines override in dark mode').toBe('#e0f7fa');
+    expect(tealSoft.toLowerCase(), '--teal-soft should use the vaccines dark override').toBe('#072a30');
   });
 });
 

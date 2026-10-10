@@ -1,106 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Steroid Conversion</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Corticosteroid equivalency conversion with HPA-axis risk context and tapering guidance.">
+  <title>Steroid Conversion — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Corticosteroid Equivalency · HPA Axis Risk</div>
-    <h1>Steroid Conversion</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app medication-tool steroid-app">
+<a class="skip-link" href="#main-content">Skip to steroid converter</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Medication Tools</p>
+      <h1>Steroid Conversion</h1>
+      <p class="app-header__lede">Compare glucocorticoid equivalents, assess dose-related HPA-axis suppression risk, and generate general taper guidance.</p>
+    </div>
   </div>
 </header>
 
-<div class="page-body">
-
-  <div class="criterion gc-steroid">
-    <div class="c-header">
-      <span class="c-letter">1</span>
-      <div>
-        <div class="c-name">Current Steroid</div>
-        <div class="c-desc">Corticosteroid being taken now, dose per administration, frequency, and duration of therapy</div>
-      </div>
-    </div>
-    <div class="field-grid">
-      <div class="field">
-        <label class="field-label" for="fromDrug">Steroid</label>
-        <select id="fromDrug"></select>
-      </div>
-      <div class="field">
-        <label class="field-label" for="fromDose">Dose per administration</label>
-        <div class="dose-row">
-          <input type="number" id="fromDose" min="0" step="any" placeholder="0">
-          <span class="unit-label">mg</span>
+<main class="tool-workspace page-body" id="main-content">
+  <div class="input-column">
+    <section class="tool-card criterion gc-steroid" aria-labelledby="current-steroid-title">
+      <div class="tool-card__header c-header">
+        <span class="tool-card__marker c-letter" aria-hidden="true">1</span>
+        <div class="tool-card__heading">
+          <h2 id="current-steroid-title">Current steroid</h2>
+          <p>Enter the dose, frequency, and duration of the current therapy.</p>
         </div>
       </div>
-      <div class="field">
-        <label class="field-label" for="fromFreq">Frequency</label>
-        <select id="fromFreq"></select>
+      <div class="clinical-form-grid field-grid">
+        <div class="clinical-field field">
+          <label for="fromDrug">Steroid</label>
+          <select id="fromDrug"></select>
+        </div>
+        <div class="clinical-field field">
+          <label for="fromDose">Dose per administration</label>
+          <div class="input-with-unit dose-row">
+            <input type="number" id="fromDose" min="0" step="any" inputmode="decimal" placeholder="0" autocomplete="off">
+            <span class="input-with-unit__unit unit-label">mg</span>
+          </div>
+        </div>
+        <div class="clinical-field field">
+          <label for="fromFreq">Frequency</label>
+          <select id="fromFreq"></select>
+        </div>
+        <div class="clinical-field field">
+          <label for="fromDuration">Duration of therapy</label>
+          <select id="fromDuration">
+            <option value="short">Under 3 weeks</option>
+            <option value="long" selected>3 weeks or longer</option>
+          </select>
+        </div>
       </div>
-      <div class="field">
-        <label class="field-label" for="fromDuration">Duration of therapy</label>
-        <select id="fromDuration">
-          <option value="short">Under 3 weeks</option>
-          <option value="long" selected>3 weeks or longer</option>
-        </select>
+    </section>
+
+    <section class="tool-card criterion gc-convert" aria-labelledby="target-steroid-title">
+      <div class="tool-card__header c-header">
+        <span class="tool-card__marker c-letter tool-card__marker--neutral" aria-hidden="true">⇄</span>
+        <div class="tool-card__heading">
+          <h2 id="target-steroid-title">Convert to <span class="optional-label">optional</span></h2>
+          <p>Use this one-time lookup when changing agents. The taper below continues to use the current steroid entered above.</p>
+        </div>
       </div>
-    </div>
+      <div class="clinical-form-grid field-grid">
+        <div class="clinical-field clinical-field--full field full-width">
+          <label for="toDrug">Target steroid</label>
+          <select id="toDrug"></select>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <div class="criterion gc-convert">
-    <div class="c-header">
-      <span class="c-letter" style="background:var(--bg);color:var(--ink-muted)">⇄</span>
+  <aside class="results-rail summary-column" aria-labelledby="steroid-summary-title">
+    <div class="results-rail__intro">
+      <p class="results-rail__eyebrow">Live calculation</p>
+      <h2 id="steroid-summary-title">Dose summary</h2>
+    </div>
+    <section class="result-panel gc-equiv" aria-labelledby="hydrocortisone-equivalent-title">
+      <h3 class="result-panel-head" id="hydrocortisone-equivalent-title">Hydrocortisone-equivalent</h3>
+      <div id="currentEquiv" class="result-panel-body mme-display" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+    </section>
+    <section class="result-panel gc-dose" aria-labelledby="steroid-converted-dose-title">
+      <h3 class="result-panel-head" id="steroid-converted-dose-title">Converted dose</h3>
+      <div id="convResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+    </section>
+  </aside>
+
+  <section class="result-panel taper-panel gc-tapering" aria-labelledby="tapering-guidance-title">
+    <div class="taper-panel__header">
       <div>
-        <div class="c-name">Convert To <span class="c-opt">(optional)</span></div>
-        <div class="c-desc">Separate, one-time lookup — e.g. converting an inpatient IV dose to an outpatient oral agent at discharge. Not required for the taper schedule above, which uses the current steroid entered in Section 1.</div>
+        <p class="results-rail__eyebrow">Longitudinal plan</p>
+        <h2 id="tapering-guidance-title">Tapering guidance</h2>
       </div>
+      <p>General guidance only; individualize for indication, response, duration, and adrenal insufficiency risk.</p>
     </div>
-    <div class="field-grid">
-      <div class="field full-width">
-        <label class="field-label" for="toDrug">Target steroid</label>
-        <select id="toDrug"></select>
-      </div>
+    <div id="taperResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+  </section>
+
+  <section class="reference-card ref-card gc-reference" aria-labelledby="steroid-reference-title">
+    <div class="reference-card__header">
+      <h2 id="steroid-reference-title">Corticosteroid equivalency reference</h2>
+      <span class="reference-card__note">Approximate values</span>
     </div>
-  </div>
-
-  <div class="result-panel gc-equiv">
-    <div class="result-panel-head">Hydrocortisone-Equivalent</div>
-    <div id="currentEquiv" class="result-panel-body mme-display"><span class="mme-placeholder">—</span></div>
-  </div>
-
-  <div class="result-panel gc-dose">
-    <div class="result-panel-head">Converted Dose</div>
-    <div id="convResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
-  </div>
-
-  <div class="result-panel gc-tapering">
-    <div class="result-panel-head">Tapering Guidance</div>
-    <div id="taperResult" class="result-panel-body conv-result"><span class="mme-placeholder">—</span></div>
-  </div>
-
-  <div class="ref-card gc-reference">
-    <div class="ref-panel-head">Corticosteroid Equivalency Reference <span class="ref-note">(approximate)</span></div>
-    <div class="tbl-wrap">
-      <table class="ref-table" id="refTable"></table>
+    <div class="reference-table-wrap tbl-wrap" tabindex="0" role="region" aria-label="Scrollable corticosteroid equivalency table">
+      <table class="reference-table ref-table" id="refTable"></table>
     </div>
-  </div>
+  </section>
+</main>
 
-</div>
-
-<footer>
+<footer class="app-footer">
   <p class="last-checked"></p>
-  <div class="disclaimer-box">
-    <strong>Clinical caution required.</strong> Equivalency conversions are approximations based on relative glucocorticoid potency and do not account for individual pharmacokinetic variability, hepatic function, or drug interactions. Mineralocorticoid activity differs substantially between agents (highest in hydrocortisone/cortisone, minimal to none in methylprednisolone/triamcinolone/dexamethasone/betamethasone) and may affect fluid/electrolyte status independent of glucocorticoid dosing. Tapering guidance reflects general principles only — individualize based on underlying condition, response, and risk of adrenal insufficiency.
+  <div class="app-footer__source">
+    <div class="clinical-caution disclaimer-box">
+      <strong>Clinical caution required.</strong> Equivalency conversions are approximations based on relative glucocorticoid potency and do not account for individual pharmacokinetic variability, hepatic function, or drug interactions. Mineralocorticoid activity differs substantially between agents and may affect fluid or electrolyte status independently of glucocorticoid dosing. Individualize tapering for the underlying condition, response, and adrenal insufficiency risk.
+    </div>
+    <p class="source-note">Equivalency ratios and HPA suppression thresholds from standard endocrinology references (Endocrine Society, UpToDate) and clinical pharmacology texts. Not medical advice.</p>
   </div>
-  <p class="source-note">
-    Equivalency ratios and HPA suppression thresholds from standard endocrinology references (Endocrine Society, UpToDate) and clinical pharmacology texts. Not medical advice.
-  </p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=2"></script>

@@ -25,14 +25,18 @@
     <script src="/lib/lucide.min.js"></script>
   </head>
   <body>
+    <a class="skip-link" href="#tools-grid">Skip to clinical tools</a>
     <div class="page-wrap">
 
       <!-- Header -->
       <header class="site-header">
         <div class="header-lead">
           <div class="header-brand">
-            <i data-lucide="stethoscope" class="icon-header"></i>
-            <h1 class="site-title">Noah PA-C's Clinical Tools</h1>
+            <span class="home-brand-mark" aria-hidden="true">PA</span>
+            <div class="home-brand-copy">
+              <span class="home-brand-eyebrow">Noah PA-C</span>
+              <h1 class="site-title">Clinical Tools</h1>
+            </div>
           </div>
           <p class="site-tagline">
             A free, open-access suite of clinical decision-support tools built for frontline healthcare providers. Fast, no-login. All calculations run locally in your browser.
@@ -50,6 +54,7 @@
           <input
             id="search-input"
             type="text"
+            aria-label="Search clinical tools"
             placeholder="Search tools, drugs, calculators…"
             autocomplete="off"
           />

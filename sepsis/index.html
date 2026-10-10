@@ -1,152 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sepsis Screening</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Point-of-care qSOFA, SOFA, and septic shock screening with locally computed results.">
+  <title>Sepsis Screening — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Sepsis-3 Criteria · Screening Tools</div>
-    <h1>Sepsis Screening</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app sepsis-app">
+<a class="skip-link" href="#main-content">Skip to screening tool</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Emergency &amp; Acute Care</p>
+      <h1>Sepsis Screening</h1>
+      <p class="app-header__lede">Apply qSOFA as a bedside prompt, calculate organ dysfunction with SOFA, and check Sepsis-3 septic shock criteria.</p>
+    </div>
   </div>
 </header>
 
-<div class="page-body">
+<nav class="section-nav" aria-label="Sepsis screening sections">
+  <div class="section-nav__inner">
+    <a href="#qsofa">qSOFA</a>
+    <a href="#sofa">SOFA</a>
+    <a href="#shock">Septic shock</a>
+  </div>
+</nav>
 
+<main class="page-body" id="main-content">
   <div class="criteria-col">
-
-    <!-- qSOFA -->
-    <div class="criterion">
+    <section class="criterion" id="qsofa" aria-labelledby="qsofa-title">
       <div class="c-header">
-        <div class="c-badge-group">
-          <span class="c-letter">qSOFA</span>
+        <span class="c-letter" aria-hidden="true">qSOFA</span>
+        <div class="c-heading">
+          <h2 class="c-name" id="qsofa-title">Quick SOFA</h2>
+          <p class="c-desc">Score ≥2 warrants further evaluation for sepsis outside the ICU.</p>
         </div>
-        <div>
-          <div class="c-name">Quick SOFA <span class="c-sub">Bedside Screen</span></div>
-          <div class="c-desc">Score ≥ 2 warrants further evaluation for sepsis outside the ICU</div>
-        </div>
-        <span class="score-chip" id="qsofa-badge">0 / 3</span>
+        <output class="score-chip" id="qsofa-badge" aria-live="polite">0 / 3</output>
       </div>
       <div class="check-list" id="qsofa-checks">
-        <label class="check-row"><input type="checkbox" id="q-rr"> <span class="check-text"><strong>Respiratory rate</strong> ≥ 22/min</span></label>
-        <label class="check-row"><input type="checkbox" id="q-ams"> <span class="check-text"><strong>Altered mental status</strong> (GCS &lt; 15)</span></label>
-        <label class="check-row"><input type="checkbox" id="q-sbp"> <span class="check-text"><strong>Systolic BP</strong> ≤ 100 mmHg</span></label>
+        <label class="check-row"><input type="checkbox" id="q-rr"> <span class="check-text"><strong>Respiratory rate</strong><span>≥22/min</span></span></label>
+        <label class="check-row"><input type="checkbox" id="q-ams"> <span class="check-text"><strong>Altered mental status</strong><span>GCS &lt;15</span></span></label>
+        <label class="check-row"><input type="checkbox" id="q-sbp"> <span class="check-text"><strong>Systolic blood pressure</strong><span>≤100 mmHg</span></span></label>
       </div>
-      <div class="result-box" id="qsofa-result"></div>
-    </div>
+      <div class="result-box" id="qsofa-result" role="status" aria-live="polite" aria-atomic="true"></div>
+    </section>
 
-    <!-- SOFA -->
-    <div class="criterion">
+    <section class="criterion" id="sofa" aria-labelledby="sofa-title">
       <div class="c-header">
-        <span class="c-letter">SOFA</span>
-        <div>
-          <div class="c-name">Sequential Organ Failure Assessment <span class="c-sub">Organ Dysfunction</span></div>
-          <div class="c-desc">Score ≥ 2 from baseline indicates organ dysfunction. Select the value for each organ system.</div>
+        <span class="c-letter" aria-hidden="true">SOFA</span>
+        <div class="c-heading">
+          <h2 class="c-name" id="sofa-title">Sequential Organ Failure Assessment</h2>
+          <p class="c-desc">A change of ≥2 points from baseline indicates organ dysfunction. Select one value for each organ system.</p>
         </div>
-        <span class="score-chip" id="sofa-badge">0</span>
+        <output class="score-chip" id="sofa-badge" aria-live="polite">0</output>
       </div>
 
       <div class="sofa-grid">
         <div class="sofa-row">
-          <div class="sofa-label">Respiration <span class="sofa-unit">PaO₂/FiO₂</span></div>
-          <div class="seg" id="seg-resp">
-            <button class="active" data-val="0">≥400</button>
-            <button data-val="1">300–399</button>
-            <button data-val="2">200–299*</button>
-            <button data-val="3">100–199*</button>
-            <button data-val="4">&lt;100*</button>
+          <div class="sofa-label" id="sofa-resp-label">Respiration <span class="sofa-unit">PaO₂/FiO₂</span></div>
+          <div class="seg" id="seg-resp" role="radiogroup" aria-labelledby="sofa-resp-label">
+            <button type="button" class="active" role="radio" aria-checked="true" data-val="0">≥400</button>
+            <button type="button" role="radio" aria-checked="false" data-val="1">300–399</button>
+            <button type="button" role="radio" aria-checked="false" data-val="2">200–299*</button>
+            <button type="button" role="radio" aria-checked="false" data-val="3">100–199*</button>
+            <button type="button" role="radio" aria-checked="false" data-val="4">&lt;100*</button>
           </div>
         </div>
         <div class="sofa-row">
-          <div class="sofa-label">Coagulation <span class="sofa-unit">Platelets ×10³/µL</span></div>
-          <div class="seg" id="seg-plt">
-            <button class="active" data-val="0">≥150</button>
-            <button data-val="1">100–149</button>
-            <button data-val="2">50–99</button>
-            <button data-val="3">20–49</button>
-            <button data-val="4">&lt;20</button>
+          <div class="sofa-label" id="sofa-plt-label">Coagulation <span class="sofa-unit">Platelets ×10³/µL</span></div>
+          <div class="seg" id="seg-plt" role="radiogroup" aria-labelledby="sofa-plt-label">
+            <button type="button" class="active" role="radio" aria-checked="true" data-val="0">≥150</button>
+            <button type="button" role="radio" aria-checked="false" data-val="1">100–149</button>
+            <button type="button" role="radio" aria-checked="false" data-val="2">50–99</button>
+            <button type="button" role="radio" aria-checked="false" data-val="3">20–49</button>
+            <button type="button" role="radio" aria-checked="false" data-val="4">&lt;20</button>
           </div>
         </div>
         <div class="sofa-row">
-          <div class="sofa-label">Liver <span class="sofa-unit">Bilirubin mg/dL</span></div>
-          <div class="seg" id="seg-bili">
-            <button class="active" data-val="0">&lt;1.2</button>
-            <button data-val="1">1.2–1.9</button>
-            <button data-val="2">2.0–5.9</button>
-            <button data-val="3">6.0–11.9</button>
-            <button data-val="4">≥12</button>
+          <div class="sofa-label" id="sofa-liver-label">Liver <span class="sofa-unit">Bilirubin mg/dL</span></div>
+          <div class="seg" id="seg-bili" role="radiogroup" aria-labelledby="sofa-liver-label">
+            <button type="button" class="active" role="radio" aria-checked="true" data-val="0">&lt;1.2</button>
+            <button type="button" role="radio" aria-checked="false" data-val="1">1.2–1.9</button>
+            <button type="button" role="radio" aria-checked="false" data-val="2">2.0–5.9</button>
+            <button type="button" role="radio" aria-checked="false" data-val="3">6.0–11.9</button>
+            <button type="button" role="radio" aria-checked="false" data-val="4">≥12</button>
           </div>
         </div>
         <div class="sofa-row">
-          <div class="sofa-label">Cardiovascular <span class="sofa-unit">MAP / vasopressors</span></div>
-          <div class="seg" id="seg-cv">
-            <button class="active" data-val="0">MAP ≥70</button>
-            <button data-val="1">MAP &lt;70</button>
-            <button data-val="2">Dopa ≤5 or Dobu</button>
-            <button data-val="3">Dopa 5–15 or NE/Epi ≤0.1</button>
-            <button data-val="4">Dopa &gt;15 or NE/Epi &gt;0.1</button>
+          <div class="sofa-label" id="sofa-cv-label">Cardiovascular <span class="sofa-unit">MAP / vasopressors</span></div>
+          <div class="seg" id="seg-cv" role="radiogroup" aria-labelledby="sofa-cv-label">
+            <button type="button" class="active" role="radio" aria-checked="true" data-val="0">MAP ≥70</button>
+            <button type="button" role="radio" aria-checked="false" data-val="1">MAP &lt;70</button>
+            <button type="button" role="radio" aria-checked="false" data-val="2">Dopa ≤5 or dobu</button>
+            <button type="button" role="radio" aria-checked="false" data-val="3">Dopa 5–15 or NE/Epi ≤0.1</button>
+            <button type="button" role="radio" aria-checked="false" data-val="4">Dopa &gt;15 or NE/Epi &gt;0.1</button>
           </div>
         </div>
         <div class="sofa-row">
-          <div class="sofa-label">CNS <span class="sofa-unit">GCS</span></div>
-          <div class="seg" id="seg-gcs">
-            <button class="active" data-val="0">15</button>
-            <button data-val="1">13–14</button>
-            <button data-val="2">10–12</button>
-            <button data-val="3">6–9</button>
-            <button data-val="4">&lt;6</button>
+          <div class="sofa-label" id="sofa-cns-label">Central nervous system <span class="sofa-unit">GCS</span></div>
+          <div class="seg" id="seg-gcs" role="radiogroup" aria-labelledby="sofa-cns-label">
+            <button type="button" class="active" role="radio" aria-checked="true" data-val="0">15</button>
+            <button type="button" role="radio" aria-checked="false" data-val="1">13–14</button>
+            <button type="button" role="radio" aria-checked="false" data-val="2">10–12</button>
+            <button type="button" role="radio" aria-checked="false" data-val="3">6–9</button>
+            <button type="button" role="radio" aria-checked="false" data-val="4">&lt;6</button>
           </div>
         </div>
         <div class="sofa-row">
-          <div class="sofa-label">Renal <span class="sofa-unit">Creatinine mg/dL</span></div>
-          <div class="seg" id="seg-cr">
-            <button class="active" data-val="0">&lt;1.2</button>
-            <button data-val="1">1.2–1.9</button>
-            <button data-val="2">2.0–3.4</button>
-            <button data-val="3">3.5–4.9 or &lt;500mL/d</button>
-            <button data-val="4">&gt;5.0 or &lt;200mL/d</button>
+          <div class="sofa-label" id="sofa-renal-label">Renal <span class="sofa-unit">Creatinine mg/dL</span></div>
+          <div class="seg" id="seg-cr" role="radiogroup" aria-labelledby="sofa-renal-label">
+            <button type="button" class="active" role="radio" aria-checked="true" data-val="0">&lt;1.2</button>
+            <button type="button" role="radio" aria-checked="false" data-val="1">1.2–1.9</button>
+            <button type="button" role="radio" aria-checked="false" data-val="2">2.0–3.4</button>
+            <button type="button" role="radio" aria-checked="false" data-val="3">3.5–4.9 or &lt;500mL/d</button>
+            <button type="button" role="radio" aria-checked="false" data-val="4">&gt;5.0 or &lt;200mL/d</button>
           </div>
         </div>
       </div>
-      <p class="footnote">* With respiratory support. Dopamine/norepinephrine/epinephrine in mcg/kg/min.</p>
-      <div class="result-box" id="sofa-result"></div>
-    </div>
+      <p class="footnote">* With respiratory support. Dopamine, norepinephrine, and epinephrine doses are in mcg/kg/min.</p>
+      <div class="result-box" id="sofa-result" role="status" aria-live="polite" aria-atomic="true"></div>
+    </section>
 
-    <!-- Septic Shock -->
-    <div class="criterion">
+    <section class="criterion" id="shock" aria-labelledby="shock-title">
       <div class="c-header">
-        <span class="c-letter">Sh</span>
-        <div>
-          <div class="c-name">Septic Shock <span class="c-sub">Criteria</span></div>
-          <div class="c-desc">Requires both conditions to be met despite adequate resuscitation</div>
+        <span class="c-letter c-letter--critical" aria-hidden="true">Shock</span>
+        <div class="c-heading">
+          <h2 class="c-name" id="shock-title">Septic Shock Criteria</h2>
+          <p class="c-desc">Both conditions must be present despite adequate volume resuscitation.</p>
         </div>
       </div>
       <div class="check-list">
-        <label class="check-row"><input type="checkbox" id="sh-vaso"> <span class="check-text"><strong>Vasopressors required</strong> to maintain MAP ≥ 65 mmHg</span></label>
-        <label class="check-row"><input type="checkbox" id="sh-lac"> <span class="check-text"><strong>Lactate &gt; 2 mmol/L</strong> despite adequate resuscitation</span></label>
+        <label class="check-row"><input type="checkbox" id="sh-vaso"> <span class="check-text"><strong>Vasopressors required</strong><span>To maintain MAP ≥65 mmHg</span></span></label>
+        <label class="check-row"><input type="checkbox" id="sh-lac"> <span class="check-text"><strong>Serum lactate &gt;2 mmol/L</strong><span>Despite adequate resuscitation</span></span></label>
       </div>
-      <div class="result-box" id="shock-result"></div>
-    </div>
-
+      <div class="result-box" id="shock-result" role="status" aria-live="assertive" aria-atomic="true"></div>
+    </section>
   </div>
 
+  <aside class="result-col" aria-labelledby="summary-title">
+    <div class="summary-panel">
+      <p class="summary-eyebrow">Current assessment</p>
+      <h2 id="summary-title">Screening summary</h2>
+      <div class="summary-list">
+        <div class="summary-item" id="summary-qsofa">
+          <div><span>qSOFA</span><strong id="summary-qsofa-value">0 / 3</strong></div>
+          <p id="summary-qsofa-status">No criteria selected</p>
+        </div>
+        <div class="summary-item" id="summary-sofa">
+          <div><span>SOFA</span><strong id="summary-sofa-value">0</strong></div>
+          <p id="summary-sofa-status">Baseline selections</p>
+        </div>
+        <div class="summary-item" id="summary-shock">
+          <div><span>Septic shock</span><strong id="summary-shock-value">0 / 2</strong></div>
+          <p id="summary-shock-status">Criteria not met</p>
+        </div>
+      </div>
+      <p class="summary-note">Screening tools support—but do not replace—clinical assessment, diagnostic workup, and timely treatment.</p>
+    </div>
+  </aside>
+</main>
 
-</div>
-
-<footer>
+<footer class="app-footer">
   <p class="last-checked"></p>
-  <p class="source-note">
-    Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥ 2 warrants further evaluation; SOFA ≥ 2 from baseline indicates organ dysfunction. Not medical advice.
-  </p>
+  <p class="app-footer__source source-note">Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥2 warrants further evaluation; SOFA ≥2 from baseline indicates organ dysfunction. Not medical advice.</p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

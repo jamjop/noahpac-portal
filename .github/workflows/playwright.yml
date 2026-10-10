@@ -1,13 +1,21 @@
-name: Playwright Tests
+name: Clinical Site Quality Gate
 
 on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: clinical-site-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   playwright:
-    name: Dark-mode & regression tests
+    name: Static integrity and browser regression
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +35,18 @@ jobs:
         working-directory: tests
         run: pnpm exec playwright install chromium --with-deps
 
+      - name: Check internal routes and assets
+        run: node scripts/check-site-health.mjs --local
+
       - name: Run Playwright tests
         working-directory: tests
         run: bash run-tests.sh
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-artifacts
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7

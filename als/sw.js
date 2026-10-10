@@ -1,10 +1,13 @@
-const CACHE = 'als-v8';
+const CACHE = 'als-v11';
 const ASSETS = [
   '/als/',
   '/als/index.html',
-  '/als/style.css',
-  '/als/app.js',
+  '/als/style.css?v=3',
+  '/als/app.js?v=3',
   '/shared.css',
+  '/assets/app-shell.js',
+  '/assets/fonts.css',
+  '/assets/last-checked.js',
 ];
 
 self.addEventListener('install', e => {

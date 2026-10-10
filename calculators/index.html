@@ -1,34 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clinical Calculators</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=5">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Twenty point-of-care medical calculators with locally computed results and clinical interpretation.">
+  <title>Medical Calculators — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body>
-<div>
-  <header class="app-header">
-    <div class="header-inner">
-      <div>
-        <div class="eyebrow">Medical Calculator Suite</div>
-        <h1>Calculators</h1>
-        <a href="/" class="back" target="_top">← noahpac</a>
-        <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app calculator-app">
+<a class="skip-link" href="#main-content">Skip to calculator</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
       </div>
     </div>
-  </header>
-  <div class="page-body">
-    <nav class="cat-nav" id="tabNav"></nav>
-    <div class="pane" id="pane"></div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Tools &amp; Calculators</p>
+      <h1>Medical Calculators</h1>
+      <p class="app-header__lede">Validated scoring systems and bedside calculations. Results update locally as values change; no patient data leaves your browser.</p>
+    </div>
   </div>
-</div>
-<footer>
+</header>
+
+<main class="page-body" id="main-content">
+  <aside class="calc-navigation" aria-label="Calculator navigation">
+    <label class="calc-filter">
+      <span class="calc-filter__label">Find a calculator</span>
+      <input id="calcFilter" type="search" placeholder="Search 20 calculators" autocomplete="off">
+    </label>
+    <nav class="cat-nav" id="tabNav" role="tablist" aria-label="Choose a medical calculator"></nav>
+    <p class="calc-nav-empty" id="calcNavEmpty" hidden>No calculators match that search.</p>
+  </aside>
+  <section class="pane" id="pane" role="tabpanel" tabindex="-1" aria-live="off"></section>
+</main>
+
+<footer class="app-footer">
   <p class="last-checked"></p>
+  <p class="app-footer__source">Use these tools as clinical references alongside the original scoring-system criteria, current guidance, and patient-specific judgment. Verify results before treatment decisions.</p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

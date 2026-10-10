@@ -1,66 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <link rel="stylesheet" href="/assets/fonts.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pediatric Dosing</title><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Weight-based pediatric emergency dosing and equipment reference for airway, resuscitation, sedation, seizures, pain, and antibiotics.">
+  <title>Pediatric Dosing — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="eyebrow">Airway · Fluids · Resus · RSI · Seizures · Pain · Abx</div>
-    <h1>Pediatric Dosing</h1>
-    <a href="/" class="back" target="_top">← noahpac</a>
-    <div class="update-cadence">↻ Reviewed quarterly</div>
+<body class="clinical-app pediatric-app">
+<a class="skip-link" href="#main-content">Skip to pediatric dosing</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy">
+          <span class="app-brand__name">Noah PA-C</span>
+          <span class="app-brand__product">Clinical Tools</span>
+        </span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Reviewed quarterly</span>
+        <label class="theme-field">
+          <span class="theme-field__label">Theme</span>
+          <select class="theme-select" data-theme-select aria-label="Color theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Pediatrics</p>
+      <h1>Pediatric Dosing</h1>
+      <p class="app-header__lede">Calculate weight-based emergency doses and equipment sizes, then verify each result against age, organ function, indication, and local guidance.</p>
+    </div>
   </div>
 </header>
 
-<div class="content">
-  <div class="criterion input-panel">
-    <div class="c-header">
-      <span class="c-letter">kg</span>
-      <div>
-        <div class="c-name">Patient Weight</div>
-        <div class="c-desc">Enter weight directly, or estimate from age using the Broselow formula</div>
+<nav class="tool-section-nav" aria-label="Pediatric dosing sections">
+  <div class="tool-section-nav__inner">
+    <a href="#airway">Airway</a>
+    <a href="#fluids">Fluids</a>
+    <a href="#resuscitation">Resuscitation</a>
+    <a href="#rsi">RSI / sedation</a>
+    <a href="#seizures">Seizures</a>
+    <a href="#pain-fever">Pain / fever</a>
+    <a href="#antibiotics">Antibiotics</a>
+  </div>
+</nav>
+
+<main class="tool-workspace content" id="main-content">
+  <section class="tool-card criterion input-panel" aria-labelledby="patient-weight-title">
+    <div class="tool-card__header c-header">
+      <span class="tool-card__marker c-letter" aria-hidden="true">kg</span>
+      <div class="tool-card__heading">
+        <h2 id="patient-weight-title">Patient weight</h2>
+        <p>Use a measured weight when available, or estimate from age for a rapid reference.</p>
       </div>
     </div>
     <div class="input-grid">
-      <div class="field field-wt">
-        <label class="field-label" for="wtKg">Weight (kg)</label>
-        <input type="number" id="wtKg" min="1" max="80" step="0.1" placeholder="e.g. 15">
+      <div class="clinical-field field field-wt">
+        <label for="wtKg">Measured weight (kg)</label>
+        <input type="number" id="wtKg" min="1" max="150" step="0.1" inputmode="decimal" placeholder="e.g. 15" autocomplete="off">
       </div>
-      <div class="or-sep">or estimate by</div>
-      <div class="field field-age">
-        <label class="field-label" for="ageNum">Age</label>
-        <input type="number" id="ageNum" min="0" max="14" step="1" placeholder="e.g. 5">
+      <div class="or-sep" aria-hidden="true"><span>or estimate by age</span></div>
+      <div class="age-fields">
+        <div class="clinical-field field field-age">
+          <label for="ageNum">Age</label>
+          <input type="number" id="ageNum" min="0" max="14" step="1" inputmode="numeric" placeholder="e.g. 5" autocomplete="off">
+        </div>
+        <div class="clinical-field field field-unit">
+          <label for="ageUnit">Unit</label>
+          <select id="ageUnit">
+            <option value="yr">years</option>
+            <option value="mo">months</option>
+          </select>
+        </div>
       </div>
-      <div class="field field-unit">
-        <label class="field-label" for="ageUnit">Unit</label>
-        <select id="ageUnit">
-          <option value="yr">years</option>
-          <option value="mo">months</option>
-        </select>
-      </div>
-      <button class="calc-btn" id="calcBtn">Calculate</button>
+      <button class="calc-btn" id="calcBtn" type="button" aria-controls="content">Calculate doses</button>
     </div>
-    <div class="brose-bar" id="broseBar" hidden>
-      <div class="brose-swatch" id="broseSwatch"></div>
+    <div class="brose-bar" id="broseBar" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <div class="brose-swatch" id="broseSwatch" aria-hidden="true"></div>
       <span class="brose-label" id="broseLabel"></span>
-      <span class="brose-weight" id="broseWeight"></span>
+      <strong class="brose-weight" id="broseWeight"></strong>
     </div>
-  </div>
-  <div id="content"></div>
-</div>
-<footer>
+  </section>
+
+  <div id="content" class="dosing-reference"></div>
+</main>
+
+<footer class="app-footer">
   <p class="last-checked"></p>
-  <p class="source-note">
-    Weight estimation via Broselow-Luten system; drug dosing per PALS and AAP pediatric emergency references. Not medical advice.
-  </p>
+  <div class="app-footer__source">
+    <div class="clinical-caution">
+      <strong>Verify before use.</strong> These are weight-based estimates with typical adult maximums. Confirm the indication, concentration, route, age restrictions, allergies, organ function, and institutional formulary before treatment.
+    </div>
+    <p class="source-note">Weight estimation via Broselow-Luten system; drug dosing per PALS and AAP pediatric emergency references. Not medical advice.</p>
+  </div>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>
