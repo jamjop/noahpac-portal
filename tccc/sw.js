@@ -1,4 +1,4 @@
-const CACHE = 'tccc-v7';
+const CACHE = 'tccc-v8';
 // Exact URLs as requested by index.html, including cache-busting query
 // strings -- caches.match() keys on the full request URL, so a precached
 // entry without "?v=2" is a silent miss against the real page request and
