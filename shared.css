@@ -249,6 +249,10 @@ footer .last-checked.stale .dot{
   --app-radius-md:9px;
   --app-radius-lg:12px;
   --app-shadow-raised:0 10px 30px rgba(15,23,42,.08),0 2px 8px rgba(15,23,42,.04);
+  --app-shadow-soft:0 1px 2px rgba(15,23,42,.035);
+  --app-shadow-hover:0 8px 22px rgba(15,23,42,.065),0 1px 3px rgba(15,23,42,.04);
+  --app-shadow-sticky:0 5px 18px rgba(15,23,42,.055);
+  --app-swatch-border:rgba(15,23,42,.22);
   --app-content:1120px;
   font-size:16px;
   line-height:1.55;
@@ -1459,7 +1463,7 @@ body.clinical-app.legacy-app .how-card,
 body.clinical-app.legacy-app .rec,
 body.clinical-app.legacy-app .drug{
   background-color:var(--app-surface-raised);
-  box-shadow:0 1px 2px rgba(15,23,42,.035);
+  box-shadow:var(--app-shadow-soft);
   transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;
 }
 body.clinical-app .tool-card__marker{
@@ -1509,7 +1513,7 @@ body.clinical-app summary{
   body.clinical-app .reference-search-panel:hover,
   body.clinical-app.legacy-app .card:hover{
     border-color:color-mix(in srgb,var(--app-family-accent) 28%,var(--app-border));
-    box-shadow:0 8px 22px rgba(15,23,42,.065),0 1px 3px rgba(15,23,42,.04);
+    box-shadow:var(--app-shadow-hover);
     transform:translateY(-1px);
   }
 }
@@ -1537,7 +1541,7 @@ body.clinical-app section[id]{scroll-margin-top:76px}
   border:1px solid var(--app-border);
   border-radius:var(--app-radius-md);
   background:color-mix(in srgb,var(--app-surface-raised) 94%,transparent);
-  box-shadow:0 5px 18px rgba(15,23,42,.055);
+  box-shadow:var(--app-shadow-sticky);
   backdrop-filter:blur(12px);
 }
 .page-outline__label{

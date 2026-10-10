@@ -215,7 +215,7 @@
   transition:background .12s,color .12s;
 }
 .copy-btn:hover{background:var(--app-accent);color:#fff}
-.copy-btn.copied{border-color:var(--ok);background:var(--ok);color:#081b13}
+.copy-btn.copied{border-color:var(--ok);background:var(--ok);color:var(--app-accent-contrast)}
 .note{
   padding:14px 15px;
   border:1px solid var(--app-border);
@@ -279,7 +279,7 @@ html[data-theme="dark"] .calculator-app{--perc-pos-ink:#ffdc8a}
     padding:12px 16px 10px;
     border-bottom:1px solid var(--app-border);
     background:var(--app-surface);
-    box-shadow:0 6px 18px rgba(15,23,42,.06);
+    box-shadow:var(--app-shadow-sticky);
   }
   .calc-filter{margin-bottom:9px}
   .calc-filter__label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}

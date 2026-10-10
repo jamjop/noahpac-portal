@@ -29,7 +29,7 @@ body{padding-bottom:24px}
 .msg{max-width:85%;padding:12px 16px;border-radius:var(--r);line-height:1.5;font-size:14px}
 .msg-user{align-self:flex-end;background:var(--purple);color:#fff;border-bottom-right-radius:2px}
 .msg-assistant{align-self:flex-start;background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh);border-bottom-left-radius:2px}
-.msg-error{align-self:flex-start;background:#fde8e8;color:#7f1d1d;border:1px solid #f5c2c2}
+.msg-error{align-self:flex-start;background:var(--risk-soft);color:var(--risk);border:1px solid color-mix(in srgb,var(--risk) 30%,var(--app-border))}
 
 .msg-sources{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-muted)}
 .msg-sources-label{font-family:'IBM Plex Mono',monospace;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:10px;display:block;margin-bottom:6px}

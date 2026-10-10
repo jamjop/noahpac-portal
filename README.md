@@ -63,10 +63,10 @@ No build step is required. See [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.
 
 ```js
 // tccc/sw.js
-const CACHE = 'tccc-v6';  // increment on each content update
+const CACHE = 'tccc-v8';  // increment on each content update
 ```
 
-Current protocol cache versions: **TCCC v6**, **ALS v11**, and **PALS v10**.
+Current protocol cache versions: **TCCC v8**, **ALS v13**, and **PALS v12**.
 
 ## Automated Data Updates
 

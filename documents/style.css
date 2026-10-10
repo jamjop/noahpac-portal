@@ -1,3 +1,8 @@
+:root {
+  --accent: var(--purple);
+  --line-input: var(--line);
+}
+
 /* ── Back link (documents/ isn't the homepage, index.css has no equivalent) ── */
 .back-link {
   display: inline-flex;

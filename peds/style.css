@@ -22,7 +22,7 @@
   position:relative;
   z-index:1;
   margin-bottom:28px;
-  box-shadow:var(--app-shadow-raised,0 10px 30px rgba(15,23,42,.08));
+  box-shadow:var(--app-shadow-raised);
 }
 /* Fallback component essentials; shared.css supplies the full component layer. */
 .tool-card{padding:22px;border:1px solid var(--app-border);border-radius:12px;background:var(--app-surface)}
@@ -63,7 +63,7 @@
   background:var(--app-surface-subtle);
 }
 .brose-bar[hidden]{display:none}
-.brose-swatch{width:24px;height:24px;flex:0 0 auto;border:1px solid rgba(15,23,42,.22);border-radius:6px}
+.brose-swatch{width:24px;height:24px;flex:0 0 auto;border:1px solid var(--app-swatch-border);border-radius:6px}
 .brose-label{color:var(--app-text-secondary);font-size:13px}
 .brose-weight{margin-left:auto;color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:14px}
 
