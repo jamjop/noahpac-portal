@@ -88,7 +88,7 @@ def write_error(topic: str, name: str, detail: str) -> None:
     }:
         payload["review_pending"] = True
     status_path.write_text(json.dumps(payload, indent=2) + "\n")
-    status_path.chmod(0o644)
+    status_path.chmod(0o664)
 
 
 def ensure_result(topic: str, name: str) -> None:

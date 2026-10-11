@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Clinical Review Portal — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="clinical-app review-portal-app">
+<a class="skip-link" href="#main-content">Skip to clinical reviews</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-user" id="reviewUser" aria-live="polite"></span>
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Authenticated clinical governance</p>
+      <h1>Clinical Review Portal</h1>
+      <p class="app-header__lede">Review monitored references, document your decision, and clear pending states with a protected audit trail.</p>
+    </div>
+  </div>
+</header>
+
+<main class="review-workspace" id="main-content">
+  <section class="review-summary" aria-labelledby="summaryTitle">
+    <div><p class="section-kicker">Review queue</p><h2 id="summaryTitle">Clinical source status</h2></div>
+    <button class="secondary-button" id="refreshButton" type="button">Refresh status</button>
+    <div class="summary-grid" id="summaryGrid" aria-live="polite"></div>
+  </section>
+
+  <section class="review-controls" aria-label="Review filters">
+    <label><span>Find a topic</span><input type="search" id="topicSearch" placeholder="Search clinical tools" autocomplete="off"></label>
+    <label><span>Status</span><select id="statusFilter"><option value="all">All statuses</option><option value="pending">Review pending</option><option value="error">Monitor error</option><option value="not_checked">Not checked</option><option value="current">Monitoring current</option><option value="reviewed">Clinically reviewed</option></select></label>
+  </section>
+
+  <div class="portal-message" id="portalMessage" role="status" aria-live="polite">Loading clinical review status…</div>
+  <section class="review-list" id="reviewList" aria-label="Clinical topics"></section>
+</main>
+
+<dialog class="review-dialog" id="reviewDialog" aria-labelledby="dialogTitle">
+  <form id="reviewForm">
+    <div class="dialog-heading">
+      <div><p class="section-kicker">Document clinical review</p><h2 id="dialogTitle"></h2></div>
+      <button class="dialog-close" type="button" id="closeDialog" aria-label="Close review form">×</button>
+    </div>
+    <p class="dialog-context" id="dialogContext"></p>
+    <input type="hidden" id="reviewTopic">
+    <input type="hidden" id="reviewRevision">
+
+    <fieldset><legend>Authoritative sources personally reviewed</legend><div class="source-checklist" id="sourceChecklist"></div></fieldset>
+    <fieldset><legend>Clinical decision</legend><div class="decision-grid">
+      <label><input type="radio" name="decision" value="no-change" required><span><strong>No change required</strong><small>The deployed content remains accurate.</small></span></label>
+      <label><input type="radio" name="decision" value="content-updated" required><span><strong>Content updated</strong><small>A reviewed correction has been deployed.</small></span></label>
+    </div></fieldset>
+    <label class="form-field" id="changeReferenceField" hidden><span>Deployed commit or change reference</span><input type="text" id="changeReference" maxlength="160" placeholder="Commit hash or release reference"></label>
+    <label class="form-field"><span>Review note</span><textarea id="reviewNote" minlength="20" maxlength="2000" rows="5" required placeholder="Summarize what you compared and why this decision is appropriate."></textarea><small>20–2,000 characters. This becomes part of the audit record.</small></label>
+    <label class="confirmation"><input type="checkbox" id="reviewConfirmed" required><span>I personally compared the deployed content with the selected authoritative sources and confirm this decision.</span></label>
+    <div class="dialog-error" id="dialogError" role="alert"></div>
+    <div class="dialog-actions"><button class="secondary-button" type="button" id="cancelReview">Cancel</button><button class="primary-button" type="submit" id="submitReview">Record review</button></div>
+  </form>
+</dialog>
+
+<footer class="app-footer"><div class="clinical-caution"><strong>Monitoring is not clinical review.</strong> Record a decision only after directly comparing the deployed content with the selected authoritative sources.</div><p class="app-footer__meta">Protected by Authelia · © <span data-current-year></span> Noah PA-C</p></footer>
+<script src="app.js?v=1"></script>
+</body>
+</html>

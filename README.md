@@ -6,9 +6,16 @@ Clinical reference portal for [noahpac.com](https://noahpac.com). Built for poin
 
 Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files directly from this repo's working directory.
 
+The public clinical tools remain static. Two private routes use small local
+services behind Authelia: the Clinical Assistant and the Clinical Review Portal.
+
 **Root** (`index.html`) — static portal homepage and navigation shell.
 
 **Clinical updates** (`updates/`, backed by `clinical-changelog.json`) — public record of substantive clinical-content, safety, and governance changes.
+
+**Clinical Review Portal** (`clinical-review/`, published privately at
+`/review/`) — Authelia-protected clinician acknowledgement queue backed by a
+loopback-only, sandboxed Python service.
 
 **Tool subdirectories** — each is a self-contained app:
 
@@ -109,6 +116,9 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 `scripts/run-quarterly-monitoring.py` runs topic checks sequentially for both the monthly high-risk set and the full quarterly set, sending each consolidated report only after every selected topic has completed. Monitoring scripts send Pushover notifications when sources change. They do **not** rewrite clinical content; detected changes remain visibly pending until `scripts/acknowledge-clinical-review.py` records a source-backed human review and its protected audit entry.
 
 Systemd unit templates and secure setup instructions are in `ops/systemd/` and `docs/CLINICAL_MONITORING.md`. Secrets belong in root-only `/etc/noahpac-monitor.env`, never in root's crontab.
+
+The private review workflow, service installer, Nginx locations, and Authelia
+boundary are documented in [`docs/CLINICAL_REVIEW_PORTAL.md`](docs/CLINICAL_REVIEW_PORTAL.md).
 
 Clinical ownership, review state, cadence, and authoritative-source mappings
 for all 26 tools are recorded in `clinical-review.json`. The weekly source-link

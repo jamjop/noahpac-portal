@@ -4,6 +4,22 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-11-clinical-review-portal",
+      "date": "2026-10-11",
+      "type": "governance",
+      "title": "Authenticated clinical review workflow",
+      "summary": "Added a private, audited workflow for completing source-based clinician reviews without server-shell access.",
+      "clinical_change": false,
+      "scope": "Clinical governance and review operations",
+      "affected_routes": [],
+      "changes": [
+        "Added an Authelia-protected review queue showing monitored topics, current state, and approved authoritative sources.",
+        "Required authenticated identity, source selection, a documented clinical decision, clinician attestation, and stale-state protection for every acknowledgement.",
+        "Added a sandboxed loopback service and append-only operational audit record without exposing command execution or general file editing."
+      ],
+      "source_ids": []
+    },
+    {
       "id": "2026-10-11-hcpcs-lookup",
       "date": "2026-10-11",
       "type": "interface",

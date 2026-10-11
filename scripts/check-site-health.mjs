@@ -15,8 +15,9 @@ const ROUTES = [
   '/calculators/', '/clinical-assistant/', '/ddx/', '/documents/', '/drugref/',
   '/empiric/', '/labs/', '/lookup/', '/naloxone/', '/opioids/', '/pals/',
   '/peds/', '/reportable/', '/screener/', '/sepsis/', '/steroids/',
-  '/sti-guide/', '/tccc/', '/toxicology/', '/updates/', '/vaccines/', '/wound/',
+  '/review/', '/sti-guide/', '/tccc/', '/toxicology/', '/updates/', '/vaccines/', '/wound/',
 ];
+const PRIVATE_ROUTES = ['/clinical-assistant/', '/review/'];
 
 const REMOVED_V2 = [
   'abx2', 'als2', 'anticoag2', 'calculators2', 'ddx2', 'empiric2', 'labs2',
@@ -66,7 +67,11 @@ function localPathForUrl(value) {
 }
 
 async function checkLocal() {
-  const pages = ROUTES.map((route) => route === '/' ? join(ROOT, 'index.html') : join(ROOT, route, 'index.html'));
+  const pages = ROUTES.map((route) => {
+    if (route === '/') return join(ROOT, 'index.html');
+    if (route === '/review/') return join(ROOT, 'clinical-review', 'index.html');
+    return join(ROOT, route, 'index.html');
+  });
   for (const page of pages) {
     if (await exists(page)) pass(`page exists: ${page.slice(ROOT.length + 1)}`);
     else fail(`missing production page: ${page.slice(ROOT.length + 1)}`);
@@ -110,7 +115,7 @@ async function checkRemote() {
   for (const route of ROUTES) {
     try {
       const response = await request(`${BASE_URL}${route}`, { redirect: 'manual' });
-      const expected = route === '/clinical-assistant/' ? response.status >= 300 && response.status < 400 : response.status === 200;
+      const expected = PRIVATE_ROUTES.includes(route) ? response.status >= 300 && response.status < 400 : response.status === 200;
       if (expected) pass(`${route} returned ${response.status}`);
       else fail(`${route} returned unexpected status ${response.status}`);
       await response.body?.cancel();

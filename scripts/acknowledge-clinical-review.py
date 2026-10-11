@@ -54,12 +54,12 @@ def main() -> int:
         AUDIT_LOG.parent.mkdir(parents=True, exist_ok=True)
         with AUDIT_LOG.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(audit_record, sort_keys=True) + "\n")
-        AUDIT_LOG.chmod(0o600)
+        AUDIT_LOG.chmod(0o660)
     except PermissionError:
         print(f"Unable to write protected audit log {AUDIT_LOG}; run with sudo.")
         return 1
     destination.write_text(json.dumps(payload, indent=2) + "\n")
-    destination.chmod(0o644)
+    destination.chmod(0o664)
     print(f"Acknowledged clinical review for {args.topic}: {destination}")
     return 0
 

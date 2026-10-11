@@ -59,6 +59,10 @@ the topic's `last_checked.json` and appends a root-only audit record to
 `/var/lib/noahpac-monitor/review-audit.jsonl`.
 Do not use it merely because a later automated check found no additional papers.
 
+The preferred interactive workflow is the Authelia-protected `/review/`
+dashboard described in `docs/CLINICAL_REVIEW_PORTAL.md`. The command above
+remains the recovery and headless-administration path.
+
 ## Verification
 
 ```bash

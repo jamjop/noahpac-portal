@@ -108,7 +108,9 @@ def save_last_checked(app_dir: Path, status: str) -> None:
         if review_pending:
             payload["review_pending"] = True
         f.write_text(json.dumps(payload, indent=2))
-        f.chmod(0o644)
+        # Group-write permits the dedicated, sandboxed review-portal service
+        # to record a clinician acknowledgement without running as root.
+        f.chmod(0o664)
     except Exception as exc:
         print(f"WARNING: could not write last_checked.json: {exc}", file=sys.stderr)
 
