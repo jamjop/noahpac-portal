@@ -18,7 +18,7 @@ test('live-data tools use names that accurately describe their scope', async ({ 
 
   await page.goto('/lookup/');
   await expect(page.getByRole('heading', { name: 'Code & Terminology Lookup', level: 1 })).toBeVisible();
-  await expect(page.getByText(/ICD-10-CM, RxTerms, and LOINC/)).toBeVisible();
+  await expect(page.getByText(/ICD-10-CM, CMS HCPCS Level II, RxTerms, and LOINC/)).toBeVisible();
 });
 
 test('antimicrobial tools expose one consistent family navigator', async ({ page }) => {

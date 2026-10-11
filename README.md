@@ -30,7 +30,7 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data |
 | `sepsis/` | Sepsis Screening | qSOFA + SOFA scoring |
 | `wound/` | Wound Classification & Tetanus | Wound classification and tetanus prophylaxis guide |
-| `lookup/` | Code & Terminology Lookup | ICD-10-CM, RxTerms, and LOINC live search via NLM Clinical Tables API |
+| `lookup/` | Code & Terminology Lookup | ICD-10-CM, CMS HCPCS Level II, RxTerms, and LOINC live search via NLM Clinical Tables API |
 | `drugref/` | FDA Label Search | FDA structured label sections and recall search via openFDA |
 | `peds/` | Pediatric Dosing | Weight-based dosing from measured weight; optional age is used only for airway sizing |
 | `screener/` | USPSTF Screener | USPSTF A/B/C preventive services by age and sex; data auto-updated weekly |

@@ -4,6 +4,7 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 const TABS = [
   {id:'icd',   label:'ICD-10-CM', searchLabel:'Search ICD-10-CM', ph:'Search diagnoses — "pneumonia", "E11", "chest pain"'},
+  {id:'hcpcs', label:'HCPCS II', searchLabel:'Search HCPCS Level II', ph:'Search services and supplies — "ambulance", "wheelchair", "J1885"'},
   {id:'drug',  label:'Drugs', searchLabel:'Search RxTerms drug names', ph:'Search drug names — "metformin", "lisinopril", "amoxicillin"'},
   {id:'loinc', label:'LOINC', searchLabel:'Search LOINC laboratory terms', ph:'Search lab tests — "sodium", "TSH", "hemoglobin a1c"'},
 ];
@@ -29,13 +30,19 @@ async function fetchDrug(q, signal) {
   return {type:'drug', total:r[0]||0, items:names.map((name,i) => ({name, rxcui:String(rxcui[i]||''), route:String(route[i]||'')}))};
 }
 
+async function fetchHCPCS(q, signal) {
+  const url = `https://clinicaltables.nlm.nih.gov/api/hcpcs/v3/search?terms=${encodeURIComponent(q)}&maxList=20&sf=code,short_desc,long_desc&df=code,display&q=obsolete:false`;
+  const r = await fetch(url, {signal}).then(r => r.json());
+  return {type:'hcpcs', total:r[0]||0, items:(r[3]||[]).map(([code,name]) => ({code,name}))};
+}
+
 async function fetchLOINC(q, signal) {
   const url = `https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search?terms=${encodeURIComponent(q)}&maxList=20&sf=LOINC_NUM,LONG_COMMON_NAME&df=LOINC_NUM,LONG_COMMON_NAME,CLASS`;
   const r = await fetch(url, {signal}).then(r => r.json());
   return {type:'loinc', total:r[0]||0, items:(r[3]||[]).map(([code,name,cls]) => ({code,name,cls:cls||''}))};
 }
 
-const FETCHERS = {icd:fetchICD, drug:fetchDrug, loinc:fetchLOINC};
+const FETCHERS = {icd:fetchICD, hcpcs:fetchHCPCS, drug:fetchDrug, loinc:fetchLOINC};
 
 // ── Search orchestration ──────────────────────────────────────────────────────
 
@@ -83,7 +90,7 @@ function render({type, total, items}, q) {
   const countHtml = `<div class="result-count" role="status">${total.toLocaleString()} match${total===1?'':'es'} &middot; showing ${items.length}</div>`;
   let rows = '';
 
-  if (type === 'icd') {
+  if (type === 'icd' || type === 'hcpcs') {
     rows = items.map(({code,name}) =>
       `<article class="rrow">
         <span class="code-chip">${esc(code)}</span>

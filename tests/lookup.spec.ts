@@ -32,8 +32,9 @@ test.describe('Code & Terminology Lookup – shared.css failure resilience', () 
     await expect(page.locator('#q')).toBeVisible();
     await expect(page.locator('#q')).toBeEnabled();
 
-    // Tab pills (ICD-10 / RxTerms / LOINC) must render
+    // Tab pills (ICD-10 / HCPCS Level II / RxTerms / LOINC) must render
     await expect(page.locator('#tabs')).toBeVisible();
+    await expect(page.getByRole('tab')).toHaveCount(4);
   });
 
 });

@@ -4,6 +4,21 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-11-hcpcs-lookup",
+      "date": "2026-10-11",
+      "type": "interface",
+      "title": "HCPCS Level II terminology search",
+      "summary": "Added live official HCPCS Level II search while preserving the licensing boundary around the AMA CPT code set.",
+      "clinical_change": false,
+      "scope": "Code and terminology lookup",
+      "affected_routes": ["/lookup/"],
+      "changes": [
+        "Added current CMS HCPCS Level II services and supplies through the NLM Clinical Tables API, excluding terminated codes.",
+        "Clearly distinguished HCPCS Level II from CPT and did not reproduce unlicensed CPT codes or descriptions."
+      ],
+      "source_ids": ["nlm_clinical_tables"]
+    },
+    {
       "id": "2026-10-11-focused-tools-and-safeguards",
       "date": "2026-10-11",
       "type": "clinical",

@@ -16,6 +16,12 @@ Reviewed 2026-10-11.
   repository states that reuse requires permission from the developer, and
   University Health Network identifies the tool as its property. Reconsider
   only after documented permission or license terms are obtained.
+- Added current CMS HCPCS Level II codes to Code & Terminology Lookup through
+  NLM Clinical Tables, filtering out terminated codes. This is explicitly
+  labeled as HCPCS Level II and not represented as
+  CPT. A true CPT search remains deferred because CPT codes and descriptors
+  require an AMA license for use in a distributed web product; integrate only
+  after a suitable license and authorized data source are documented.
 
 Deliberately out of scope: comprehensive renal dosing, interaction checking,
 pregnancy drug databases, and general prescribing references. Those need

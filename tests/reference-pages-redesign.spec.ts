@@ -63,9 +63,11 @@ test.describe('Searchable reference redesign', () => {
     await page.goto('/lookup/');
     const icdTab = page.getByRole('tab', { name: 'ICD-10-CM' });
     const drugTab = page.getByRole('tab', { name: 'Drugs' });
-    await expect(page.getByRole('tab')).toHaveCount(3);
+    await expect(page.getByRole('tab')).toHaveCount(4);
     await icdTab.focus();
     await icdTab.press('ArrowRight');
+    await expect(page.getByRole('tab', { name: 'HCPCS II' })).toBeFocused();
+    await page.keyboard.press('ArrowRight');
     await expect(drugTab).toBeFocused();
     await expect(drugTab).toHaveAttribute('aria-selected', 'true');
 
@@ -74,6 +76,21 @@ test.describe('Searchable reference redesign', () => {
     await expect(page.getByText('RxCUI 860975')).toBeVisible();
     await expect(page.getByText('Oral', { exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: /FDA label/ })).toBeVisible();
+  });
+
+  test('Code & Terminology Lookup searches official HCPCS Level II data without presenting it as CPT', async ({ page }) => {
+    await page.route('**/api/hcpcs/v3/search?**', route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([1, ['E0114'], { obsolete: [false] }, [['E0114', 'Crutches underarm other than wood pair']]]),
+    }));
+
+    await page.goto('/lookup/');
+    await page.getByRole('tab', { name: 'HCPCS II' }).click();
+    await page.getByLabel('Search HCPCS Level II').fill('crutches');
+    await expect(page.getByText('E0114', { exact: true })).toBeVisible();
+    await expect(page.getByText('Crutches underarm other than wood pair')).toBeVisible();
+    await expect(page.getByText(/HCPCS Level II is not the AMA CPT code set/)).toBeVisible();
   });
 
   test('Laboratory Reference filters locally and retains clinical notes on mobile', async ({ page }) => {
