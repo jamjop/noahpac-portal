@@ -17,8 +17,8 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `abx/` | Antibiotic Reference | Empiric coverage for 19 infections across 6 categories; sources audited Jun 2026 |
 | `empiric/` | Empiric Therapy + Local Susceptibility | Treatment recommendations cross-referenced with local antibiogram data |
 | `allergy/` | Antibiotic Allergy Cross-Reactivity | Cross-reactivity reference for penicillin/cephalosporin/carbapenem allergies |
-| `sti-guide/` | STI Treatment Guidelines | CDC 2021 full guidelines; includes doxy-PEP (CDC 2023 interim guidance) and chancroid |
-| `antibiogram/` | ND Antibiogram | Local susceptibility data for 4 ND facilities; auto-updated monthly from HHS PDFs |
+| `sti-guide/` | STI Treatment Guidelines | CDC 2021 treatment guidance plus final CDC 2024 doxy-PEP guidance and current product-availability alerts |
+| `antibiogram/` | ND Antibiogram | Local susceptibility data from ND facilities; checked quarterly against HHS PDFs with extraction validation and human-review holds |
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
 | `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
 | `calculators/` | Clinical Calculators | 19 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Weight Change, Pregnancy EDD |
@@ -30,7 +30,7 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `wound/` | Wound Classification & Tetanus | Wound classification and tetanus prophylaxis guide |
 | `lookup/` | Code & Drug Lookup | ICD-10, RxTerms, LOINC live search via NLM Clinical Tables API |
 | `drugref/` | Drug Reference | FDA drug labels and recall search via openFDA |
-| `peds/` | Pediatric Dosing | Broselow-style dosing card by weight or age |
+| `peds/` | Pediatric Dosing | Weight-based dosing from measured weight; optional age is used only for airway sizing |
 | `screener/` | USPSTF Screener | USPSTF A/B/C preventive services by age and sex; data auto-updated weekly |
 | `reportable/` | ND Reportable Conditions | ND HHS reportable conditions list |
 
@@ -66,7 +66,7 @@ No build step is required. See [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.
 const CACHE = 'tccc-v11';  // increment on each content update
 ```
 
-Current protocol cache versions: **TCCC v11**, **ALS v16**, and **PALS v15**.
+Current protocol cache versions: **TCCC v11**, **ALS v17**, and **PALS v16**.
 
 ## Automated Data Updates
 
@@ -75,33 +75,38 @@ Current protocol cache versions: **TCCC v11**, **ALS v16**, and **PALS v15**.
 |--------|----------|-------------|
 | `screener/update_uspstf.py` | Mon 04:17 | Fetches USPSTF recommendations from Prevention TaskForce API; writes to `screener/data/` (gitignored). Requires `USPSTF_API_KEY` env var. API key: request from uspstfpda@ahrq.gov |
 
-### Monthly
+### Quarterly (Jan / Apr / Jul / Oct — 1st)
 | Script | Schedule | Description |
 |--------|----------|-------------|
-| `antibiogram/auto_update.py` | 1st of month 04:23 | Downloads latest ND HHS antibiogram PDFs and extracts data via Claude vision; writes to `antibiogram/data/` and commits + pushes to git. Requires `ANTHROPIC_API_KEY` |
+| `antibiogram/auto_update.py` | 1st at 04:23 | Downloads new ND HHS antibiogram PDFs, extracts data, holds implausible output for human review, and commits validated updates. Requires `ANTHROPIC_API_KEY` plus Pushover credentials. |
 
 ### Quarterly (Jan / Apr / Jul / Oct — 15th)
 
 All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watching. Send Pushover notifications on detected changes. Require `PUSHOVER_USER` and `PUSHOVER_TOKEN` env vars.
 
-| Script | Cron time | Watches |
+| Script | Execution | Watches |
 |--------|-----------|---------|
-| `reportable/check_updates.py` | 04:30 | ND HHS notifiable disease list |
-| `sti-guide/check_updates.py` | 04:45 | CDC STI guidelines page + PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance |
-| `naloxone/check_updates.py` | 05:00 | ND HHS behavioral health / overdose data |
-| `abx/check_updates.py` | 05:15 | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
-| `tccc/check_updates.py` | 05:30 | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
-| `vaccines/check_updates.py` | 05:45 | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
-| `calculators/check_updates.py` | 06:15 | PubMed: ACC/AHA (ASCVD, AFib, chest pain, periop), ACCP/ESC (VTE), ATS/BTS (pneumonia), KDIGO (eGFR/CrCl), AASLD (MELD), USPSTF (depression/anxiety), Ottawa/PECARN/Alvarado, AAD (isotretinoin), ACOG (EDD) |
-| `peds/check_updates.py` | 06:30 | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
-| `als/check_updates.py` | 06:35 | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
-| `pals/check_updates.py` | 06:40 | PubMed: AHA PALS, ILCOR pediatric resuscitation, ERC pediatric, AHA/ACC pediatric arrhythmia, pediatric post-arrest care, IO access |
-| `opioids/check_updates.py` | 06:45 | PubMed: CDC 2022 opioid prescribing guideline, MME conversion factors, buprenorphine/OUD guidance, methadone safety, high-dose thresholds |
-| `wound/check_updates.py` | 06:50 | PubMed: ACIP tetanus recommendations, wound prophylaxis evidence, SSI/wound classification guidelines |
-| `sepsis/check_updates.py` | 06:55 | PubMed: Surviving Sepsis Campaign, Sepsis-3/SOFA updates, SSC bundles, septic shock management |
-| `allergy/check_updates.py` | 07:00 | PubMed: AAAAI/ACAAI beta-lactam cross-reactivity guidelines, penicillin allergy delabeling, R1 side-chain evidence, cephalosporin hypersensitivity |
+| `reportable/check_updates.py` | sequential | ND HHS notifiable disease list |
+| `sti-guide/check_updates.py` | sequential | CDC STI guidelines page + PubMed: CDC STI MMWR, doxy-PEP, gonorrhea resistance |
+| `naloxone/check_updates.py` | sequential | ND HHS behavioral health / overdose data |
+| `abx/check_updates.py` | sequential | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
+| `tccc/check_updates.py` | sequential | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
+| `vaccines/check_updates.py` | sequential | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
+| `calculators/check_updates.py` | sequential | PubMed: ACC/AHA (ASCVD, AFib, chest pain, periop), ACCP/ESC (VTE), ATS/BTS (pneumonia), KDIGO (eGFR/CrCl), AASLD (MELD), USPSTF (depression/anxiety), Ottawa/PECARN/Alvarado, AAD (isotretinoin), ACOG (EDD) |
+| `peds/check_updates.py` | sequential | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
+| `als/check_updates.py` | sequential | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
+| `pals/check_updates.py` | sequential | PubMed: AHA PALS, ILCOR pediatric resuscitation, ERC pediatric, AHA/ACC pediatric arrhythmia, pediatric post-arrest care, IO access |
+| `opioids/check_updates.py` | sequential | PubMed: CDC 2022 opioid prescribing guideline, MME conversion factors, buprenorphine/OUD guidance, methadone safety, high-dose thresholds |
+| `wound/check_updates.py` | sequential | PubMed: ACIP tetanus recommendations, wound prophylaxis evidence, SSI/wound classification guidelines |
+| `sepsis/check_updates.py` | sequential | PubMed: Surviving Sepsis Campaign, Sepsis-3/SOFA updates, SSC bundles, septic shock management |
+| `allergy/check_updates.py` | sequential | PubMed: AAAAI/ACAAI beta-lactam cross-reactivity guidelines, penicillin allergy delabeling, R1 side-chain evidence, cephalosporin hypersensitivity |
+| `steroids/check_updates.py` | sequential | PubMed: glucocorticoid equivalency, HPA-axis suppression, Endocrine Society tapering, perioperative stress dosing |
+| `anticoag/check_updates.py` | sequential | PubMed: VKA/DOAC reversal, antiplatelet hemostasis, and CHEST periprocedural guidance |
+| `toxicology/check_updates.py` | sequential | PubMed: acetaminophen/NAC, toxic alcohols, antidotes, cardiotoxic overdose, and lipid emulsion guidance |
 
-Quarterly email report runs at **07:25** (25 min after last check script). Monitoring scripts send a Pushover notification when new publications or page changes are detected. They do **not** auto-update content — changes require manual review and a pull request.
+`scripts/run-quarterly-monitoring.py` runs the topic checks sequentially from one systemd service and sends the consolidated report only after every topic has completed, eliminating the former fixed-time race. Monitoring scripts send Pushover notifications when sources change. They do **not** rewrite clinical content; detected changes remain visibly pending until `scripts/acknowledge-clinical-review.py` is run after human review.
+
+Systemd unit templates and secure setup instructions are in `ops/systemd/` and `docs/CLINICAL_MONITORING.md`. Secrets belong in root-only `/etc/noahpac-monitor.env`, never in root's crontab.
 
 ## Backend Services
 

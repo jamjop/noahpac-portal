@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh Noah PA-C USPSTF data weekly
+
+[Timer]
+OnCalendar=Mon *-*-* 04:17:00
+Persistent=true
+Unit=noahpac-uspstf-update.service
+
+[Install]
+WantedBy=timers.target

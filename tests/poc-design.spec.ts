@@ -49,8 +49,13 @@ test.describe('Calculator proof of concept', () => {
 });
 
 test.describe('Sepsis proof of concept', () => {
-  test('preserves qSOFA, SOFA, and shock scoring', async ({ page }) => {
+  test('provides SIRS screening and preserves qSOFA, SOFA, and shock scoring', async ({ page }) => {
     await page.goto('/sepsis/');
+
+    await page.check('#s-temp');
+    await page.check('#s-hr');
+    await expect(page.locator('#sirs-badge')).toHaveText('2 / 4');
+    await expect(page.locator('#sirs-result')).toContainText('Screen positive');
 
     await page.check('#q-rr');
     await page.check('#q-ams');

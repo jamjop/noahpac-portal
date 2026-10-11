@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Opioid equianalgesic conversion with CDC morphine milligram equivalent calculation and cross-tolerance adjustment.">
-  <title>Opioid Conversion — Noah PA-C</title>
+  <meta name="description" content="Opioid morphine milligram equivalent estimator with CDC conversion factors and clinical cautions.">
+  <title>Opioid MME Estimator — Noah PA-C</title>
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
   <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="clinical-app medication-tool opioid-app">
-<a class="skip-link" href="#main-content">Skip to opioid converter</a>
+<a class="skip-link" href="#main-content">Skip to opioid MME estimator</a>
 
 <header class="app-header app-header--unified">
   <div class="app-header__inner">
@@ -37,8 +37,8 @@
     </div>
     <div class="app-header__title">
       <p class="app-header__eyebrow">Medication Tools</p>
-      <h1>Opioid Conversion</h1>
-      <p class="app-header__lede">Estimate daily morphine milligram equivalents and apply an incomplete cross-tolerance reduction when rotating opioids.</p>
+      <h1>Opioid MME Estimator</h1>
+      <p class="app-header__lede">Estimate a current regimen’s daily morphine milligram equivalents for risk context—not for selecting the dose of another opioid.</p>
     </div>
   </div>
 </header>
@@ -76,49 +76,21 @@
       </div>
     </section>
 
-    <section class="tool-card criterion" aria-labelledby="target-medication-title">
-      <div class="tool-card__header c-header">
-        <span class="tool-card__marker c-letter" aria-hidden="true">2</span>
-        <div class="tool-card__heading">
-          <h2 id="target-medication-title">Target medication</h2>
-          <p>Choose the target opioid, route, and a patient-appropriate cross-tolerance reduction.</p>
-        </div>
-      </div>
-      <div class="clinical-form-grid field-grid">
-        <div class="clinical-field field">
-          <label for="toDrug">Target opioid</label>
-          <select id="toDrug"></select>
-        </div>
-        <div class="clinical-field field" id="toRouteField">
-          <label for="toRoute">Route</label>
-          <select id="toRoute"></select>
-        </div>
-        <div class="clinical-field clinical-field--full field full-width">
-          <label for="reduction">Cross-tolerance reduction</label>
-          <select id="reduction">
-            <option value="0">None (0%) — same drug or route</option>
-            <option value="25" selected>25% — standard rotation</option>
-            <option value="50">50% — high MME, frail, or elderly</option>
-          </select>
-        </div>
-      </div>
+    <section class="clinical-caution" aria-label="MME limitation">
+      <strong>Do not use MME to set a replacement opioid dose.</strong> CDC conversion factors estimate risk from the current regimen. Opioid rotation requires an individualized, substantially lower starting dose because cross-tolerance is incomplete and conversion ratios are imprecise.
     </section>
   </div>
 
   <aside class="results-rail result-col" aria-labelledby="conversion-summary-title">
     <div class="results-rail__intro">
       <p class="results-rail__eyebrow">Live calculation</p>
-      <h2 id="conversion-summary-title">Conversion summary</h2>
+      <h2 id="conversion-summary-title">Regimen summary</h2>
     </div>
     <section class="result-panel" aria-labelledby="current-mme-title">
       <h3 class="result-panel-head" id="current-mme-title">Current MME</h3>
       <div id="currentMme" class="result-panel-body mme-display" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
     </section>
-    <section class="result-panel" aria-labelledby="converted-dose-title">
-      <h3 class="result-panel-head" id="converted-dose-title">Converted dose</h3>
-      <div id="convResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
-    </section>
-    <p class="results-note">Conversions are estimates. Verify the target regimen, formulation, organ function, and monitoring plan before prescribing.</p>
+    <p class="results-note">MME is one risk signal, not a prescribing threshold or equianalgesic target. Consider formulation, organ function, concurrent sedatives, tolerance, and monitoring.</p>
   </aside>
 
   <section class="reference-card ref-card" aria-labelledby="equianalgesic-reference-title">
@@ -136,7 +108,7 @@
   <p class="last-checked"></p>
   <div class="app-footer__source">
     <div class="clinical-caution disclaimer-box">
-      <strong>Clinical caution required.</strong> Equianalgesic conversions are approximations based on population averages. Individual responses vary significantly. Always apply clinical judgment, reassess frequently, and titrate to effect. When rotating opioids, use the lowest reasonable conversion ratio and adjust for incomplete cross-tolerance. Consult pain management or palliative care for complex patients.
+      <strong>Clinical caution required.</strong> MME conversions are approximations based on population averages. Do not use the calculated MME to determine the dose of another opioid. Individual responses and cross-tolerance vary substantially; consult pain management, palliative care, or addiction medicine for complex transitions.
     </div>
     <p class="source-note">Conversion factors and MME thresholds from the CDC 2022 Clinical Practice Guideline for Prescribing Opioids for Pain, FDA labeling, and clinical references. Not medical advice.</p>
   </div>

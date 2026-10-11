@@ -29,17 +29,11 @@ const FREQS = [
 
 function populateSelects() {
   const fromDrug = document.getElementById('fromDrug');
-  const toDrug   = document.getElementById('toDrug');
   for (const op of OPIOIDS) {
     const o1 = document.createElement('option');
     o1.value = op.id; o1.textContent = op.name;
     fromDrug.appendChild(o1);
-    const o2 = document.createElement('option');
-    o2.value = op.id; o2.textContent = op.name;
-    toDrug.appendChild(o2);
   }
-  // default "to" to a different drug
-  toDrug.selectedIndex = 1;
 
   const fromFreq = document.getElementById('fromFreq');
   fromFreq.innerHTML = '';
@@ -51,7 +45,6 @@ function populateSelects() {
   }
 
   populateRoutes('fromDrug', 'fromRoute', 'fromUnit');
-  populateRoutes('toDrug', 'toRoute', null);
   buildRefTable();
 }
 
@@ -104,10 +97,6 @@ function calcAndRender() {
   const fromDose = parseFloat(document.getElementById('fromDose').value);
   const freq = parseInt(document.getElementById('fromFreq').value);
 
-  const toOp = OPIOIDS.find(o => o.id === document.getElementById('toDrug').value);
-  const toRoute = document.getElementById('toRoute').value;
-  const reduction = parseInt(document.getElementById('reduction').value) / 100;
-
   // ── Current MME display ──
   const currentMmeEl = document.getElementById('currentMme');
 
@@ -133,68 +122,6 @@ function calcAndRender() {
     }
   }
 
-  // ── Conversion display ──
-  const convEl = document.getElementById('convResult');
-
-  if (toOp && toOp.special) {
-    convEl.innerHTML = specialNote(toOp.special);
-    return;
-  }
-
-  const fromMme = fromOp && !fromOp.special ? getMME(fromOp, fromRoute, fromDose, freq) : null;
-
-  if (fromMme === null || isNaN(fromMme) || !toOp) {
-    convEl.innerHTML = '<span class="mme-placeholder">Enter current dose to calculate conversion</span>';
-    return;
-  }
-
-  const isIVto  = toRoute === 'IV / SC';
-  const mme_to  = isIVto ? toOp.mme_iv : toOp.mme_oral;
-
-  if (!mme_to) {
-    convEl.innerHTML = '<span class="mme-placeholder">Route not applicable for this conversion</span>';
-    return;
-  }
-
-  const targetMme = fromMme * (1 - reduction);
-
-  if (toOp.patch) {
-    // convert MME/day to mcg/hr
-    const mcgHr = targetMme / toOp.mme_td;
-    const availablePatches = [12, 25, 37, 50, 62, 75, 100];
-    const nearest = availablePatches.reduce((a, b) => Math.abs(b - mcgHr) < Math.abs(a - mcgHr) ? b : a);
-    convEl.innerHTML = `
-      <div class="conv-drug">${esc(toOp.name)}</div>
-      <div class="conv-dose">${mcgHr.toFixed(0)} mcg/hr</div>
-      <div class="conv-detail">Nearest standard patch size: ${esc(String(nearest))} mcg/hr<br>
-        Equianalgesic to ${targetMme.toFixed(1)} MME/day${reduction > 0 ? ` (after ${(reduction*100).toFixed(0)}% cross-tolerance reduction from ${fromMme.toFixed(1)} MME/day)` : ''}</div>
-      <div class="conv-warning">Verify titration from short-acting opioids; allow 12–24h overlap for full patch onset.</div>`;
-    return;
-  }
-
-  // standard oral/IV conversion
-  const totalDailyMg = targetMme / mme_to;
-  const roundedDose  = Math.round(totalDailyMg * 10) / 10;
-
-  // suggest a per-dose split
-  const suggestedFreqs = toOp.patch ? [] : FREQS.filter(f => f.val >= 2 && f.val <= 4);
-  const perDoses = suggestedFreqs.map(f => ({
-    freq: f.label,
-    dose: (totalDailyMg / f.val).toFixed(1),
-  }));
-
-  const perDoseRows = perDoses.map(p =>
-    `<span>${esc(p.dose)} mg ${esc(toRoute)} ${esc(p.freq)}</span>`
-  ).join('  ·  ');
-
-  convEl.innerHTML = `
-    <div class="conv-drug">${esc(toOp.name)} (${esc(toRoute)})</div>
-    <div class="conv-dose">${esc(String(roundedDose))} mg/day total</div>
-    <div class="conv-detail">
-      ${esc(targetMme.toFixed(1))} MME/day${reduction > 0 ? ` (${(reduction*100).toFixed(0)}% reduction applied from ${esc(fromMme.toFixed(1))} MME/day)` : ''}
-      ${perDoseRows ? `<br><strong>Divided dosing:</strong> ${perDoseRows}` : ''}
-    </div>
-    ${reduction === 0 ? '<div class="conv-warning">No cross-tolerance reduction applied. Consider 25–50% reduction when rotating opioids in clinical practice.</div>' : ''}`;
 }
 
 function specialNote(type) {
@@ -246,13 +173,12 @@ function buildRefTable() {
 }
 
 function wireListeners() {
-  const ids = ['fromDrug','fromRoute','fromDose','fromFreq','toDrug','toRoute','reduction'];
+  const ids = ['fromDrug','fromRoute','fromDose','fromFreq'];
   for (const id of ids) {
     const el = document.getElementById(id);
     if (!el) continue;
     el.addEventListener('change', () => {
       if (id === 'fromDrug') { populateRoutes('fromDrug','fromRoute','fromUnit'); }
-      if (id === 'toDrug')   { populateRoutes('toDrug','toRoute', null); }
       calcAndRender();
     });
     el.addEventListener('input', calcAndRender);

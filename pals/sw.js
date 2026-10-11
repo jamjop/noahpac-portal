@@ -1,9 +1,9 @@
-const CACHE = 'pals-v15';
+const CACHE = 'pals-v16';
 const ASSETS = [
   '/pals/',
   '/pals/index.html',
   '/pals/style.css?v=3',
-  '/pals/app.js?v=3',
+  '/pals/app.js?v=4',
   '/shared.css',
   '/assets/app-shell.js',
   '/assets/fonts.css',

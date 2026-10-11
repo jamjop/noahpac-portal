@@ -1,9 +1,9 @@
-const CACHE = 'als-v16';
+const CACHE = 'als-v17';
 const ASSETS = [
   '/als/',
   '/als/index.html',
   '/als/style.css?v=3',
-  '/als/app.js?v=3',
+  '/als/app.js?v=4',
   '/shared.css',
   '/assets/app-shell.js',
   '/assets/fonts.css',

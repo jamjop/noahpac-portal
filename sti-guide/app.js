@@ -83,7 +83,7 @@ const DATA = [
     pregnancy:[
       {drug:"Benzathine Penicillin G", dose:"2.4 million units IM × 1 dose", note:"Desensitize if penicillin-allergic — no alternatives in pregnancy"},
     ],
-    notes:"Jarisch-Herxheimer reaction common in first 24h — fever, chills, myalgia. Treat partners exposed within 90 days. Follow-up RPR at 6 and 12 months. SUPPLY ALERT (Apr 2026): Bicillin L-A shortage — next shipment not expected until Oct 2026, recovery Q4 2027. Authorized import alternatives: Lentocilin (Mar 2026) or Extencillin. Prioritize remaining Bicillin L-A for pregnant patients. Jurisdiction-level guidance via CDC at stdshortages@cdc.gov."
+    notes:"Jarisch-Herxheimer reaction common in first 24h — fever, chills, myalgia. Treat partners exposed within 90 days. Follow-up RPR at 6 and 12 months. SUPPLY ALERT (CDC updated Sep 2026): Bicillin L-A shortage remains active; anticipated recovery Q4 2027. Prioritize benzathine penicillin G for pregnant patients and follow current CDC/FDA availability guidance; notify CDC at stdshortages@cdc.gov of low jurisdictional inventory."
   },
   {
     cat:"Syphilis", name:"Syphilis — Late Latent (>1 year or unknown duration) / Tertiary (non-neurosyphilis)",
@@ -96,7 +96,7 @@ const DATA = [
     pregnancy:[
       {drug:"Benzathine Penicillin G", dose:"2.4 million units IM weekly × 3 doses", note:"Desensitize if allergic"},
     ],
-    notes:"CSF exam recommended if neurological symptoms, treatment failure, or HIV with late syphilis. SUPPLY ALERT (Apr 2026): Bicillin L-A shortage — 3-dose course requires 7.2 million units total; prioritize stock for pregnant patients. Authorized import alternatives: Lentocilin or Extencillin (contact stdshortages@cdc.gov for access)."
+    notes:"CSF exam recommended if neurologic symptoms or treatment failure; apply current CDC guidance for patients with HIV. SUPPLY ALERT (CDC updated Sep 2026): Bicillin L-A shortage remains active with anticipated recovery Q4 2027; prioritize stock for pregnant patients and consult current CDC/FDA availability guidance."
   },
   {
     cat:"Syphilis", name:"Neurosyphilis / Ocular / Otosyphilis",
@@ -299,10 +299,10 @@ const DATA = [
   {
     cat:"Prevention", name:"Doxy-PEP (STI Post-Exposure Prophylaxis)",
     recommended:[
-      {drug:"Doxycycline", dose:"200 mg PO once, as soon as possible and within 72 hours of condomless sex", note:"Max 1 dose per 24-hour period. Take with food to reduce GI upset."},
+      {drug:"Doxycycline", dose:"200 mg PO once, as soon as possible and within 72 hours after oral, vaginal, or anal sex", note:"Max 200 mg per 24 hours. Take with water; remain upright for 30 minutes. Separate from dairy, antacids, iron, calcium, magnesium, or sodium bicarbonate by at least 2 hours."},
     ],
     alternative:[],
-    notes:"Indicated for MSM and transgender women who are HIV-positive or on PrEP AND had ≥1 bacterial STI (chlamydia, gonorrhea, or syphilis) in the past 12 months. Reduces chlamydia by ~88%, gonorrhea by ~55%, syphilis by ~79% (DoxyPEP and DOXYVAC trials). NOT recommended for cisgender women (insufficient efficacy data as of 2023). STI testing at baseline and every 3–6 months during use. Concern for antimicrobial resistance with widespread use. Source: CDC 2023 interim guidance (MMWR 2023;72:1077–1082)."
+    notes:"CDC recommends counseling and offering doxy-PEP through shared decision-making to gay, bisexual, and other MSM and transgender women with syphilis, chlamydia, or gonorrhea diagnosed in the prior 12 months, regardless of HIV or PrEP status. Test at anatomic sites of exposure and for syphilis at baseline and every 3–6 months; reassess ongoing need every 3–6 months. Evidence is insufficient for CDC to recommend doxy-PEP in other populations. Discuss adverse effects, drug interactions, and antimicrobial-resistance uncertainty. Source: CDC Clinical Guidelines, 2024 (MMWR 73[RR-2]:1–8)."
   },
 ];
 

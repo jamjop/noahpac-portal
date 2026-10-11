@@ -44,4 +44,27 @@ test.describe('Review cadence labels', () => {
     await expect(cadence.locator('.review-status__dot')).toBeVisible();
     await expect(cadence).toHaveAttribute('title', /Last checked for updates/);
   });
+
+  test('shows an explicit pending state when a source change awaits review', async ({ page }) => {
+    await page.route('**/calculators/last_checked.json', (route) => route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ date: '2026-10-10', status: 'changed' }),
+    }));
+    await page.goto('/calculators/');
+    const cadence = page.locator('.app-header__title > .review-status');
+    await expect(cadence).toHaveClass(/needs-review/);
+    await expect(cadence).toContainText('Clinical update review pending');
+    await expect(cadence).not.toHaveClass(/stale/);
+  });
+
+  test('shows a distinct error state when the automated check fails', async ({ page }) => {
+    await page.route('**/calculators/last_checked.json', (route) => route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ date: '2026-10-10', status: 'error' }),
+    }));
+    await page.goto('/calculators/');
+    const cadence = page.locator('.app-header__title > .review-status');
+    await expect(cadence).toHaveClass(/check-error/);
+    await expect(cadence).toContainText('Update check needs attention');
+  });
 });

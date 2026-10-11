@@ -98,7 +98,7 @@ const SECTIONS = [
         ${drugCard({name:'Epinephrine', tag:'Every 3–5 min', tagColor:'',
           rows:[
             {l:'Dose',v:'<strong>1 mg IV/IO</strong>'},
-            {l:'Timing',v:'Give ASAP after 1st or 2nd shock; repeat q3–5 min'},
+            {l:'Timing',v:'Give after the 2nd shock; repeat q3–5 min'},
             {l:'Route',v:'IV push; follow with 20 mL NS flush'},
           ],
           note:'No proven benefit to high-dose epi; standard 1 mg dosing throughout arrest'
@@ -125,12 +125,12 @@ const SECTIONS = [
         <ul>
           <li><strong>H</strong>ypovolemia — IV/IO fluid bolus</li>
           <li><strong>H</strong>ypoxia — optimize ventilation; check ETT/SGA placement</li>
-          <li><strong>H</strong>ydrogen ion (acidosis) — sodium bicarbonate if severe or prolonged arrest</li>
+          <li><strong>H</strong>ydrogen ion (acidosis) — optimize high-quality CPR and ventilation; bicarbonate is reserved for specific indications</li>
           <li><strong>H</strong>ypo/Hyperkalemia — calcium chloride for hyperkalemia; replete for hypokalemia</li>
           <li><strong>H</strong>ypothermia — active rewarming; continue CPR until core temp &ge;30°C</li>
           <li><strong>T</strong>ension pneumothorax — needle decompression 2nd ICS MCL or 4th/5th ICS AAL</li>
           <li><strong>T</strong>amponade (cardiac) — pericardiocentesis; bedside ultrasound if available</li>
-          <li><strong>T</strong>oxins — specific antidotes (e.g., naloxone, flumazenil, sodium bicarb for TCA)</li>
+          <li><strong>T</strong>oxins — provide supportive care and use a specific antidote when indicated (e.g., naloxone for opioid toxicity; sodium bicarbonate for sodium-channel blockade)</li>
           <li><strong>T</strong>hrombosis (pulmonary) — thrombolytics (tPA 50 mg IV); continue CPR 60–90 min after</li>
           <li><strong>T</strong>hrombosis (coronary) — cath lab activation for STEMI suspected cause of arrest</li>
         </ul>`
@@ -171,9 +171,9 @@ const SECTIONS = [
       ${callout('danger', 'Key Differences from VF/pVT', `
         <ul>
           <li><strong>No defibrillation</strong> — asystole and PEA are non-shockable; shocking asystole is harmful</li>
-          <li>Epinephrine is the <strong>only proven drug</strong> for asystole/PEA — give ASAP after access</li>
+          <li><strong>Give epinephrine as soon as feasible</strong> for asystole/PEA and repeat every 3–5 minutes</li>
           <li>Atropine is <strong>NOT recommended</strong> for asystole or PEA (removed from AHA guidelines 2010)</li>
-          <li>Sodium bicarbonate may be used for prolonged arrest, known hyperkalemia, or TCA toxicity</li>
+          <li>Do not give sodium bicarbonate routinely; reserve it for selected causes such as sodium-channel blocker toxicity or hyperkalemia</li>
           <li>Focus on <strong>identifying and treating reversible causes</strong> — PEA is often correctable</li>
         </ul>`
       )}
@@ -182,7 +182,7 @@ const SECTIONS = [
         <ul>
           <li><strong>H</strong>ypovolemia — most common PEA cause; aggressive IV/IO fluid resuscitation</li>
           <li><strong>H</strong>ypoxia — verify airway and ventilation; check SpO2 and ETCO2</li>
-          <li><strong>H</strong>ydrogen ion (acidosis) — sodium bicarb 1 mEq/kg IV/IO if suspected</li>
+          <li><strong>H</strong>ydrogen ion (acidosis) — optimize CPR and ventilation; do not give bicarbonate routinely</li>
           <li><strong>H</strong>ypo/Hyperkalemia — EKG changes; calcium chloride for hyperK; replace for hypoK</li>
           <li><strong>H</strong>ypothermia — core temp; active rewarming; ECMO if available for severe hypothermia</li>
           <li><strong>T</strong>ension pneumothorax — absent breath sounds, tracheal deviation; needle decompression</li>
@@ -362,7 +362,7 @@ const SECTIONS = [
 
       ${phase('Airway & Breathing', [
         'If not following commands → advanced airway (ETT preferred); confirm with waveform capnography',
-        'Titrate FiO₂ to maintain <strong>SpO₂ 92–98%</strong> — avoid hyperoxia (SpO₂ &gt;98% may worsen outcome)',
+        'Titrate FiO₂ to maintain <strong>SpO₂ 90–98%</strong> (PaO₂ 60–105 mmHg) once reliable measurement is available',
         'Ventilate to <strong>PaCO₂ 35–45 mmHg</strong> (ETCO₂ ~35–40 mmHg) — avoid hypo- and hyperventilation',
         'Rate: 10 breaths/min with advanced airway; avoid excessive minute ventilation',
       ])}
@@ -370,22 +370,22 @@ const SECTIONS = [
       ${phase('Circulation', [
         'Target <strong>SBP &ge;90 mmHg</strong> (MAP &ge;65 mmHg); treat hypotension aggressively',
         'IV fluid bolus (NS 1–2 L) for hypovolemia; vasopressors if fluid-refractory',
-        '<strong>12-lead ECG immediately</strong> after ROSC — identify STEMI or presumed new LBBB',
-        'If STEMI or suspected cardiac cause: <strong>emergent coronary angiography</strong> (cath lab activation) regardless of mental status',
+        '<strong>12-lead ECG</strong> after ROSC — assess for ischemia or arrhythmia; new LBBB alone is not diagnostic of STEMI',
+        'Consider emergency coronary intervention for persistent ST elevation, cardiogenic shock, recurrent/refractory ventricular arrhythmias, or severe myocardial ischemia',
         'Vasopressors: norepinephrine 0.1–0.5 mcg/kg/min IV; epinephrine 0.1–0.5 mcg/kg/min IV; dopamine 5–10 mcg/kg/min IV',
       ])}
 
       ${phase('Targeted Temperature Management (TTM)', [
         'Indication: adult comatose (not following commands) after ROSC from cardiac arrest',
-        'Target temperature: <strong>32–36°C</strong> — select and maintain for at least <strong>24 hours</strong>',
-        'Prevent fever (temperature &gt;37.7°C) for at least <strong>72 hours</strong> after ROSC',
-        'Methods: cooling blankets, ice packs, endovascular cooling catheters, cold IV fluids',
-        'Rewarm slowly: 0.25°C/hour if below target; avoid hyperthermia on rewarming',
+        'Use a protocolized target between <strong>32–37.5°C</strong> and maintain temperature control for at least <strong>36 hours</strong>',
+        'Prevent fever during and after the active temperature-control period',
+        'Methods may include surface or endovascular temperature-control systems; do not use routine rapid cold-IV-fluid infusion for prehospital cooling',
+        'If rewarming from spontaneous or induced hypothermia, avoid rapid rewarming (&gt;0.5°C/hour)',
         'Neuromuscular blockade may be required to prevent shivering during cooling',
       ])}
 
       ${phase('Disability & Metabolic', [
-        'Glucose: maintain <strong>144–180 mg/dL</strong> — avoid hypoglycemia (&lt;70 mg/dL); tight control not beneficial',
+        'Avoid hypoglycemia (&lt;70 mg/dL) and hyperglycemia (&gt;180 mg/dL); tight glucose control is not beneficial',
         'Seizures: monitor for clinical and subclinical seizures; treat with levetiracetam, valproate, or phenytoin',
         'Neurologic prognostication: not before 72 hours post-ROSC (or 72 hours after TTM completion)',
         'Sedation and analgesia: fentanyl + propofol or midazolam infusion for mechanically ventilated patients',
@@ -394,10 +394,10 @@ const SECTIONS = [
       ${callout('ok', 'Goals of Care', `
         <ul>
           <li><strong>MAP &ge;65 mmHg</strong> (some guidelines target 80–100 mmHg for neuroprotection)</li>
-          <li><strong>SpO₂ 92–98%</strong> (avoid hyperoxia)</li>
+          <li><strong>SpO₂ 90–98%</strong> (PaO₂ 60–105 mmHg)</li>
           <li><strong>ETCO₂ 35–40 mmHg</strong> (PaCO₂ 35–45 mmHg)</li>
-          <li><strong>Temperature 32–36°C</strong> × 24+ hours (comatose patients)</li>
-          <li><strong>Glucose 144–180 mg/dL</strong></li>
+          <li><strong>Temperature 32–37.5°C</strong> for at least 36 hours (patients not following commands)</li>
+          <li>Avoid glucose &lt;70 or &gt;180 mg/dL</li>
           <li>12-lead ECG → cath lab if STEMI or suspected coronary cause</li>
           <li>ICU admission; continuous EEG monitoring if seizure concern</li>
         </ul>`
@@ -549,7 +549,7 @@ const SECTIONS = [
       ${phase('Initial Response (Lay Rescuer / Prehospital)', [
         'Call 911 / activate EMS',
         '<strong>Rescue breathing</strong> with barrier device or BVM if available — opioid overdose is primarily respiratory, not cardiac',
-        'Administer <strong>naloxone intranasally (IN)</strong>: 4 mg (2 mg per nostril using mucosal atomizer)',
+        'Administer <strong>naloxone intranasally (IN)</strong>: one 4 mg nasal-spray device into one nostril',
         'If no response in 2–3 minutes: repeat naloxone dose; continue rescue breathing',
         'If ROSC / breathing resumes: recovery position; do not leave alone — opioid effect may outlast naloxone',
       ])}
@@ -561,7 +561,7 @@ const SECTIONS = [
         'Repeat every 2–3 min up to 10 mg if no response (consider non-opioid etiology)',
         'Cardiac monitoring: opioid overdose can cause bradycardia; arrest → standard ACLS',
         'If no IV/IO access: naloxone IM 0.4–2 mg (deltoid or anterolateral thigh)',
-        'Monitor minimum <strong>1 hour</strong> after last naloxone dose for re-narcotization',
+        'Continue observation for recurrent sedation or respiratory depression; duration depends on the opioid, route, response, co-ingestants, and local protocol',
       ])}
 
       <div class="drug-grid">
@@ -587,7 +587,7 @@ const SECTIONS = [
       )}
 
       ${callout('info', 'Bystander Naloxone Programs', `
-        <p>Co-prescribe naloxone with all chronic opioid prescriptions, high-dose opioids, and patients with SUD. Ensure patient and caregivers know how to use.</p>
+        <p>Offer naloxone and overdose education when opioid-related risk is increased, including opioid use disorder, prior overdose, higher dosages, concurrent sedatives, or loss of tolerance.</p>
         <ul>
           <li>Narcan nasal spray 4 mg/spray — FDA-approved; available OTC in all 50 states</li>
           <li>NEXT Distro, NEXT Step programs for harm reduction distribution</li>

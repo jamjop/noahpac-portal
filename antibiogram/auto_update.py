@@ -39,7 +39,7 @@ def _write_report_result(status: str, findings: list) -> None:
         'ran_at': _dt.datetime.now().isoformat(timespec='minutes'),
     }
     today = _dt.date.today()
-    report_file = Path(f"/tmp/quarterly-report-{today}.json")
+    report_file = Path(f"/tmp/antibiogram-report-{today}.json")
     try:
         existing = json.loads(report_file.read_text()) if report_file.exists() else []
         existing.append(entry)
@@ -49,17 +49,10 @@ def _write_report_result(status: str, findings: list) -> None:
 
 
 def _write_last_checked(status: str) -> None:
-    """Record that a check ran, for the frontend's 'last checked' tag."""
-    import datetime as _dt
-    f = LIVE_DIR / "last_checked.json"
-    try:
-        f.write_text(json.dumps({
-            "date": _dt.date.today().isoformat(),
-            "status": status,
-        }, indent=2))
-        f.chmod(0o644)
-    except Exception as exc:
-        print(f"WARNING: could not write last_checked.json: {exc}", file=sys.stderr)
+    """Record freshness without clearing an unresolved clinical review."""
+    sys.path.insert(0, str(DIR.parent / "lib"))
+    import pubmed_watcher as pw
+    pw.save_last_checked(LIVE_DIR, status)
 
 
 def _write_heartbeat() -> None:

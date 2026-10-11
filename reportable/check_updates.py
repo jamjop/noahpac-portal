@@ -17,11 +17,14 @@ import urllib.request
 from datetime import date
 from pathlib import Path
 
+APP_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(APP_DIR.parent / "lib"))
+import pubmed_watcher as pw
+
 PDF_URL  = "https://www.hhs.nd.gov/sites/default/files/documents/DOH%20Legacy/reportable-conditions-exclusion.pdf"
 PAGE_URL = "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/reportable-conditions"
 PUSHOVER_API = "https://api.pushover.net/1/messages.json"
-STATE_FILE   = Path(__file__).resolve().parent / "known_state.json"
-LAST_CHECKED_FILE = Path(__file__).resolve().parent / "last_checked.json"
+STATE_FILE   = APP_DIR / "known_state.json"
 
 
 def get_pdf_headers(url: str) -> dict:
@@ -47,12 +50,7 @@ def save_state(state: dict) -> None:
 
 
 def save_last_checked(status: str) -> None:
-    """Record that a check ran, for the frontend's 'last checked' tag."""
-    LAST_CHECKED_FILE.write_text(json.dumps({
-        "date": date.today().isoformat(),
-        "status": status,
-    }, indent=2))
-    LAST_CHECKED_FILE.chmod(0o644)
+    pw.save_last_checked(APP_DIR, status)
 
 
 def write_heartbeat(job: str) -> None:
@@ -116,7 +114,10 @@ def main() -> int:
         print(f"No change detected ({date.today()})")
         save_state(current)
         save_last_checked("no_change")
-        write_heartbeat("reportable")
+        pw.write_quarterly_result(
+            "reportable", "ND Reportable Conditions", PAGE_URL,
+            "no_change", [{"detail": "Official ND HHS PDF metadata unchanged"}],
+        )
         return 0
 
     message = (
@@ -130,7 +131,10 @@ def main() -> int:
     push_notify(user, token, "ND Reportable Conditions Update", message)
     save_state(current)
     save_last_checked("changed")
-    write_heartbeat("reportable")
+    pw.write_quarterly_result(
+        "reportable", "ND Reportable Conditions", PAGE_URL,
+        "changed", [{"detail": "Official ND HHS PDF metadata changed; clinical review required"}],
+    )
     print("Notification sent.")
     return 0
 

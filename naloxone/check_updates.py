@@ -18,6 +18,10 @@ import urllib.request
 from datetime import date
 from pathlib import Path
 
+APP_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(APP_DIR.parent / "lib"))
+import pubmed_watcher as pw
+
 SOURCES = {
     "nd_bh_data": {
         "url": "https://www.hhs.nd.gov/behavioral-health/data",
@@ -27,8 +31,7 @@ SOURCES = {
 }
 
 PUSHOVER_API = "https://api.pushover.net/1/messages.json"
-STATE_FILE   = Path(__file__).resolve().parent / "known_state.json"
-LAST_CHECKED_FILE = Path(__file__).resolve().parent / "last_checked.json"
+STATE_FILE   = APP_DIR / "known_state.json"
 
 OVERDOSE_KEYWORDS = ["overdose", "naloxone", "opioid", "fentanyl", "death", "fatal"]
 
@@ -66,12 +69,7 @@ def save_state(state: dict) -> None:
 
 
 def save_last_checked(status: str) -> None:
-    """Record that a check ran, for the frontend's 'last checked' tag."""
-    LAST_CHECKED_FILE.write_text(json.dumps({
-        "date": date.today().isoformat(),
-        "status": status,
-    }, indent=2))
-    LAST_CHECKED_FILE.chmod(0o644)
+    pw.save_last_checked(APP_DIR, status)
 
 
 def write_heartbeat(job: str) -> None:
@@ -122,6 +120,7 @@ def main() -> int:
     known = load_state()
     new_state = {}
     all_new = []
+    errors = []
 
     for src_id, src in SOURCES.items():
         print(f"Fetching {src['url']} …")
@@ -130,6 +129,7 @@ def main() -> int:
         except Exception as exc:
             print(f"  WARNING: could not fetch {src['url']}: {exc}", file=sys.stderr)
             new_state[src_id] = known.get(src_id, [])
+            errors.append(f"{src['label']}: {exc}")
             continue
 
         current = extract_links(html, src["pattern"])
@@ -142,11 +142,23 @@ def main() -> int:
         for f in sorted(new_files):
             all_new.append((src["label"], f, is_overdose_related(f)))
 
+    if errors:
+        save_state(new_state)
+        save_last_checked("error")
+        pw.write_quarterly_result(
+            "naloxone", "ND Overdose / Naloxone Data", SOURCES["nd_bh_data"]["url"],
+            "error", [{"detail": error} for error in errors],
+        )
+        return 1
+
     if not all_new:
         print(f"No new files detected ({date.today()})")
         save_state(new_state)
         save_last_checked("no_change")
-        write_heartbeat("naloxone")
+        pw.write_quarterly_result(
+            "naloxone", "ND Overdose / Naloxone Data", SOURCES["nd_bh_data"]["url"],
+            "no_change", [{"detail": "No new ND HHS overdose or naloxone files detected"}],
+        )
         return 0
 
     lines = [f"• [{label}] {url.split('/')[-1]}" for label, url, _ in all_new]
@@ -166,7 +178,10 @@ def main() -> int:
                 SOURCES["nd_bh_data"]["url"])
     save_state(new_state)
     save_last_checked("changed")
-    write_heartbeat("naloxone")
+    pw.write_quarterly_result(
+        "naloxone", "ND Overdose / Naloxone Data", SOURCES["nd_bh_data"]["url"],
+        "changed", [{"detail": f"Detected {len(all_new)} new ND HHS file(s); clinical review required"}],
+    )
     print("Notification sent.")
     return 0
 

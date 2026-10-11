@@ -1,0 +1,15 @@
+[Unit]
+Description=Noah PA-C quarterly clinical-source monitoring
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/noahpac-monitor.env
+ExecStart=/usr/bin/flock -n /run/noahpac-quarterly-monitor.lock /usr/bin/python3 /var/www/noahpac-portal/scripts/run-quarterly-monitoring.py
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

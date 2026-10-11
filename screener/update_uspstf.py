@@ -30,6 +30,9 @@ import urllib.request
 from datetime import date
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "lib"))
+import pubmed_watcher as pw
+
 API_URL       = "https://data.uspreventiveservicestaskforce.org/api/json"
 KEEP_GRADES   = {"A", "B", "C"}
 SCREENER_URL  = "https://noahpac.com/screener/"
@@ -198,6 +201,33 @@ def main() -> int:
 
     data = transform(raw)
 
+    # Guard the live screener against upstream schema drift or a suspiciously
+    # incomplete response. A held candidate is available for human inspection,
+    # while nginx continues serving the prior known-good dataset.
+    new_count = data["meta"]["count"]
+    old_count = 0
+    if out_path.exists():
+        try:
+            old_count = len(json.loads(out_path.read_text()).get("recs", []))
+        except (json.JSONDecodeError, OSError):
+            old_count = 0
+    count_change = abs(new_count - old_count) / old_count if old_count else 0
+    if new_count < 20 or (old_count and count_change > 0.35):
+        pending_dir = out_path.parent / "pending"
+        pending_dir.mkdir(parents=True, exist_ok=True)
+        pending_path = pending_dir / "uspstf.json"
+        pending_path.write_text(json.dumps(data, indent=1) + "\n")
+        pending_path.chmod(0o600)
+        detail = (
+            f"Held USPSTF candidate for review: {new_count} recommendations "
+            f"(previously {old_count}); live data unchanged"
+        )
+        print(f"HELD: {detail}", file=sys.stderr)
+        _write_report_result("held_for_review", [{"detail": detail}])
+        pw.save_last_checked(script_dir, "held_for_review")
+        _write_heartbeat()
+        return 0
+
     # atomic write: never leave a half-written file for nginx to serve
     fd, tmp = tempfile.mkstemp(dir=out_path.parent, suffix=".tmp")
     with os.fdopen(fd, "w") as f:
@@ -207,9 +237,10 @@ def main() -> int:
 
     count = data['meta']['count']
     print(f"OK: wrote {count} recommendations -> {out_path}")
-    _write_report_result('no_change', [
+    _write_report_result('refreshed', [
         {'detail': f"Refreshed {count} A/B/C-grade USPSTF recommendations from Prevention TaskForce API"},
     ])
+    pw.save_last_checked(script_dir, 'refreshed')
     _write_heartbeat()
     return 0
 

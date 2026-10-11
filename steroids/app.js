@@ -2,11 +2,6 @@
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// Plain-text SIG for whatever taper schedule is currently rendered — kept in
-// sync by taperGuidance() on every re-render, read by the delegated copy
-// button click handler wired in wireListeners().
-let currentSigText = '';
-
 // Corticosteroid equivalency — equiv_dose is the dose (mg) equal to hydrocortisone 20mg.
 // mc = relative mineralocorticoid potency (referenced to hydrocortisone = 1).
 // duration = biologic half-life class. Glucocorticoid potency is not stored
@@ -31,99 +26,9 @@ const FREQS = [
   {label:'QID (4×/day)',    val:4, sig:'four times daily'},
 ];
 
-function freqSigPhrase(freq) {
-  const f = FREQS.find(f => f.val === freq);
-  return f ? f.sig : 'once daily';
-}
-
-function roundClean(n) {
-  return Math.round(n * 100) / 100;
-}
-
 // Physiologic replacement ≈ hydrocortisone 20mg/day ≈ prednisone 5mg/day.
 const PHYSIOLOGIC_PREDNISONE_MG = 5;
 const HIGH_DOSE_PREDNISONE_MG = 20;
-
-// Practical dispensing increments (mg) — taper steps are rounded to these so
-// the generated schedule is clean/prescribable rather than raw percentage
-// math (e.g. "17.3 mg").
-const TAPER_STEP_UNIT = {
-  hydrocortisone: 5, cortisone: 12.5, prednisone: 2.5, prednisolone: 2.5,
-  methylprednisolone: 4, triamcinolone: 4, dexamethasone: 0.5, betamethasone: 0.6,
-};
-
-function roundToStep(dose, step) {
-  return Math.max(step, Math.round(dose / step) * step);
-}
-
-// Builds a step-down schedule in the CURRENT drug (fromSt) — real-world tapers
-// are almost always done in the same agent the patient is already on, not the
-// "Convert To" target (that section is for one-time cross-agent dose lookup,
-// e.g. IV-to-PO at discharge, a separate use case).
-function generateTaperSchedule(startDose, fromSt, duration) {
-  const physiologic = fromSt.equiv_dose;
-  const step = TAPER_STEP_UNIT[fromSt.id] || 1;
-  const ratio = startDose / physiologic;
-
-  // Not enough above physiologic to warrant a multi-step schedule — handled
-  // by the static guidance text instead.
-  if (ratio <= 1.5) return null;
-
-  const numSteps = ratio <= 3 ? 3 : ratio <= 6 ? 4 : 5;
-  // Short courses taper all the way to stop. Long-course, supraphysiologic
-  // tapers stop AT physiologic dose (hold + reassess) rather than zero —
-  // going below physiologic replacement needs individualized judgment, not
-  // an automated schedule.
-  const endsAtZero = duration === 'short';
-  const floor = endsAtZero ? 0 : physiologic;
-  const stepDays = duration === 'short' ? 4 : 7;
-
-  const doses = [];
-  for (let i = 0; i < numSteps; i++) {
-    const frac = numSteps === 1 ? 0 : (numSteps - 1 - i) / (numSteps - 1);
-    doses.push(roundToStep(floor + (startDose - floor) * frac, step));
-  }
-  const uniqueDoses = doses.filter((d, i) => i === 0 || d !== doses[i - 1]);
-  if (uniqueDoses.length < 2) return null;
-
-  return {
-    steps: uniqueDoses.map(d => ({ dose: d, days: stepDays })),
-    endsAtZero,
-    physiologic,
-  };
-}
-
-function formatSigDate(date) {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function buildTaperSig(fromSt, schedule, freq) {
-  const phrase = freqSigPhrase(freq);
-  const lines = [];
-  lines.push(`${fromSt.name.toUpperCase()} TAPER — take by mouth ${phrase}`);
-  lines.push('');
-  const cursor = new Date();
-  for (const step of schedule.steps) {
-    const start = new Date(cursor);
-    const end = new Date(cursor);
-    end.setDate(end.getDate() + step.days - 1);
-    const doseText = freq === 1
-      ? `${step.dose} mg ${phrase}`
-      : `${roundClean(step.dose / freq)} mg ${phrase} (${step.dose} mg/day total)`;
-    lines.push(`${doseText} × ${step.days} days (${formatSigDate(start)}–${formatSigDate(end)})`);
-    cursor.setDate(cursor.getDate() + step.days);
-  }
-  if (schedule.endsAtZero) {
-    lines.push('Then discontinue.');
-  } else {
-    lines.push(`Then hold at ${schedule.physiologic} mg/day (physiologic replacement) and reassess with prescriber for further taper or discontinuation.`);
-  }
-  const totalDays = schedule.steps.reduce((sum, s) => sum + s.days, 0);
-  lines.push('');
-  lines.push(`Total scheduled duration: ${totalDays} days.`);
-  lines.push('Suggested schedule — adjust based on clinical response. Not medical advice.');
-  return lines.join('\n');
-}
 
 function populateSelects() {
   const fromDrug = document.getElementById('fromDrug');
@@ -204,7 +109,7 @@ function calcAndRender() {
       <div class="conv-drug">${esc(toSt.name)}</div>
       <div class="conv-dose">${targetDailyDose.toFixed(2)} mg/day total</div>
       <div class="conv-detail">
-        Equianalgesic to ${hcEquiv.toFixed(1)} mg/day hydrocortisone-equivalent.
+        Equivalent to ${hcEquiv.toFixed(1)} mg/day hydrocortisone.
         ${toSt.mc < fromSt.mc ? '<br><strong>Note:</strong> target agent has lower mineralocorticoid activity — consider fludrocortisone if mineralocorticoid replacement is clinically needed.' : ''}
       </div>`;
   }
@@ -213,14 +118,12 @@ function calcAndRender() {
   const taperEl = document.getElementById('taperResult');
   if (hcEquiv === null || isNaN(hcEquiv)) {
     taperEl.innerHTML = '<span class="mme-placeholder">Enter current dose for guidance</span>';
-    currentSigText = '';
   } else {
-    const fromDailyDose = fromDose * freq;
-    taperEl.innerHTML = taperGuidance(hcEquiv, duration, fromSt, fromDailyDose, freq);
+    taperEl.innerHTML = taperGuidance(hcEquiv, duration);
   }
 }
 
-function taperGuidance(hcEquiv, duration, fromSt, fromDailyDose, freq) {
+function taperGuidance(hcEquiv, duration) {
   const prednisoneEquiv = hcEquiv * (5 / 20);
   let noteHtml;
   let tierLabel;
@@ -228,46 +131,26 @@ function taperGuidance(hcEquiv, duration, fromSt, fromDailyDose, freq) {
   if (duration === 'short') {
     tierLabel = 'Short course (<3 weeks)';
     noteHtml = `<div class="taper-text">
-      <strong>${tierLabel}:</strong> HPA suppression is unlikely regardless of dose. Abrupt discontinuation is generally safe. A brief taper may still be reasonable if stopping risks rebound of the underlying condition (e.g., asthma, autoimmune flare) rather than for adrenal suppression concerns.
+      <strong>${tierLabel}:</strong> The 2024 Endocrine Society/ESE guideline suggests no taper is needed for systemic glucocorticoid therapy lasting less than 3–4 weeks, irrespective of dose. The underlying disease may still require a condition-specific step-down plan.
     </div>`;
   } else if (prednisoneEquiv <= PHYSIOLOGIC_PREDNISONE_MG) {
     tierLabel = 'Physiologic range, ≥3 weeks';
     noteHtml = `<div class="taper-text">
-      <strong>${tierLabel}:</strong> Low HPA suppression risk. Often can discontinue without an extensive taper, but a brief step-down (over 1–2 weeks) is reasonable, especially if therapy has been prolonged.
+      <strong>${tierLabel}:</strong> If the underlying disease is controlled and glucocorticoids are no longer required, either continue a gradual, clinically monitored taper or assess recovery with an 8–9 AM serum cortisol before discontinuation.
     </div>`;
   } else if (prednisoneEquiv < HIGH_DOSE_PREDNISONE_MG) {
     tierLabel = 'Supraphysiologic dose, ≥3 weeks';
     noteHtml = `<div class="taper-text">
-      <strong>${tierLabel}:</strong> Moderate HPA suppression risk. Taper gradually rather than stopping abruptly — reduce by roughly 10–20% every 1–2 weeks, slowing further as the dose approaches physiologic replacement (~5 mg/day prednisone-equivalent). Monitor for adrenal insufficiency symptoms (fatigue, nausea, orthostatic hypotension, arthralgias) during the taper.
+      <strong>${tierLabel}:</strong> Consider tapering only when the underlying disease is controlled and glucocorticoids are no longer required. Tapering can generally proceed faster above the physiologic range, then should slow near 4–6 mg/day prednisone-equivalent. Individualize and monitor for withdrawal or adrenal insufficiency symptoms.
     </div>`;
   } else {
     tierLabel = 'High-dose, prolonged therapy';
     noteHtml = `<div class="taper-text">
-      <strong>${tierLabel}:</strong> Significant HPA suppression risk. Requires a gradual, individualized taper — reduce by ~10–20% every 1–2 weeks while supraphysiologic, then slow further near physiologic range; consider alternate-day dosing in the final phase. Consider AM cortisol or ACTH stimulation testing before complete discontinuation, and endocrinology consultation for complex tapers or if adrenal insufficiency symptoms develop.
+      <strong>${tierLabel}:</strong> Do not stop abruptly. Confirm the underlying disease is controlled before tapering. A clinician-directed taper may proceed faster at high doses and more slowly near 4–6 mg/day prednisone-equivalent; consider changing long-acting agents to hydrocortisone or prednisone when they are no longer needed. At physiologic dosing, use clinical monitoring or an 8–9 AM cortisol to guide discontinuation.
     </div>`;
   }
 
-  const schedule = generateTaperSchedule(fromDailyDose, fromSt, duration);
-  if (!schedule) {
-    currentSigText = '';
-    return noteHtml;
-  }
-
-  currentSigText = buildTaperSig(fromSt, schedule, freq);
-  const phrase = freqSigPhrase(freq);
-  const rows = schedule.steps.map(s => {
-    const doseLabel = freq === 1
-      ? `${esc(String(s.dose))} mg`
-      : `${esc(String(roundClean(s.dose / freq)))} mg <span style="font-size:9.5px;color:var(--ink-muted)">(${esc(String(s.dose))} mg/day)</span>`;
-    return `<tr><td class="mono">${doseLabel}</td><td>${esc(phrase)} × ${s.days} days</td></tr>`;
-  }).join('');
-  const finalRow = schedule.endsAtZero
-    ? `<tr><td colspan="2" style="font-style:italic;color:var(--ink-muted)">then discontinue</td></tr>`
-    : `<tr><td colspan="2" style="font-style:italic;color:var(--ink-muted)">then hold at ${esc(String(schedule.physiologic))} mg/day, reassess</td></tr>`;
-
-  return `${noteHtml}
-    <table class="taper-sched">${rows}${finalRow}</table>
-    <button type="button" class="copy-btn" id="copySigBtn">&#x2398; Copy SIG</button>`;
+  return `${noteHtml}<div class="conv-warning">No patient-specific taper or prescription is generated. Select dose steps and timing from the indication, relapse risk, duration of exposure, comorbidities, dosage forms, and clinical response.</div>`;
 }
 
 function buildRefTable() {
@@ -301,21 +184,6 @@ function wireListeners() {
     el.addEventListener('input', calcAndRender);
   }
 
-  // Delegated: taperResult's innerHTML is replaced on every calcAndRender,
-  // so the copy button (when present) is bound here once rather than
-  // re-wired after each render.
-  document.getElementById('taperResult').addEventListener('click', (e) => {
-    const btn = e.target.closest('#copySigBtn');
-    if (!btn || !currentSigText) return;
-    navigator.clipboard.writeText(currentSigText).then(() => {
-      btn.classList.add('copied');
-      btn.textContent = '✓ Copied';
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.innerHTML = '&#x2398; Copy SIG';
-      }, 2000);
-    });
-  });
 }
 
 populateSelects();

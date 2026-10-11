@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh Noah PA-C USPSTF screener data
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/noahpac-monitor.env
+ExecStart=/usr/bin/flock -n /run/noahpac-uspstf.lock /usr/bin/python3 /var/www/noahpac-portal/screener/update_uspstf.py
+StandardOutput=journal
+StandardError=journal

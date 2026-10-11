@@ -34,9 +34,10 @@ test.describe('Opioid Conversion – shared.css failure resilience', () => {
     await expect(page.locator('#fromDose')).toBeVisible();
     await expect(page.locator('#fromDose')).toBeEnabled();
 
-    // Result panels must be visible (not hidden by missing color tokens)
+    // MME result must be visible (not hidden by missing color tokens)
     await expect(page.locator('#currentMme')).toBeVisible();
-    await expect(page.locator('#convResult')).toBeVisible();
+    await expect(page.locator('#convResult')).toHaveCount(0);
+    await expect(page.getByText('Do not use MME to set a replacement opioid dose.')).toBeVisible();
   });
 
 });

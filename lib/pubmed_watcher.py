@@ -85,13 +85,29 @@ def write_heartbeat(job: str) -> None:
 
 
 def save_last_checked(app_dir: Path, status: str) -> None:
-    """Record that a check ran, for the frontend's 'last checked' tag."""
+    """Record a check without silently clearing an outstanding review.
+
+    A later clean surveillance run does not prove that a previously detected
+    source change was incorporated into the clinical content. Only the
+    explicit review-acknowledgement command may clear that state.
+    """
     f = app_dir / "last_checked.json"
     try:
-        f.write_text(json.dumps({
+        previous = json.loads(f.read_text()) if f.exists() else {}
+        review_pending = bool(previous.get("review_pending")) or previous.get("status") in {
+            "changed", "held_for_review", "review_required"
+        }
+        if status in {"changed", "held_for_review", "review_required"}:
+            review_pending = True
+        if status in {"no_change", "refreshed"} and review_pending:
+            status = "review_required"
+        payload = {
             "date": datetime.date.today().isoformat(),
             "status": status,
-        }, indent=2))
+        }
+        if review_pending:
+            payload["review_pending"] = True
+        f.write_text(json.dumps(payload, indent=2))
         f.chmod(0o644)
     except Exception as exc:
         print(f"WARNING: could not write last_checked.json: {exc}", file=sys.stderr)

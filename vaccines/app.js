@@ -5,7 +5,8 @@
    ACOG source added 2026-06-27: RSV maternal vaccine (Abrysvo), Tdap 27-32wk optimal,
    HPV deferred in pregnancy.
    2026-06-30: RSV real-world effectiveness added (JAMA Pediatr 2026, PMID 41428480) — 64%
-   maternal vaccine vs ARI, 70% vs hospitalization; nirsevimab 81% vs hospitalization. */
+   maternal vaccine vs ARI, 70% vs hospitalization; nirsevimab 81% vs hospitalization.
+   2026-10-10: COVID-19 logic updated for 2026–27 CDC and 2026 AAP guidance. */
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -74,10 +75,16 @@ const VACCINES = [
   },
   {
     id:"covid", name:"COVID-19", abbr:"COVID",
-    routine:{min:6,max:99*12},
-    doses:"Annual updated dose", freq:"annually (≥6 months)",
-    detail:"Annual updated COVID-19 vaccine recommended for everyone 6 months and older. Immunocompromised individuals may require additional doses per current CDC guidance.",
+    routine:{min:9999,max:9998},
+    doses:"Current-season dose(s)", freq:"2026–27 formulation",
+    detail:"CDC 2026–27: recommended for adults 18+ and for children 6 months–17 years with moderate or severe immunocompromise; use shared clinical decision-making for other children. Product and dose count depend on age, immune status, and vaccination history.",
     requires:[], sexSpecific:null, conditionExtra:[],
+    aap:{
+      detail:"AAP 2026: universally recommended for children 6–23 months; risk-based for ages 2–17 years and also recommended for those who desire protection. Product and dose count depend on age, immune status, and vaccination history.",
+    },
+    acog:{
+      detail:"CDC 2026–27 recommends a current-season COVID-19 vaccine for adults 18+. Pregnancy increases the risk of severe COVID-19; select product and timing using current CDC and obstetric guidance.",
+    },
   },
   {
     id:"flu", name:"Influenza", abbr:"Flu",
@@ -293,6 +300,25 @@ function render(){
 
     let shown = false;
 
+    /* COVID guidance differs materially by source and pediatric age. */
+    if (v.id === "covid") {
+      const pediatric = ageM >= 6 && ageM < 18*12;
+      const highRiskChild = f.immunocompromised;
+      if (state.source === "aap" && ageM >= 6 && ageM <= 23) {
+        routine.push({v, note:"AAP universal recommendation"});
+      } else if (state.source === "aap" && pediatric) {
+        sharedDecision.push({v, note:highRiskChild ? "AAP risk-based recommendation" : "AAP: recommended when protection is desired"});
+      } else if (pediatric && highRiskChild) {
+        condDriven.push({v, note:"CDC: moderate or severe immunocompromise"});
+      } else if (pediatric) {
+        sharedDecision.push({v, note:"CDC shared clinical decision-making"});
+      } else if (ageM >= 18*12) {
+        routine.push({v, note:"CDC 2026–27 adult recommendation"});
+      }
+      if (ageM >= 6) added.add(v.id);
+      continue;
+    }
+
     /* Routine age range */
     if (ageM >= v.routine.min && ageM <= v.routine.max) {
       /* MenB: shared decision under ACIP; routine under AAP */
@@ -355,8 +381,8 @@ function render(){
   }
 
   const recRow = (v, note, condNote, type) => {
-    const chipClass = type === "cond" ? "chip cond" : type === "catchup" ? "chip catchup" : "chip";
-    const chipLabel = type === "cond" ? "COND" : type === "catchup" ? "CATCH-UP" : "DUE";
+    const chipClass = type === "cond" ? "chip cond" : type === "catchup" ? "chip catchup" : type === "shared" ? "chip shared" : "chip";
+    const chipLabel = type === "cond" ? "COND" : type === "catchup" ? "CATCH-UP" : type === "shared" ? "SCDM" : "DUE";
     const condText = condNote ? `<div class="cond-note">Also indicated: ${esc(condNote)}</div>` : "";
     const noteText = note ? `<div class="cond-note">${esc(note)}</div>` : "";
     return `<div class="rec">

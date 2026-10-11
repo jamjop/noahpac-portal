@@ -34,6 +34,9 @@ segs.forEach(id => {
 ["q-rr","q-ams","q-sbp"].forEach(id => {
   document.getElementById(id).addEventListener("change", updateQSOFA);
 });
+["s-temp","s-hr","s-resp","s-wbc"].forEach(id => {
+  document.getElementById(id).addEventListener("change", updateSIRS);
+});
 ["sh-vaso","sh-lac"].forEach(id => {
   document.getElementById(id).addEventListener("change", updateShock);
 });
@@ -44,6 +47,25 @@ function setSummary(name, value, status, state = "") {
   const item = document.getElementById(`summary-${name}`);
   item.classList.remove("is-ok", "is-warn", "is-critical");
   if(state) item.classList.add(`is-${state}`);
+}
+
+function updateSIRS() {
+  const score = ["s-temp","s-hr","s-resp","s-wbc"].filter(id => document.getElementById(id).checked).length;
+  document.getElementById("sirs-badge").textContent = `${score} / 4`;
+  const el = document.getElementById("sirs-result");
+  if (score === 0) {
+    setSummary("sirs", "0 / 4", "No criteria selected");
+    el.className = "result-box"; el.textContent = ""; return;
+  }
+  if (score >= 2) {
+    setSummary("sirs", `${score} / 4`, "Positive — assess suspected infection", "warn");
+    el.className = "result-box res-warn";
+    el.innerHTML = `<strong>SIRS ${score}/4</strong> — Screen positive. This is sensitive but nonspecific; assess for infection, organ dysfunction, alternative causes, and clinical trajectory.`;
+  } else {
+    setSummary("sirs", "1 / 4", "Below threshold");
+    el.className = "result-box res-neutral";
+    el.innerHTML = "<strong>SIRS 1/4</strong> — Below the traditional screening threshold. A negative score does not exclude sepsis.";
+  }
 }
 
 function updateQSOFA() {
@@ -57,11 +79,11 @@ function updateQSOFA() {
   if (score >= 2) {
     setSummary("qsofa", `${score} / 3`, "Positive — evaluate further", "warn");
     el.className = "result-box res-warn";
-    el.innerHTML = "<strong>qSOFA positive (≥2)</strong> — High risk. Evaluate for sepsis. Assess SOFA score, obtain cultures, and consider early intervention.";
+    el.innerHTML = "<strong>qSOFA positive (≥2)</strong> — Higher risk of poor outcome. Evaluate urgently for infection and organ dysfunction, but do not use qSOFA as the sole sepsis screen.";
   } else {
     setSummary("qsofa", "1 / 3", "Monitor closely");
     el.className = "result-box res-neutral";
-    el.innerHTML = "<strong>qSOFA 1/3</strong> — Monitor closely. Low specificity alone; use clinical judgment.";
+    el.innerHTML = "<strong>qSOFA 1/3</strong> — A lower score does not exclude sepsis. Use SIRS, NEWS/NEWS2, or MEWS for screening and apply clinical judgment.";
   }
 }
 
@@ -76,7 +98,7 @@ function updateSOFA() {
   if (total >= 2) {
     setSummary("sofa", String(total), "Organ dysfunction threshold", "warn");
     el.className = "result-box res-warn";
-    el.innerHTML = `<strong>SOFA ${total} — Organ dysfunction</strong><br>SOFA ≥2 with suspected infection meets Sepsis-3 criteria for <em>sepsis</em>. Mortality risk increases ~10% per point above 2. Initiate sepsis bundle: cultures × 2, broad-spectrum antibiotics within 1 hour, 30mL/kg IVF bolus, lactate.`;
+    el.innerHTML = `<strong>SOFA ${total} — Organ dysfunction</strong><br>A SOFA increase of ≥2 from baseline with suspected infection supports the Sepsis-3 definition. Begin immediate clinical evaluation and treatment according to infection likelihood, shock status, source, and local protocol.`;
   } else {
     setSummary("sofa", String(total), "Below threshold", "ok");
     el.className = "result-box res-ok";
@@ -104,6 +126,7 @@ function updateShock() {
   }
 }
 
+updateSIRS();
 updateQSOFA();
 updateSOFA();
 updateShock();

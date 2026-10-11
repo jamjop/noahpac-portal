@@ -2,7 +2,7 @@
  * Pediatric Dosing Calculator – Playwright regression tests.
  *
  * Covers the "done looks like" criteria from the task:
- *  1. Dose cards populate for a typical child (15 kg direct weight, 5-year-old via age).
+ *  1. Dose cards populate only from a measured weight.
  *  2. ETT size formula output (cuffed / uncuffed / depth) is visible and numeric.
  *  3. Broselow band label changes when weight crosses a band boundary.
  *  4. The Calculate button (#calcBtn) triggers render and updates #content.
@@ -81,32 +81,26 @@ test.describe('Pediatric Dosing Calculator', () => {
     }
   });
 
-  // ── 3. Typical child: 5 years old via age input ──────────────────────────
+  // ── 3. Age alone must never generate medication doses ───────────────────
 
-  test('dose cards populate when weight is estimated from age (5 yr)', async ({ page }) => {
-    // Leave weight blank, enter age
+  test('age alone does not estimate weight or generate medication doses', async ({ page }) => {
     await page.fill('#wtKg', '');
     await page.fill('#ageNum', '5');
     await page.selectOption('#ageUnit', 'yr');
     await page.click('#calcBtn');
 
-    // Weight should be estimated to 26 kg (2*(5+8)=26) and dose cards rendered
-    const cardCount = await page.locator('.dose-card').count();
-    expect(cardCount).toBeGreaterThanOrEqual(20);
-    const vals = await page.locator('.dose-val').allTextContents();
-    const numericCount = vals.filter(v => v.trim() !== '—').length;
-    expect(numericCount).toBeGreaterThan(10);
+    await expect(page.locator('#content')).toContainText('Enter a measured weight in kilograms');
+    await expect(page.locator('#broseBar')).toBeHidden();
   });
 
   // ── 4. ETT cuffed / uncuffed / depth are visible and numeric ─────────────
   //
-  // render() estimates age from weight: ageEst = wt/2 - 8 for wt > 9 kg.
-  // The formula ETT card (with Uncuffed/Depth in the note) only appears when
-  // ageYr >= 1.  At 18 kg: ageEst = 18/2 - 8 = 1 → ageYr = 1 → formula ETT.
-  // Expected: cuffed = roundHalf(1/4 + 3.5) = 4.0 mm, uncuffed = 4.5 mm, depth = 12 cm.
+  // ETT sizing uses the independently entered age and is never inferred from weight.
 
-  test('ETT size formula output is visible and numeric for an 18 kg child', async ({ page }) => {
+  test('ETT size formula uses the entered age, not a weight-derived age', async ({ page }) => {
     await page.fill('#wtKg', '18');
+    await page.fill('#ageNum', '5');
+    await page.selectOption('#ageUnit', 'yr');
     await page.click('#calcBtn');
 
     // ETT card shows cuffed size in .dose-val and uncuffed + depth in .dose-note
@@ -128,6 +122,14 @@ test.describe('Pediatric Dosing Calculator', () => {
 
     expect(parseFloat(uncuffedMatch![1])).toBeGreaterThan(0);
     expect(parseFloat(depthMatch![1])).toBeGreaterThan(0);
+  });
+
+  test('weight without age does not infer an ETT size', async ({ page }) => {
+    await page.fill('#wtKg', '18');
+    await page.click('#calcBtn');
+    const ettCard = page.locator('.dose-card.highlight', { hasText: 'ETT sizing' }).first();
+    await expect(ettCard).toContainText('Age needed');
+    await expect(ettCard).toContainText('not inferred from weight');
   });
 
   // ── 5. Broselow band label changes across a band boundary ─────────────────
@@ -206,37 +208,16 @@ test.describe('Pediatric Dosing Calculator', () => {
     expect(epiDose!.trim(), 'Epi dose must be clamped to 1 mg, not 1.5 mg').toBe('1');
   });
 
-  // ── 9. Edge case: age 0 (newborn) does not crash ─────────────────────────
+  // ── 9. Infant age supports airway sizing only when weight is present ─────
 
-  test('age 0 years does not crash and renders content', async ({ page }) => {
-    await page.fill('#wtKg', '');
-    await page.fill('#ageNum', '0');
-    await page.selectOption('#ageUnit', 'yr');
-    await page.click('#calcBtn');
-
-    // Either a valid render or a clear error message — never a blank #content
-    const content = await page.locator('#content').textContent();
-    expect(content!.trim().length).toBeGreaterThan(0);
-  });
-
-  // ── 10. Age-estimated weight (2 mo → 4 kg) uses infant succinylcholine branch
-  //
-  // estimateWeight(2, 'mo'): ageNum=2 < 3 → 4 kg (infant, <10 kg)
-  // Succinylcholine: 2 mg/kg → clamp(4×2, 5, 150) = 8 mg → "8"
-  //   note must say "2 mg/kg (infant)" confirming the infant branch fired
-  // Epinephrine (cardiac arrest): clamp(4×0.01, 0.01, 1) = 0.04 → "0.04"
-  // #broseWeight must display the estimated weight "4 kg"
-
-  test('age 2 months → estimated 4 kg → succinylcholine infant branch (8 mg) and correct epi dose (0.04 mg)', async ({ page }) => {
-    // Clear weight, enter 2 months
-    await page.fill('#wtKg', '');
+  test('age 2 months with measured 4 kg uses infant airway and dosing paths', async ({ page }) => {
+    await page.fill('#wtKg', '4');
     await page.fill('#ageNum', '2');
     await page.selectOption('#ageUnit', 'mo');
     await page.click('#calcBtn');
 
-    // Estimated weight must appear in #broseWeight as "4 kg"
     const wtText = await page.locator('#broseWeight').textContent();
-    expect(wtText!.trim(), 'Estimated weight for 2 months should be 4 kg').toBe('4 kg');
+    expect(wtText!.trim()).toBe('4 kg');
 
     // Succinylcholine must use infant branch: 2 mg/kg × 4 kg = 8 mg
     const suxDose = await getDoseVal(page, 'Succinylcholine');
@@ -250,95 +231,11 @@ test.describe('Pediatric Dosing Calculator', () => {
 
     // Epinephrine (cardiac arrest) must equal 0.04 mg at 4 kg (0.01 mg/kg, unclamped)
     const epiDose = await getDoseVal(page, 'Epinephrine (cardiac arrest)');
-    expect(epiDose!.trim(), 'Epi dose (2 mo, 4 kg) should be 0.04 mg (0.01 mg/kg)').toBe('0.04');
+    expect(epiDose!.trim()).toBe('0.04');
+    await expect(page.locator('.dose-card.highlight', { hasText: 'ETT' }).first()).toContainText('3.5');
   });
 
-  // ── 11. Age-estimated weight just below 10 kg still uses infant sux branch ─
-  //
-  // 12 months: estimateWeight(12, 'mo') → ageNum=12 ≤ 12 → (12+9)/2 = 10.5 kg
-  // That crosses into the child (≥10 kg) branch.
-  // Use 6 months instead: (6+9)/2 = 7.5 kg → infant branch
-  // Succinylcholine: clamp(7.5×2, 5, 150) = 15 mg → "15"
-  // Epinephrine: clamp(7.5×0.01, 0.01, 1) = 0.075 → fmt(0.075,2) = "0.08" (toFixed rounds)
-  //
-  // This confirms age-path doesn't silently reuse a stale weight or bypass infant logic.
-
-  test('age 6 months → estimated 7.5 kg → still infant succinylcholine branch (15 mg)', async ({ page }) => {
-    await page.fill('#wtKg', '');
-    await page.fill('#ageNum', '6');
-    await page.selectOption('#ageUnit', 'mo');
-    await page.click('#calcBtn');
-
-    // estimateWeight(6, 'mo'): ageNum=6, 3 < 6 ≤ 12 → round((6+9)/2 × 10)/10 = round(7.5) = 7.5 kg
-    const wtText = await page.locator('#broseWeight').textContent();
-    expect(wtText!.trim(), 'Estimated weight for 6 months should be 7.5 kg').toBe('7.5 kg');
-
-    // Infant branch: 2 mg/kg × 7.5 = 15 mg
-    const suxDose = await getDoseVal(page, 'Succinylcholine');
-    expect(suxDose!.trim(), 'Sux dose (6 mo, 7.5 kg) should be 15 mg (infant 2 mg/kg)').toBe('15');
-
-    const suxCard = page.locator('.dose-card', { hasText: 'Succinylcholine' }).first();
-    const suxNote = await suxCard.locator('.dose-note').first().textContent();
-    expect(suxNote, 'Sux note should confirm infant branch for 7.5 kg').toContain('infant');
-  });
-
-  // ── 12. Age-estimated weights stay within 1–150 kg for all valid UI inputs ─
-  //
-  // Sweeps every age the UI supports (months 0–23, years 0–14 in 0.5 increments)
-  // through estimateWeight() in the page context.  Any non-null result outside
-  // 1–150 kg would cause a confusing generic validation error instead of a clear
-  // clinical message — so this test pins the formula's output range.
-
-  test('estimateWeight returns values within 1–150 kg for all valid UI-supported ages', async ({ page }) => {
-    await page.goto(PEDS_URL);
-
-    const outOfRange = await page.evaluate(() => {
-      const bad: string[] = [];
-      // months: 0–23 (upper limit of the months input)
-      for (let mo = 0; mo <= 23; mo++) {
-        const wt = (window as unknown as Record<string, (a: number, u: string) => number | null>)['estimateWeight'](mo, 'mo');
-        if (wt !== null && (wt < 1 || wt > 150)) bad.push(`${mo} mo → ${wt} kg`);
-      }
-      // years: 0–14 in 0.5-year steps (covers all formula branches)
-      for (let step = 0; step <= 28; step++) {
-        const ageYr = step * 0.5;
-        const wt = (window as unknown as Record<string, (a: number, u: string) => number | null>)['estimateWeight'](ageYr, 'yr');
-        if (wt !== null && (wt < 1 || wt > 150)) bad.push(`${ageYr} yr → ${wt} kg`);
-      }
-      return bad;
-    });
-
-    expect(
-      outOfRange,
-      `These age-estimated weights fall outside 1–150 kg: ${outOfRange.join(', ')}`
-    ).toHaveLength(0);
-  });
-
-  // ── 13. Age 14 yr (max the UI supports) renders dose cards without error ───
-  //
-  // estimateWeight(14, 'yr') = 3*14+7 = 49 kg — confirms the formula's maximum
-  // output stays in range and dose cards are rendered (not a validation error).
-
-  test('age 14 years (max UI-supported age) renders dose cards with estimated weight 49 kg', async ({ page }) => {
-    await page.fill('#wtKg', '');
-    await page.fill('#ageNum', '14');
-    await page.selectOption('#ageUnit', 'yr');
-    await page.click('#calcBtn');
-
-    // Weight banner must show the estimated value
-    const wtText = await page.locator('#broseWeight').textContent();
-    expect(wtText!.trim(), 'Estimated weight for 14 yr should be 49 kg').toBe('49 kg');
-
-    // Must render dose cards — not an error message
-    const content = await page.locator('#content').textContent();
-    expect(content, '#content must not show an error for age 14 yr').not.toContain('outside the supported range');
-
-    const vals = await page.locator('.dose-val').allTextContents();
-    const numericCount = vals.filter(v => v.trim() !== '—').length;
-    expect(numericCount, 'Dose cards must populate for age 14 yr (49 kg)').toBeGreaterThan(10);
-  });
-
-  // ── 14. Dose cards stay legible when shared.css fails to load ─────────────
+  // ── 10. Dose cards stay legible when shared.css fails to load ─────────────
   //
   // Simulates a slow/broken connection by aborting the /shared.css network
   // request.  peds/style.css defines its own fallback :root tokens so the

@@ -38,7 +38,7 @@
     <div class="app-header__title">
       <p class="app-header__eyebrow">Pediatrics</p>
       <h1>Pediatric Dosing</h1>
-      <p class="app-header__lede">Calculate weight-based emergency doses and equipment sizes, then verify each result against age, organ function, indication, and local guidance.</p>
+      <p class="app-header__lede">Calculate weight-based emergency doses from a measured weight, with optional age-based airway sizing, then verify each result against local guidance.</p>
     </div>
   </div>
 </header>
@@ -61,7 +61,7 @@
       <span class="tool-card__marker c-letter" aria-hidden="true">kg</span>
       <div class="tool-card__heading">
         <h2 id="patient-weight-title">Patient weight</h2>
-        <p>Use a measured weight when available, or estimate from age for a rapid reference.</p>
+        <p>Enter a measured weight for medication and fluid calculations. Age is optional and is used only for age-based airway sizing.</p>
       </div>
     </div>
     <div class="input-grid">
@@ -69,11 +69,11 @@
         <label for="wtKg">Measured weight (kg)</label>
         <input type="number" id="wtKg" min="1" max="150" step="0.1" inputmode="decimal" placeholder="e.g. 15" autocomplete="off">
       </div>
-      <div class="or-sep" aria-hidden="true"><span>or estimate by age</span></div>
+      <div class="or-sep" aria-hidden="true"><span>optional airway input</span></div>
       <div class="age-fields">
         <div class="clinical-field field field-age">
-          <label for="ageNum">Age</label>
-          <input type="number" id="ageNum" min="0" max="14" step="1" inputmode="numeric" placeholder="e.g. 5" autocomplete="off">
+          <label for="ageNum">Age for ETT sizing</label>
+          <input type="number" id="ageNum" min="0" max="18" step="0.1" inputmode="decimal" placeholder="e.g. 5" autocomplete="off">
         </div>
         <div class="clinical-field field field-unit">
           <label for="ageUnit">Unit</label>
@@ -101,7 +101,7 @@
     <div class="clinical-caution">
       <strong>Verify before use.</strong> These are weight-based estimates with typical adult maximums. Confirm the indication, concentration, route, age restrictions, allergies, organ function, and institutional formulary before treatment.
     </div>
-    <p class="source-note">Weight estimation via Broselow-Luten system; drug dosing per PALS and AAP pediatric emergency references. Not medical advice.</p>
+    <p class="source-note">Drug dosing per PALS and pediatric emergency references. Weight bands are a quick visual reference only and are not a substitute for a length-based resuscitation tape. Not medical advice.</p>
   </div>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>

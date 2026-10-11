@@ -1,21 +1,6 @@
 'use strict';
 
-// ── Weight estimation ─────────────────────────────────────────────────────────
-
-function estimateWeight(ageNum, unit) {
-  if (unit === 'mo') {
-    if (ageNum < 3)  return 4;
-    if (ageNum <= 12) return Math.round(((ageNum + 9) / 2) * 10) / 10;
-    ageNum = ageNum / 12;
-  }
-  // years
-  if (ageNum < 1)  return 4 + Math.round(ageNum * 12) * 0.5;
-  if (ageNum <= 9) return 2 * (ageNum + 8);
-  if (ageNum <= 14) return 3 * ageNum + 7;
-  return null;
-}
-
-// ── Broselow band ─────────────────────────────────────────────────────────────
+// ── Weight reference band ─────────────────────────────────────────────────────
 
 const BROSE_BANDS = [
   {max:3,   color:'#9CA3AF', name:'Grey',   label:'< 3 kg — not on tape'},
@@ -75,10 +60,8 @@ function sectionHeading(id, label) {
 
 // ── Main render ───────────────────────────────────────────────────────────────
 
-function render(wt) {
-  const ageEst = wt <= 4 ? 0 : wt <= 9 ? (wt*2-9) : (wt/2-8);
-  const ageYr  = Math.max(0, ageEst);
-  const ett    = ageYr >= 1 ? ettSize(ageYr) : null;
+function render(wt, ageYr = null) {
+  const ett = ageYr !== null && ageYr >= 1 ? ettSize(ageYr) : null;
   const infant = wt < 10;
 
   let html = '';
@@ -89,8 +72,10 @@ function render(wt) {
   // ETT
   if (ett) {
     html += card('ETT (cuffed)', fmt(ett.cuffed,1), 'mm ID', `Uncuffed: ${fmt(ett.uncuffed,1)} mm · Depth: ${fmt(ett.depth,1)} cm at lip`, 'highlight');
+  } else if (ageYr !== null) {
+    html += card('ETT', '3.5', 'mm uncuffed', 'Infant estimate — verify with a length-based tape and clinical assessment', 'highlight');
   } else {
-    html += card('ETT', 'Uncuffed', '3.5 mm', 'Newborn / infant — verify with tape', 'highlight');
+    html += card('ETT sizing', 'Age needed', '', 'Enter age above or use a length-based tape; ETT size is not inferred from weight', 'highlight');
   }
 
   // Laryngoscope blade
@@ -257,7 +242,7 @@ function renderPlaceholder() {
   let html = '';
 
   html += `${sectionHeading('airway', 'Airway &amp; Equipment')}<div class="equip-row dose-grid">`;
-  html += card('ETT (cuffed)', '—', 'mm ID', 'Enter weight above to calculate', 'highlight');
+  html += card('ETT (cuffed)', '—', 'mm ID', 'Enter age above for an age-based size estimate', 'highlight');
   html += card('Laryngoscope', '—', '', '');
   html += card('LMA size', '—', '', '');
   html += card('BVM', '—', '', '');
@@ -324,28 +309,24 @@ function go() {
   const ageNum   = parseFloat(document.getElementById('ageNum').value);
   const ageUnit  = document.getElementById('ageUnit').value;
 
-  let wt;
-  if (!isNaN(wtInput) && wtInput > 0) {
-    wt = wtInput;
-  } else if (!isNaN(ageNum) && ageNum >= 0) {
-    wt = estimateWeight(ageNum, ageUnit);
-    if (!wt) {
-      document.getElementById('content').innerHTML = '<div class="err" role="alert">Could not estimate weight. Enter weight directly or use age 0–14 years.</div>';
-      return;
-    }
-    if (wt < 1 || wt > 150) {
-      document.getElementById('content').innerHTML = `<div class="err" role="alert">Age-estimated weight (${fmt(wt, 1)} kg) is outside the supported range (1–150 kg). Enter weight directly.</div>`;
-      return;
-    }
-    document.getElementById('wtKg').value = '';
-  } else {
-    document.getElementById('content').innerHTML = '<div class="err" role="alert">Enter a weight (kg) or age to calculate.</div>';
+  if (isNaN(wtInput) || wtInput <= 0) {
+    document.getElementById('content').innerHTML = '<div class="err" role="alert">Enter a measured weight in kilograms to calculate medication and fluid doses.</div>';
     return;
   }
 
+  const wt = wtInput;
   if (wt < 1 || wt > 150) {
     document.getElementById('content').innerHTML = '<div class="err" role="alert">Weight must be between 1 and 150 kg.</div>';
     return;
+  }
+
+  let ageYr = null;
+  if (!isNaN(ageNum)) {
+    ageYr = ageUnit === 'mo' ? ageNum / 12 : ageNum;
+    if (ageNum < 0 || ageYr > 18) {
+      document.getElementById('content').innerHTML = '<div class="err" role="alert">Age must be between birth and 18 years.</div>';
+      return;
+    }
   }
 
   const band = getBroseBand(wt);
@@ -355,7 +336,7 @@ function go() {
   document.getElementById('broseWeight').textContent = `${fmt(wt,1)} kg`;
   barEl.hidden = false;
 
-  render(wt);
+  render(wt, ageYr);
 }
 
 document.getElementById('calcBtn').addEventListener('click', go);

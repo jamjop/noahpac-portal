@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh Noah PA-C facility antibiograms quarterly
+
+[Timer]
+OnCalendar=*-01,04,07,10-01 04:23:00
+Persistent=true
+Unit=noahpac-antibiogram-update.service
+
+[Install]
+WantedBy=timers.target

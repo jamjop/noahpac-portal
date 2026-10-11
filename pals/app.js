@@ -77,7 +77,7 @@ const SECTIONS = [
         'Activate emergency response; send for defibrillator and crash cart',
         '<strong>Begin CPR immediately</strong>: rate 100–120/min; depth &ge;1/3 AP diameter (&asymp;1.5 in infant, 2 in child)',
         'Compressions to ventilations: <strong>30:2</strong> single rescuer; <strong>15:2</strong> two rescuers',
-        'Infant: 2-finger or 2-thumb encircling technique; child: 1–2 hand heel technique',
+        'Infant: use 1-hand or 2-thumb–encircling-hands compressions; the 2-finger technique is no longer recommended. Child: 1- or 2-hand heel technique',
         'Attach monitor/defibrillator as soon as available',
       ])}
 
@@ -85,10 +85,10 @@ const SECTIONS = [
         '<strong>1st shock: 2 J/kg</strong> (biphasic or monophasic)',
         'Resume CPR immediately for 2 minutes — do not check pulse immediately after shock',
         'Establish IV or IO access during CPR (IO preferred if IV access delayed)',
-        '<strong>Epinephrine 0.01 mg/kg IV/IO</strong> (0.1 mL/kg of 0.1 mg/mL concentration) after 1st shock; max 1 mg; repeat every 3–5 min',
         'Check rhythm at 2-min mark; if shockable → <strong>2nd shock: 4 J/kg</strong>',
-        'If VF/pVT persists after 2nd shock → amiodarone or lidocaine during CPR',
-        'Subsequent shocks: 4 J/kg (or higher, max 10 J/kg or adult dose); continue epinephrine cycle',
+        'Resume CPR and give <strong>epinephrine 0.01 mg/kg IV/IO</strong> after the 2nd shock; max 1 mg; repeat every 3–5 min',
+        'If still shockable → 3rd shock, then amiodarone or lidocaine during CPR',
+        'Subsequent shocks: ≥4 J/kg, not to exceed 10 J/kg or the adult dose; continue epinephrine cycle',
       ])}
 
       <div class="drug-grid">
@@ -122,7 +122,7 @@ const SECTIONS = [
         <ul>
           <li><strong>H</strong>ypoxia — most common in children; verify airway and ventilation first</li>
           <li><strong>H</strong>ypovolemia — IV/IO fluid bolus 20 mL/kg NS or LR</li>
-          <li><strong>H</strong>ydrogen ion (acidosis) — sodium bicarbonate 1 mEq/kg IV/IO</li>
+          <li><strong>H</strong>ydrogen ion (acidosis) — optimize CPR and ventilation; bicarbonate is not routine</li>
           <li><strong>H</strong>ypo/Hyperkalemia — calcium chloride 20 mg/kg IV/IO for hyperkalemia</li>
           <li><strong>H</strong>ypoglycemia — dextrose: D10W 5 mL/kg (infant/neonate); D25W 2 mL/kg (child)</li>
           <li><strong>H</strong>ypothermia — active rewarming; ECMO if available for severe cases</li>
@@ -179,7 +179,7 @@ const SECTIONS = [
       ${callout('warn', 'Sodium Bicarbonate', `
         <ul>
           <li>Dose: <strong>1 mEq/kg IV/IO</strong> slow push</li>
-          <li>Indications: prolonged arrest, known or suspected metabolic acidosis, hyperkalemia, TCA overdose</li>
+          <li>Reserve for specific indications such as hyperkalemia or sodium-channel blocker toxicity; follow poison-center or specialist guidance</li>
           <li>Not recommended for routine use — may cause hyperosmolarity, paradoxical intracellular acidosis</li>
           <li>Flush line before and after with NS — incompatible with calcium and epinephrine</li>
         </ul>`
@@ -340,12 +340,12 @@ const SECTIONS = [
         'If not following commands or inadequate respirations → advanced airway (ETT preferred in children post-arrest)',
         'Confirm ETT placement: waveform capnography, bilateral breath sounds, symmetric chest rise',
         'Titrate FiO₂ to <strong>SpO₂ 94–99%</strong> — avoid hyperoxia and hypoxia',
-        'Target <strong>PaCO₂ 35–45 mmHg</strong> (ETCO₂ ~35–40 mmHg) — hyperventilation worsens neurologic outcome',
+        'Target a clinically appropriate PaCO₂, generally <strong>35–45 mmHg</strong>, unless a condition-specific target is indicated',
         'Rate: weight-appropriate (infant 30/min; child 20/min; adolescent 10–12/min)',
       ])}
 
       ${phase('Circulation & Hemodynamics', [
-        'Target age-appropriate MAP; vasopressors if hypotensive after fluid resuscitation',
+        'Maintain systolic and mean arterial pressure above the 10th percentile for age and sex; use continuous arterial monitoring when available',
         'IV/IO fluid: 10–20 mL/kg NS bolus; reassess after each bolus',
         'Vasopressors: norepinephrine 0.1–2 mcg/kg/min; epinephrine 0.1–1 mcg/kg/min; dopamine 2–20 mcg/kg/min',
         '12-lead ECG to identify underlying arrhythmia or structural heart disease',
@@ -353,9 +353,8 @@ const SECTIONS = [
       ])}
 
       ${phase('Targeted Temperature Management', [
-        'Comatose infants and children post-cardiac arrest: TTM <strong>32–34°C × 48 hours</strong>, then normothermia 36–37.5°C × 72 hours',
-        'Alternatively: normothermia (36–37.5°C) for 5 days if TTM 32–34°C not feasible',
-        '<strong>Prevent fever (&gt;38°C) for at least 72 hours</strong> post-ROSC regardless of TTM strategy',
+        'For comatose patients age 24 hours to 18 years, use a 5-day protocol: either 32–34°C followed by 36–37.5°C, or 36–37.5°C throughout',
+        '<strong>Avoid central temperature &gt;37.5°C</strong> with continuous central temperature monitoring',
         'Rewarming: no faster than 0.5°C per hour',
         'Neuromuscular blockade to prevent shivering if needed during cooling',
       ])}
@@ -372,7 +371,7 @@ const SECTIONS = [
         <ul>
           <li><strong>SpO₂ 94–99%</strong> — avoid hyperoxia</li>
           <li><strong>PaCO₂ 35–45 mmHg</strong> — avoid hyperventilation</li>
-          <li><strong>Temperature 32–34°C × 48 h</strong> (comatose) or normothermia × 5 days</li>
+          <li><strong>Five-day temperature-control protocol</strong>; avoid central temperature &gt;37.5°C</li>
           <li><strong>Glucose 70–180 mg/dL</strong></li>
           <li>Age-appropriate MAP; vasopressors as needed</li>
           <li>PICU admission; continuous cardiac and EEG monitoring</li>
@@ -548,7 +547,7 @@ const SECTIONS = [
             <td class="note-cell">Max 1 mg. Use <strong>0.1 mg/mL (1:10,000)</strong> concentration. Repeat every 3–5 min. Flush with 5–10 mL NS.</td>
           </tr>
           <tr>
-            <td class="drug-name-cell">Epinephrine<br><em>(anaphylaxis / bradycardia)</em></td>
+            <td class="drug-name-cell">Epinephrine<br><em>(anaphylaxis)</em></td>
             <td class="dose-cell">0.01 mg/kg IM<br>(0.01 mL/kg of 1 mg/mL)</td>
             <td class="note-cell">Max 0.5 mg. Use <strong>1 mg/mL (1:1,000)</strong> for IM. Anterolateral thigh. Repeat q5–15 min for anaphylaxis.</td>
           </tr>
@@ -575,7 +574,7 @@ const SECTIONS = [
           <tr>
             <td class="drug-name-cell">Sodium bicarbonate</td>
             <td class="dose-cell">1 mEq/kg IV/IO slow push</td>
-            <td class="note-cell">For metabolic acidosis, TCA OD, hyperkalemia. Flush with NS before and after — incompatible with calcium and epi.</td>
+            <td class="note-cell">Not routine in arrest. Reserve for selected causes such as hyperkalemia or sodium-channel blocker toxicity. Flush before and after; incompatible with calcium and epinephrine.</td>
           </tr>
         </tbody>
       </table>

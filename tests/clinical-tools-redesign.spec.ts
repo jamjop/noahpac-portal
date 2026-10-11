@@ -1,21 +1,22 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Medication tool redesign', () => {
-  test('preserves opioid MME and cross-tolerance conversion logic', async ({ page }) => {
+  test('preserves opioid MME while avoiding replacement-dose prescribing', async ({ page }) => {
     await page.goto('/opioids/');
     await page.locator('#fromDose').fill('10');
 
     await expect(page.locator('#currentMme')).toContainText('20.0');
     await expect(page.locator('#currentMme')).toContainText('MME / day');
-    await expect(page.locator('#convResult')).toContainText('10 mg/day total');
-    await expect(page.locator('#convResult')).toContainText('25% reduction applied');
+    await expect(page.locator('#convResult')).toHaveCount(0);
+    await expect(page.locator('#toDrug')).toHaveCount(0);
+    await expect(page.getByText('Do not use MME to set a replacement opioid dose.')).toBeVisible();
 
     await page.locator('#fromDose').fill('50');
     await expect(page.locator('#currentMme')).toContainText('100.0');
     await expect(page.locator('#currentMme .mme-flag')).toContainText('high risk threshold');
   });
 
-  test('preserves steroid equivalency, conversion, and taper generation', async ({ page }) => {
+  test('preserves steroid equivalency and conversion without generating a prescription', async ({ page }) => {
     await page.goto('/steroids/');
     await page.locator('#fromDose').fill('10');
 
@@ -23,8 +24,9 @@ test.describe('Medication tool redesign', () => {
     await expect(page.locator('#currentEquiv')).toContainText('10.0 mg/day prednisone-equivalent');
     await expect(page.locator('#convResult')).toContainText('40.00 mg/day total');
     await expect(page.locator('#taperResult')).toContainText('Supraphysiologic dose');
-    await expect(page.locator('#taperResult .taper-sched')).toBeVisible();
-    await expect(page.locator('#copySigBtn')).toHaveText(/Copy SIG/);
+    await expect(page.locator('#taperResult')).toContainText('No patient-specific taper or prescription is generated');
+    await expect(page.locator('#taperResult .taper-sched')).toHaveCount(0);
+    await expect(page.locator('#copySigBtn')).toHaveCount(0);
   });
 
   for (const route of ['/opioids/', '/steroids/', '/peds/']) {

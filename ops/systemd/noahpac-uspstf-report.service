@@ -1,0 +1,11 @@
+[Unit]
+Description=Email Noah PA-C weekly USPSTF refresh report
+After=noahpac-uspstf-update.service
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/noahpac-monitor.env
+ExecStart=/opt/scripts/uspstf-email-report.sh
+StandardOutput=journal
+StandardError=journal

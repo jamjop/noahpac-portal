@@ -1,0 +1,14 @@
+[Unit]
+Description=Refresh Noah PA-C facility antibiograms
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/noahpac-monitor.env
+EnvironmentFile=-/etc/antibiogram-api.env
+ExecStart=/usr/bin/flock -n /run/noahpac-antibiogram.lock /usr/bin/python3 /var/www/noahpac-portal/antibiogram/auto_update.py
+ExecStart=/usr/bin/python3 /opt/scripts/quarterly-email-report.py --report-prefix antibiogram-report --title "ND Antibiogram Quarterly Update" --expected='[["antibiogram","ND Antibiogram","https://noahpac.com/antibiogram/"]]'
+StandardOutput=journal
+StandardError=journal

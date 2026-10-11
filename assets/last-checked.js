@@ -39,13 +39,36 @@
       var formatted = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
       var limit = maxAgeDays();
       var stale = limit !== null && (Date.now() - d.getTime()) > limit * 86400000;
+      var needsReview = Boolean(data.review_pending) || ['changed', 'held_for_review', 'review_required'].includes(data.status);
+      var checkError = data.status === 'error';
       targets.forEach(function (target) {
-        target.innerHTML = '<span class="dot"></span>Last checked for updates: ' + formatted;
+        var prefix = checkError
+          ? 'Update check failed'
+          : needsReview
+            ? 'Clinical update review pending'
+            : 'Last checked for updates';
+        target.innerHTML = '<span class="dot"></span>' + prefix + ': ' + formatted;
         target.classList.toggle('stale', stale);
+        target.classList.toggle('needs-review', needsReview);
+        target.classList.toggle('check-error', checkError);
       });
       document.querySelectorAll('.review-status').forEach(function (status) {
-        status.classList.toggle('stale', stale);
-        status.title = 'Last checked for updates: ' + formatted;
+        var label = status.querySelector('span:last-child');
+        status.classList.toggle('stale', stale && !needsReview && !checkError);
+        status.classList.toggle('needs-review', needsReview);
+        status.classList.toggle('check-error', checkError);
+        if (label) {
+          label.textContent = checkError
+            ? 'Update check needs attention'
+            : needsReview
+              ? 'Clinical update review pending'
+              : status.dataset.cadence;
+        }
+        status.title = (checkError
+          ? 'The most recent update check failed'
+          : needsReview
+            ? 'A source change was detected and requires clinical review'
+            : 'Last checked for updates') + ': ' + formatted;
       });
     })
     .catch(function () {});

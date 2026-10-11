@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Noah PA-C clinical-source monitoring quarterly
+
+[Timer]
+OnCalendar=*-01,04,07,10-15 04:30:00
+Persistent=true
+RandomizedDelaySec=5m
+Unit=noahpac-quarterly-monitor.service
+
+[Install]
+WantedBy=timers.target

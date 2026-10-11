@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Point-of-care qSOFA, SOFA, and septic shock screening with locally computed results.">
+  <meta name="description" content="Point-of-care SIRS, qSOFA, SOFA, and septic shock assessment with locally computed results.">
   <title>Sepsis Screening — Noah PA-C</title>
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
@@ -38,13 +38,14 @@
     <div class="app-header__title">
       <p class="app-header__eyebrow">Emergency &amp; Acute Care</p>
       <h1>Sepsis Screening</h1>
-      <p class="app-header__lede">Apply qSOFA as a bedside prompt, calculate organ dysfunction with SOFA, and check Sepsis-3 septic shock criteria.</p>
+      <p class="app-header__lede">Screen with SIRS, use qSOFA only as a risk prompt, calculate organ dysfunction with SOFA, and check Sepsis-3 septic shock criteria.</p>
     </div>
   </div>
 </header>
 
 <nav class="section-nav" aria-label="Sepsis screening sections">
   <div class="section-nav__inner">
+    <a href="#sirs">SIRS</a>
     <a href="#qsofa">qSOFA</a>
     <a href="#sofa">SOFA</a>
     <a href="#shock">Septic shock</a>
@@ -53,12 +54,30 @@
 
 <main class="page-body" id="main-content">
   <div class="criteria-col">
+    <section class="criterion" id="sirs" aria-labelledby="sirs-title">
+      <div class="c-header">
+        <span class="c-letter" aria-hidden="true">SIRS</span>
+        <div class="c-heading">
+          <h2 class="c-name" id="sirs-title">Systemic Inflammatory Response</h2>
+          <p class="c-desc">The 2026 Surviving Sepsis Campaign recommends SIRS, NEWS/NEWS2, or MEWS over qSOFA when a single hospital screening tool is used.</p>
+        </div>
+        <output class="score-chip" id="sirs-badge" aria-live="polite">0 / 4</output>
+      </div>
+      <div class="check-list" id="sirs-checks">
+        <label class="check-row"><input type="checkbox" id="s-temp"> <span class="check-text"><strong>Temperature</strong><span>&gt;38°C or &lt;36°C</span></span></label>
+        <label class="check-row"><input type="checkbox" id="s-hr"> <span class="check-text"><strong>Heart rate</strong><span>&gt;90/min</span></span></label>
+        <label class="check-row"><input type="checkbox" id="s-resp"> <span class="check-text"><strong>Respiratory</strong><span>RR &gt;20/min or PaCO₂ &lt;32 mmHg</span></span></label>
+        <label class="check-row"><input type="checkbox" id="s-wbc"> <span class="check-text"><strong>White blood cells</strong><span>&gt;12,000/µL, &lt;4,000/µL, or &gt;10% bands</span></span></label>
+      </div>
+      <div class="result-box" id="sirs-result" role="status" aria-live="polite" aria-atomic="true"></div>
+    </section>
+
     <section class="criterion" id="qsofa" aria-labelledby="qsofa-title">
       <div class="c-header">
         <span class="c-letter" aria-hidden="true">qSOFA</span>
         <div class="c-heading">
           <h2 class="c-name" id="qsofa-title">Quick SOFA</h2>
-          <p class="c-desc">Score ≥2 warrants further evaluation for sepsis outside the ICU.</p>
+          <p class="c-desc">Prognostic bedside prompt only. Do not use qSOFA alone to screen for or exclude sepsis.</p>
         </div>
         <output class="score-chip" id="qsofa-badge" aria-live="polite">0 / 3</output>
       </div>
@@ -167,6 +186,10 @@
       <p class="summary-eyebrow">Current assessment</p>
       <h2 id="summary-title">Screening summary</h2>
       <div class="summary-list">
+        <div class="summary-item" id="summary-sirs">
+          <div><span>SIRS</span><strong id="summary-sirs-value">0 / 4</strong></div>
+          <p id="summary-sirs-status">No criteria selected</p>
+        </div>
         <div class="summary-item" id="summary-qsofa">
           <div><span>qSOFA</span><strong id="summary-qsofa-value">0 / 3</strong></div>
           <p id="summary-qsofa-status">No criteria selected</p>
@@ -181,13 +204,14 @@
         </div>
       </div>
       <p class="summary-note">Screening tools support—but do not replace—clinical assessment, diagnostic workup, and timely treatment.</p>
+      <p class="summary-note"><strong>2026 SSC:</strong> Sepsis and septic shock are medical emergencies. For sepsis-induced hypoperfusion or septic shock, consider at least 30 mL/kg IV crystalloid within 3 hours with frequent reassessment; individualize volume and use adjusted or ideal body weight when BMI is greater than 30 kg/m².</p>
     </div>
   </aside>
 </main>
 
 <footer class="app-footer">
   <p class="last-checked"></p>
-  <p class="app-footer__source source-note">Based on Sepsis-3 definitions (Singer et al., JAMA 2016). qSOFA ≥2 warrants further evaluation; SOFA ≥2 from baseline indicates organ dysfunction. Not medical advice.</p>
+  <p class="app-footer__source source-note">Based on the 2026 Surviving Sepsis Campaign and Sepsis-3 definitions. SIRS/NEWS/NEWS2/MEWS are preferred over qSOFA as a single hospital screening tool; SOFA change ≥2 from baseline indicates organ dysfunction. Not medical advice.</p>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 

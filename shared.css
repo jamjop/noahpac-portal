@@ -364,6 +364,18 @@ footer .last-checked.stale .dot{
   background:var(--warn);
   box-shadow:0 0 0 3px var(--warn-soft);
 }
+.review-status.needs-review{color:var(--warn)}
+.review-status.needs-review .review-status__dot{
+  background:var(--warn);
+  box-shadow:0 0 0 3px var(--warn-soft);
+}
+.review-status.check-error{color:var(--risk)}
+.review-status.check-error .review-status__dot{
+  background:var(--risk);
+  box-shadow:0 0 0 3px var(--risk-soft);
+}
+.last-checked.needs-review{color:var(--warn)}
+.last-checked.check-error{color:var(--risk)}
 .app-header__bar .review-status{display:none}
 .theme-field{
   position:relative;

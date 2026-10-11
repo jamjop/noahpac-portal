@@ -1,0 +1,10 @@
+[Unit]
+Description=Email Noah PA-C USPSTF refresh report weekly
+
+[Timer]
+OnCalendar=Mon *-*-* 04:30:00
+Persistent=true
+Unit=noahpac-uspstf-report.service
+
+[Install]
+WantedBy=timers.target
