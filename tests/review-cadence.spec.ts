@@ -6,6 +6,8 @@ test.describe('Review cadence labels', () => {
     const cadence = page.locator('.app-header__title > .review-status');
     await expect(cadence).toBeVisible();
     await expect(cadence).toHaveText('References reviewed quarterly');
+    await expect(cadence.locator('.review-status__dot')).toBeVisible();
+    await expect(cadence.locator('svg')).toHaveCount(0);
     await expect(cadence.evaluate((node) => node.previousElementSibling?.classList.contains('app-header__lede'))).resolves.toBe(true);
 
     await page.setViewportSize({ width: 375, height: 812 });
@@ -39,6 +41,7 @@ test.describe('Review cadence labels', () => {
     await page.goto('/calculators/');
     const cadence = page.locator('.app-header__title > .review-status');
     await expect(cadence).toHaveClass(/stale/);
+    await expect(cadence.locator('.review-status__dot')).toBeVisible();
     await expect(cadence).toHaveAttribute('title', /Last checked for updates/);
   });
 });

@@ -351,8 +351,19 @@ footer .last-checked.stale .dot{
   line-height:1.3;
   text-transform:none;
 }
-.review-status svg{width:14px;height:14px;flex:0 0 auto}
+.review-status__dot{
+  width:7px;
+  height:7px;
+  flex:0 0 auto;
+  border-radius:999px;
+  background:var(--ok);
+  box-shadow:0 0 0 3px var(--ok-soft);
+}
 .review-status.stale{color:var(--warn)}
+.review-status.stale .review-status__dot{
+  background:var(--warn);
+  box-shadow:0 0 0 3px var(--warn-soft);
+}
 .app-header__bar .review-status{display:none}
 .theme-field{
   position:relative;
