@@ -7,6 +7,7 @@ consolidated report and that topic's public review-status file.
 """
 
 import datetime
+import argparse
 import json
 import os
 import subprocess
@@ -37,6 +38,11 @@ TOPICS = [
     ("anticoag", "Anticoagulation Reversal"),
     ("toxicology", "Toxicology / Antidote Reference"),
 ]
+HIGH_RISK_TOPIC_IDS = {
+    "sti-guide", "naloxone", "abx", "tccc", "vaccines", "calculators",
+    "peds", "als", "pals", "opioids", "sepsis", "allergy", "steroids",
+    "anticoag", "toxicology",
+}
 
 
 def report_file() -> Path:
@@ -102,14 +108,19 @@ def ensure_result(topic: str, name: str) -> None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Run Noah PA-C clinical source monitors")
+    parser.add_argument("--high-risk", action="store_true", help="Run only high-risk topics for monthly surveillance")
+    parser.add_argument("--check", action="store_true", help="Validate configuration without running monitors")
+    args = parser.parse_args()
+    topics = [item for item in TOPICS if item[0] in HIGH_RISK_TOPIC_IDS] if args.high_risk else TOPICS
     if REPO != Path("/var/www/noahpac-portal") and not os.environ.get("NOAHPAC_ALLOW_ALT_REPO"):
         print(f"Refusing unexpected repository path: {REPO}", file=sys.stderr)
         return 2
 
-    if "--check" in sys.argv[1:]:
+    if args.check:
         missing_paths = [
             str(REPO / topic / "check_updates.py")
-            for topic, _name in TOPICS
+            for topic, _name in topics
             if not (REPO / topic / "check_updates.py").is_file()
         ]
         if not REPORTER.is_file():
@@ -119,7 +130,7 @@ def main() -> int:
             for path in missing_paths:
                 print(f"  missing: {path}", file=sys.stderr)
             return 1
-        print(f"Monitoring configuration valid: {len(TOPICS)} topic scripts and reporter found.")
+        print(f"Monitoring configuration valid: {len(topics)} topic scripts and reporter found.")
         return 0
 
     missing = [name for name in ("PUSHOVER_USER", "PUSHOVER_TOKEN") if not os.environ.get(name)]
@@ -129,7 +140,7 @@ def main() -> int:
 
     report_file().unlink(missing_ok=True)
     topic_failures = 0
-    for topic, name in TOPICS:
+    for topic, name in topics:
         script = REPO / topic / "check_updates.py"
         print(f"\n=== {name} ({topic}) ===", flush=True)
         if not script.is_file():
@@ -144,11 +155,11 @@ def main() -> int:
             ensure_result(topic, name)
 
     expected = json.dumps([
-        [topic, name, f"https://noahpac.com/{topic}/"] for topic, name in TOPICS
+        [topic, name, f"https://noahpac.com/{topic}/"] for topic, name in topics
     ])
     report = subprocess.run([
         sys.executable, str(REPORTER),
-        "--title", "Quarterly Clinical Guidelines Review",
+        "--title", "Monthly High-Risk Clinical Review" if args.high_risk else "Quarterly Clinical Guidelines Review",
         "--expected", expected,
     ], check=False)
     if report.returncode != 0:
@@ -158,7 +169,7 @@ def main() -> int:
         report_failed = False
 
     print(
-        f"Quarterly monitoring complete: {len(TOPICS) - topic_failures} clean, "
+        f"{'High-risk monthly' if args.high_risk else 'Quarterly'} monitoring complete: {len(topics) - topic_failures} clean, "
         f"{topic_failures} topic failure(s), report {'failed' if report_failed else 'sent'}."
     )
     return 1 if topic_failures or report_failed else 0

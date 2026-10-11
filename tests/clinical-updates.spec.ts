@@ -4,8 +4,9 @@ test('clinical updates are rendered from the structured record', async ({ page }
   await page.goto('/updates/');
   await expect(page.getByRole('heading', { name: 'Clinical updates', exact: true })).toBeVisible();
   const cards = page.locator('.update-card');
-  await expect(cards).toHaveCount(4);
-  await expect(cards.first()).toContainText('Clearer tool names and connected stewardship workflows');
+  await expect(cards).toHaveCount(5);
+  await expect(cards.first()).toContainText('Focused primary-care tools and safety controls');
+  await expect(page.getByText('Clearer tool names and connected stewardship workflows')).toBeVisible();
   await expect(page.getByText('Clinical monitoring reliability')).toBeVisible();
   await expect(page.getByText('Clinical guidance and safety review')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Advanced Life Support', exact: true })).toHaveAttribute('href', '/als/');

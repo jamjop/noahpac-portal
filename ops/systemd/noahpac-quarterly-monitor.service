@@ -8,7 +8,7 @@ OnFailure=noahpac-monitor-failure@%n.service
 Type=oneshot
 User=root
 EnvironmentFile=/etc/noahpac-monitor.env
-ExecStart=/usr/bin/flock -n /run/noahpac-quarterly-monitor.lock /usr/bin/python3 /var/www/noahpac-portal/scripts/run-quarterly-monitoring.py
+ExecStart=/usr/bin/flock -n /run/noahpac-clinical-monitor.lock /usr/bin/python3 /var/www/noahpac-portal/scripts/run-quarterly-monitoring.py
 StandardOutput=journal
 StandardError=journal
 

@@ -6,6 +6,7 @@ enough that incremental updates aren't worth the complexity)."""
 import base64
 import io
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -130,6 +131,25 @@ def collect_documents():
     return docs
 
 
+def document_date(pdf_path: Path) -> tuple[str, str]:
+    """Return a transparent best-available date for citation display.
+
+    Prefer the PDF's own modification/creation metadata. If it has none,
+    expose the local file modification date and label the basis accordingly;
+    never imply that a filesystem timestamp is a publication date.
+    """
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            metadata = pdf.metadata or {}
+        raw = str(metadata.get("ModDate") or metadata.get("CreationDate") or "")
+        match = re.search(r"(\d{4})(\d{2})(\d{2})", raw)
+        if match:
+            return f"{match.group(1)}-{match.group(2)}-{match.group(3)}", "PDF metadata"
+    except Exception:
+        pass
+    return time.strftime("%Y-%m-%d", time.localtime(pdf_path.stat().st_mtime)), "file modified"
+
+
 def main():
     if not VOYAGE_API_KEY:
         print("ERROR: VOYAGE_API_KEY not set", file=sys.stderr)
@@ -164,6 +184,7 @@ def main():
             print("  WARNING: no extractable text, skipping", file=sys.stderr)
             continue
         chunks = chunk_text(text)
+        source_date, date_basis = document_date(pdf_path)
         for i, chunk in enumerate(chunks):
             all_ids.append(f"{corpus}:{pdf_path.name}:{i}")
             all_chunks.append(chunk)
@@ -171,6 +192,8 @@ def main():
                 "source_filename": pdf_path.name,
                 "corpus": corpus,
                 "chunk_index": i,
+                "source_date": source_date,
+                "date_basis": date_basis,
             })
 
     if not all_chunks:

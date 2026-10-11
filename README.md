@@ -23,7 +23,7 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `antibiogram/` | ND Antibiogram | Local susceptibility data from ND facilities; checked quarterly against HHS PDFs with extraction validation and human-review holds |
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
 | `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
-| `calculators/` | Clinical Calculators | 19 calculators: ASCVD, CHA₂DS₂-VASc, Wells DVT/PE/PERC, CURB-65, CrCl, eGFR, MELD/MELD-Na, PHQ-9, GAD-7, HEART, Ottawa Knee/Ankle, PECARN, Alvarado, Anion Gap, Accutane dosing, RCRI, Corrected Calcium, Weight Change, Pregnancy EDD |
+| `calculators/` | Clinical Calculators | 24 calculators and screens, including ASCVD, VTE tools, renal equations and CKD G/A staging, MELD and FIB-4, PHQ-9, GAD-7, AUDIT-C, the single-question drug-use screen, and acute-care decision rules |
 | `als/` | Advanced Life Support | AHA 2020 ACLS algorithms: VF/pVT, Asystole/PEA, Bradycardia, Tachycardia, Post-Arrest Care (TTM), ACS, Stroke; PWA |
 | `pals/` | Pediatric Advanced Life Support | AHA 2020 PALS algorithms: weight-based cardiac arrest, arrhythmia, and post-arrest care; Broselow-matched dosing; PWA |
 | `opioids/` | Opioid Conversion | Equianalgesic conversion with MME and CDC risk thresholds |
@@ -94,7 +94,7 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `abx/check_updates.py` | sequential | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
 | `tccc/check_updates.py` | sequential | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
 | `vaccines/check_updates.py` | sequential | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
-| `calculators/check_updates.py` | sequential | PubMed: ACC/AHA (ASCVD, AFib, chest pain, periop), ACCP/ESC (VTE), ATS/BTS (pneumonia), KDIGO (eGFR/CrCl), AASLD (MELD), USPSTF (depression/anxiety), Ottawa/PECARN/Alvarado, AAD (isotretinoin), ACOG (EDD) |
+| `calculators/check_updates.py` | sequential | PubMed: ACC/AHA, ACCP/ESC, ATS/BTS, KDIGO, AASLD (MELD/FIB-4), USPSTF and validated behavioral-health screening, Ottawa/PECARN/Alvarado, AAD, and ACOG |
 | `peds/check_updates.py` | sequential | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
 | `als/check_updates.py` | sequential | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
 | `pals/check_updates.py` | sequential | PubMed: AHA PALS, ILCOR pediatric resuscitation, ERC pediatric, AHA/ACC pediatric arrhythmia, pediatric post-arrest care, IO access |
@@ -106,7 +106,7 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `anticoag/check_updates.py` | sequential | PubMed: VKA/DOAC reversal, antiplatelet hemostasis, and CHEST periprocedural guidance |
 | `toxicology/check_updates.py` | sequential | PubMed: acetaminophen/NAC, toxic alcohols, antidotes, cardiotoxic overdose, and lipid emulsion guidance |
 
-`scripts/run-quarterly-monitoring.py` runs the topic checks sequentially from one systemd service and sends the consolidated report only after every topic has completed, eliminating the former fixed-time race. Monitoring scripts send Pushover notifications when sources change. They do **not** rewrite clinical content; detected changes remain visibly pending until `scripts/acknowledge-clinical-review.py` is run after human review.
+`scripts/run-quarterly-monitoring.py` runs topic checks sequentially for both the monthly high-risk set and the full quarterly set, sending each consolidated report only after every selected topic has completed. Monitoring scripts send Pushover notifications when sources change. They do **not** rewrite clinical content; detected changes remain visibly pending until `scripts/acknowledge-clinical-review.py` records a source-backed human review and its protected audit entry.
 
 Systemd unit templates and secure setup instructions are in `ops/systemd/` and `docs/CLINICAL_MONITORING.md`. Secrets belong in root-only `/etc/noahpac-monitor.env`, never in root's crontab.
 

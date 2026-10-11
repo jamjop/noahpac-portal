@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>STI Treatment — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="clinical-app legacy-app reference-app sti-guide-app">
 <a class="skip-link" href="#main-content">Skip to STI Guidelines</a>
@@ -30,6 +30,39 @@
 </header>
 
 <div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
+  <section class="hiv-workflow" aria-labelledby="hiv-workflow-title">
+    <div class="hiv-workflow__head">
+      <div><p class="guide-cat">HIV prevention</p><h2 id="hiv-workflow-title">PrEP / PEP quick workflow</h2></div>
+      <span class="hiv-workflow__date">CDC · reviewed Oct 2026</span>
+    </div>
+    <p class="hiv-workflow__intro">A focused starting and follow-up checklist. Use current CDC guidance or the National Clinician Consultation Center for regimen selection in pregnancy, pediatrics, renal disease, resistance, or other complex situations.</p>
+    <div class="hiv-workflow__grid">
+      <details>
+        <summary>Possible exposure ≤72 hours: PEP</summary>
+        <ol>
+          <li><strong>Start immediately.</strong> Treat as a medical emergency—ideally within 24 hours and no later than 72 hours. Do not delay the first dose while awaiting labs or source testing.</li>
+          <li><strong>Confirm the exposure.</strong> Assess mucous-membrane/nonintact-skin or percutaneous contact with potentially infectious fluid and source HIV status when available.</li>
+          <li><strong>Baseline:</strong> blood HIV Ag/Ab; HIV NAT when indicated by recent injectable cabotegravir; pregnancy test when relevant; creatinine, AST/ALT; HBV/HCV; and site-specific GC/CT plus syphilis testing.</li>
+          <li><strong>Use a complete 28-day, three-drug regimen</strong> from current CDC guidance. Adjust for age, pregnancy, renal function, drug interactions, and resistance concerns; obtain expert help without delaying initiation.</li>
+          <li><strong>Follow up:</strong> contact within 24 hours, then HIV Ag/Ab plus NAT at 4–6 and 12 weeks after exposure. Transition directly to PrEP after PEP when ongoing exposure is anticipated and HIV is excluded.</li>
+        </ol>
+        <p class="hiv-workflow__alert">Exposure &gt;72 hours: PEP is generally not recommended; test for HIV, address prevention needs, and seek expert input when circumstances are exceptional.</p>
+        <a href="https://www.cdc.gov/hivnexus/hcp/pep/index.html" target="_blank" rel="noopener">Open current CDC PEP guidance</a>
+      </details>
+      <details>
+        <summary>Ongoing prevention: PrEP</summary>
+        <ol>
+          <li><strong>Offer broadly.</strong> Inform all sexually active adults and adolescents; prescribe to anyone who asks, including those who do not report risk factors.</li>
+          <li><strong>Exclude HIV before starting.</strong> Use a blood Ag/Ab test and HIV-1 RNA when indicated by recent PrEP/PEP or possible acute infection. Avoid oral rapid tests. Defer PrEP when results are discordant or acute HIV is unresolved.</li>
+          <li><strong>Baseline:</strong> site-specific GC/CT and syphilis testing. For oral tenofovir, calculate Cockcroft–Gault eCrCl and screen for HBV; add lipids for F/TAF.</li>
+          <li><strong>Match the option:</strong> F/TDF requires eCrCl &gt;60 and covers sexual or injection risk; F/TAF requires eCrCl ≥30 but is not indicated for receptive vaginal sex; injectable CAB does not require kidney testing and follows initial, one-month, then every-two-month dosing.</li>
+          <li><strong>Follow up:</strong> oral PrEP HIV Ag/Ab plus RNA and no more than a 90-day supply every 3 months; renal and STI monitoring at CDC-defined intervals. CAB requires HIV testing at month 1 and every 2 months with injections.</li>
+        </ol>
+        <p class="hiv-workflow__alert">2-1-1 oral PrEP is off-label, not FDA-approved, and not recommended by CDC. Active HBV is not a contraindication to oral PrEP, but stopping tenofovir can cause hepatitis flares and requires follow-up.</p>
+        <a href="https://www.cdc.gov/hivnexus/hcp/prep/index.html" target="_blank" rel="noopener">Open current CDC PrEP guidance</a>
+      </details>
+    </div>
+  </section>
   <input class="search-box" id="search" type="search" aria-label="Search STI treatment guidance" placeholder="Search diagnosis, drug, or population…" autocomplete="off">
   <select id="cat-select" class="cat-select" aria-label="Filter by category"></select>
   <div id="list-root"></div>
@@ -41,7 +74,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

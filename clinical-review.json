@@ -28,14 +28,22 @@
     "openfda": {"title": "openFDA Drug APIs", "url": "https://open.fda.gov/apis/drug/"},
     "nlm_clinical_tables": {"title": "NLM Clinical Tables", "url": "https://clinicaltables.nlm.nih.gov/"},
     "pubmed": {"title": "PubMed", "url": "https://pubmed.ncbi.nlm.nih.gov/"}
+    ,"aasld_fib4": {"title": "AASLD Noninvasive Assessment of Liver Disease", "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/spare-me-jab-noninvasive-assessment-patients-masld"}
+    ,"kdigo_ckd_2024": {"title": "KDIGO 2024 CKD Evaluation and Management Guideline", "url": "https://kdigo.org/guidelines/ckd-evaluation-and-management/"}
+    ,"va_audit_c": {"title": "VA/DoD Substance Use Disorder Guideline", "url": "https://www.healthquality.va.gov/guidelines/MH/sud/"}
+    ,"nida_single_question": {"title": "Single-Question Drug-use Screen Validation", "url": "https://pubmed.ncbi.nlm.nih.gov/20625025/"}
+    ,"idsa_gas_2025": {"title": "IDSA 2025 GAS Pharyngitis Guideline Update", "url": "https://www.idsociety.org/practice-guideline/streptococcal-pharyngitis2/"}
+    ,"cdc_gas": {"title": "CDC Clinical Guidance for GAS Pharyngitis", "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"}
+    ,"cdc_hiv_prep": {"title": "CDC Clinical Guidance for PrEP", "url": "https://www.cdc.gov/hivnexus/hcp/prep/index.html"}
+    ,"cdc_hiv_pep": {"title": "CDC Clinical Guidance for PEP", "url": "https://www.cdc.gov/hivnexus/hcp/pep/index.html"}
   },
   "tools": [
-    {"id":"abx","path":"/abx/","title":"Antibiotic Reference","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"abx/check_updates.py","source_ids":["pubmed"]},
-    {"id":"allergy","path":"/allergy/","title":"Antibiotic Allergy Cross-Reactivity","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"allergy/check_updates.py","source_ids":["pubmed"]},
-    {"id":"als","path":"/als/","title":"Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"als/check_updates.py","source_ids":["aha_als_2025"]},
+    {"id":"abx","path":"/abx/","title":"Antibiotic Reference","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"abx/check_updates.py","source_ids":["pubmed","idsa_gas_2025","cdc_gas"]},
+    {"id":"allergy","path":"/allergy/","title":"Antibiotic Allergy Cross-Reactivity","risk_tier":"high","status":"monitoring_only","review_cadence":"monthly","monitor":"allergy/check_updates.py","source_ids":["pubmed"]},
+    {"id":"als","path":"/als/","title":"Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"als/check_updates.py","source_ids":["aha_als_2025"]},
     {"id":"antibiogram","path":"/antibiogram/","title":"ND Antibiogram","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"antibiogram/auto_update.py","source_ids":["nd_antibiograms"]},
-    {"id":"anticoag","path":"/anticoag/","title":"Anticoagulation Reversal","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"anticoag/check_updates.py","source_ids":["chest_periop_2022","fda_andexxa"]},
-    {"id":"calculators","path":"/calculators/","title":"Clinical Calculators","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"calculators/check_updates.py","source_ids":["pubmed"]},
+    {"id":"anticoag","path":"/anticoag/","title":"Anticoagulation Reversal","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"anticoag/check_updates.py","source_ids":["chest_periop_2022","fda_andexxa"]},
+    {"id":"calculators","path":"/calculators/","title":"Clinical Calculators","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"calculators/check_updates.py","source_ids":["pubmed","aasld_fib4","kdigo_ckd_2024","va_audit_c","nida_single_question"]},
     {"id":"clinical-assistant","path":"/clinical-assistant/","title":"Clinical Assistant","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"ddx","path":"/ddx/","title":"Differential Diagnosis Reference","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"documents","path":"/documents/","title":"Clinical Documents","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
@@ -43,18 +51,18 @@
     {"id":"empiric","path":"/empiric/","title":"Empiric Therapy","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":null,"source_ids":["nd_antibiograms"]},
     {"id":"labs","path":"/labs/","title":"Laboratory Reference","risk_tier":"moderate","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"lookup","path":"/lookup/","title":"Code and Terminology Lookup","risk_tier":"contextual","status":"live_source","review_cadence":"live-source","monitor":null,"source_ids":["nlm_clinical_tables"]},
-    {"id":"naloxone","path":"/naloxone/","title":"Naloxone Reference","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"naloxone/check_updates.py","source_ids":["nd_behavioral_data","cdc_opioid_2022"]},
-    {"id":"opioids","path":"/opioids/","title":"Opioid MME Estimator","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"opioids/check_updates.py","source_ids":["cdc_opioid_2022"]},
-    {"id":"pals","path":"/pals/","title":"Pediatric Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"pals/check_updates.py","source_ids":["aha_pals_2025"]},
-    {"id":"peds","path":"/peds/","title":"Pediatric Dosing","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"peds/check_updates.py","source_ids":["aha_pals_2025"]},
+    {"id":"naloxone","path":"/naloxone/","title":"Naloxone Reference","risk_tier":"high","status":"monitoring_only","review_cadence":"monthly","monitor":"naloxone/check_updates.py","source_ids":["nd_behavioral_data","cdc_opioid_2022"]},
+    {"id":"opioids","path":"/opioids/","title":"Opioid MME Estimator","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"opioids/check_updates.py","source_ids":["cdc_opioid_2022"]},
+    {"id":"pals","path":"/pals/","title":"Pediatric Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"pals/check_updates.py","source_ids":["aha_pals_2025"]},
+    {"id":"peds","path":"/peds/","title":"Pediatric Dosing","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"peds/check_updates.py","source_ids":["aha_pals_2025"]},
     {"id":"reportable","path":"/reportable/","title":"ND Reportable Conditions","risk_tier":"moderate","status":"monitoring_only","review_cadence":"quarterly","monitor":"reportable/check_updates.py","source_ids":["nd_reportable"]},
     {"id":"screener","path":"/screener/","title":"USPSTF Screener","risk_tier":"high","status":"live_source","review_cadence":"weekly","monitor":"screener/update_uspstf.py","source_ids":["uspstf_api"]},
-    {"id":"sepsis","path":"/sepsis/","title":"Sepsis Screening","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"sepsis/check_updates.py","source_ids":["ssc_2026"]},
-    {"id":"steroids","path":"/steroids/","title":"Steroid Conversion","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"steroids/check_updates.py","source_ids":["endocrine_gc_2024"]},
-    {"id":"sti-guide","path":"/sti-guide/","title":"STI Treatment Guide","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"sti-guide/check_updates.py","source_ids":["cdc_sti","cdc_doxy_pep"]},
-    {"id":"tccc","path":"/tccc/","title":"TCCC Field Reference","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"tccc/check_updates.py","source_ids":["tccc"]},
-    {"id":"toxicology","path":"/toxicology/","title":"Toxicology and Antidotes","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"toxicology/check_updates.py","source_ids":["poison_centers","pubmed"]},
-    {"id":"vaccines","path":"/vaccines/","title":"Immunization Schedule","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"quarterly","monitor":"vaccines/check_updates.py","source_ids":["cdc_vaccines","aap_vaccines"]},
+    {"id":"sepsis","path":"/sepsis/","title":"Sepsis Screening","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"sepsis/check_updates.py","source_ids":["ssc_2026"]},
+    {"id":"steroids","path":"/steroids/","title":"Steroid Conversion","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"steroids/check_updates.py","source_ids":["endocrine_gc_2024"]},
+    {"id":"sti-guide","path":"/sti-guide/","title":"STI Treatment Guide","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"sti-guide/check_updates.py","source_ids":["cdc_sti","cdc_doxy_pep","cdc_hiv_prep","cdc_hiv_pep"]},
+    {"id":"tccc","path":"/tccc/","title":"TCCC Field Reference","risk_tier":"high","status":"monitoring_only","review_cadence":"monthly","monitor":"tccc/check_updates.py","source_ids":["tccc"]},
+    {"id":"toxicology","path":"/toxicology/","title":"Toxicology and Antidotes","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"toxicology/check_updates.py","source_ids":["poison_centers","pubmed"]},
+    {"id":"vaccines","path":"/vaccines/","title":"Immunization Schedule","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"vaccines/check_updates.py","source_ids":["cdc_vaccines","aap_vaccines"]},
     {"id":"wound","path":"/wound/","title":"Wound Classification and Tetanus","risk_tier":"moderate","status":"monitoring_only","review_cadence":"quarterly","monitor":"wound/check_updates.py","source_ids":["cdc_vaccines","pubmed"]}
   ]
 }

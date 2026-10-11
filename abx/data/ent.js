@@ -4,7 +4,7 @@ const ABX_ENT = [
   {
     id:'pharyngitis', cat:'ent',
     name:'Pharyngitis (GAS)', organism:'Group A Streptococcus (S. pyogenes)',
-    source:'IDSA 2012',
+    source:'CDC 2025 · IDSA 2025',
     regimens:[
       {label:'First-line', cls:'fl', drugs:[
         {name:'Amoxicillin', dose:'500 mg PO BID × 10 days  or  1 g PO once daily × 10 days'},
@@ -22,7 +22,7 @@ const ABX_ENT = [
         {name:'Cephalexin', dose:'500 mg PO BID × 10 days'},
       ]},
     ],
-    notes:'Treat only confirmed GAS (positive rapid strep or throat culture). Use Centor/McIsaac score to guide testing — do NOT treat viral pharyngitis. Routine test of cure not needed. Expedited partner therapy not applicable.',
+    notes:'Treat only confirmed GAS (positive RADT, NAAT, or throat culture). Do not test patients with clear viral symptoms. In symptomatic children age ≥3, confirm a negative RADT with throat culture; routine backup culture is not indicated in adults. The integrated McIsaac score supports testing decisions only and must not be used as a stand-alone reason for empiric antibiotics.',
   },
 
   {

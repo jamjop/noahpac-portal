@@ -22,6 +22,10 @@ APP_ID       = 'sti-guide'
 APP_NAME     = 'STI Treatment Guidelines'
 APP_URL      = 'https://noahpac.com/sti-guide/'
 PAGE_URL     = 'https://www.cdc.gov/std/treatment-guidelines/default.htm'
+ADDITIONAL_CDC_PAGES = {
+    'prep': 'https://www.cdc.gov/hivnexus/hcp/prep/index.html',
+    'pep': 'https://www.cdc.gov/hivnexus/hcp/pep/index.html',
+}
 APP_DIR      = Path(__file__).resolve().parent
 PAGE_STATE   = APP_DIR / 'known_state.json'
 PMID_STATE   = APP_DIR / 'known_pmids.json'
@@ -113,7 +117,19 @@ def main() -> int:
             alerts.append(f"New link: {link}")
             findings.append({'detail': f'New CDC page link: {link}'})
 
-        pw.save_state(PAGE_STATE, {'links': sorted(current_links), 'last_reviewed': current_reviewed})
+        additional_state = page_state.get('additional_pages', {})
+        current_additional = {}
+        for page_id, page_url in ADDITIONAL_CDC_PAGES.items():
+            page_html = pw.fetch_page(page_url, USER_AGENT)
+            reviewed = extract_last_reviewed(page_html)
+            current_additional[page_id] = reviewed
+            previous = additional_state.get(page_id, '')
+            if previous and reviewed and reviewed != previous:
+                msg = f"CDC HIV {page_id.upper()} page date changed: {previous!r} → {reviewed!r}"
+                alerts.append(msg)
+                findings.append({'detail': msg, 'url': page_url})
+
+        pw.save_state(PAGE_STATE, {'links': sorted(current_links), 'last_reviewed': current_reviewed, 'additional_pages': current_additional})
     except Exception as exc:
         # Do NOT let this fall through silently — a page that failed to load
         # is not the same as a page that hasn't changed. Without an explicit

@@ -31,6 +31,8 @@ NOAHPAC_REPO="$repo" /usr/bin/python3 \
 units=(
   noahpac-quarterly-monitor.service
   noahpac-quarterly-monitor.timer
+  noahpac-high-risk-monitor.service
+  noahpac-high-risk-monitor.timer
   noahpac-uspstf-update.service
   noahpac-uspstf-update.timer
   noahpac-uspstf-report.service
@@ -51,6 +53,7 @@ systemctl daemon-reload
 systemd-analyze verify "${units[@]/#/$unit_dir/}"
 systemctl enable --now \
   noahpac-quarterly-monitor.timer \
+  noahpac-high-risk-monitor.timer \
   noahpac-uspstf-update.timer \
   noahpac-uspstf-report.timer \
   noahpac-antibiogram-update.timer \
@@ -58,6 +61,7 @@ systemctl enable --now \
 
 systemctl list-timers --all --no-pager \
   noahpac-quarterly-monitor.timer \
+  noahpac-high-risk-monitor.timer \
   noahpac-uspstf-update.timer \
   noahpac-uspstf-report.timer \
   noahpac-antibiogram-update.timer \

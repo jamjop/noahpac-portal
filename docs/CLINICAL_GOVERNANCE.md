@@ -55,9 +55,10 @@ sudo --preserve-env=PUSHOVER_USER,PUSHOVER_TOKEN \
 
 `tests/clinical-regression-vectors.json` stores reviewable inputs, expected
 outputs, and the mathematical basis separately from the Playwright runner.
-Vectors currently cover renal equations, corrected calcium, anion gap, MELD,
-CHA2DS2-VASc, CURB-65, pediatric emergency-dose boundaries, opioid MME,
-corticosteroid equivalence, SIRS, and qSOFA.
+Vectors currently cover renal equations and G/A staging, FIB-4 age cutoffs,
+AUDIT-C, drug-use screening, McIsaac testing support, corrected calcium, anion
+gap, MELD, CHA2DS2-VASc, CURB-65, pediatric emergency-dose boundaries, opioid
+MME, corticosteroid equivalence, SIRS, and qSOFA.
 
 Run them with:
 

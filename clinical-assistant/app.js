@@ -4,6 +4,7 @@
   const form = document.getElementById("ask-form");
   const input = document.getElementById("question-input");
   const submitBtn = document.getElementById("ask-submit");
+  const identifiersRemoved = document.getElementById("identifiers-removed");
 
   let history = [];
 
@@ -45,12 +46,12 @@
           a.href = src.url;
           a.target = "_blank";
           a.rel = "noopener";
-          a.textContent = src.filename;
+          a.textContent = src.filename + " · " + (src.date || "date unknown") + " (" + (src.date_basis || "date basis unknown") + ")";
           sourcesDiv.appendChild(a);
         } else {
           const span = document.createElement("span");
           span.className = "msg-source no-link";
-          span.textContent = src.filename;
+          span.textContent = src.filename + " · " + (src.date || "date unknown") + " (" + (src.date_basis || "date basis unknown") + ")";
           sourcesDiv.appendChild(span);
         }
       });
@@ -74,6 +75,10 @@
     e.preventDefault();
     const question = input.value.trim();
     if (!question) return;
+    if (!identifiersRemoved.checked) {
+      identifiersRemoved.focus();
+      return;
+    }
 
     input.value = "";
     submitBtn.disabled = true;
@@ -87,6 +92,7 @@
         body: JSON.stringify({
           question: question,
           conversation_history: history,
+          identifiers_removed: true,
         }),
       });
 
@@ -101,6 +107,7 @@
       addAssistantMessage(data.answer, data.sources);
       history.push({ role: "user", content: question });
       history.push({ role: "assistant", content: data.answer });
+      identifiersRemoved.checked = false;
     } catch (err) {
       typingEl.remove();
       addMessage("error", "Couldn't reach the assistant. Try again in a moment.");

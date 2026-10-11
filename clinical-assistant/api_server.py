@@ -10,12 +10,14 @@ Runs on 127.0.0.1:8766 behind nginx (Authelia-protected).
 Keys read from VOYAGE_API_KEY / ANTHROPIC_API_KEY env vars (systemd unit).
 """
 import os
+import datetime
 from pathlib import Path
 
 import anthropic
 import chromadb
 import voyageai
 from flask import Flask, jsonify, request
+from safety import detected_identifier
 
 APP_DIR = Path(__file__).parent
 CHROMA_DIR = APP_DIR / "chroma_data"
@@ -27,6 +29,7 @@ ANSWER_MODEL = os.environ.get("ANSWER_MODEL", "claude-sonnet-5")
 TOP_K = 6
 MAX_QUESTION_CHARS = 2000
 MAX_HISTORY_TURNS = 10
+MAX_RETRIEVAL_DISTANCE = float(os.environ.get("MAX_RETRIEVAL_DISTANCE", "0.95"))
 
 app = Flask(__name__)
 
@@ -42,6 +45,15 @@ If the provided excerpts don't contain enough information to answer the question
 After your answer, on a new line, list which source document(s) you actually used, exactly as: SOURCES: filename1.pdf, filename2.pdf
 If you didn't use any of the excerpts, write: SOURCES: none
 """
+
+def citation_date(meta):
+    if meta.get("source_date"):
+        return meta["source_date"], meta.get("date_basis", "PDF metadata")
+    base = Path("/var/www/noahpac-portal/documents/pdfs") if meta.get("corpus") == "existing_hep" else APP_DIR / "library"
+    path = base / Path(meta.get("source_filename", "")).name
+    if path.is_file():
+        return datetime.datetime.fromtimestamp(path.stat().st_mtime).date().isoformat(), "file modified"
+    return "Unknown", "not recorded"
 
 
 def build_context_block(chunks, metadatas):
@@ -79,6 +91,12 @@ def ask():
         return jsonify({"error": "question is required"}), 400
     if len(question) > MAX_QUESTION_CHARS:
         return jsonify({"error": "question too long"}), 400
+    if data.get("identifiers_removed") is not True:
+        return jsonify({"error": "Confirm that direct patient identifiers have been removed before submitting."}), 400
+    combined_text = "\n".join([question] + [str(turn.get("content") or "") for turn in history[-MAX_HISTORY_TURNS:]])
+    identifier = detected_identifier(combined_text)
+    if identifier:
+        return jsonify({"error": f"Submission blocked before external processing: possible {identifier} detected. Remove identifying details and try again."}), 400
 
     try:
         embed_result = vo.embed([question], model=EMBED_MODEL, input_type="query")
@@ -89,10 +107,16 @@ def ask():
     results = collection.query(query_embeddings=[query_embedding], n_results=TOP_K)
     chunks = results["documents"][0] if results["documents"] else []
     metadatas = results["metadatas"][0] if results["metadatas"] else []
+    distances = results.get("distances", [[]])[0] if results.get("distances") else []
 
     if not chunks:
         return jsonify({
             "answer": "I don't have any indexed documents to answer from yet.",
+            "sources": [],
+        })
+    if not distances or min(distances) > MAX_RETRIEVAL_DISTANCE:
+        return jsonify({
+            "answer": "The indexed references do not contain sufficiently close support for this question. I cannot provide a document-grounded answer.",
             "sources": [],
         })
 
@@ -123,6 +147,11 @@ def ask():
 
     raw_answer = response.content[0].text
     answer, cited_filenames = parse_sources(raw_answer, retrieved_filenames)
+    if not cited_filenames:
+        return jsonify({
+            "answer": "The generated response did not include verifiable support from the retrieved documents, so it has been withheld.",
+            "sources": [],
+        })
 
     metadata_by_filename = {m["source_filename"]: m for m in metadatas}
     sources = []
@@ -130,10 +159,11 @@ def ask():
         meta = metadata_by_filename.get(fname)
         if not meta:
             continue
+        date, date_basis = citation_date(meta)
         if meta["corpus"] == "existing_hep":
-            sources.append({"filename": fname, "url": f"/documents/pdfs/{fname}"})
+            sources.append({"filename": fname, "url": f"/documents/pdfs/{fname}", "date": date, "date_basis": date_basis})
         else:
-            sources.append({"filename": fname, "url": None})
+            sources.append({"filename": fname, "url": None, "date": date, "date_basis": date_basis})
 
     return jsonify({"answer": answer, "sources": sources})
 

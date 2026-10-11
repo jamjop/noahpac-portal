@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import importlib.util
 from datetime import date
 from pathlib import Path
 
@@ -12,6 +13,16 @@ REPO = Path(__file__).resolve().parent.parent
 
 
 class ClinicalGovernanceTests(unittest.TestCase):
+    def test_clinical_assistant_identifier_filter(self):
+        path = REPO / "clinical-assistant" / "safety.py"
+        spec = importlib.util.spec_from_file_location("assistant_safety", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertEqual(module.detected_identifier("MRN: AB-12345"), "medical record number")
+        self.assertEqual(module.detected_identifier("DOB 04/02/1980"), "date of birth")
+        self.assertEqual(module.detected_identifier("Call 701-555-1212"), "phone number")
+        self.assertIsNone(module.detected_identifier("Adult with fever and cough for 2 days"))
+
     def test_manifest_and_source_configuration(self):
         env = os.environ.copy()
         env["NOAHPAC_REPO"] = str(REPO)

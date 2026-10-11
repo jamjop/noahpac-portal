@@ -4,6 +4,25 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-11-focused-tools-and-safeguards",
+      "date": "2026-10-11",
+      "type": "clinical",
+      "title": "Focused primary-care tools and safety controls",
+      "summary": "Added focused screening and decision-support workflows, strengthened document-grounded assistant safeguards, and increased surveillance for high-risk tools.",
+      "clinical_change": true,
+      "scope": "Calculators, antimicrobial stewardship, HIV prevention, assistant safety, and governance",
+      "affected_routes": ["/calculators/", "/abx/", "/sti-guide/", "/clinical-assistant/"],
+      "changes": [
+        "Added FIB-4, CKD G/A staging, AUDIT-C, and a validated single-question drug-use screen with interpretation limits.",
+        "Integrated McIsaac testing support into GAS pharyngitis without recommending score-based empiric antibiotics.",
+        "Added a narrow CDC-based PrEP/PEP workflow to the STI guide.",
+        "Added an identifier-removal gate, server-side identifier screening, retrieval-confidence refusal, citation enforcement, and citation dates to the Clinical Assistant.",
+        "Added monthly surveillance for curated high-risk tools and an append-only, root-only human review audit trail.",
+        "Deferred STOP-BANG because the authoritative questionnaire repository requires reuse permission."
+      ],
+      "source_ids": ["aasld_fib4", "kdigo_ckd_2024", "va_audit_c", "nida_single_question", "idsa_gas_2025", "cdc_gas", "cdc_hiv_prep", "cdc_hiv_pep"]
+    },
+    {
       "id": "2026-10-11-tool-clarity-stewardship",
       "date": "2026-10-11",
       "type": "interface",

@@ -114,9 +114,58 @@ function showAbx(id) {
     html += `<div class="abx-note">${esc(a.notes)}</div>`;
   }
 
+  if (a.id === 'pharyngitis') {
+    html += `<section class="centor-tool" aria-labelledby="centor-title">
+      <div class="reg-label" id="centor-title">McIsaac testing support</div>
+      <p class="centor-intro">Use only for patients age ≥3 years without clear viral features. This score supports a testing decision; it does not justify empiric antibiotics.</p>
+      <div class="centor-age">
+        <label for="centor-age">Age</label>
+        <select id="centor-age"><option value="under3">Under 3</option><option value="3to14">3–14</option><option value="15to44" selected>15–44</option><option value="45plus">45 or older</option></select>
+      </div>
+      <div class="centor-checks">
+        <label><input type="checkbox" id="centor-exudate"> Tonsillar exudate or swelling <span>+1</span></label>
+        <label><input type="checkbox" id="centor-nodes"> Tender anterior cervical nodes <span>+1</span></label>
+        <label><input type="checkbox" id="centor-fever"> Temperature &gt;38°C (100.4°F) <span>+1</span></label>
+        <label><input type="checkbox" id="centor-no-cough"> Absence of cough <span>+1</span></label>
+        <label><input type="checkbox" id="centor-viral"> Clear viral symptoms (cough, rhinorrhea, hoarseness, oral ulcers, conjunctivitis)</label>
+        <label><input type="checkbox" id="centor-high-risk"> High-risk host or concerning presentation</label>
+      </div>
+      <div id="centor-result" class="centor-result" role="status" aria-live="polite"></div>
+      <p class="centor-source">CDC/IDSA: do not test when clear viral symptoms are present. When viral features are absent, confirm GAS microbiologically before treatment. Back up a negative RADT with throat culture in symptomatic children age ≥3; this is not routinely indicated in adults.</p>
+    </section>`;
+  }
+
   html += `<button class="copy-btn" id="copyBtn">&#x2398; Copy regimen</button>`;
   document.getElementById('pane').innerHTML = html;
   document.getElementById('copyBtn').addEventListener('click', copyRegimen);
+  if (a.id === 'pharyngitis') {
+    document.querySelectorAll('.centor-tool input, .centor-tool select').forEach(control => {
+      control.addEventListener('change', updateCentor);
+    });
+    updateCentor();
+  }
+}
+
+function updateCentor() {
+  const age = document.getElementById('centor-age').value;
+  const result = document.getElementById('centor-result');
+  if (age === 'under3') {
+    result.innerHTML = '<strong>Not applicable under age 3.</strong><span>GAS pharyngitis is uncommon; evaluate and test only in selected circumstances using current pediatric guidance.</span>';
+    return;
+  }
+  const viral = document.getElementById('centor-viral').checked;
+  const highRisk = document.getElementById('centor-high-risk').checked;
+  let score = ['centor-exudate','centor-nodes','centor-fever','centor-no-cough']
+    .reduce((sum,id)=>sum+(document.getElementById(id).checked?1:0),0);
+  if (age === '3to14') score += 1;
+  if (age === '45plus') score -= 1;
+  let guidance;
+  if (viral) guidance = 'Clear viral features: GAS testing is generally not indicated.';
+  else if (highRisk) guidance = 'Do not rely on the score alone; test and assess using the higher-risk clinical context.';
+  else if (score <= 0) guidance = 'Very low clinical probability; GAS testing is generally not indicated.';
+  else if (score === 1) guidance = 'Low clinical probability; testing is usually unnecessary, subject to local practice and epidemiology.';
+  else guidance = 'Perform RADT, NAAT, or throat culture per local practice. Treat only a confirmed GAS infection.';
+  result.innerHTML = `<strong>McIsaac score: ${score}</strong><span>${esc(guidance)}</span>`;
 }
 
 // ── Clipboard copy ──────────────────────────────────────────────────────────

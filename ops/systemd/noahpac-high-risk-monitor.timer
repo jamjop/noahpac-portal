@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Noah PA-C high-risk clinical-source monitoring monthly
+
+[Timer]
+OnCalendar=*-*-05 04:30:00
+Persistent=true
+RandomizedDelaySec=5m
+Unit=noahpac-high-risk-monitor.service
+
+[Install]
+WantedBy=timers.target

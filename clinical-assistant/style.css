@@ -41,13 +41,16 @@ body{padding-bottom:24px}
 .icon-empty{width:32px;height:32px;opacity:.5;margin-bottom:12px}
 .empty-state p{max-width:440px;margin:0 auto;font-size:13.5px;line-height:1.5}
 
-.ask-form{display:flex;gap:8px;position:sticky;bottom:16px;background:var(--bg);padding:8px 0}
+.privacy-notice{margin:12px 0 4px;padding:12px 14px;border-left:3px solid var(--warn);border-radius:var(--r-sm);background:var(--warn-soft);color:var(--ink-soft);font-size:12px;line-height:1.55}
+.privacy-notice strong{color:var(--ink)}
+.ask-form{display:grid;grid-template-columns:1fr 44px;gap:8px;position:sticky;bottom:16px;background:var(--bg);padding:8px 0}
 #question-input{flex:1;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:14px}
 #question-input:focus{outline:2px solid var(--purple);outline-offset:2px;border-color:var(--purple)}
 #ask-submit{display:flex;align-items:center;justify-content:center;width:44px;border-radius:var(--r);border:none;background:var(--purple);color:#fff;cursor:pointer}
 #ask-submit:disabled{opacity:.5;cursor:default}
 #ask-submit:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .icon-send{width:18px;height:18px}
+.privacy-confirm{grid-column:1 / -1;display:flex;align-items:flex-start;gap:8px;min-height:44px;padding:8px 4px;color:var(--ink-soft);font-size:12px;line-height:1.45}.privacy-confirm input{width:18px;height:18px;flex:0 0 auto}
 
 .typing-indicator{align-self:flex-start;color:var(--ink-muted);font-size:13px;font-style:italic}
 

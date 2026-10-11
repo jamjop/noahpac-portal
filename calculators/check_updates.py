@@ -98,6 +98,12 @@ SEARCHES = [
         'query':   '"American Association for the Study of Liver Diseases" AND ("MELD" OR "liver transplantation" OR "end-stage liver disease" OR cirrhosis) AND (guideline[pt] OR update[ti] OR statement[pt])',
         'reldate': 400,
     },
+    {
+        'id':      'aasld_fib4',
+        'name':    'AASLD Noninvasive Fibrosis Assessment (FIB-4)',
+        'query':   '("American Association for the Study of Liver Diseases" OR AASLD) AND (FIB-4 OR "noninvasive liver" OR fibrosis) AND (guideline[pt] OR guidance[ti] OR update[ti] OR statement[pt])',
+        'reldate': 400,
+    },
 
     # ── Mental Health ─────────────────────────────────────────────────────────
     {
@@ -110,6 +116,12 @@ SEARCHES = [
         'id':      'uspstf_anxiety',
         'name':    'USPSTF Anxiety Screening Guidelines (GAD-7)',
         'query':   '"US Preventive Services Task Force" AND (anxiety OR "anxiety disorder") AND (screening OR guideline OR recommendation)',
+        'reldate': 400,
+    },
+    {
+        'id':      'alcohol_drug_screening',
+        'name':    'Primary-care Alcohol and Drug-use Screening Guidance',
+        'query':   '(AUDIT-C OR "single question" OR "drug use screening") AND (primary care OR USPSTF OR validation) AND (guideline OR recommendation OR screening)',
         'reldate': 400,
     },
 

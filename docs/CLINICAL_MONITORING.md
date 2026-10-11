@@ -20,6 +20,8 @@ old crontab or environment file into tickets, terminals being recorded, or chat.
 
 - USPSTF refresh: Mondays 04:17; report 04:30.
 - Antibiogram refresh: first day of Jan/Apr/Jul/Oct at 04:23.
+- High-risk curated-topic surveillance: monthly on the 5th at 04:30. Fifteen
+  high-risk topic monitors run sequentially and preserve unresolved review state.
 - Curated-topic surveillance: Jan/Apr/Jul/Oct 15 at 04:30. One orchestrator
   runs all 17 topics and sends the report after completion.
 - Authoritative-source link check: Tuesdays at 04:50, with failure escalation.
@@ -47,10 +49,14 @@ After source review and deployment:
 
 ```bash
 sudo /usr/bin/python3 /var/www/noahpac-portal/scripts/acknowledge-clinical-review.py \
-  sepsis --reviewer "INITIALS" --note "Reviewed SSC 2026; deployed content update"
+  sepsis --reviewer "INITIALS" --decision content-updated \
+  --source "https://example.org/current-guideline" \
+  --note "Reviewed current guideline; deployed content update"
 ```
 
-The command records the reviewer and note in the topic's `last_checked.json`.
+The command records the reviewer, outcome, source, note, and UTC timestamp in
+the topic's `last_checked.json` and appends a root-only audit record to
+`/var/lib/noahpac-monitor/review-audit.jsonl`.
 Do not use it merely because a later automated check found no additional papers.
 
 ## Verification
@@ -61,6 +67,7 @@ sudo -u root NOAHPAC_REPO=/var/www/noahpac-portal \
 sudo systemd-analyze verify /etc/systemd/system/noahpac-*.service /etc/systemd/system/noahpac-*.timer
 sudo systemctl list-timers 'noahpac-*'
 sudo systemctl start noahpac-quarterly-monitor.service
+sudo systemctl start noahpac-high-risk-monitor.service
 sudo journalctl -u noahpac-quarterly-monitor.service -n 200 --no-pager
 ```
 

@@ -7,7 +7,7 @@
 <title>Clinical Assistant — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app assistant-app clinical-assistant-app">
@@ -41,6 +41,10 @@
     <p>Ask a question about the reference documents indexed here (HEP handouts and any curated guideline library entries). Answers are grounded only in those documents, not general knowledge.</p>
   </div>
 
+  <div class="privacy-notice" role="note">
+    <strong>Do not enter patient identifiers.</strong> Remove names, dates of birth, contact details, record numbers, addresses, and other identifying details. Questions are sent to external model and embedding services.
+  </div>
+
   <form id="ask-form" class="ask-form">
     <input
       id="question-input"
@@ -54,6 +58,7 @@
     <button type="submit" id="ask-submit" aria-label="Ask">
       <i data-lucide="send" class="icon-send"></i>
     </button>
+    <label class="privacy-confirm"><input type="checkbox" id="identifiers-removed" required> I confirm that I removed direct patient identifiers.</label>
   </form>
 
   <footer class="app-footer legacy-footer">
@@ -63,6 +68,6 @@
 
 </div>
 
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

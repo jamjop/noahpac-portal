@@ -565,6 +565,74 @@ const CALCS = [
       addListeners("wellspe", calcWellsPe);
     }
   },
+
+  {
+    id:"fib4", name:"FIB-4", num:"20",
+    eyebrow:"Liver Fibrosis", source:"AASLD noninvasive liver disease assessment",
+    render: pane => {
+      pane.innerHTML = calcHeader("FIB-4","Liver Fibrosis","Age × AST ÷ (platelets × √ALT)") + `
+      <div class="fields">
+        ${field("Age","fib4-age","number","years","55","18","110")}
+        ${field("AST","fib4-ast","number","U/L","40","1","2000")}
+        ${field("ALT","fib4-alt","number","U/L","40","1","2000")}
+        ${field("Platelets","fib4-plt","number","×10³/µL","200","1","1000")}
+      </div>
+      <div id="fib4-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="fib4-copy">&#x2398; Copy result</button>
+      <p class="note"><strong>Age caveats matter:</strong> FIB-4 has low accuracy at age ≤35; use an alternate fibrosis assessment when concern persists. For age &gt;65, AASLD uses 2.0 rather than 1.3 as the low-risk cutoff. Do not use FIB-4 in acutely ill patients, and interpret cautiously when AST, ALT, or platelets are abnormal for another reason. An indeterminate or high result is a prompt for secondary assessment (such as VCTE or ELF), not a diagnosis. <a href="https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/spare-me-jab-noninvasive-assessment-patients-masld" target="_blank" rel="noopener">AASLD source</a>.</p>`;
+      addListeners("fib4", calcFib4);
+    }
+  },
+
+  {
+    id:"ckd-stage", name:"CKD G/A Staging", num:"21",
+    eyebrow:"Kidney Health", source:"KDIGO 2024 GFR and albuminuria categories",
+    render: pane => {
+      pane.innerHTML = calcHeader("CKD G/A Staging","Kidney Health","Combine eGFR with urine albumin-to-creatinine ratio") + `
+      <div class="fields">
+        ${field("eGFR","ckd-egfr","number","mL/min/1.73m²","75","1","200")}
+        ${field("Urine ACR","ckd-acr","number","mg/g","12","0","20000")}
+        ${selectField("Chronicity / kidney damage","ckd-chronic",[["unknown","Not established ≥3 months"],["yes","Established ≥3 months or other marker present"]])}
+      </div>
+      <div id="ckd-stage-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="ckd-stage-copy">&#x2398; Copy result</button>
+      <p class="note">CKD requires abnormal kidney structure/function for at least 3 months. G1–G2 with A1 albuminuria does not establish CKD without another marker of kidney damage. Confirm an elevated urine ACR, address reversible causes, and use the full clinical context. This tool displays the KDIGO G/A prognosis category; it does not calculate the Kidney Failure Risk Equation. <a href="https://kdigo.org/guidelines/ckd-evaluation-and-management/" target="_blank" rel="noopener">KDIGO 2024 source</a>.</p>`;
+      addListeners("ckd-stage", calcCkdStage);
+    }
+  },
+
+  {
+    id:"audit-c", name:"AUDIT-C", num:"22",
+    eyebrow:"Alcohol Screening", source:"Validated 3-item alcohol screen",
+    render: pane => {
+      const frequency = [["0","Never"],["1","Monthly or less"],["2","2–4 times/month"],["3","2–3 times/week"],["4","4 or more times/week"]];
+      pane.innerHTML = calcHeader("AUDIT-C","Alcohol Screening","Alcohol Use Disorders Identification Test—Consumption") + `
+      <div class="fields">
+        ${selectField("How often do you have a drink containing alcohol?","audit-q1",frequency)}
+        ${selectField("How many standard drinks on a typical drinking day?","audit-q2",[["0","1–2"],["1","3–4"],["2","5–6"],["3","7–9"],["4","10 or more"]])}
+        ${selectField("How often: 6+ drinks (men <65) or 4+ drinks (women and everyone ≥65) on one occasion?","audit-q3",[["0","Never"],["1","Less than monthly"],["2","Monthly"],["3","Weekly"],["4","Daily or almost daily"]])}
+      </div>
+      <div id="audit-c-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="audit-c-copy">&#x2398; Copy result</button>
+      <p class="note">Score range 0–12. A positive screen is not a diagnosis and should lead to assessment of quantity, consequences, withdrawal risk, and readiness to change. Current VA/DoD guidance uses ≥5; commonly used validation thresholds are ≥4 for men and ≥3 for women. Document which threshold your practice uses. <a href="https://www.hepatitis.va.gov/alcohol/treatment/audit-c.asp" target="_blank" rel="noopener">VA AUDIT-C source</a>.</p>`;
+      addListeners("audit-c", calcAuditC);
+    }
+  },
+
+  {
+    id:"drug-screen", name:"Single-Question Drug Screen", num:"23",
+    eyebrow:"Drug-use Screening", source:"Validated primary-care single-question screen",
+    render: pane => {
+      pane.innerHTML = calcHeader("Single-Question Drug-use Screen","Drug-use Screening","Validated adult primary-care screening question") + `
+      <div class="fields">
+        ${selectField("In the past year, how many times have you used an illegal drug or used a prescription medication for nonmedical reasons?","drug-screen-answer",[["0","Never"],["1","One or more times"]])}
+      </div>
+      <div id="drug-screen-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="drug-screen-copy">&#x2398; Copy result</button>
+      <p class="note">One or more times is a positive screen and warrants confidential follow-up about substances, frequency, route, overdose risk, impaired control, and treatment needs. Screening should be performed only when diagnosis, treatment, and appropriate care are available. This is not a diagnostic instrument and does not assess acuity. <a href="https://cde.nida.nih.gov/sites/nida_cde/files/SingleQuestion_ProfessAdmin_v1.0_2013Nov18.pdf" target="_blank" rel="noopener">NIDA source</a>.</p>`;
+      addListeners("drug-screen", calcDrugScreen);
+    }
+  },
 ];
 
 /* ── HTML helpers ── */
@@ -629,6 +697,55 @@ function setResult(id, html, risk=''){
 }
 
 /* ── Calculators ── */
+
+function calcFib4(){
+  const age=num('fib4-age'), ast=num('fib4-ast'), alt=num('fib4-alt'), platelets=num('fib4-plt');
+  if([age,ast,alt,platelets].some(x=>!Number.isFinite(x)||x<=0)){
+    setResult('fib4-result','<div class="result-placeholder">Enter valid values</div>'); return;
+  }
+  const score=(age*ast)/(platelets*Math.sqrt(alt));
+  let label, detail, risk;
+  if(age<=35){
+    label='Limited accuracy at age ≤35'; detail='Do not use a low FIB-4 alone to exclude fibrosis; consider alternate assessment when clinically indicated.'; risk='moderate';
+  } else if(age>65){
+    if(score<2.0){ label='Low risk by age-adjusted cutoff'; detail='Age >65 low-risk cutoff: <2.0.'; risk='low'; }
+    else if(score<=2.67){ label='Indeterminate'; detail='Proceed to secondary fibrosis assessment (for example VCTE or ELF).'; risk='moderate'; }
+    else { label='High risk'; detail='Advanced fibrosis is more likely; secondary assessment and specialist evaluation are appropriate.'; risk='high'; }
+  } else if(score<1.3){ label='Low risk'; detail='Advanced fibrosis is unlikely in the intended population.'; risk='low'; }
+  else if(score<=2.67){ label='Indeterminate'; detail='Proceed to secondary fibrosis assessment (for example VCTE or ELF).'; risk='moderate'; }
+  else { label='High risk'; detail='Advanced fibrosis is more likely; secondary assessment and specialist evaluation are appropriate.'; risk='high'; }
+  setResult('fib4-result',resultCard(score.toFixed(2),label,detail,risk),risk);
+}
+
+function calcCkdStage(){
+  const egfr=num('ckd-egfr'), acr=num('ckd-acr'), chronic=sel('ckd-chronic');
+  if(!Number.isFinite(egfr)||egfr<=0||!Number.isFinite(acr)||acr<0){
+    setResult('ckd-stage-result','<div class="result-placeholder">Enter valid eGFR and urine ACR</div>'); return;
+  }
+  const g=egfr>=90?'G1':egfr>=60?'G2':egfr>=45?'G3a':egfr>=30?'G3b':egfr>=15?'G4':'G5';
+  const a=acr<30?'A1':acr<=300?'A2':'A3';
+  const matrix={G1:{A1:'low',A2:'moderate',A3:'high'},G2:{A1:'low',A2:'moderate',A3:'high'},G3a:{A1:'moderate',A2:'high',A3:'very high'},G3b:{A1:'high',A2:'very high',A3:'very high'},G4:{A1:'very high',A2:'very high',A3:'very high'},G5:{A1:'very high',A2:'very high',A3:'very high'}};
+  const prognosis=matrix[g][a];
+  let detail=`${g}: eGFR ${egfr.toFixed(0)} · ${a}: urine ACR ${acr.toFixed(0)} mg/g · ${prognosis.replace(/^./,c=>c.toUpperCase())} KDIGO progression risk.`;
+  if((g==='G1'||g==='G2')&&a==='A1') detail += chronic==='yes'?' CKD requires the separate marker of kidney damage selected above.':' These values alone do not establish CKD.';
+  else if(chronic!=='yes') detail += ' Confirm chronicity (≥3 months) before diagnosing CKD.';
+  const risk=prognosis==='low'?'low':prognosis==='moderate'?'moderate':'high';
+  setResult('ckd-stage-result',resultCard(`${g} ${a}`,`${prognosis.replace(/^./,c=>c.toUpperCase())} progression risk`,detail,risk),risk);
+}
+
+function calcAuditC(){
+  const score=Number(sel('audit-q1'))+Number(sel('audit-q2'))+Number(sel('audit-q3'));
+  let label='Below common positive-screen thresholds', risk='low';
+  if(score>=5){ label='Positive by current VA/DoD threshold'; risk='high'; }
+  else if(score>=4){ label='Positive by commonly used male threshold'; risk='moderate'; }
+  else if(score>=3){ label='Positive by commonly used female threshold'; risk='moderate'; }
+  setResult('audit-c-result',resultCard(`${score} / 12`,label,'A positive screen requires further assessment; it does not diagnose alcohol use disorder.',risk),risk);
+}
+
+function calcDrugScreen(){
+  const positive=sel('drug-screen-answer')==='1';
+  setResult('drug-screen-result',resultCard(positive?'Positive':'Negative',positive?'Follow-up assessment indicated':'No drug use reported in the past year',positive?'Assess substance, frequency, route, consequences, overdose risk, and treatment needs.':'Repeat screening according to local preventive-care practice.',positive?'moderate':'low'),positive?'moderate':'low');
+}
 
 function calcAscvd(){
   const age=num('ascvd-age'),tc=num('ascvd-tc'),hdl=num('ascvd-hdl'),sbp=num('ascvd-sbp');
