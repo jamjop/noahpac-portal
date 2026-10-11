@@ -99,7 +99,7 @@ function render({type, total, items}, q) {
         <span class="rname">${esc(name)}</span>
         ${route ? `<span class="route-chip">${esc(route)}</span>` : ''}
         ${rxcui ? `<span class="rxcui">RxCUI ${esc(rxcui)}</span>` : ''}
-        <button class="abtn ext" type="button" data-action="drugref" data-val="${esc(base)}">Drug label <span aria-hidden="true">→</span></button>
+        <button class="abtn ext" type="button" data-action="drugref" data-val="${esc(base)}">FDA label <span aria-hidden="true">→</span></button>
         <button class="abtn" type="button" data-action="copy" data-val="${esc(name)}" aria-label="Copy ${esc(name)}">Copy</button>
        </article>`;
     }).join('');

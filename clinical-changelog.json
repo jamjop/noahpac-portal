@@ -4,6 +4,30 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-11-tool-clarity-stewardship",
+      "date": "2026-10-11",
+      "type": "interface",
+      "title": "Clearer tool names and connected stewardship workflows",
+      "summary": "Clarified the scope of two live-data searches and connected four complementary antimicrobial tools without merging their distinct workflows.",
+      "clinical_change": false,
+      "scope": "Reference discovery and antimicrobial stewardship",
+      "affected_routes": [
+        "/abx/",
+        "/allergy/",
+        "/antibiogram/",
+        "/drugref/",
+        "/empiric/",
+        "/lookup/"
+      ],
+      "changes": [
+        "Renamed Drug Reference to FDA Label Search so the tool is not mistaken for a curated prescribing reference.",
+        "Renamed Drug Lookup to Code & Terminology Lookup to reflect its ICD-10-CM, RxTerms, and LOINC datasets.",
+        "Added a shared stewardship navigator linking guideline regimens, empiric therapy with local susceptibility, local antibiograms, and allergy cross-reactivity.",
+        "Kept each tool's source context and clinical workflow separate."
+      ],
+      "source_ids": []
+    },
+    {
       "id": "2026-10-11-monitoring-reliability",
       "date": "2026-10-11",
       "type": "governance",

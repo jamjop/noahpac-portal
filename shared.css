@@ -461,6 +461,60 @@ footer .last-checked.stale .dot{
 .app-footer__source{grid-column:1;max-width:760px;font-size:13px;line-height:1.6}
 .app-footer__meta{grid-column:2;align-self:end;font-size:12px;text-align:right;white-space:nowrap}
 
+/* Connected tool families retain separate workflows while sharing one quiet,
+   discoverable navigation and evidence context. */
+.tool-family-nav{
+  border-bottom:1px solid var(--app-border);
+  background:var(--app-surface-subtle);
+}
+.tool-family-nav__inner{
+  display:flex;
+  align-items:center;
+  gap:24px;
+  width:min(100% - 32px,var(--app-content));
+  min-height:56px;
+  margin:0 auto;
+}
+.tool-family-nav__identity{
+  display:grid;
+  flex:0 0 auto;
+  gap:1px;
+  color:var(--app-text-muted);
+  font-size:10px;
+  line-height:1.35;
+}
+.tool-family-nav__identity strong{
+  color:var(--app-text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+.tool-family-nav__links{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  min-width:0;
+  overflow-x:auto;
+  overscroll-behavior-inline:contain;
+  scrollbar-width:thin;
+}
+.tool-family-nav a{
+  display:inline-flex;
+  min-height:38px;
+  align-items:center;
+  padding:7px 10px;
+  border-radius:var(--app-radius-sm);
+  color:var(--app-text-secondary);
+  font-size:12px;
+  font-weight:600;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:background-color 160ms ease,color 160ms ease;
+}
+.tool-family-nav a:hover{background:var(--app-surface);color:var(--app-accent)}
+.tool-family-nav a[aria-current="page"]{background:var(--app-accent-soft);color:var(--app-accent)}
+
 html[data-theme="light"]{
   color-scheme:light;
   --bg:#f8f9fa;--surface:#ffffff;--ink:#1a1f24;--ink-soft:#4a5568;
@@ -515,6 +569,22 @@ html[data-theme="dark"] .clinical-app{
   .clinical-app .app-footer{grid-template-columns:1fr;width:calc(100% - 28px)}
   .clinical-app .app-footer .last-checked,.app-footer__source,.app-footer__meta{grid-column:auto;grid-row:auto}
   .app-footer__meta{text-align:left}
+  .tool-family-nav__inner{
+    display:block;
+    width:100%;
+    min-height:0;
+    padding:9px 0 7px;
+  }
+  .tool-family-nav__identity{padding:0 14px 6px}
+  .tool-family-nav__identity>span{display:none}
+  .tool-family-nav__links{
+    overflow-x:auto;
+    padding:0 10px 3px;
+    scrollbar-width:none;
+    overscroll-behavior-inline:contain;
+  }
+  .tool-family-nav__links::-webkit-scrollbar{display:none}
+  .tool-family-nav a{flex:0 0 auto;min-height:44px}
 }
 
 @media(prefers-reduced-motion:reduce){

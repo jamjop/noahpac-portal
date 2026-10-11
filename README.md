@@ -30,8 +30,8 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 | `naloxone/` | Naloxone & Overdose Reference | Dosing, routes, and ND overdose data |
 | `sepsis/` | Sepsis Screening | qSOFA + SOFA scoring |
 | `wound/` | Wound Classification & Tetanus | Wound classification and tetanus prophylaxis guide |
-| `lookup/` | Code & Drug Lookup | ICD-10, RxTerms, LOINC live search via NLM Clinical Tables API |
-| `drugref/` | Drug Reference | FDA drug labels and recall search via openFDA |
+| `lookup/` | Code & Terminology Lookup | ICD-10-CM, RxTerms, and LOINC live search via NLM Clinical Tables API |
+| `drugref/` | FDA Label Search | FDA structured label sections and recall search via openFDA |
 | `peds/` | Pediatric Dosing | Weight-based dosing from measured weight; optional age is used only for airway sizing |
 | `screener/` | USPSTF Screener | USPSTF A/B/C preventive services by age and sex; data auto-updated weekly |
 | `reportable/` | ND Reportable Conditions | ND HHS reportable conditions list |
@@ -133,7 +133,7 @@ Used by the import panel to extract facility data from ND HHS antibiogram PDFs v
 | App | API |
 |---|---|
 | `lookup/` | [NLM Clinical Tables](https://clinicaltables.nlm.nih.gov/) |
-| `drugref/` | [openFDA](https://open.fda.gov/) |
+| `drugref/` (FDA Label Search) | [openFDA](https://open.fda.gov/) |
 | `screener/` | [USPSTF Prevention TaskForce](https://www.uspreventiveservicestaskforce.org/apps/api.jsp) |
 | `antibiogram/` | [Anthropic Claude](https://console.anthropic.com/) (server-side only) |
 

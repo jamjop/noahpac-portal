@@ -1,5 +1,5 @@
 /**
- * Code & Drug Lookup Tool – Playwright regression tests.
+ * Code & Terminology Lookup Tool – Playwright regression tests.
  *
  * Covers the shared.css failure resilience requirement: lookup/style.css
  * defines its own fallback :root tokens so the page must remain fully usable
@@ -11,7 +11,7 @@ import { test, expect } from '@playwright/test';
 
 const LOOKUP_URL = '/lookup/';
 
-test.describe('Code & Drug Lookup – shared.css failure resilience', () => {
+test.describe('Code & Terminology Lookup – shared.css failure resilience', () => {
 
   // ── shared.css failure resilience ─────────────────────────────────────────
   //

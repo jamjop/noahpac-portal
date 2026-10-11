@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Search FDA structured drug labels, boxed warnings, precautions, interactions, and recent recalls.">
-  <title>Drug Reference — Noah PA-C</title>
+  <title>FDA Label Search — Noah PA-C</title>
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
@@ -36,8 +36,8 @@
       </div>
     </div>
     <div class="app-header__title">
-      <p class="app-header__eyebrow">Medication Reference</p>
-      <h1>Drug Reference</h1>
+      <p class="app-header__eyebrow">FDA medication data</p>
+      <h1>FDA Label Search</h1>
       <p class="app-header__lede">Review current FDA structured label sections, boxed warnings, and recent recall notices by generic drug name.</p>
     </div>
   </div>
@@ -61,7 +61,7 @@
       </div>
       <button class="reference-search-button search-btn" id="searchBtn" type="submit">Search</button>
     </form>
-    <p class="reference-search-help">Need the exact name? Use <a href="/lookup/">Code &amp; Drug Lookup</a>, then choose <strong>Drug label</strong>.</p>
+    <p class="reference-search-help">Need the exact name? Use <a href="/lookup/">Code &amp; Terminology Lookup</a>, then choose <strong>FDA label</strong>.</p>
   </section>
 
   <div class="reference-results content" id="content" aria-busy="false">
@@ -72,9 +72,9 @@
 <footer class="app-footer">
   <div class="app-footer__source">
     <div class="clinical-caution">
-      <strong>Confirm before clinical use.</strong> openFDA aggregates submitted labeling and recall records; content may differ by manufacturer, formulation, or package. Verify the specific product label and use clinical judgment.
+      <strong>Not a prescribing reference.</strong> openFDA aggregates submitted labeling and recall records, and FDA advises against relying on this dataset alone for medical-care decisions. Content may differ by manufacturer, formulation, or package; verify the specific product label.
     </div>
-    <p class="source-note">Source: U.S. Food and Drug Administration openFDA APIs. Not medical advice.</p>
+    <p class="source-note">Source: U.S. Food and Drug Administration <a href="https://open.fda.gov/apis/drug/label/understanding-the-api-results/" target="_blank" rel="noopener">openFDA drug-label API</a>. Not medical advice.</p>
   </div>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>

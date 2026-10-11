@@ -24,7 +24,7 @@ const FDA_RECALLS = {
 };
 
 test.describe('Searchable reference redesign', () => {
-  test('Drug Reference returns FDA content and exposes keyboard-operable label sections', async ({ page }) => {
+  test('FDA Label Search returns FDA content and exposes keyboard-operable label sections', async ({ page }) => {
     await page.route('**/drug/label.json?**', route => route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -53,7 +53,7 @@ test.describe('Searchable reference redesign', () => {
     await expect(page.getByRole('button', { name: 'Show full section' })).toBeVisible();
   });
 
-  test('Code & Drug Lookup supports tab keyboard navigation and RxTerms results', async ({ page }) => {
+  test('Code & Terminology Lookup supports tab keyboard navigation and RxTerms results', async ({ page }) => {
     await page.route('**/api/rxterms/v3/search?**', route => route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -73,7 +73,7 @@ test.describe('Searchable reference redesign', () => {
     await expect(page.getByText('metformin 500 MG Oral Tablet')).toBeVisible();
     await expect(page.getByText('RxCUI 860975')).toBeVisible();
     await expect(page.getByText('Oral', { exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Drug label/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /FDA label/ })).toBeVisible();
   });
 
   test('Laboratory Reference filters locally and retains clinical notes on mobile', async ({ page }) => {
