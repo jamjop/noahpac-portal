@@ -1,6 +1,7 @@
 [Unit]
 Description=Email Noah PA-C weekly USPSTF refresh report
 After=noahpac-uspstf-update.service
+OnFailure=noahpac-monitor-failure@%n.service
 
 [Service]
 Type=oneshot

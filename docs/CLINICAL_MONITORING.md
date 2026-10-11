@@ -22,6 +22,7 @@ old crontab or environment file into tickets, terminals being recorded, or chat.
 - Antibiogram refresh: first day of Jan/Apr/Jul/Oct at 04:23.
 - Curated-topic surveillance: Jan/Apr/Jul/Oct 15 at 04:30. One orchestrator
   runs all 17 topics and sends the report after completion.
+- Authoritative-source link check: Tuesdays at 04:50, with failure escalation.
 - The existing mirror timer remains unchanged at every 20 minutes.
 
 The repository systemd units replace the duplicate root-cron entries and the
@@ -66,3 +67,7 @@ sudo journalctl -u noahpac-quarterly-monitor.service -n 200 --no-pager
 Run the manual service only when sending live Pushover/email notifications is
 intended. A nonzero service result means at least one topic or the final report
 failed; other topics still ran and the affected public status is red.
+
+Every scheduled service also triggers `noahpac-monitor-failure@.service` on a
+nonzero result. See `docs/CLINICAL_GOVERNANCE.md` for source-manifest semantics,
+link-check behavior, and safe alert testing.

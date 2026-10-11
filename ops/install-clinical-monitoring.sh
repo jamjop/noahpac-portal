@@ -25,6 +25,9 @@ done
 chmod 600 "$env_file"
 chown root:root "$env_file"
 
+NOAHPAC_REPO="$repo" /usr/bin/python3 \
+  "$repo/scripts/check-clinical-sources.py" --check-config
+
 units=(
   noahpac-quarterly-monitor.service
   noahpac-quarterly-monitor.timer
@@ -34,6 +37,9 @@ units=(
   noahpac-uspstf-report.timer
   noahpac-antibiogram-update.service
   noahpac-antibiogram-update.timer
+  noahpac-monitor-failure@.service
+  noahpac-source-links.service
+  noahpac-source-links.timer
 )
 
 for unit in "${units[@]}"; do
@@ -42,14 +48,17 @@ done
 
 systemctl disable --now noahpac-guideline-check.timer 2>/dev/null || true
 systemctl daemon-reload
+systemd-analyze verify "${units[@]/#/$unit_dir/}"
 systemctl enable --now \
   noahpac-quarterly-monitor.timer \
   noahpac-uspstf-update.timer \
   noahpac-uspstf-report.timer \
-  noahpac-antibiogram-update.timer
+  noahpac-antibiogram-update.timer \
+  noahpac-source-links.timer
 
-systemctl list-timers --all \
+systemctl list-timers --all --no-pager \
   noahpac-quarterly-monitor.timer \
   noahpac-uspstf-update.timer \
   noahpac-uspstf-report.timer \
-  noahpac-antibiogram-update.timer
+  noahpac-antibiogram-update.timer \
+  noahpac-source-links.timer

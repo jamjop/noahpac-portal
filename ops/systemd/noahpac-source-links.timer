@@ -1,0 +1,11 @@
+[Unit]
+Description=Check Noah PA-C authoritative clinical-source links weekly
+
+[Timer]
+OnCalendar=Tue *-*-* 04:50:00
+Persistent=true
+RandomizedDelaySec=5m
+Unit=noahpac-source-links.service
+
+[Install]
+WantedBy=timers.target

@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "check:css": "pnpm --filter @workspace/scripts run check-css-tokens",
+    "test:governance": "python3 -m unittest discover -s tests -p 'test_*.py'",
     "test": "pnpm --filter @workspace/tests test",
     "typecheck": "pnpm --filter @workspace/scripts run typecheck"
   },

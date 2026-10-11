@@ -108,6 +108,12 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 
 Systemd unit templates and secure setup instructions are in `ops/systemd/` and `docs/CLINICAL_MONITORING.md`. Secrets belong in root-only `/etc/noahpac-monitor.env`, never in root's crontab.
 
+Clinical ownership, review state, cadence, and authoritative-source mappings
+for all 26 tools are recorded in `clinical-review.json`. The weekly source-link
+check and shared systemd failure alerts are documented in
+`docs/CLINICAL_GOVERNANCE.md`. Independently reviewable calculation vectors live
+in `tests/clinical-regression-vectors.json`.
+
 ## Backend Services
 
 `antibiogram/` has a server-side PDF extraction API:

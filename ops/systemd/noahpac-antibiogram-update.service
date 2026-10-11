@@ -2,6 +2,7 @@
 Description=Refresh Noah PA-C facility antibiograms
 After=network-online.target
 Wants=network-online.target
+OnFailure=noahpac-monitor-failure@%n.service
 
 [Service]
 Type=oneshot
