@@ -180,7 +180,10 @@ footer {
 footer p { margin: 0; }
 footer a { color: var(--ink-muted); text-decoration: none; }
 footer a:hover { color: var(--ink); }
-.footer-links { display: flex; gap: 1rem; }
+footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.footer-links { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; }
+.footer-review-link { display: inline-flex; align-items: center; gap: .3rem; }
+.footer-review-link svg { width: 12px; height: 12px; stroke-width: 1.7; }
 
 /* ── Dialogs ── */
 .portal-dialog {

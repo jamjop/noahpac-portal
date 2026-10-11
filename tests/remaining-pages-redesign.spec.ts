@@ -124,6 +124,10 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.home-brand-mark')).toHaveText('PA');
     await expect(page.getByRole('heading', { name: 'Clinical Tools', level: 1 })).toBeVisible();
     await expect(page.locator('.tool-icon svg').first()).toBeVisible();
+    const reviewLink = page.getByRole('link', { name: 'Clinical review' });
+    await expect(reviewLink).toBeVisible();
+    await expect(reviewLink).toHaveAttribute('href', '/review/');
+    await expect(reviewLink.locator('svg')).toBeVisible();
 
     for (const path of ['/anticoag/', '/naloxone/', '/toxicology/']) {
       await page.goto(path);

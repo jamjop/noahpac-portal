@@ -63,6 +63,7 @@ function localPathForUrl(value) {
   const clean = value.split('#')[0].split('?')[0];
   if (!clean.startsWith('/') || clean.startsWith('//')) return null;
   if (clean === '/') return join(ROOT, 'index.html');
+  if (clean === '/review/') return join(ROOT, 'clinical-review', 'index.html');
   return clean.endsWith('/') ? join(ROOT, clean, 'index.html') : join(ROOT, clean);
 }
 
