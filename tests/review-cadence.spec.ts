@@ -1,32 +1,33 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Review cadence labels', () => {
-  test('shows the recovered quarterly cadence with compact mobile copy', async ({ page }) => {
+  test('explains the quarterly cadence below the page description at every size', async ({ page }) => {
     await page.goto('/calculators/');
-    const cadence = page.locator('.app-header__eyebrow .review-status');
+    const cadence = page.locator('.app-header__title > .review-status');
     await expect(cadence).toBeVisible();
-    await expect(cadence.locator('.review-status__full')).toHaveText('Quarterly review');
+    await expect(cadence).toHaveText('References reviewed quarterly');
+    await expect(cadence.evaluate((node) => node.previousElementSibling?.classList.contains('app-header__lede'))).resolves.toBe(true);
 
     await page.setViewportSize({ width: 375, height: 812 });
-    await expect(cadence.locator('.review-status__full')).toBeHidden();
-    await expect(cadence.locator('.review-status__compact')).toHaveText('Quarterly');
+    await expect(cadence).toBeVisible();
+    await expect(cadence).toHaveText('References reviewed quarterly');
   });
 
   test('distinguishes weekly updates and live data sources', async ({ page }) => {
     await page.goto('/screener/');
-    await expect(page.locator('.review-status__full')).toHaveText('Weekly update');
+    await expect(page.locator('.app-header__title > .review-status')).toHaveText('Recommendations updated weekly');
 
     await page.goto('/drugref/');
-    await expect(page.locator('.review-status__full')).toHaveText('Live FDA data');
+    await expect(page.locator('.app-header__title > .review-status')).toHaveText('Uses live FDA data');
 
     await page.goto('/lookup/');
-    await expect(page.locator('.review-status__full')).toHaveText('Live NLM data');
+    await expect(page.locator('.app-header__title > .review-status')).toHaveText('Uses live NLM data');
   });
 
   test('does not imply a cadence on pages that never declared one', async ({ page }) => {
     for (const path of ['/ddx/', '/documents/', '/clinical-assistant/']) {
       await page.goto(path);
-      await expect(page.locator('.app-header__eyebrow .review-status')).toHaveCount(0);
+      await expect(page.locator('.app-header__title > .review-status')).toHaveCount(0);
     }
   });
 
@@ -36,7 +37,7 @@ test.describe('Review cadence labels', () => {
       body: JSON.stringify({ date: '2020-01-01' }),
     }));
     await page.goto('/calculators/');
-    const cadence = page.locator('.app-header__eyebrow .review-status');
+    const cadence = page.locator('.app-header__title > .review-status');
     await expect(cadence).toHaveClass(/stale/);
     await expect(cadence).toHaveAttribute('title', /Last checked for updates/);
   });

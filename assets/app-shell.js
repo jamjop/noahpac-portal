@@ -39,49 +39,55 @@
   };
 
   const REVIEW_CADENCE = {
-    "/abx/": "Quarterly review",
-    "/allergy/": "Quarterly review",
-    "/als/": "Quarterly review",
-    "/antibiogram/": "Quarterly review",
-    "/anticoag/": "Quarterly review",
-    "/calculators/": "Quarterly review",
-    "/drugref/": "Live FDA data",
-    "/empiric/": "Quarterly review",
-    "/labs/": "Quarterly review",
-    "/lookup/": "Live NLM data",
-    "/naloxone/": "Quarterly review",
-    "/opioids/": "Quarterly review",
-    "/pals/": "Quarterly review",
-    "/peds/": "Quarterly review",
-    "/reportable/": "Quarterly review",
-    "/screener/": "Weekly update",
-    "/sepsis/": "Quarterly review",
-    "/steroids/": "Quarterly review",
-    "/sti-guide/": "Quarterly review",
-    "/tccc/": "Quarterly review",
-    "/toxicology/": "Quarterly review",
-    "/vaccines/": "Quarterly review",
-    "/wound/": "Quarterly review"
+    "/abx/": "References reviewed quarterly",
+    "/allergy/": "References reviewed quarterly",
+    "/als/": "References reviewed quarterly",
+    "/antibiogram/": "References reviewed quarterly",
+    "/anticoag/": "References reviewed quarterly",
+    "/calculators/": "References reviewed quarterly",
+    "/drugref/": "Uses live FDA data",
+    "/empiric/": "References reviewed quarterly",
+    "/labs/": "References reviewed quarterly",
+    "/lookup/": "Uses live NLM data",
+    "/naloxone/": "References reviewed quarterly",
+    "/opioids/": "References reviewed quarterly",
+    "/pals/": "References reviewed quarterly",
+    "/peds/": "References reviewed quarterly",
+    "/reportable/": "References reviewed quarterly",
+    "/screener/": "Recommendations updated weekly",
+    "/sepsis/": "References reviewed quarterly",
+    "/steroids/": "References reviewed quarterly",
+    "/sti-guide/": "References reviewed quarterly",
+    "/tccc/": "References reviewed quarterly",
+    "/toxicology/": "References reviewed quarterly",
+    "/vaccines/": "References reviewed quarterly",
+    "/wound/": "References reviewed quarterly"
   };
 
   function initializeReviewCadence() {
-    const eyebrow = document.querySelector(".app-header__eyebrow");
-    if (!eyebrow || eyebrow.querySelector(".review-status")) return;
+    const title = document.querySelector(".app-header__title");
+    if (!title || title.querySelector(":scope > .review-status")) return;
 
     const path = location.pathname.endsWith("/") ? location.pathname : `${location.pathname}/`;
     const existing = document.querySelector(".app-header__bar .review-status");
-    const label = REVIEW_CADENCE[path] || (existing && existing.textContent.trim());
+    const fallback = existing && existing.textContent.trim()
+      .replace("Reviewed quarterly", "References reviewed quarterly")
+      .replace("Quarterly review", "References reviewed quarterly")
+      .replace("Updated weekly", "Recommendations updated weekly")
+      .replace("Weekly update", "Recommendations updated weekly")
+      .replace("Live FDA data", "Uses live FDA data")
+      .replace("Live NLM data", "Uses live NLM data");
+    const label = REVIEW_CADENCE[path] || fallback;
     if (!label) return;
 
     if (existing) existing.remove();
-    const compact = label
-      .replace("Quarterly review", "Quarterly")
-      .replace("Weekly update", "Weekly");
     const status = document.createElement("span");
     status.className = "review-status";
     status.dataset.cadence = label;
-    status.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"/></svg><span class="review-status__full">${label}</span><span class="review-status__compact">${compact}</span>`;
-    eyebrow.append(status);
+    status.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 16 2 2 4-4"/></svg><span>${label}</span>`;
+    const lede = title.querySelector(".app-header__lede");
+    if (lede) lede.insertAdjacentElement("afterend", status);
+    else title.append(status);
   }
 
   function updateThemeControl(select, theme) {
