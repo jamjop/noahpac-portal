@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import date
 from pathlib import Path
 
 
@@ -42,6 +43,33 @@ class ClinicalGovernanceTests(unittest.TestCase):
         self.assertNotIn("secret-user", completed.stdout)
         self.assertNotIn("secret-token", completed.stdout)
         self.assertIn("<configured>", completed.stdout)
+
+    def test_public_changelog_is_well_formed(self):
+        manifest = json.loads((REPO / "clinical-review.json").read_text())
+        changelog = json.loads((REPO / "clinical-changelog.json").read_text())
+        routes = {tool["path"] for tool in manifest["tools"]}
+        source_ids = set(manifest["sources"])
+        entries = changelog["entries"]
+
+        self.assertEqual(changelog["schema_version"], 1)
+        self.assertEqual(len({entry["id"] for entry in entries}), len(entries))
+        self.assertEqual([entry["date"] for entry in entries], sorted(
+            (entry["date"] for entry in entries), reverse=True
+        ))
+
+        for entry in entries:
+            date.fromisoformat(entry["date"])
+            self.assertIn(entry["type"], {"clinical", "governance", "interface"})
+            self.assertIsInstance(entry["clinical_change"], bool)
+            self.assertTrue(entry["title"])
+            self.assertTrue(entry["summary"])
+            self.assertTrue(entry["changes"])
+            self.assertTrue(set(entry["affected_routes"]).issubset(routes))
+            self.assertTrue(set(entry["source_ids"]).issubset(source_ids))
+            if entry["clinical_change"]:
+                self.assertEqual(entry["type"], "clinical")
+                self.assertTrue(entry["affected_routes"])
+                self.assertTrue(entry["source_ids"])
 
 
 if __name__ == "__main__":

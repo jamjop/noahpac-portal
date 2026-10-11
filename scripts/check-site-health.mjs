@@ -15,7 +15,7 @@ const ROUTES = [
   '/calculators/', '/clinical-assistant/', '/ddx/', '/documents/', '/drugref/',
   '/empiric/', '/labs/', '/lookup/', '/naloxone/', '/opioids/', '/pals/',
   '/peds/', '/reportable/', '/screener/', '/sepsis/', '/steroids/',
-  '/sti-guide/', '/tccc/', '/toxicology/', '/vaccines/', '/wound/',
+  '/sti-guide/', '/tccc/', '/toxicology/', '/updates/', '/vaccines/', '/wound/',
 ];
 
 const REMOVED_V2 = [

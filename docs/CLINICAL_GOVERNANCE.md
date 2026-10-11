@@ -69,3 +69,18 @@ tests/node_modules/.bin/playwright test \
 Any clinical-logic change must update or add a vector with an independently
 verified expected value. Do not derive the expected value by calling the same
 application function under test.
+
+## Public clinical change log
+
+`/clinical-changelog.json` is the structured source for the public
+`/updates/` page. Add an entry when a release changes clinical content, a
+patient-safety control, scheduled monitoring, review policy, or another
+substantive governance mechanism. Cosmetic-only interface work is omitted
+unless it materially changes clinical usability or accessibility across the
+site.
+
+Clinical entries must identify the affected routes and authoritative source
+IDs from `clinical-review.json`. A monitoring run alone is not a clinical
+change and must never be described as clinical review. Keep entries newest
+first, use plain language, and point `commit` to the release that introduced
+the change. The governance test validates route and source references.

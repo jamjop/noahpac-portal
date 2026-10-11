@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinical Updates — Noah PA-C</title>
+  <meta name="description" content="A transparent record of substantive clinical-content, safety, and governance changes to Noah PA-C Clinical Tools.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="/updates/style.css">
+</head>
+<body class="clinical-app reference-app updates-app">
+  <a class="skip-link" href="#main-content">Skip to clinical updates</a>
+
+  <header class="app-header app-header--unified">
+    <div class="app-header__inner">
+      <div class="app-header__bar">
+        <a class="app-brand" href="/" aria-label="Noah PA-C Clinical Tools home">
+          <span class="app-brand__mark" aria-hidden="true">PA</span>
+          <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+        </a>
+        <div class="app-header__actions">
+          <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+        </div>
+      </div>
+      <div class="app-header__title">
+        <p class="app-header__eyebrow">Transparency &amp; governance</p>
+        <h1>Clinical updates</h1>
+        <p class="app-header__lede">A record of meaningful clinical-content, safety, and governance changes—not routine visual polish.</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="updates-main" tabindex="-1">
+    <section class="updates-explainer" aria-labelledby="about-updates">
+      <div>
+        <p class="updates-kicker">What appears here</p>
+        <h2 id="about-updates">Substantive changes, in plain language</h2>
+        <p>Automated monitoring can identify a changed source, but it does not approve clinical content. Clinical updates are published here after source-based review; operational safeguards are labeled separately.</p>
+      </div>
+      <a class="updates-policy-link" href="https://github.com/jamjop/noahpac-portal/blob/main/docs/CLINICAL_GOVERNANCE.md" target="_blank" rel="noopener">Read the governance policy <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="updates-section" aria-labelledby="update-history">
+      <div class="updates-heading">
+        <h2 id="update-history">Update history</h2>
+        <p id="updates-summary">Loading update record…</p>
+      </div>
+      <div id="updates-list" class="updates-list" aria-live="polite"></div>
+      <noscript><p class="updates-error">JavaScript is required to load the structured update record. The same record is available in <a href="/clinical-changelog.json">clinical-changelog.json</a>.</p></noscript>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="app-footer__source"><a href="/">All clinical tools</a> · <a href="/clinical-changelog.json">Structured update record</a></p>
+    <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+  </footer>
+
+  <script src="/updates/app.js"></script>
+</body>
+</html>

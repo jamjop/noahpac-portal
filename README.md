@@ -8,6 +8,8 @@ Pure static HTML/CSS/JS — no build step, no framework. Nginx serves files dire
 
 **Root** (`index.html`) — static portal homepage and navigation shell.
 
+**Clinical updates** (`updates/`, backed by `clinical-changelog.json`) — public record of substantive clinical-content, safety, and governance changes.
+
 **Tool subdirectories** — each is a self-contained app:
 
 | Directory | App | Description |
@@ -112,7 +114,8 @@ Clinical ownership, review state, cadence, and authoritative-source mappings
 for all 26 tools are recorded in `clinical-review.json`. The weekly source-link
 check and shared systemd failure alerts are documented in
 `docs/CLINICAL_GOVERNANCE.md`. Independently reviewable calculation vectors live
-in `tests/clinical-regression-vectors.json`.
+in `tests/clinical-regression-vectors.json`. Substantive public changes are
+recorded in `clinical-changelog.json` and displayed at `/updates/`.
 
 ## Backend Services
 

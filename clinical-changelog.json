@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-11",
+  "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
+  "entries": [
+    {
+      "id": "2026-10-11-monitoring-reliability",
+      "date": "2026-10-11",
+      "type": "governance",
+      "title": "Clinical monitoring reliability",
+      "summary": "Expanded the safeguards around scheduled source monitoring and automated clinical data updates.",
+      "clinical_change": false,
+      "scope": "Site-wide governance",
+      "affected_routes": [],
+      "changes": [
+        "Added shared failure alerts for every scheduled monitoring and update service.",
+        "Added a weekly availability check for the authoritative sources in the clinical review registry.",
+        "Documented review ownership, source mappings, and the distinction between monitoring and clinician review.",
+        "Added independently reviewable regression vectors for high-risk calculations and dosing boundaries."
+      ],
+      "source_ids": [],
+      "commit": "28d1b17"
+    },
+    {
+      "id": "2026-10-10-guidance-review",
+      "date": "2026-10-10",
+      "type": "clinical",
+      "title": "Clinical guidance and safety review",
+      "summary": "Reviewed and updated selected high-risk guidance against current primary and authoritative sources.",
+      "clinical_change": true,
+      "scope": "Selected high-risk tools",
+      "affected_routes": [
+        "/als/",
+        "/anticoag/",
+        "/opioids/",
+        "/pals/",
+        "/peds/",
+        "/sepsis/",
+        "/steroids/",
+        "/sti-guide/",
+        "/toxicology/",
+        "/vaccines/"
+      ],
+      "changes": [
+        "Aligned adult and pediatric resuscitation references with the current AHA guideline editions.",
+        "Updated sepsis, glucocorticoid, STI, immunization, anticoagulation, opioid, and toxicology safety content where newer authoritative guidance applied.",
+        "Added explicit review status and source mappings without claiming independent clinical validation.",
+        "Preserved existing calculations and added regression coverage for critical formula and dosing behavior."
+      ],
+      "source_ids": [
+        "aha_als_2025",
+        "aha_pals_2025",
+        "cdc_opioid_2022",
+        "cdc_sti",
+        "cdc_doxy_pep",
+        "cdc_vaccines",
+        "aap_vaccines",
+        "ssc_2026",
+        "endocrine_gc_2024",
+        "chest_periop_2022",
+        "fda_andexxa",
+        "poison_centers"
+      ],
+      "commit": "9f90017"
+    },
+    {
+      "id": "2026-10-10-interface-rollout",
+      "date": "2026-10-10",
+      "type": "interface",
+      "title": "Unified clinical interface rollout",
+      "summary": "Brought the clinical tools into one responsive, accessible visual system while preserving tool-specific workflows.",
+      "clinical_change": false,
+      "scope": "All clinical tools",
+      "affected_routes": [],
+      "changes": [
+        "Introduced shared design tokens, application headers, theme controls, footers, and reusable clinical components.",
+        "Improved phone and tablet layouts, keyboard focus, touch targets, contrast, and dark mode.",
+        "Retained clinically meaningful colors and the existing calculation and interaction logic.",
+        "Removed obsolete V2 routes after the redesigned pages replaced them."
+      ],
+      "source_ids": [],
+      "commit": "7957237"
+    }
+  ]
+}

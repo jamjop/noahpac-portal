@@ -5,17 +5,18 @@ The public site is served directly from `/var/www/noahpac-portal`. GitHub `main`
 ## Release flow
 
 1. Create a feature branch and open a pull request.
-2. Require the CSS token check and Clinical Site Quality Gate to pass.
-3. Review the public-facing diff and merge to `main`.
-4. Deploy the exact merged commit:
+2. Add an entry to `clinical-changelog.json` when the release changes clinical content, a safety control, or clinical governance. Do not add entries for cosmetic-only changes.
+3. Require the CSS token check and Clinical Site Quality Gate to pass.
+4. Review the public-facing diff and merge to `main`.
+5. Deploy the exact merged commit:
 
    ```bash
    cd /var/www/noahpac-portal
    ./scripts/deploy-production.sh <full-merged-commit-sha>
    ```
 
-5. Run the production health workflow or `node scripts/check-site-health.mjs --remote`.
-6. Tag significant releases only after production verification.
+6. Run the production health workflow or `node scripts/check-site-health.mjs --remote`.
+7. Tag significant releases only after production verification.
 
 Set `RUN_BROWSER_TESTS=1` when the production host should rerun the complete Playwright suite during deployment. CI normally supplies this gate before merge.
 
