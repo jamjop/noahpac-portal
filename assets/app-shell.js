@@ -38,6 +38,52 @@
     dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
   };
 
+  const REVIEW_CADENCE = {
+    "/abx/": "Quarterly review",
+    "/allergy/": "Quarterly review",
+    "/als/": "Quarterly review",
+    "/antibiogram/": "Quarterly review",
+    "/anticoag/": "Quarterly review",
+    "/calculators/": "Quarterly review",
+    "/drugref/": "Live FDA data",
+    "/empiric/": "Quarterly review",
+    "/labs/": "Quarterly review",
+    "/lookup/": "Live NLM data",
+    "/naloxone/": "Quarterly review",
+    "/opioids/": "Quarterly review",
+    "/pals/": "Quarterly review",
+    "/peds/": "Quarterly review",
+    "/reportable/": "Quarterly review",
+    "/screener/": "Weekly update",
+    "/sepsis/": "Quarterly review",
+    "/steroids/": "Quarterly review",
+    "/sti-guide/": "Quarterly review",
+    "/tccc/": "Quarterly review",
+    "/toxicology/": "Quarterly review",
+    "/vaccines/": "Quarterly review",
+    "/wound/": "Quarterly review"
+  };
+
+  function initializeReviewCadence() {
+    const eyebrow = document.querySelector(".app-header__eyebrow");
+    if (!eyebrow || eyebrow.querySelector(".review-status")) return;
+
+    const path = location.pathname.endsWith("/") ? location.pathname : `${location.pathname}/`;
+    const existing = document.querySelector(".app-header__bar .review-status");
+    const label = REVIEW_CADENCE[path] || (existing && existing.textContent.trim());
+    if (!label) return;
+
+    if (existing) existing.remove();
+    const compact = label
+      .replace("Quarterly review", "Quarterly")
+      .replace("Weekly update", "Weekly");
+    const status = document.createElement("span");
+    status.className = "review-status";
+    status.dataset.cadence = label;
+    status.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"/></svg><span class="review-status__full">${label}</span><span class="review-status__compact">${compact}</span>`;
+    eyebrow.append(status);
+  }
+
   function updateThemeControl(select, theme) {
     const field = select.closest(".theme-field");
     if (!field) return;
@@ -115,6 +161,7 @@
 
   function initializeShell() {
     initializeFamilyIcon();
+    initializeReviewCadence();
     initializeReferenceOutline();
     document.querySelectorAll("[data-theme-select]").forEach((select) => {
       select.value = initialTheme;

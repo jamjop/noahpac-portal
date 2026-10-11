@@ -336,25 +336,23 @@ footer .last-checked.stale .dot{
 .review-status{
   display:inline-flex;
   align-items:center;
-  gap:7px;
-  min-height:36px;
-  padding:0 11px;
-  border:1px solid var(--app-border);
-  border-radius:999px;
-  color:var(--app-text-secondary);
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12px;
+  gap:5px;
+  min-height:20px;
+  margin-left:10px;
+  padding-left:10px;
+  border-left:1px solid var(--app-border-strong);
+  color:var(--app-text-muted);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.01em;
+  line-height:1;
+  text-transform:none;
   white-space:nowrap;
 }
-.review-status::before{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--ok);
-  content:"";
-  box-shadow:0 0 0 3px var(--ok-soft);
-}
-.review-status.stale::before{background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
+.review-status svg{width:13px;height:13px;flex:0 0 auto}
+.review-status__compact{display:none}
+.review-status.stale{color:var(--warn)}
 .app-header__bar .review-status{display:none}
 .theme-field{
   position:relative;
@@ -486,7 +484,9 @@ html[data-theme="dark"] .clinical-app{
   .app-header__inner{width:min(100% - 28px,var(--app-content));padding:13px 0 18px}
   .app-header__bar{top:10px;min-height:38px}
   .app-brand{display:none}
-  .review-status{display:none}
+  .review-status{margin-left:8px;padding-left:8px;font-size:10px}
+  .review-status__full{display:none}
+  .review-status__compact{display:inline}
   .theme-field{width:46px;height:46px}
   .clinical-app .app-header__eyebrow{min-height:38px;padding-right:110px}
   .clinical-app .app-header__title h1{font-size:28px}
