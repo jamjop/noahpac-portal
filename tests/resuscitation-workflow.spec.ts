@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('ALS and PALS field workflows', () => {
+  test('keeps cache status in the footer instead of the compact header', async ({ page }) => {
+    for (const route of ['/als/', '/pals/']) {
+      await page.goto(route);
+      await expect(page.locator('.app-header #cacheStatus')).toHaveCount(0);
+      await expect(page.locator('.app-footer #cacheStatus')).toBeVisible();
+    }
+  });
+
   test('install offline assets independently so one failed request cannot block the cache', async ({ request }) => {
     for (const route of ['/als/sw.js', '/pals/sw.js']) {
       const source = await (await request.get(route)).text();

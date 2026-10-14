@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
   <link rel="stylesheet" href="style.css?v=4">
-  <link rel="stylesheet" href="/assets/resuscitation-workflow.css?v=2">
+  <link rel="stylesheet" href="/assets/resuscitation-workflow.css?v=3">
 </head>
 <body class="clinical-app protocol-app resus-workflow als-app" data-protocol="als">
 <a class="skip-link" href="#main-content">Skip to ALS protocol</a>
@@ -25,7 +25,6 @@
         </span>
       </a>
       <div class="app-header__actions">
-        <span class="cache-status" id="cacheStatus" role="status">Checking offline access</span>
         <span class="review-status">Reviewed quarterly</span>
         <label class="theme-field">
           <span class="theme-field__label">Theme</span>
@@ -58,7 +57,7 @@
     </div>
     <p class="source-note">Reviewed against the 2025 American Heart Association Guidelines for CPR and Emergency Cardiovascular Care. Not medical advice.</p>
   </div>
-  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+  <p class="app-footer__meta"><span class="cache-status" id="cacheStatus" role="status">Checking offline access</span><span aria-hidden="true"> · </span>© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=4"></script>

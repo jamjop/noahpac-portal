@@ -1,4 +1,4 @@
-const CACHE = 'pals-v21';
+const CACHE = 'pals-v22';
 const ASSETS = [
   '/pals/',
   '/pals/index.html',
@@ -8,7 +8,7 @@ const ASSETS = [
   '/assets/app-shell.js',
   '/assets/fonts.css',
   '/assets/last-checked.js',
-  '/assets/resuscitation-workflow.css?v=2',
+  '/assets/resuscitation-workflow.css?v=3',
   '/assets/resuscitation-workflow.js?v=2',
 ];
 
