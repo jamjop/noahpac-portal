@@ -13,7 +13,7 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body class="clinical-app protocol-app tccc-app">
 <a class="skip-link" href="#main-content">Skip to TCCC protocol</a>
@@ -29,7 +29,6 @@
         </span>
       </a>
       <div class="app-header__actions">
-        <span class="cache-status" id="cacheStatus" role="status">Checking offline access</span>
         <span class="review-status">Reviewed quarterly</span>
         <label class="theme-field">
           <span class="theme-field__label">Theme</span>
@@ -50,10 +49,6 @@
 </header>
 
 <main class="protocol-workspace page-body" id="main-content">
-  <div class="mobile-protocol-nav">
-    <label for="sectionSelect">Protocol section</label>
-    <select id="sectionSelect" aria-label="TCCC protocol section"></select>
-  </div>
   <nav class="protocol-nav cat-nav" id="tabNav" role="tablist" aria-label="TCCC protocol sections"></nav>
   <section class="protocol-pane section-pane" id="content" role="tabpanel" tabindex="-1"></section>
   <div class="sr-only" id="sectionStatus" role="status" aria-live="polite"></div>
@@ -67,7 +62,7 @@
     </div>
   <p class="source-note">Based on Committee on Tactical Combat Casualty Care 2026 guidelines. Reference aid only; document care on DD Form 1380 and follow current protocols.</p>
   </div>
-  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+  <p class="app-footer__meta"><span class="cache-status" id="cacheStatus" role="status">Checking offline access</span><span aria-hidden="true"> · </span>© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
 <script src="app.js?v=4"></script>

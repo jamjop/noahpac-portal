@@ -74,7 +74,7 @@ test.describe('Emergency protocol redesign', () => {
         await page.goto(protocol.path);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(overflow, `${protocol.path} overflow at ${width}px`).toBeLessThanOrEqual(1);
-        const navControl = page.locator('#sectionSelect');
+        const navControl = protocol.path === '/tccc/' ? page.locator('.protocol-tab[aria-selected="true"]') : page.locator('#sectionSelect');
         const navHeight = await navControl.evaluate(el => el.getBoundingClientRect().height);
         expect(navHeight).toBeGreaterThanOrEqual(44);
       }

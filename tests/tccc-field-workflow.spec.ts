@@ -13,20 +13,26 @@ test.describe('TCCC field workflow', () => {
   test('supports stable section and subsection deep links', async ({ page }) => {
     await page.goto('/tccc/#antibiotics');
     await expect(page.locator('#content')).toHaveAttribute('data-section', 'ABX');
-    await expect(page.locator('#sectionSelect')).toHaveValue('ABX');
+    await expect(page.getByRole('tab', { name: 'A: Antibiotics' })).toHaveAttribute('aria-selected', 'true');
     await page.goto('/tccc/#hemorrhage--sub-wound-packing-technique');
     await expect(page.locator('#sub-wound-packing-technique')).toHaveAttribute('open', '');
   });
 
-  test('mobile section selector exposes every MARCH PAWS and reference section', async ({ page }) => {
+  test('mobile section slider exposes every MARCH PAWS and reference section', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/tccc/');
-    await expect(page.locator('#sectionSelect option')).toHaveCount(10);
-    await page.locator('#sectionSelect').selectOption('R');
+    await expect(page.locator('#tabNav [role="tab"]')).toHaveCount(10);
+    await page.getByRole('tab', { name: 'R: Respiration' }).click();
     await expect(page.locator('#content')).toHaveAttribute('data-section', 'R');
     await expect(page).toHaveURL(/#respiration$/);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
+    await expect(page.locator('#tabNav')).toHaveCSS('overflow-x', 'auto');
+    await page.goto('/tccc/#drugs');
+    await expect.poll(async()=>{
+      const activeBox = await page.getByRole('tab', { name: '℞ Drugs' }).boundingBox();
+      return activeBox ? activeBox.x + activeBox.width : 9999;
+    }).toBeLessThanOrEqual(390);
   });
 
   test('searches and filters compact medication cards', async ({ page }) => {

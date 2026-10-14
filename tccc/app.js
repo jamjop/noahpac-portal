@@ -591,6 +591,13 @@ const SECTIONS = [
 const SECTION_HASHES = {M:'hemorrhage',A1:'airway',R:'respiration',C:'circulation',H:'hypothermia-head',P:'pain',ABX:'antibiotics',W:'wounds',S:'splinting-evacuation',DRUGS:'drugs'};
 const HASH_SECTIONS = Object.fromEntries(Object.entries(SECTION_HASHES).map(([id,hash])=>[hash,id]));
 
+function centerActiveTab(behavior='auto') {
+  const nav = document.getElementById('tabNav');
+  const activeTab = nav.querySelector(`[data-id="${CSS.escape(current)}"]`);
+  if (!activeTab || !matchMedia('(max-width: 860px)').matches) return;
+  activeTab.scrollIntoView({behavior,block:'nearest',inline:'center'});
+}
+
 function sectionFromHash() {
   const hash = location.hash.slice(1);
   if (hash.startsWith('drug-')) return 'DRUGS';
@@ -606,10 +613,6 @@ function buildTabs() {
   nav.innerHTML = ['MARCH','PAWS','REFERENCE'].map(group=>`<div class="nav-group"><div class="nav-group-label">${group==='REFERENCE'?'Reference':group}</div>${SECTIONS.filter(s=>SECTION_META[s.id].group===group).map(s =>
     `<button class="protocol-tab tab-btn${s.id===current?' active':''}" type="button" role="tab" id="protocol-tab-${esc(s.id)}" aria-controls="content" aria-selected="${s.id===current}" tabindex="${s.id===current?'0':'-1'}" data-id="${esc(s.id)}" data-color="${esc(s.color||'red')}">${esc(s.label)}</button>`
   ).join('')}</div>`).join('');
-  const select = document.getElementById('sectionSelect');
-  select.innerHTML = ['MARCH','PAWS','REFERENCE'].map(group=>`<optgroup label="${group==='REFERENCE'?'Reference':group}">${SECTIONS.filter(s=>SECTION_META[s.id].group===group).map(s=>`<option value="${esc(s.id)}">${esc(s.label)}</option>`).join('')}</optgroup>`).join('');
-  select.value = current;
-  select.addEventListener('change',()=>activateSection(select.value,true,true));
   nav.addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
     if (!btn) return;
@@ -630,6 +633,7 @@ function buildTabs() {
     tabs[next].focus();
     activateSection(tabs[next].dataset.id, false, true);
   });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>centerActiveTab()));
 }
 
 function activateSection(id, scrollToContent, updateUrl=false) {
@@ -641,7 +645,7 @@ function activateSection(id, scrollToContent, updateUrl=false) {
     tab.setAttribute('aria-selected', String(active));
     tab.tabIndex = active ? 0 : -1;
   });
-  document.getElementById('sectionSelect').value = current;
+  centerActiveTab('smooth');
   localStorage.setItem('tccc-section', current);
   if (updateUrl) history.replaceState(null,'',`#${SECTION_HASHES[current]}`);
   renderSection();
