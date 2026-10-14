@@ -149,5 +149,24 @@ function renderResult() {
     </div>`;
 }
 
+document.querySelectorAll('.ref-tbl tbody tr').forEach(row => {
+  ['Allergy','Drug class','Risk','Basis'].forEach((label, index) => row.cells[index]?.setAttribute('data-label', label));
+});
+
+document.getElementById('copyAllergyResult').addEventListener('click', async () => {
+  const output = document.getElementById('result-area').innerText.trim();
+  await navigator.clipboard.writeText(`Antibiotic allergy cross-reactivity assessment\n${output}\nReaction phenotype is not assessed; verify reaction type, timing, severity, and related-drug tolerance before use.`);
+  const button = document.getElementById('copyAllergyResult');
+  button.textContent = 'Copied'; button.classList.add('copied');
+  setTimeout(() => { button.textContent = 'Copy assessment'; button.classList.remove('copied'); }, 1600);
+});
+
+document.getElementById('resetAllergy').addEventListener('click', () => {
+  selectedAllergy = 'Penicillin G / V'; selectedProposed = 'Ceftriaxone';
+  document.getElementById('seg-allergy').value = selectedAllergy;
+  document.getElementById('seg-proposed').value = selectedProposed;
+  renderResult(); document.getElementById('seg-allergy').focus();
+});
+
 renderSegs();
 renderResult();

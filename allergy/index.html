@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Antibiotic Allergy — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="clinical-app legacy-app decision-app allergy-app">
 <a class="skip-link" href="#main-content">Skip to Antibiotic Allergy</a>
@@ -67,6 +67,10 @@
       <select id="seg-proposed" class="site-select"></select>
     </div>
 
+    <div class="clinical-caution reaction-limitation" role="note">
+      <strong>Reaction phenotype is not assessed.</strong> Before acting on the pairwise estimate, confirm the reported reaction, timing, severity, treatment required, and tolerance of related antibiotics. Severe delayed reactions such as SJS/TEN, DRESS, AGEP, hemolytic anemia, or organ injury require a different avoidance strategy and specialist guidance.
+    </div>
+
     <div class="criterion ref-card-inner">
       <div class="c-header">
         <span class="c-letter" style="background:var(--bg);color:var(--ink-muted)">i</span>
@@ -103,6 +107,7 @@
 
   <div class="result-col">
     <div class="result-panel" id="result-area"></div>
+    <div class="result-actions"><button id="copyAllergyResult" type="button">Copy assessment</button><button id="resetAllergy" type="button">Reset</button></div>
   </div>
 
 </div>
@@ -115,7 +120,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

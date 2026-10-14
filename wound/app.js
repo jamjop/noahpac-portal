@@ -12,6 +12,9 @@ function activateWoundTab(btn, moveFocus = false) {
     btn.setAttribute("aria-selected", "true");
     btn.tabIndex = 0;
     document.getElementById("panel-" + btn.dataset.tab).hidden = false;
+    const url = new URL(location.href);
+    url.searchParams.set('section', btn.dataset.tab);
+    history.replaceState(null, '', `${url.pathname}${url.search}`);
     if (moveFocus) btn.focus();
 }
 
@@ -27,6 +30,21 @@ woundTabs.forEach((btn, index) => {
     event.preventDefault();
     activateWoundTab(woundTabs[next], true);
   });
+});
+
+document.querySelectorAll('.result-panel').forEach(panel => {
+  const actions = document.createElement('div');
+  actions.className = 'result-actions';
+  actions.innerHTML = '<button type="button">Copy recommendation</button>';
+  actions.querySelector('button').addEventListener('click', async event => {
+    const output = panel.querySelector('.result-panel-body')?.innerText.trim();
+    if (!output) return;
+    await navigator.clipboard.writeText(`Wound care recommendation\n${output}\nVerify against patient-specific findings, current guidance, and local protocol.`);
+    event.currentTarget.textContent = 'Copied';
+    event.currentTarget.classList.add('copied');
+    setTimeout(() => { event.currentTarget.textContent = 'Copy recommendation'; event.currentTarget.classList.remove('copied'); }, 1600);
+  });
+  panel.appendChild(actions);
 });
 
 // ── Tetanus ──────────────────────────────────────────────────────────────────
@@ -238,3 +256,7 @@ function renderBite() {
 }
 
 renderBite();
+
+const initialSection = new URLSearchParams(location.search).get('section');
+const requestedTab = woundTabs.find(button => button.dataset.tab === initialSection);
+if (requestedTab) activateWoundTab(requestedTab);

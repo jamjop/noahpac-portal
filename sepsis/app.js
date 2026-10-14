@@ -126,6 +126,29 @@ function updateShock() {
   }
 }
 
+async function copyAssessment() {
+  const rows = ["sirs", "qsofa", "sofa", "shock"].map(name => {
+    const label = document.querySelector(`#summary-${name} span`).textContent;
+    const value = document.getElementById(`summary-${name}-value`).textContent;
+    const status = document.getElementById(`summary-${name}-status`).textContent;
+    return `${label}: ${value} — ${status}`;
+  });
+  await navigator.clipboard.writeText(`Sepsis screening summary\n${rows.join('\n')}\nScreening support only; correlate with suspected infection, baseline SOFA, clinical trajectory, and local protocol.`);
+  const button = document.getElementById('copyAssessment');
+  button.textContent = 'Copied'; button.classList.add('copied');
+  setTimeout(() => { button.textContent = 'Copy assessment'; button.classList.remove('copied'); }, 1600);
+}
+
+function resetAssessment() {
+  document.querySelectorAll('.sepsis-app input[type="checkbox"]').forEach(input => { input.checked = false; });
+  segs.forEach(id => selectSofaValue(id, document.querySelector(`#seg-${id} [data-val="0"]`)));
+  updateSIRS(); updateQSOFA(); updateShock();
+  document.getElementById('sirs').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('copyAssessment').addEventListener('click', copyAssessment);
+document.getElementById('resetAssessment').addEventListener('click', resetAssessment);
+
 updateSIRS();
 updateQSOFA();
 updateSOFA();
