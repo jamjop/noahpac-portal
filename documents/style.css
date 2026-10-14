@@ -29,6 +29,21 @@
 .document-search__status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:.65rem;color:var(--app-text-muted);font-size:.78rem}
 .hidden-tool{display:none!important}
 
+/* Documents use a quiet semantic icon system: files for hosted handouts and
+   clipboards for externally hosted assessment forms. */
+.documents-app .tool-icon{
+  width:26px;
+  height:34px;
+  margin-right:.65rem;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  opacity:.58;
+}
+.documents-app .tool-row:hover .tool-icon{background:transparent;border-color:transparent}
+.documents-app .icon-tool{width:18px;height:18px;stroke-width:1.6}
+.documents-app .ext-icon{display:grid;width:26px;height:34px;place-items:center}
+
 /* ── External-source badge (OrthoInfo etc., hosted files have none) ── */
 .ext-badge {
   font-size: 0.6875rem;

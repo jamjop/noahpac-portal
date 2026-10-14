@@ -62,6 +62,8 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.ddx-name')).toContainText('Sodium');
 
     await page.goto('/documents/');
+    await expect(page.locator('.tool-row .lucide-file-text').first()).toBeVisible();
+    await expect(page.locator('.ext-row .lucide-clipboard-check').first()).toBeVisible();
     await page.getByLabel('Find a document').fill('carpal tunnel');
     await expect(page.getByText('Carpal Tunnel Syndrome', { exact: true })).toBeVisible();
     await expect(page.getByText('Shoulder — General Program')).toBeHidden();
