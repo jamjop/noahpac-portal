@@ -62,6 +62,7 @@ body{padding-bottom:50px}
   font-weight:700;
 }
 .secondary-action:hover{border-color:var(--purple-mid);color:var(--purple)}
+.secondary-action.copied{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-ink)}
 .search-field label{display:block;margin-bottom:7px;color:var(--ink-soft);font-size:12px;font-weight:700}
 .search-box{
   width:100%;

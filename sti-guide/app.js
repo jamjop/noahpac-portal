@@ -325,7 +325,7 @@ const els = {
   resultCount: document.getElementById("result-count"),
   filterSummary: document.getElementById("active-filter-summary"),
   clearFilters: document.getElementById("clear-filters"),
-  printResults: document.getElementById("print-results"),
+  copyResults: document.getElementById("copy-results"),
   root: document.getElementById("list-root"),
   treatmentPanel: document.getElementById("treatment-panel"),
   hivPanel: document.getElementById("hiv-panel"),
@@ -361,7 +361,7 @@ function noteTone(notes) {
   return /SUPPLY ALERT|contraindicat|hospitalize|treatment failure|medical emergency/i.test(notes || "") ? " warning" : "";
 }
 
-function buildCopyText(d) {
+function buildCopyText(d, includeSource = true) {
   const lines = [d.name, ''];
   function section(regs, label) {
     if (!regs || regs.length === 0) return;
@@ -376,8 +376,37 @@ function buildCopyText(d) {
   section(d.alternative, 'Alternative');
   section(d.pregnancy, 'In Pregnancy');
   if (d.notes) lines.push('Notes: ' + d.notes, '');
-  lines.push('Source: CDC STI Treatment Guidelines (noahpac.com/sti-guide/)');
+  if (includeSource) lines.push('Source: CDC STI Treatment Guidelines (noahpac.com/sti-guide/)');
   return lines.join('\n').trim();
+}
+
+function buildFilteredCopyText() {
+  const context = [];
+  if (activeCat) context.push(`Category: ${selectedCategory().label}`);
+  if (activeSearch) context.push(`Search: ${activeSearch}`);
+  return [
+    'STI Treatment Guide',
+    context.join(' · '),
+    `${currentItems.length} ${currentItems.length === 1 ? 'regimen' : 'regimens'}`,
+    '',
+    currentItems.map(item => buildCopyText(item, false)).join('\n\n────────\n\n'),
+    '',
+    'Source: CDC STI Treatment Guidelines base with selected updates (noahpac.com/sti-guide/)',
+  ].filter((line, index) => line || index > 2).join('\n').trim();
+}
+
+function copyText(text, button, restingLabel) {
+  navigator.clipboard.writeText(text).then(() => {
+    button.textContent = 'Copied';
+    button.classList.add('copied');
+    setTimeout(() => {
+      button.textContent = restingLabel;
+      button.classList.remove('copied');
+    }, 1500);
+  }).catch(() => {
+    button.textContent = 'Copy failed';
+    setTimeout(() => { button.textContent = restingLabel; }, 1500);
+  });
 }
 
 function filterData() {
@@ -524,7 +553,7 @@ els.clearFilters.addEventListener("click", () => {
   els.search.focus();
 });
 
-els.printResults.addEventListener("click", () => window.print());
+els.copyResults.addEventListener("click", () => copyText(buildFilteredCopyText(), els.copyResults, 'Copy results'));
 els.modeTreatment.addEventListener("click", () => setMode("treatment"));
 els.modeHiv.addEventListener("click", () => setMode("hiv"));
 

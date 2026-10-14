@@ -74,14 +74,22 @@ test.describe('STI Guide task-oriented UI', () => {
 
     await page.goto('/sti-guide/?q=Doxy-PEP');
     await expect(page.locator('.card-badge.source')).toHaveText('CDC 2024');
-    await expect(page.getByRole('button', { name: 'Print results' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Copy results' })).toBeVisible();
   });
 
-  test('prints the filtered treatment set with full regimen details', async ({ page }) => {
+  test('copies the complete filtered treatment set', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: (text: string) => { (window as any).__copiedResults = text; return Promise.resolve(); } },
+      });
+    });
     await page.goto('/sti-guide/?cat=Syphilis');
-    await expect(page.locator('.card-body').first()).toBeHidden();
-    await page.emulateMedia({ media: 'print' });
-    await expect(page.locator('.card-body').first()).toBeVisible();
-    await expect(page.locator('.guide-controls')).toBeHidden();
+    await page.getByRole('button', { name: 'Copy results' }).click();
+    await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible();
+    const copied = await page.evaluate(() => (window as any).__copiedResults as string);
+    expect(copied).toContain('Category: Syphilis');
+    expect(copied).toContain('Benzathine Penicillin G');
+    expect(copied).toContain('Source: CDC STI Treatment Guidelines base with selected updates');
   });
 });
