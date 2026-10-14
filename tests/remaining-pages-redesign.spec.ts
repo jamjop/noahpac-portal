@@ -77,6 +77,11 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByRole('link', { name: /Asthma Control Test/ })).toHaveAttribute('href', /childrensmercy\.org\/.+act_adulteng\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ })).toHaveAttribute('href', /aims\.uw\.edu\/.+GAD-7_English_0\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind')).toHaveText('External PDF');
+    const gadTitle = await page.getByRole('link', { name: /GAD-7/ }).locator('.ext-name').boundingBox();
+    const gadKind = await page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind').boundingBox();
+    expect(gadTitle).not.toBeNull();
+    expect(gadKind).not.toBeNull();
+    expect(gadKind?.y || 0).toBeGreaterThan((gadTitle?.y || 0) + (gadTitle?.height || 0));
 
     await page.goto('/reportable/');
     await page.getByLabel('Search reportable conditions').fill('anthrax');

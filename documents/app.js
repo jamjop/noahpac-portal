@@ -22,8 +22,15 @@
     var label = document.createElement('span');
     label.className = 'document-kind';
     label.textContent = externalLink ? (pdf ? 'External PDF' : 'Website') : 'PDF';
-    var arrow = row.querySelector('.ext-arrow');
-    row.insertBefore(label, arrow || null);
+    if (row.classList.contains('ext-row')) {
+      row.querySelector('.ext-body').appendChild(label);
+      return;
+    }
+    var name = row.querySelector('.tool-name');
+    var body = document.createElement('span');
+    body.className = 'document-row__body';
+    row.insertBefore(body, name);
+    body.append(name, label);
   }
 
   var navLinks = [];
