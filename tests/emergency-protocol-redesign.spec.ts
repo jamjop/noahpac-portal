@@ -46,17 +46,19 @@ test.describe('Emergency protocol redesign', () => {
 
   test('representative ALS, PALS, and TCCC clinical content remains available', async ({ page }) => {
     await page.goto('/als/');
-    await expect(page.getByText('CPR Quality Targets')).toBeVisible();
+    await expect(page.locator('.callout-label').filter({ hasText: 'CPR Quality Targets' })).toBeVisible();
     await page.getByRole('tab', { name: 'Stroke' }).click();
-    await expect(page.getByText('IV tPA Absolute Contraindications')).toBeVisible();
-    await expect(page.getByText(/SBP <185/).first()).toBeVisible();
+    const contraindications = page.locator('.compact-detail').filter({ hasText: 'IV tPA Absolute Contraindications' });
+    await expect(contraindications).toHaveCount(1);
+    const bloodPressure = page.locator('.callout').filter({ hasText: 'Blood Pressure Management' });
+    await expect(bloodPressure.getByText(/SBP <185/).first()).toBeVisible();
 
     await page.goto('/pals/');
-    await expect(page.getByText('Key Differences from Adult ALS')).toBeVisible();
+    await expect(page.locator('.callout-label').filter({ hasText: 'Key Differences from Adult ALS' })).toBeVisible();
     await page.getByRole('tab', { name: 'Medications' }).click();
-    await expect(page.locator('.protocol-table-wrap')).toBeVisible();
-    await expect(page.locator('.drug-table')).toContainText('Epinephrine');
-    await expect(page.locator('.drug-table')).toContainText('0.01 mg/kg');
+    await expect(page.locator('.med-reference')).toBeVisible();
+    await expect(page.locator('.med-reference')).toContainText('Epinephrine');
+    await expect(page.locator('.med-reference')).toContainText('0.01 mg/kg');
 
     await page.goto('/tccc/');
     await expect(page.getByRole('heading', { name: 'Tourniquet Conversion Timeline' })).toBeVisible();
@@ -65,14 +67,14 @@ test.describe('Emergency protocol redesign', () => {
     await expect(page.getByText(/NOT later than 3 h after injury/).first()).toBeVisible();
   });
 
-  test('phone and tablet layouts avoid document overflow and retain local table scrolling', async ({ page }) => {
+  test('phone and tablet layouts avoid document overflow and expose complete mobile navigation', async ({ page }) => {
     for (const width of [375, 768]) {
       await page.setViewportSize({ width, height: 900 });
       for (const protocol of PROTOCOLS) {
         await page.goto(protocol.path);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(overflow, `${protocol.path} overflow at ${width}px`).toBeLessThanOrEqual(1);
-        const navControl = protocol.path === '/tccc/' ? page.locator('#sectionSelect') : page.getByRole('tab').first();
+        const navControl = page.locator('#sectionSelect');
         const navHeight = await navControl.evaluate(el => el.getBoundingClientRect().height);
         expect(navHeight).toBeGreaterThanOrEqual(44);
       }
@@ -80,14 +82,9 @@ test.describe('Emergency protocol redesign', () => {
 
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto('/pals/');
-    await page.getByRole('tab', { name: 'Medications' }).click();
-    const tableState = await page.locator('.protocol-table-wrap').evaluate(el => ({
-      clientWidth: el.clientWidth,
-      scrollWidth: el.scrollWidth,
-      tabIndex: (el as HTMLElement).tabIndex,
-    }));
-    expect(tableState.scrollWidth).toBeGreaterThan(tableState.clientWidth);
-    expect(tableState.tabIndex).toBe(0);
+    await page.locator('#sectionSelect').selectOption('meds');
+    await expect(page.locator('.med-reference')).toBeVisible();
+    await expect(page.locator('.med-card').first()).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
   });

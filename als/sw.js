@@ -1,13 +1,15 @@
-const CACHE = 'als-v19';
+const CACHE = 'als-v20';
 const ASSETS = [
   '/als/',
   '/als/index.html',
-  '/als/style.css?v=3',
+  '/als/style.css?v=4',
   '/als/app.js?v=4',
   '/shared.css',
   '/assets/app-shell.js',
   '/assets/fonts.css',
   '/assets/last-checked.js',
+  '/assets/resuscitation-workflow.css?v=1',
+  '/assets/resuscitation-workflow.js?v=1',
 ];
 
 self.addEventListener('install', e => {
