@@ -35,6 +35,11 @@ test.describe('Antimicrobial stewardship workflow refinement', () => {
     await expect(page.getByRole('tab', { name: 'Gram-positive' })).toHaveAttribute('aria-selected', 'true');
     await expect(page).toHaveURL(/gram=positive/);
     await expect(page.locator('#result-summary')).toContainText(/organism/);
+    const notes = await page.locator('.antibiogram-footer__notes').boundingBox();
+    const meta = await page.locator('.antibiogram-app .app-footer__meta').boundingBox();
+    expect(notes).not.toBeNull();
+    expect(meta).not.toBeNull();
+    expect((notes?.x || 0) + (notes?.width || 0)).toBeLessThanOrEqual((meta?.x || 0) + 1);
   });
 
   test('all three pages remain free of document overflow on phones and tablets', async ({ page }) => {
