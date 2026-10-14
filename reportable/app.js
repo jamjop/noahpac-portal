@@ -129,12 +129,12 @@ function filterButtons(rootId, values, selected, label) {
   document.getElementById(rootId).innerHTML = values.map(value => `<button type="button" data-value="${esc(value)}" aria-pressed="${value === selected}">${value === 'all' ? `All ${label}` : esc(value)}</button>`).join('');
 }
 
-function syncUrl(openCondition) {
+function syncUrl() {
   const url = new URL(location.href);
   searchQuery ? url.searchParams.set('q', searchQuery) : url.searchParams.delete('q');
   categoryFilter !== 'all' ? url.searchParams.set('type', categoryFilter) : url.searchParams.delete('type');
   timingFilter !== 'all' ? url.searchParams.set('timing', timingFilter) : url.searchParams.delete('timing');
-  openCondition ? url.searchParams.set('condition', openCondition) : url.searchParams.delete('condition');
+  url.searchParams.delete('condition');
   history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
 }
 
@@ -178,8 +178,8 @@ function render() {
             const id = `condition-${slug(c.name)}`;
             return `
             <article class="cond-item" id="${id}">
-              <div class="cond-summary"><span class="cond-name">${esc(c.name)}</span>${c.note ? `<button class="cond-toggle" type="button" aria-expanded="false" aria-controls="${id}-note">Instructions</button>` : ''}</div>
-              ${c.note ? `<div class="cond-note" id="${id}-note" hidden>${esc(c.note)}</div>` : ""}
+              <div class="cond-summary"><span class="cond-name">${esc(c.name)}</span></div>
+              ${c.note ? `<div class="cond-note">${esc(c.note)}</div>` : ""}
             </article>`;
           }).join("")}
         </div>
@@ -212,15 +212,8 @@ document.getElementById('clearReportFilters').addEventListener('click', () => {
   filterButtons('timingFilters', ['all', ...TIMING_ORDER], timingFilter, 'timelines');
   render(); syncUrl(); document.getElementById('search').focus();
 });
-document.getElementById('list-root').addEventListener('click', event => {
-  const button = event.target.closest('.cond-toggle'); if (!button) return;
-  const note = document.getElementById(button.getAttribute('aria-controls')); const open = button.getAttribute('aria-expanded') !== 'true';
-  button.setAttribute('aria-expanded', String(open)); note.hidden = !open;
-  syncUrl(open ? button.closest('.cond-item').id.replace(/^condition-/, '') : '');
-});
 render();
 const initialCondition = params.get('condition');
 if (initialCondition) {
-  const item = document.getElementById(`condition-${initialCondition}`); const button = item?.querySelector('.cond-toggle');
-  if (button) { button.click(); item.scrollIntoView({block:'center'}); }
+  document.getElementById(`condition-${initialCondition}`)?.scrollIntoView({block:'center'});
 }

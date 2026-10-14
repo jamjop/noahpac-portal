@@ -16,7 +16,7 @@ test.describe('Large clinical dataset workflows', () => {
     await expect(page.getByLabel('Search laboratory reference')).toHaveValue('');
   });
 
-  test('reportable conditions expose jurisdiction, filters, and instructions', async ({ page }) => {
+  test('reportable conditions expose jurisdiction, filters, and inline instructions', async ({ page }) => {
     await page.goto('/reportable/');
     await expect(page.getByText('North Dakota', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Immediate' }).click();
@@ -25,9 +25,8 @@ test.describe('Large clinical dataset workflows', () => {
     await expect(page.locator('.cond-name').filter({ hasText: /Anthrax/i })).toHaveJSProperty('tagName', 'SPAN');
     const item = page.locator('.cond-item', { hasText: 'Anthrax' });
     await expect(item).toBeVisible();
-    await item.getByRole('button', { name: 'Instructions' }).click();
     await expect(item.locator('.cond-note')).toBeVisible();
-    await expect(page).toHaveURL(/condition=anthrax/);
+    await expect(item.getByRole('button', { name: 'Instructions' })).toHaveCount(0);
   });
 
   test('pediatric results retain measured weight while filtering cards', async ({ page }) => {
