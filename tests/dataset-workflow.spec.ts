@@ -22,6 +22,7 @@ test.describe('Large clinical dataset workflows', () => {
     await page.getByRole('button', { name: 'Immediate' }).click();
     await expect(page).toHaveURL(/timing=Immediate/);
     await page.getByLabel('Search reportable conditions').fill('anthrax');
+    await expect(page.locator('.cond-name').filter({ hasText: /Anthrax/i })).toHaveJSProperty('tagName', 'SPAN');
     const item = page.locator('.cond-item', { hasText: 'Anthrax' });
     await expect(item).toBeVisible();
     await item.getByRole('button', { name: 'Instructions' }).click();

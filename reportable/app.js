@@ -178,7 +178,7 @@ function render() {
             const id = `condition-${slug(c.name)}`;
             return `
             <article class="cond-item" id="${id}">
-              <div class="cond-summary"><a class="cond-name" href="#${id}">${esc(c.name)}</a>${c.note ? `<button class="cond-toggle" type="button" aria-expanded="false" aria-controls="${id}-note">Instructions</button>` : ''}</div>
+              <div class="cond-summary"><span class="cond-name">${esc(c.name)}</span>${c.note ? `<button class="cond-toggle" type="button" aria-expanded="false" aria-controls="${id}-note">Instructions</button>` : ''}</div>
               ${c.note ? `<div class="cond-note" id="${id}-note" hidden>${esc(c.note)}</div>` : ""}
             </article>`;
           }).join("")}
