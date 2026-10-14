@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Antibiotic Reference — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="clinical-app legacy-app reference-app abx-app">
 <div>
@@ -41,7 +41,10 @@
     </div>
   </nav>
   <div class="page-body legacy-main" id="main-content" role="main" tabindex="-1">
-    <label class="legacy-search-panel" for="abxSearch"><span class="legacy-search-label">Find a condition</span><input type="search" id="abxSearch" class="tab-search" placeholder="Search syndromes or organisms" autocomplete="off" spellcheck="false"></label>
+    <section class="reference-search-panel abx-search-panel" aria-labelledby="abx-search-title">
+      <div class="reference-search-panel__header"><div><h2 class="reference-search-panel__title" id="abx-search-title">Search antibiotic guidance</h2><p class="reference-search-panel__description">Search by syndrome, organism, or anatomic site.</p></div><span class="abx-result-count" id="abxResultCount" role="status"></span></div>
+      <div class="abx-search-row"><label class="reference-search-field" for="abxSearch"><span>Find a condition</span><input type="search" id="abxSearch" placeholder="e.g. pneumonia, E. coli, urinary tract" autocomplete="off" spellcheck="false"></label><button class="reference-clear-button" id="clearSearch" type="button" hidden>Clear</button></div>
+    </section>
     <nav class="cat-nav" id="tabNav" aria-label="Antibiotic conditions"></nav>
     <div class="pane" id="pane">
       <div class="placeholder">Select a condition from the list</div>
@@ -63,7 +66,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

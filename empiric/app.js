@@ -199,6 +199,20 @@ const SITES = [
 let selectedSite     = SITES[0].id;
 let selectedOrg      = null;
 let selectedFacility = 'trinity';
+const initialParams = new URLSearchParams(location.search);
+if (SITES.some(site => site.id === initialParams.get('site'))) selectedSite = initialParams.get('site');
+const initialSite = SITES.find(site => site.id === selectedSite);
+if (initialSite.orgs.includes(initialParams.get('organism'))) selectedOrg = initialParams.get('organism');
+if (initialParams.get('facility')) selectedFacility = initialParams.get('facility');
+
+function syncUrl({replace = true} = {}) {
+  const url = new URL(location.href);
+  url.searchParams.set('site', selectedSite);
+  url.searchParams.set('facility', selectedFacility);
+  if (selectedOrg) url.searchParams.set('organism', selectedOrg);
+  else url.searchParams.delete('organism');
+  history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 function resistCell(val) {
   if (val === null || val === undefined) return "";
@@ -224,6 +238,7 @@ function renderOrgs(site) {
     btn.classList.add("active");
     selectedOrg = btn.dataset.org || null;
     renderResult();
+    syncUrl();
   }));
 }
 
@@ -240,10 +255,10 @@ function renderResult() {
     }
     return `
       <tr>
-        <td class="reg-name">${r.name}</td>
-        <td class="reg-dose">${r.dose}</td>
-        <td class="susc-col">${resistVal}</td>
-        <td class="reg-note">${r.note}</td>
+        <td class="reg-name" data-label="Regimen">${r.name}</td>
+        <td class="reg-dose" data-label="Typical dose">${r.dose}</td>
+        <td class="susc-col" data-label="Local resistance">${resistVal}</td>
+        <td class="reg-note" data-label="Notes">${r.note}</td>
       </tr>`;
   }).join("");
 
@@ -254,8 +269,7 @@ function renderResult() {
 
   document.getElementById("result-area").innerHTML = `
     <div class="result-card">
-      <div class="result-head">${site.label}</div>
-      <div class="susc-note">${suscNote}</div>
+      <div class="result-title-row"><div><div class="result-kicker">Current selection</div><div class="result-head">${site.label}</div><div class="susc-note">${suscNote}</div></div><div class="result-actions"><button type="button" data-result-action="copy">Copy summary</button><button type="button" data-result-action="link">Copy link</button></div></div>
       <div class="tbl-wrap">
         <table class="reg-tbl">
           <thead><tr>
@@ -275,6 +289,31 @@ function renderResult() {
         <span class="susc-na">—</span> not tested / select organism
       </div>
     </div>`;
+
+  document.querySelector('[data-result-action="copy"]').addEventListener('click', copySummary);
+  document.querySelector('[data-result-action="link"]').addEventListener('click', copyViewLink);
+}
+
+function copySummary() {
+  const site = SITES.find(s => s.id === selectedSite);
+  const facility = FACILITY_SUSC[selectedFacility];
+  const lines = [site.label, `Facility: ${facility?.label || selectedFacility}`, `Likely organism: ${selectedOrg || 'Any / unknown'}`, ''];
+  site.regimens.forEach(regimen => lines.push(`${regimen.name} — ${regimen.dose}${regimen.note ? ` — ${regimen.note}` : ''}`));
+  lines.push('', 'Verify allergies, renal function, severity, culture data, and current guidance.');
+  navigator.clipboard.writeText(lines.join('\n')).then(() => flashResultButton('copy', 'Copied'));
+}
+
+function copyViewLink() {
+  navigator.clipboard.writeText(location.href).then(() => flashResultButton('link', 'Copied'));
+}
+
+function flashResultButton(action, text) {
+  const button = document.querySelector(`[data-result-action="${action}"]`);
+  if (!button) return;
+  const original = button.textContent;
+  button.textContent = text;
+  button.classList.add('copied');
+  setTimeout(() => { button.textContent = original; button.classList.remove('copied'); }, 1800);
 }
 
 function render() {
@@ -296,6 +335,7 @@ siteSel.addEventListener("change", () => {
   selectedSite = siteSel.value;
   selectedOrg  = null;
   render();
+  syncUrl();
 });
 
 async function loadFacilities() {
@@ -394,6 +434,7 @@ async function loadFacilities() {
   if (!FACILITY_SUSC[selectedFacility]) {
     selectedFacility = Object.keys(FACILITY_SUSC)[0];
   }
+  syncUrl();
 
   const facSel = document.getElementById("fac-sel");
   // "5th Medical Group" (Minot AFB) pinned to the top of empiric's own dropdown —
@@ -413,6 +454,7 @@ async function loadFacilities() {
   facSel.addEventListener("change", () => {
     selectedFacility = facSel.value;
     render();
+    syncUrl();
   });
 
   render();

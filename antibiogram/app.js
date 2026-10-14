@@ -3674,6 +3674,16 @@ const FACILITIES = [
 // ── State ──────────────────────────────────────────────────────────────────
 let activeFacilityId = "trinity";
 let activeGram       = "positive";
+const initialParams = new URLSearchParams(location.search);
+if (FACILITIES.some(facility => facility.id === initialParams.get('facility'))) activeFacilityId = initialParams.get('facility');
+if (['positive', 'negative'].includes(initialParams.get('gram'))) activeGram = initialParams.get('gram');
+
+function syncUrl() {
+  const url = new URL(location.href);
+  url.searchParams.set('facility', activeFacilityId);
+  url.searchParams.set('gram', activeGram);
+  history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 function getFacility() {
   return FACILITIES.find(f => f.id === activeFacilityId);
@@ -3705,6 +3715,7 @@ function render() {
   const facility = getFacility();
   const orgs     = facility.organisms.filter(o => o.gram === activeGram);
   const abxIds   = getAbxForOrgs(orgs);
+  syncUrl();
 
   // Update header eyebrow
   document.getElementById("eyebrow").textContent =
@@ -3713,6 +3724,7 @@ function render() {
   // Update footer source note
   const srcEl = document.getElementById("source-note");
   if (srcEl) srcEl.textContent = facility.sourceNote;
+  document.getElementById('result-summary').textContent = `${orgs.length} organism${orgs.length === 1 ? '' : 's'} · ${abxIds.length} agents · ${facility.period}`;
 
   const head = document.getElementById("thead");
   const body = document.getElementById("tbody");
@@ -3756,12 +3768,40 @@ function buildFacilitySelect() {
 // ── Gram tabs ──────────────────────────────────────────────────────────────
 document.querySelectorAll(".gram-tab").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".gram-tab").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    activeGram = btn.dataset.gram;
-    render();
+    activateGram(btn.dataset.gram);
+  });
+});
+
+function activateGram(gram, {focus = false} = {}) {
+  if (!['positive', 'negative'].includes(gram)) return;
+  activeGram = gram;
+  document.querySelectorAll('.gram-tab').forEach(button => {
+    const active = button.dataset.gram === activeGram;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', String(active));
+    button.tabIndex = active ? 0 : -1;
+    if (active && focus) button.focus();
+  });
+  render();
+}
+
+document.querySelector('.gram-tabs').addEventListener('keydown', event => {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const tabs = [...document.querySelectorAll('.gram-tab')];
+  const current = tabs.indexOf(document.activeElement);
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : event.key === 'ArrowRight' ? (current + 1) % tabs.length : (current - 1 + tabs.length) % tabs.length;
+  activateGram(tabs[next].dataset.gram, {focus:true});
+});
+
+document.getElementById('copy-link').addEventListener('click', () => {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const button = document.getElementById('copy-link');
+    button.textContent = 'Copied';
+    button.classList.add('copied');
+    setTimeout(() => { button.textContent = 'Copy view link'; button.classList.remove('copied'); }, 1800);
   });
 });
 
 buildFacilitySelect();
-render();
+activateGram(activeGram);

@@ -29,13 +29,27 @@ const ABX = [
 ];
 
 let currentId = null;
+const searchInput = document.getElementById('abxSearch');
+const clearSearch = document.getElementById('clearSearch');
+
+function syncUrl({replace = false} = {}) {
+  const url = new URL(location.href);
+  const q = searchInput.value.trim();
+  if (currentId) url.searchParams.set('condition', currentId);
+  else url.searchParams.delete('condition');
+  if (q) url.searchParams.set('q', q);
+  else url.searchParams.delete('q');
+  history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 // ── Navigation ──────────────────────────────────────────────────────────────
 
 function buildNav() {
-  const q = document.getElementById('abxSearch').value.trim().toLowerCase();
+  const q = searchInput.value.trim().toLowerCase();
   const nav = document.getElementById('tabNav');
   nav.innerHTML = '';
+  clearSearch.hidden = !q;
+  let resultCount = 0;
 
   for (const cat of CATS) {
     const items = ABX.filter(a => {
@@ -44,6 +58,7 @@ function buildNav() {
       return a.name.toLowerCase().includes(q) || a.organism.toLowerCase().includes(q);
     });
     if (items.length === 0) continue;
+    resultCount += items.length;
 
     const hasActive = items.some(a => a.id === currentId);
     const isOpen = hasActive || q.length > 0;
@@ -68,6 +83,7 @@ function buildNav() {
       btn.className = 'tab-btn' + (currentId === a.id ? ' active' : '');
       btn.dataset.id = a.id;
       btn.textContent = a.name;
+      btn.setAttribute('aria-current', currentId === a.id ? 'true' : 'false');
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -80,14 +96,18 @@ function buildNav() {
     section.appendChild(list);
     nav.appendChild(section);
   }
+  document.getElementById('abxResultCount').textContent = `${resultCount} condition${resultCount === 1 ? '' : 's'}`;
+  if (!resultCount) nav.innerHTML = '<p class="nav-empty">No conditions match this search.</p>';
 }
 
 // ── Detail pane ─────────────────────────────────────────────────────────────
 
-function showAbx(id) {
+function showAbx(id, {replace = false} = {}) {
   currentId = id;
   const a = ABX.find(x => x.id === id);
   if (!a) return;
+  syncUrl({replace});
+  buildNav();
 
   const catLabel = CATS.find(c => c.id === a.cat)?.label || a.cat;
   let html = `
@@ -135,15 +155,25 @@ function showAbx(id) {
     </section>`;
   }
 
-  html += `<button class="copy-btn" id="copyBtn">&#x2398; Copy regimen</button>`;
+  html += `<div class="abx-actions"><button class="copy-btn" id="copyBtn">&#x2398; Copy regimen</button><button class="copy-btn copy-btn--secondary" id="copyLinkBtn">Copy link</button></div>`;
   document.getElementById('pane').innerHTML = html;
   document.getElementById('copyBtn').addEventListener('click', copyRegimen);
+  document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
   if (a.id === 'pharyngitis') {
     document.querySelectorAll('.centor-tool input, .centor-tool select').forEach(control => {
       control.addEventListener('change', updateCentor);
     });
     updateCentor();
   }
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = document.getElementById('copyLinkBtn');
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy link'; btn.classList.remove('copied'); }, 1800);
+  });
 }
 
 function updateCentor() {
@@ -192,5 +222,15 @@ function copyRegimen() {
   });
 }
 
-document.getElementById('abxSearch').addEventListener('input', buildNav);
+searchInput.addEventListener('input', () => { buildNav(); syncUrl({replace:true}); });
+clearSearch.addEventListener('click', () => {
+  searchInput.value = '';
+  buildNav();
+  syncUrl({replace:true});
+  searchInput.focus();
+});
+const initialParams = new URLSearchParams(location.search);
+searchInput.value = initialParams.get('q') || '';
 buildNav();
+const initialCondition = initialParams.get('condition');
+if (ABX.some(item => item.id === initialCondition)) showAbx(initialCondition, {replace:true});

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ND Antibiogram — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="clinical-app legacy-app table-app antibiogram-app">
 
@@ -44,7 +44,12 @@
 
 <div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
-  <select id="facility-select" class="fac-select" aria-label="Select facility"></select>
+  <section class="antibiogram-controls" aria-labelledby="antibiogram-controls-title">
+    <div><h2 id="antibiogram-controls-title">Choose a local dataset</h2><p>Values are percent susceptible. Select a facility and organism group before comparing agents.</p></div>
+    <label for="facility-select">Facility and reporting period</label>
+    <select id="facility-select" class="fac-select"></select>
+    <div class="antibiogram-context"><span id="result-summary" role="status"></span><button class="reference-clear-button" id="copy-link" type="button">Copy view link</button></div>
+  </section>
 
   <div class="gram-tabs" role="tablist" aria-label="Gram stain filter">
     <button class="gram-tab active" data-gram="positive" role="tab" aria-selected="true">Gram-positive</button>
@@ -80,7 +85,7 @@
   </p>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>
