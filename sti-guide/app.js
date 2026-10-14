@@ -306,10 +306,60 @@ const DATA = [
   },
 ];
 
-const CATS = [...new Set(DATA.map(d => d.cat))];
+const CATEGORY_GROUPS = [
+  { id:"", label:"All" },
+  { id:"Chlamydia", label:"Chlamydia", cats:["Chlamydia"] },
+  { id:"Gonorrhea", label:"Gonorrhea", cats:["Gonorrhea"] },
+  { id:"Syphilis", label:"Syphilis", cats:["Syphilis"] },
+  { id:"HSV", label:"HSV", cats:["Herpes (HSV)"] },
+  { id:"Vaginitis", label:"Vaginitis", cats:["Trichomoniasis","Bacterial Vaginosis","Vulvovaginal Candidiasis"] },
+  { id:"Upper tract", label:"PID & epididymitis", cats:["Pelvic Inflammatory Disease","Epididymitis"] },
+  { id:"Other", label:"Other infections", cats:["Ectoparasites","Chancroid","Mpox"] },
+  { id:"Prevention", label:"Prevention", cats:["Prevention"] },
+];
+
+const els = {
+  search: document.getElementById("search"),
+  catSelect: document.getElementById("cat-select"),
+  categoryRail: document.getElementById("category-rail"),
+  resultCount: document.getElementById("result-count"),
+  filterSummary: document.getElementById("active-filter-summary"),
+  clearFilters: document.getElementById("clear-filters"),
+  printResults: document.getElementById("print-results"),
+  root: document.getElementById("list-root"),
+  treatmentPanel: document.getElementById("treatment-panel"),
+  hivPanel: document.getElementById("hiv-panel"),
+  modeTreatment: document.getElementById("mode-treatment"),
+  modeHiv: document.getElementById("mode-hiv"),
+};
+
 let activeSearch = "";
-let activeCat = null;
+let activeCat = "";
+let activeMode = "treatment";
+let openCard = "";
 let currentItems = [];
+
+function esc(value) {
+  return String(value || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function slug(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+}
+
+function selectedCategory() {
+  return CATEGORY_GROUPS.find(group => group.id === activeCat) || CATEGORY_GROUPS[0];
+}
+
+function sourceLabel(d) {
+  if (d.name.includes("Doxy-PEP")) return "CDC 2024";
+  if ((d.notes || "").includes("CDC updated Sep 2026")) return "CDC update 2026";
+  return "CDC 2021 base";
+}
+
+function noteTone(notes) {
+  return /SUPPLY ALERT|contraindicat|hospitalize|treatment failure|medical emergency/i.test(notes || "") ? " warning" : "";
+}
 
 function buildCopyText(d) {
   const lines = [d.name, ''];
@@ -332,7 +382,8 @@ function buildCopyText(d) {
 
 function filterData() {
   let items = DATA;
-  if (activeCat) items = items.filter(d => d.cat === activeCat);
+  const category = selectedCategory();
+  if (category.cats) items = items.filter(d => category.cats.includes(d.cat));
   if (activeSearch) {
     const q = activeSearch.toLowerCase();
     items = items.filter(d =>
@@ -355,66 +406,169 @@ function regRows(regs, label, cls) {
       <div class="reg-label${lcls}">${label}</div>
       ${regs.map(r => `
         <div class="reg-row${lcls}">
-          <span class="reg-drug">${r.drug}</span>
-          ${r.dose ? `<span class="reg-dose">${r.dose}</span>` : ""}
-          ${r.note ? `<span class="reg-note">${r.note}</span>` : ""}
+          <span class="reg-drug">${esc(r.drug)}</span>
+          ${r.dose ? `<span class="reg-dose">${esc(r.dose)}</span>` : ""}
+          ${r.note ? `<span class="reg-note">${esc(r.note)}</span>` : ""}
         </div>
       `).join("")}
     </div>`;
 }
 
+function updateUrl() {
+  const params = new URLSearchParams();
+  if (activeMode === "hiv") params.set("mode", "hiv");
+  if (activeSearch) params.set("q", activeSearch);
+  if (activeCat) params.set("cat", activeCat);
+  if (openCard && !activeSearch) params.set("open", openCard);
+  const next = `${location.pathname}${params.size ? `?${params}` : ""}`;
+  history.replaceState(null, "", next);
+}
+
+function setMode(mode, update = true) {
+  activeMode = mode === "hiv" ? "hiv" : "treatment";
+  const treatmentActive = activeMode === "treatment";
+  els.treatmentPanel.hidden = !treatmentActive;
+  els.hivPanel.hidden = treatmentActive;
+  els.modeTreatment.classList.toggle("active", treatmentActive);
+  els.modeHiv.classList.toggle("active", !treatmentActive);
+  els.modeTreatment.setAttribute("aria-selected", String(treatmentActive));
+  els.modeHiv.setAttribute("aria-selected", String(!treatmentActive));
+  els.modeTreatment.tabIndex = treatmentActive ? 0 : -1;
+  els.modeHiv.tabIndex = treatmentActive ? -1 : 0;
+  if (update) updateUrl();
+}
+
+function updateControls() {
+  els.catSelect.value = activeCat;
+  els.categoryRail.querySelectorAll("button").forEach(button => {
+    const selected = button.dataset.category === activeCat;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  const filters = [];
+  if (activeCat) filters.push(selectedCategory().label);
+  if (activeSearch) filters.push(`Search: “${activeSearch}”`);
+  els.resultCount.textContent = `${currentItems.length} ${currentItems.length === 1 ? "regimen" : "regimens"}`;
+  els.filterSummary.textContent = filters.join(" · ");
+  els.clearFilters.hidden = !filters.length;
+}
+
 function render() {
   currentItems = filterData();
-  const root = document.getElementById("list-root");
-
   if (currentItems.length === 0) {
-    root.innerHTML = `<div class="empty">No results for "${activeSearch}"</div>`;
+    updateControls();
+    els.root.innerHTML = `<div class="empty">No regimens match the current search and category. <button class="secondary-action" type="button" data-clear>Clear filters</button></div>`;
+    updateUrl();
     return;
   }
 
-  root.innerHTML = currentItems.map((d, i) => `
-    <div class="guide-card">
+  els.root.innerHTML = currentItems.map((d, i) => {
+    const id = slug(d.name);
+    const expanded = Boolean(activeSearch) || openCard === id;
+    const primary = d.recommended && d.recommended[0];
+    return `
+    <article class="guide-card" id="${id}">
       <div class="card-top">
-        <div class="card-top-text">
-          <div class="guide-cat">${d.cat}</div>
-          <div class="guide-name">${d.name}</div>
-        </div>
-        <button class="copy-btn" data-idx="${i}" aria-label="Copy regimen to clipboard">Copy</button>
+        <button class="card-toggle" type="button" aria-expanded="${expanded}" aria-controls="${id}-body" data-card="${id}">
+          <span>
+            <span class="guide-cat">${esc(d.cat)}</span>
+            <span class="guide-name">${esc(d.name)}</span>
+            <span class="card-badges">
+              ${d.pregnancy && d.pregnancy.length ? `<span class="card-badge preg">Pregnancy guidance</span>` : ""}
+              <span class="card-badge source">${sourceLabel(d)}</span>
+            </span>
+          </span>
+          ${primary ? `<span class="card-summary"><strong>${esc(primary.drug)}</strong><span>${esc(primary.dose)}</span></span>` : ""}
+        </button>
+        <button class="copy-btn" type="button" data-idx="${i}" aria-label="Copy ${esc(d.name)} regimen" title="Copy regimen">⧉</button>
       </div>
-      ${regRows(d.recommended, "Recommended", "fl")}
-      ${regRows(d.alternative, "Alternative")}
-      ${regRows(d.pregnancy,   "In Pregnancy", "preg")}
-      ${d.notes ? `<div class="guide-notes">${d.notes}</div>` : ""}
-    </div>
-  `).join("");
+      <div class="card-body" id="${id}-body" ${expanded ? "" : "hidden"}>
+        ${regRows(d.recommended, "Preferred regimen", "fl")}
+        ${regRows(d.alternative, "Alternatives")}
+        ${regRows(d.pregnancy, "Pregnancy", "preg")}
+        ${d.notes ? `<div class="guide-notes${noteTone(d.notes)}"><span class="guide-notes__label">Follow-up, partners, and cautions</span>${esc(d.notes)}</div>` : ""}
+      </div>
+    </article>`;
+  }).join("");
+  updateControls();
+  updateUrl();
 }
 
-// Build category dropdown
-const catSel = document.getElementById("cat-select");
-catSel.innerHTML = `<option value="">All categories</option>` +
-  CATS.map(c => `<option value="${c}">${c}</option>`).join("");
-catSel.addEventListener("change", () => {
-  activeCat = catSel.value || null;
+els.catSelect.innerHTML = CATEGORY_GROUPS.map(group => `<option value="${esc(group.id)}">${esc(group.label)}</option>`).join("");
+els.categoryRail.innerHTML = CATEGORY_GROUPS.map(group => `<button class="category-chip" type="button" data-category="${esc(group.id)}" aria-pressed="false">${esc(group.label)}</button>`).join("");
+
+els.catSelect.addEventListener("change", () => {
+  activeCat = els.catSelect.value;
   render();
 });
 
-document.getElementById("search").addEventListener("input", e => {
+els.categoryRail.addEventListener("click", event => {
+  const button = event.target.closest("button[data-category]");
+  if (!button) return;
+  activeCat = button.dataset.category;
+  render();
+});
+
+els.search.addEventListener("input", e => {
   activeSearch = e.target.value;
+  openCard = "";
   render();
 });
 
-render();
+els.clearFilters.addEventListener("click", () => {
+  activeSearch = "";
+  activeCat = "";
+  openCard = "";
+  els.search.value = "";
+  render();
+  els.search.focus();
+});
 
-document.getElementById("list-root").addEventListener("click", e => {
+els.printResults.addEventListener("click", () => window.print());
+els.modeTreatment.addEventListener("click", () => setMode("treatment"));
+els.modeHiv.addEventListener("click", () => setMode("hiv"));
+
+document.querySelector(".guide-mode").addEventListener("keydown", event => {
+  if (!["ArrowLeft","ArrowRight","Home","End"].includes(event.key)) return;
+  event.preventDefault();
+  const next = event.key === "Home" || event.key === "ArrowLeft" ? els.modeTreatment : els.modeHiv;
+  next.click();
+  next.focus();
+});
+
+els.root.addEventListener("click", e => {
+  const clear = e.target.closest("[data-clear]");
+  if (clear) {
+    els.clearFilters.click();
+    return;
+  }
+  const toggle = e.target.closest(".card-toggle");
+  if (toggle) {
+    const body = document.getElementById(toggle.getAttribute("aria-controls"));
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    body.hidden = expanded;
+    openCard = expanded ? "" : toggle.dataset.card;
+    updateUrl();
+    return;
+  }
   const btn = e.target.closest(".copy-btn");
   if (!btn) return;
   const d = currentItems[parseInt(btn.dataset.idx, 10)];
   navigator.clipboard.writeText(buildCopyText(d)).then(() => {
-    btn.textContent = "✓ Copied";
+    btn.textContent = "✓";
     btn.classList.add("copied");
-    setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 1500);
+    setTimeout(() => { btn.textContent = "⧉"; btn.classList.remove("copied"); }, 1500);
   }).catch(() => {
-    btn.textContent = "Failed";
-    setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+    btn.textContent = "!";
+    setTimeout(() => { btn.textContent = "⧉"; }, 1500);
   });
 });
+
+const initial = new URLSearchParams(location.search);
+activeSearch = initial.get("q") || "";
+activeCat = CATEGORY_GROUPS.some(group => group.id === initial.get("cat")) ? initial.get("cat") : "";
+openCard = initial.get("open") || "";
+els.search.value = activeSearch;
+setMode(initial.get("mode") === "hiv" ? "hiv" : "treatment", false);
+render();

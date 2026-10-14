@@ -71,7 +71,7 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.cond-name').filter({ hasText: /Anthrax/i })).toBeVisible();
 
     await page.goto('/sti-guide/');
-    await page.getByLabel('Search STI treatment guidance').fill('gonorrhea');
+    await page.getByLabel('Diagnosis, medication, or population').fill('gonorrhea');
     await expect(page.locator('.guide-card').first()).toContainText(/gonorrhea/i);
   });
 

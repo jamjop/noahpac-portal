@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>STI Treatment — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body class="clinical-app legacy-app reference-app sti-guide-app">
 <a class="skip-link" href="#main-content">Skip to STI Guidelines</a>
@@ -30,7 +30,38 @@
 </header>
 
 <div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
-  <section class="hiv-workflow" aria-labelledby="hiv-workflow-title">
+  <nav class="guide-mode" role="tablist" aria-label="STI guide section">
+    <button id="mode-treatment" class="guide-mode__button active" type="button" role="tab" aria-selected="true" aria-controls="treatment-panel">STI treatment</button>
+    <button id="mode-hiv" class="guide-mode__button" type="button" role="tab" aria-selected="false" aria-controls="hiv-panel">HIV prevention · PrEP/PEP</button>
+  </nav>
+
+  <section id="treatment-panel" class="treatment-panel" role="tabpanel" aria-labelledby="mode-treatment">
+    <div class="guide-controls" role="search" aria-labelledby="treatment-search-title">
+      <div class="guide-controls__heading">
+        <div><p class="guide-kicker">Treatment lookup</p><h2 id="treatment-search-title">Find a regimen</h2></div>
+        <div class="guide-actions">
+          <button id="clear-filters" class="secondary-action" type="button" hidden>Clear filters</button>
+          <button id="print-results" class="secondary-action" type="button">Print results</button>
+        </div>
+      </div>
+      <div class="search-field">
+        <label for="search">Diagnosis, medication, or population</label>
+        <input class="search-box" id="search" type="search" placeholder="Try gonorrhea, ceftriaxone, or pregnancy…" autocomplete="off">
+      </div>
+      <div class="category-field">
+        <span class="field-label" id="category-label">Category</span>
+        <div id="category-rail" class="category-rail" role="group" aria-labelledby="category-label"></div>
+        <select id="cat-select" class="cat-select" aria-label="Filter by category"></select>
+      </div>
+      <div class="result-summary">
+        <p id="result-count" role="status" aria-live="polite"></p>
+        <p id="active-filter-summary"></p>
+      </div>
+    </div>
+    <div id="list-root" aria-live="polite" aria-relevant="additions text"></div>
+  </section>
+
+  <section id="hiv-panel" class="hiv-workflow" role="tabpanel" aria-labelledby="mode-hiv" hidden>
     <div class="hiv-workflow__head">
       <div><p class="guide-cat">HIV prevention</p><h2 id="hiv-workflow-title">PrEP / PEP quick workflow</h2></div>
       <span class="hiv-workflow__date">CDC · reviewed Oct 2026</span>
@@ -63,18 +94,15 @@
       </details>
     </div>
   </section>
-  <input class="search-box" id="search" type="search" aria-label="Search STI treatment guidance" placeholder="Search diagnosis, drug, or population…" autocomplete="off">
-  <select id="cat-select" class="cat-select" aria-label="Filter by category"></select>
-  <div id="list-root"></div>
 </div>
 
 <footer class="app-footer legacy-footer">
   <p class="last-checked"></p>
-  <p>Based on CDC 2021 Sexually Transmitted Infections Treatment Guidelines (MMWR 2021;70[RR-4]:1–187). Dosing as published; verify current guidelines at <a href="https://www.cdc.gov/std/treatment-guidelines/" target="_blank" rel="noopener">cdc.gov/std/treatment-guidelines</a>. Pregnancy and special population notes included where applicable. <strong>Not medical advice.</strong></p>
+  <p>CDC 2021 STI Treatment Guidelines base with selected recommendations updated through 2026. Dosing as published; verify current guidance at <a href="https://www.cdc.gov/std/treatment-guidelines/" target="_blank" rel="noopener">cdc.gov/std/treatment-guidelines</a>. Pregnancy and special-population notes are included where applicable. <strong>Not medical advice.</strong></p>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>
