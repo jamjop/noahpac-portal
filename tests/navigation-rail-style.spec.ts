@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const NAVIGATION_CONTROLS = [
-  ['/tccc/', '.protocol-tab[aria-selected="true"]'],
+  ['/tccc/', '.mobile-protocol-nav select'],
   ['/als/', '.protocol-tab[aria-selected="true"]'],
   ['/pals/', '.protocol-tab[aria-selected="true"]'],
   ['/calculators/', '.cat-nav .tab-btn.active'],

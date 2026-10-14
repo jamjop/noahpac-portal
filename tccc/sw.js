@@ -1,4 +1,4 @@
-const CACHE = 'tccc-v13';
+const CACHE = 'tccc-v14';
 // Exact URLs as requested by index.html, including cache-busting query
 // strings -- caches.match() keys on the full request URL, so a precached
 // entry without "?v=2" is a silent miss against the real page request and
@@ -6,8 +6,8 @@ const CACHE = 'tccc-v13';
 const ASSETS = [
   '/tccc/',
   '/tccc/index.html',
-  '/tccc/app.js?v=3',
-  '/tccc/style.css?v=3',
+  '/tccc/app.js?v=4',
+  '/tccc/style.css?v=4',
   '/tccc/manifest.json',
   '/tccc/icon.svg',
   '/tccc/last_checked.json',

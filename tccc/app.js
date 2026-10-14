@@ -1,16 +1,36 @@
 'use strict';
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function slug(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+
+const SECTION_META = {
+  M:{group:'MARCH',scope:'All responders · Medical personnel',summary:'Control life-threatening bleeding before moving to the next priority.',critical:'Tourniquet → pack junctional wounds → reassess every intervention'},
+  A1:{group:'MARCH',scope:'All responders · Medical personnel',summary:'Open and maintain the airway using the least invasive effective intervention.',critical:'Position → clear obstruction → NPA → surgical airway if required'},
+  R:{group:'MARCH',scope:'Medical personnel',summary:'Identify penetrating chest injury and treat suspected tension pneumothorax immediately.',critical:'Seal open wounds → reassess breathing → decompress when indicated'},
+  C:{group:'MARCH',scope:'Medical personnel',summary:'Reassess hemorrhage control, obtain access, and resuscitate hemorrhagic shock.',critical:'Recheck bleeding → blood products → calcium and TXA when indicated'},
+  H:{group:'MARCH',scope:'All responders · Medical personnel',summary:'Prevent heat loss and secondary brain injury throughout care and evacuation.',critical:'Insulate early → protect oxygenation and perfusion → reassess neurologic status'},
+  P:{group:'PAWS',scope:'Medical personnel',summary:'Provide analgesia appropriate to mission status while preserving airway and mentation.',critical:'Mission capable: CWMP · Non-mission capable: ketamine or esketamine'},
+  ABX:{group:'PAWS',scope:'Medical personnel',summary:'Give early antibiotic prophylaxis for open combat wounds.',critical:'PO able: cefadroxil · Unable PO: ceftriaxone'},
+  W:{group:'PAWS',scope:'All responders · Medical personnel',summary:'Protect wounds, identify special injuries, and prevent additional tissue damage.',critical:'Expose → control → cover → protect → evacuate'},
+  S:{group:'PAWS',scope:'All responders',summary:'Stabilize fractures, document interventions, and prepare for evacuation.',critical:'Neurovascular check → splint → DD Form 1380 → 9-line'},
+  DRUGS:{group:'REFERENCE',scope:'Medical personnel',summary:'Rapid medication reference for common TCCC indications and doses.',critical:'Verify indication, route, timing, contraindications, and documentation'}
+};
 
 // ── Section renderer helpers ─────────────────────────────────────────────────
 
 function phase(label, steps) {
   const items = steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('');
-  return `<div class="phase"><div class="phase-label">${esc(label)}</div><ol class="steps">${items}</ol></div>`;
+  const secondary = /procedure|role 2|preparation/i.test(label);
+  const id = `sub-${slug(label)}`;
+  if (secondary) return `<details class="phase protocol-detail" id="${id}" data-subsection="${esc(label)}"><summary class="phase-label">${esc(label)} <span>Medical / advanced detail</span></summary><ol class="steps">${items}</ol></details>`;
+  return `<section class="phase" id="${id}" data-subsection="${esc(label)}"><h3 class="phase-label">${esc(label)}</h3><ol class="steps">${items}</ol></section>`;
 }
 
 function callout(variant, label, content) {
-  return `<div class="callout ${esc(variant)}"><div class="callout-label">${esc(label)}</div>${content}</div>`;
+  const secondary = /notes|technique|reference|format|estimation|temperature|spine precautions|lethal triad/i.test(label);
+  const id = `sub-${slug(label)}`;
+  if (secondary) return `<details class="callout ${esc(variant)} protocol-detail" id="${id}" data-subsection="${esc(label)}"><summary class="callout-label">${esc(label)} <span>Reference detail</span></summary><div class="detail-body">${content}</div></details>`;
+  return `<section class="callout ${esc(variant)}" id="${id}" data-subsection="${esc(label)}"><h3 class="callout-label">${esc(label)}</h3>${content}</section>`;
 }
 
 function timeline(rows) {
@@ -22,7 +42,9 @@ function drugCard(d) {
   const rows = (d.rows||[]).map(r=>`<div class="drug-row"><div class="drug-row-label">${esc(r.l)}</div><div class="drug-row-val">${esc(r.v)}</div></div>`).join('');
   const tag = d.tag ? `<span class="drug-tag ${esc(d.tagColor||'')}">${esc(d.tag)}</span>` : '';
   const note = d.note ? `<div class="drug-note">${esc(d.note)}</div>` : '';
-  return `<div class="drug-card${d.priority?' priority':''}"><div class="drug-header"><span class="drug-name">${esc(d.name)}</span>${tag}</div>${rows}${note}</div>`;
+  const id = `drug-${slug(d.name.split('—')[0])}`;
+  const preview = (d.rows||[]).find(r=>/dose|line|analgesia/i.test(r.l)) || (d.rows||[])[0];
+  return `<details class="drug-card${d.priority?' priority':''}" id="${id}" data-drug="${esc(`${d.name} ${d.tag||''} ${(d.rows||[]).map(r=>`${r.l} ${r.v}`).join(' ')}`.toLowerCase())}"${d.priority?' open':''}><summary><span class="drug-header"><span class="drug-name">${esc(d.name)}</span>${tag}</span>${preview?`<span class="drug-preview">${esc(preview.l)} · ${esc(preview.v)}</span>`:''}</summary><div class="drug-body">${rows}${note}</div></details>`;
 }
 
 // ── Section content ──────────────────────────────────────────────────────────
@@ -458,6 +480,18 @@ const SECTIONS = [
     id:'DRUGS', label:'℞ Drugs', color:'red',
     render() { return `
       <div class="sec-title"><span class="sec-letter">℞</span> Drug Reference Cards</div>
+      <div class="drug-tools">
+        <label for="drugSearch">Search medication or indication</label>
+        <div class="drug-search-row"><input id="drugSearch" type="search" placeholder="Try ketamine, hemorrhage, seizure…" autocomplete="off"><button type="button" id="clearDrugSearch">Clear</button></div>
+        <div class="drug-filters" role="group" aria-label="Filter drug reference">
+          <button type="button" class="drug-filter active" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="drug-filter" data-filter="hemorrhage" aria-pressed="false">Hemorrhage</button>
+          <button type="button" class="drug-filter" data-filter="pain" aria-pressed="false">Pain</button>
+          <button type="button" class="drug-filter" data-filter="antibiotics" aria-pressed="false">Antibiotics</button>
+          <button type="button" class="drug-filter" data-filter="sedation" aria-pressed="false">Seizure / sedation</button>
+        </div>
+        <p id="drugCount" class="drug-count" role="status"></p>
+      </div>
       <div class="drug-grid">
 
         ${drugCard({
@@ -554,17 +588,32 @@ const SECTIONS = [
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 
-let current = SECTIONS[0].id;
+const SECTION_HASHES = {M:'hemorrhage',A1:'airway',R:'respiration',C:'circulation',H:'hypothermia-head',P:'pain',ABX:'antibiotics',W:'wounds',S:'splinting-evacuation',DRUGS:'drugs'};
+const HASH_SECTIONS = Object.fromEntries(Object.entries(SECTION_HASHES).map(([id,hash])=>[hash,id]));
+
+function sectionFromHash() {
+  const hash = location.hash.slice(1);
+  if (hash.startsWith('drug-')) return 'DRUGS';
+  const base = hash.split('--')[0];
+  return HASH_SECTIONS[base] || Object.keys(SECTION_HASHES).find(id=>id.toLowerCase()===base.toLowerCase()) || null;
+}
+
+let current = sectionFromHash() || localStorage.getItem('tccc-section') || SECTIONS[0].id;
+if (!SECTIONS.some(section=>section.id===current)) current = SECTIONS[0].id;
 
 function buildTabs() {
   const nav = document.getElementById('tabNav');
-  nav.innerHTML = SECTIONS.map(s =>
+  nav.innerHTML = ['MARCH','PAWS','REFERENCE'].map(group=>`<div class="nav-group"><div class="nav-group-label">${group==='REFERENCE'?'Reference':group}</div>${SECTIONS.filter(s=>SECTION_META[s.id].group===group).map(s =>
     `<button class="protocol-tab tab-btn${s.id===current?' active':''}" type="button" role="tab" id="protocol-tab-${esc(s.id)}" aria-controls="content" aria-selected="${s.id===current}" tabindex="${s.id===current?'0':'-1'}" data-id="${esc(s.id)}" data-color="${esc(s.color||'red')}">${esc(s.label)}</button>`
-  ).join('');
+  ).join('')}</div>`).join('');
+  const select = document.getElementById('sectionSelect');
+  select.innerHTML = ['MARCH','PAWS','REFERENCE'].map(group=>`<optgroup label="${group==='REFERENCE'?'Reference':group}">${SECTIONS.filter(s=>SECTION_META[s.id].group===group).map(s=>`<option value="${esc(s.id)}">${esc(s.label)}</option>`).join('')}</optgroup>`).join('');
+  select.value = current;
+  select.addEventListener('change',()=>activateSection(select.value,true,true));
   nav.addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
     if (!btn) return;
-    activateSection(btn.dataset.id, true);
+    activateSection(btn.dataset.id, true, true);
   });
   nav.addEventListener('keydown', e => {
     if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key)) return;
@@ -579,11 +628,11 @@ function buildTabs() {
     else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (index + 1) % tabs.length;
     else next = (index - 1 + tabs.length) % tabs.length;
     tabs[next].focus();
-    activateSection(tabs[next].dataset.id, false);
+    activateSection(tabs[next].dataset.id, false, true);
   });
 }
 
-function activateSection(id, scrollToContent) {
+function activateSection(id, scrollToContent, updateUrl=false) {
   if (!SECTIONS.some(section => section.id === id)) return;
   current = id;
   document.querySelectorAll('#tabNav [role="tab"]').forEach(tab => {
@@ -592,6 +641,9 @@ function activateSection(id, scrollToContent) {
     tab.setAttribute('aria-selected', String(active));
     tab.tabIndex = active ? 0 : -1;
   });
+  document.getElementById('sectionSelect').value = current;
+  localStorage.setItem('tccc-section', current);
+  if (updateUrl) history.replaceState(null,'',`#${SECTION_HASHES[current]}`);
   renderSection();
   if (scrollToContent) {
     document.getElementById('content').scrollIntoView({
@@ -599,6 +651,50 @@ function activateSection(id, scrollToContent) {
       block: 'start',
     });
   }
+}
+
+function enhanceSection(pane, sec) {
+  const meta = SECTION_META[sec.id];
+  const title = pane.querySelector('.sec-title');
+  if (!title) return;
+  title.insertAdjacentHTML('afterend', `<div class="section-overview"><div><span class="scope-badge">${esc(meta.scope)}</span><p>${esc(meta.summary)}</p><strong>${esc(meta.critical)}</strong></div></div>`);
+  const subsections = [...pane.querySelectorAll('[data-subsection]')];
+  if (subsections.length) {
+    const jumpLinks = subsections.map(node=>`<a href="#${SECTION_HASHES[sec.id]}--${node.id}" data-jump="${node.id}">${esc(node.dataset.subsection)}</a>`).join('');
+    title.nextElementSibling.insertAdjacentHTML('afterend', `<div class="section-tools"><nav class="section-jumps" aria-label="Within this section">${jumpLinks}</nav><div class="detail-controls"><button type="button" data-details="open">Expand all</button><button type="button" data-details="close">Collapse reference</button></div></div>`);
+  }
+  pane.querySelectorAll('[data-details]').forEach(button=>button.addEventListener('click',()=>{
+    pane.querySelectorAll('details.protocol-detail').forEach(detail=>{detail.open=button.dataset.details==='open';});
+  }));
+  pane.querySelectorAll('[data-jump]').forEach(link=>link.addEventListener('click',event=>{
+    event.preventDefault();
+    const target = document.getElementById(link.dataset.jump);
+    if (target instanceof HTMLDetailsElement) target.open = true;
+    history.replaceState(null,'',link.getAttribute('href'));
+    target?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }));
+  if (sec.id === 'H') title.nextElementSibling.insertAdjacentHTML('afterend','<p class="context-note"><strong>Context matters:</strong> Hemodynamic targets differ by injury pattern and section. Follow current protocol and tactical medical direction.</p>');
+}
+
+function setupDrugTools(pane) {
+  const search = pane.querySelector('#drugSearch');
+  if (!search) return;
+  let activeFilter = 'all';
+  const apply = () => {
+    const query = search.value.trim().toLowerCase();
+    let visible = 0;
+    pane.querySelectorAll('.drug-card').forEach(card=>{
+      const matches = (!query || card.dataset.drug.includes(query)) && (activeFilter==='all' || card.dataset.drug.includes(activeFilter));
+      card.hidden = !matches;
+      if (matches) { visible++; if (query) card.open = true; }
+    });
+    pane.querySelector('#drugCount').textContent = `${visible} medication card${visible===1?'':'s'} shown`;
+  };
+  search.addEventListener('input',apply);
+  pane.querySelector('#clearDrugSearch').addEventListener('click',()=>{search.value='';activeFilter='all';pane.querySelectorAll('.drug-filter').forEach(b=>{b.classList.toggle('active',b.dataset.filter==='all');b.setAttribute('aria-pressed',String(b.dataset.filter==='all'));});apply();search.focus();});
+  pane.querySelectorAll('.drug-filter').forEach(button=>button.addEventListener('click',()=>{activeFilter=button.dataset.filter;pane.querySelectorAll('.drug-filter').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});apply();}));
+  pane.querySelectorAll('.drug-card').forEach(card=>card.addEventListener('toggle',()=>{if(card.open) history.replaceState(null,'',`#${card.id}`);}));
+  apply();
 }
 
 function renderSection() {
@@ -613,15 +709,38 @@ function renderSection() {
     title.setAttribute('role', 'heading');
     title.setAttribute('aria-level', '2');
   }
+  if (sec) enhanceSection(pane, sec);
+  setupDrugTools(pane);
+  document.getElementById('sectionStatus').textContent = `${sec.label} section loaded.`;
+  const hash = location.hash.slice(1);
+  const targetId = hash.startsWith('drug-') ? hash : hash.includes('--') ? hash.split('--').slice(1).join('--') : '';
+  if (targetId) requestAnimationFrame(()=>{
+    const target = document.getElementById(targetId);
+    if (target instanceof HTMLDetailsElement) target.open = true;
+    target?.scrollIntoView({block:'start'});
+  });
 }
 
 // ── Service worker registration ───────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/tccc/sw.js').catch(() => {});
-  window.addEventListener('offline', () => { document.getElementById('offlineBadge').hidden = false; });
-  window.addEventListener('online',  () => { document.getElementById('offlineBadge').hidden = true; });
-  if (!navigator.onLine) document.getElementById('offlineBadge').hidden = false;
+  const status = document.getElementById('cacheStatus');
+  const updateCacheStatus = async () => {
+    if (!navigator.onLine) { status.textContent='Offline · cached reference'; status.dataset.state='offline'; return; }
+    try {
+      const cached = 'caches' in window && await caches.match('/tccc/index.html');
+      status.textContent = cached ? 'Offline ready' : 'Preparing offline access';
+      status.dataset.state = cached ? 'ready' : 'checking';
+    } catch { status.textContent='Online'; status.dataset.state='online'; }
+  };
+  navigator.serviceWorker.register('/tccc/sw.js').then(reg=>{
+    if (reg.waiting) { status.textContent='Update ready'; status.dataset.state='update'; }
+    reg.addEventListener('updatefound',()=>{status.textContent='Updating offline copy';status.dataset.state='checking';});
+    return navigator.serviceWorker.ready;
+  }).then(updateCacheStatus).catch(()=>{status.textContent=navigator.onLine?'Online · offline cache unavailable':'Offline cache unavailable';status.dataset.state='warn';});
+  window.addEventListener('offline',updateCacheStatus);
+  window.addEventListener('online',updateCacheStatus);
 }
 
 buildTabs();
 renderSection();
+window.addEventListener('hashchange',()=>{const id=sectionFromHash();if(id&&id!==current)activateSection(id,false,false);else renderSection();});

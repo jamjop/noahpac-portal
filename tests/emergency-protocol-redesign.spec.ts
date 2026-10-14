@@ -59,7 +59,7 @@ test.describe('Emergency protocol redesign', () => {
     await expect(page.locator('.drug-table')).toContainText('0.01 mg/kg');
 
     await page.goto('/tccc/');
-    await expect(page.getByText('Tourniquet Conversion Timeline')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Tourniquet Conversion Timeline' })).toBeVisible();
     await page.getByRole('tab', { name: '℞ Drugs' }).click();
     await expect(page.getByText('TXA — Tranexamic Acid')).toBeVisible();
     await expect(page.getByText(/NOT later than 3 h after injury/).first()).toBeVisible();
@@ -72,8 +72,9 @@ test.describe('Emergency protocol redesign', () => {
         await page.goto(protocol.path);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(overflow, `${protocol.path} overflow at ${width}px`).toBeLessThanOrEqual(1);
-        const firstTabHeight = await page.getByRole('tab').first().evaluate(el => el.getBoundingClientRect().height);
-        expect(firstTabHeight).toBeGreaterThanOrEqual(44);
+        const navControl = protocol.path === '/tccc/' ? page.locator('#sectionSelect') : page.getByRole('tab').first();
+        const navHeight = await navControl.evaluate(el => el.getBoundingClientRect().height);
+        expect(navHeight).toBeGreaterThanOrEqual(44);
       }
     }
 
