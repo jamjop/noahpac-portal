@@ -32,6 +32,19 @@ for (const width of [375, 1440]) {
       await expect(page.getByLabel('Color theme')).toBeVisible();
       await expect(page.locator('.app-brand__mark')).toHaveText('PA');
       await expect(page.locator('.app-header__family-icon svg')).toBeVisible();
+      const mobileHome = page.locator('.app-mobile-home');
+      await expect(mobileHome).toHaveAttribute('href', '/');
+      await expect(mobileHome).toHaveAttribute('aria-label', 'Return to Clinical Tools');
+      if (width === 375) await expect(mobileHome).toBeVisible();
+      else await expect(mobileHome).toBeHidden();
     }
   });
 }
+
+test('mobile home control returns to the Clinical Tools landing page', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto('/calculators/');
+  await page.getByRole('link', { name: 'Return to Clinical Tools' }).click();
+  await expect(page).toHaveURL('/');
+  await expect(page.getByRole('heading', { name: 'Clinical Tools', level: 1 })).toBeVisible();
+});

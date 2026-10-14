@@ -1,4 +1,4 @@
-const CACHE = 'pals-v16';
+const CACHE = 'pals-v17';
 const ASSETS = [
   '/pals/',
   '/pals/index.html',

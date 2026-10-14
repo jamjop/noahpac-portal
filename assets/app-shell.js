@@ -38,6 +38,8 @@
     dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
   };
 
+  const HOME_ICON = '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>';
+
   const REVIEW_CADENCE = {
     "/abx/": "References reviewed quarterly",
     "/allergy/": "References reviewed quarterly",
@@ -129,6 +131,19 @@
     eyebrow.prepend(icon);
   }
 
+  function initializeMobileHome() {
+    const actions = document.querySelector(".app-header__actions");
+    if (!actions || actions.querySelector(".app-mobile-home")) return;
+    const link = document.createElement("a");
+    link.className = "app-mobile-home";
+    link.href = "/";
+    link.target = "_top";
+    link.setAttribute("aria-label", "Return to Clinical Tools");
+    link.title = "Clinical Tools home";
+    link.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${HOME_ICON}</svg>`;
+    actions.prepend(link);
+  }
+
   function initializeReferenceOutline() {
     if (!document.body.matches(".anticoag-app, .naloxone-app, .toxicology-app")) return;
     const main = document.querySelector(".legacy-main");
@@ -166,6 +181,7 @@
   applyTheme(initialTheme);
 
   function initializeShell() {
+    initializeMobileHome();
     initializeFamilyIcon();
     initializeReviewCadence();
     initializeReferenceOutline();

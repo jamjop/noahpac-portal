@@ -333,6 +333,20 @@ footer .last-checked.stale .dot{
 .app-brand__name{font-size:14px;font-weight:700;letter-spacing:-.01em}
 .app-brand__product{margin-top:3px;color:var(--app-text-muted);font-size:12px}
 .app-header__actions{display:flex;align-items:center;gap:8px}
+.app-mobile-home{
+  display:none;
+  width:46px;
+  height:46px;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  color:var(--app-text-secondary)!important;
+  text-decoration:none;
+  transition:background-color 160ms ease,color 160ms ease;
+}
+.app-mobile-home:hover{background:var(--app-accent-soft);color:var(--app-accent)!important}
+.app-mobile-home:focus-visible{outline:3px solid var(--app-focus);outline-offset:1px}
+.app-mobile-home svg{display:block;width:19px;height:19px}
 .review-status{
   display:inline-flex;
   align-items:center;
@@ -561,6 +575,7 @@ html[data-theme="dark"] .clinical-app{
   .app-header__inner{width:min(100% - 28px,var(--app-content));padding:13px 0 2px}
   .app-header__bar{top:10px;min-height:38px}
   .app-brand{display:none}
+  .app-mobile-home{display:inline-flex}
   .review-status{margin-top:5px;font-size:11px}
   .theme-field{width:46px;height:46px}
   .clinical-app .app-header__eyebrow{min-height:38px;padding-right:110px}
