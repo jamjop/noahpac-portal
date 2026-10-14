@@ -7,6 +7,12 @@
 
   const list = document.getElementById("updates-list");
   const summary = document.getElementById("updates-summary");
+  const search = document.getElementById("updates-search");
+  const type = document.getElementById("updates-type");
+  const clear = document.getElementById("updates-clear");
+  let entries = [];
+  let tools = new Map();
+  let sources = {};
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -78,6 +84,21 @@
     return article;
   }
 
+  function renderEntries() {
+    const query = search.value.trim().toLowerCase();
+    const selectedType = type.value;
+    const visible = entries.filter((entry) => {
+      if (selectedType !== "all" && entry.type !== selectedType) return false;
+      const sourceText = entry.source_ids.map((id) => sources[id]?.title || "").join(" ");
+      const toolText = entry.affected_routes.map((route) => tools.get(route) || route).join(" ");
+      return !query || [entry.title, entry.summary, entry.scope, ...(entry.changes || []), sourceText, toolText].join(" ").toLowerCase().includes(query);
+    });
+    list.replaceChildren(...visible.map((entry) => renderEntry(entry, tools, sources)));
+    summary.textContent = `${visible.length} of ${entries.length} substantive update${entries.length === 1 ? "" : "s"} shown`;
+    clear.hidden = !query && selectedType === "all";
+    if (!visible.length) list.append(element("p", "updates-empty", "No updates match these filters."));
+  }
+
   async function initialize() {
     try {
       const [changelogResponse, reviewResponse] = await Promise.all([
@@ -87,12 +108,14 @@
       if (!changelogResponse.ok) throw new Error("Update record unavailable");
       const changelog = await changelogResponse.json();
       const review = reviewResponse.ok ? await reviewResponse.json() : { tools: [], sources: {} };
-      const tools = new Map((review.tools || []).map((tool) => [tool.path, tool.title]));
-      const entries = [...(changelog.entries || [])].sort((a, b) => b.date.localeCompare(a.date));
+      tools = new Map((review.tools || []).map((tool) => [tool.path, tool.title]));
+      sources = review.sources || {};
+      entries = [...(changelog.entries || [])].sort((a, b) => b.date.localeCompare(a.date));
       if (!entries.length) throw new Error("Update record is empty");
-
-      list.replaceChildren(...entries.map((entry) => renderEntry(entry, tools, review.sources || {})));
-      summary.textContent = `${entries.length} substantive updates recorded`;
+      const params = new URLSearchParams(location.search);
+      search.value = params.get("q") || "";
+      if (["clinical", "governance", "interface"].includes(params.get("type"))) type.value = params.get("type");
+      renderEntries();
     } catch (_) {
       summary.textContent = "Update record unavailable";
       const error = element("p", "updates-error");
@@ -103,6 +126,18 @@
       list.replaceChildren(error);
     }
   }
+
+  function updateFilters() {
+    const params = new URLSearchParams();
+    if (search.value.trim()) params.set("q", search.value.trim());
+    if (type.value !== "all") params.set("type", type.value);
+    history.replaceState(null, "", `${location.pathname}${params.size ? `?${params}` : ""}`);
+    renderEntries();
+  }
+
+  search.addEventListener("input", updateFilters);
+  type.addEventListener("change", updateFilters);
+  clear.addEventListener("click", () => { search.value = ""; type.value = "all"; updateFilters(); search.focus(); });
 
   initialize();
 })();

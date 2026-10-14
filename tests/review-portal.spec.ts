@@ -22,6 +22,7 @@ test('review portal displays the queue and submits a source-backed acknowledgeme
   await page.goto('/clinical-review/');
   await expect(page.getByText('Signed in: noah.pa')).toBeVisible();
   await expect(page.getByRole('heading', {name:'Sepsis Screening'})).toBeVisible();
+  await expect(page.getByText(/1 requiring attention/)).toBeVisible();
   await page.getByRole('button', {name:'Review topic'}).click();
   await page.getByLabel(/Surviving Sepsis Campaign/).check();
   await page.getByLabel(/No change required/).check();

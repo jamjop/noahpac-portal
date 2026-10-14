@@ -5,6 +5,8 @@
   const input = document.getElementById("question-input");
   const submitBtn = document.getElementById("ask-submit");
   const identifiersRemoved = document.getElementById("identifiers-removed");
+  const newConversation = document.getElementById("new-conversation");
+  const questionCount = document.getElementById("question-count");
 
   let history = [];
 
@@ -18,6 +20,7 @@
     div.className = "msg msg-" + role;
     div.textContent = text;
     chatLog.appendChild(div);
+    newConversation.hidden = false;
     div.scrollIntoView({ behavior: "smooth", block: "end" });
     return div;
   }
@@ -36,7 +39,7 @@
       sourcesDiv.className = "msg-sources";
       const label = document.createElement("span");
       label.className = "msg-sources-label";
-      label.textContent = "Sources";
+      label.textContent = "Sources to verify";
       sourcesDiv.appendChild(label);
 
       sources.forEach(function (src) {
@@ -58,7 +61,22 @@
       div.appendChild(sourcesDiv);
     }
 
+    const actions = document.createElement("div");
+    actions.className = "msg-actions";
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "msg-copy";
+    copy.textContent = "Copy answer";
+    copy.addEventListener("click", async function () {
+      try { await navigator.clipboard.writeText(answer); copy.textContent = "Copied"; }
+      catch (_) { copy.textContent = "Copy unavailable"; }
+      window.setTimeout(function () { copy.textContent = "Copy answer"; }, 1800);
+    });
+    actions.appendChild(copy);
+    div.appendChild(actions);
+
     chatLog.appendChild(div);
+    newConversation.hidden = false;
     div.scrollIntoView({ behavior: "smooth", block: "end" });
   }
 
@@ -81,6 +99,7 @@
     }
 
     input.value = "";
+    questionCount.textContent = "0 / 2000";
     submitBtn.disabled = true;
     addMessage("user", question);
     const typingEl = addTypingIndicator();
@@ -118,5 +137,17 @@
   }
 
   form.addEventListener("submit", handleSubmit);
+  input.addEventListener("input", function () { questionCount.textContent = input.value.length + " / 2000"; });
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); form.requestSubmit(); }
+  });
+  newConversation.addEventListener("click", function () {
+    history = [];
+    chatLog.replaceChildren();
+    emptyState.style.display = "";
+    identifiersRemoved.checked = false;
+    newConversation.hidden = true;
+    input.focus();
+  });
   renderIcons();
 })();

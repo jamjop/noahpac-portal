@@ -8,7 +8,7 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body class="clinical-app review-portal-app">
 <a class="skip-link" href="#main-content">Skip to clinical reviews</a>
@@ -43,6 +43,7 @@
   <section class="review-controls" aria-label="Review filters">
     <label><span>Find a topic</span><input type="search" id="topicSearch" placeholder="Search clinical tools" autocomplete="off"></label>
     <label><span>Status</span><select id="statusFilter"><option value="all">All statuses</option><option value="pending">Review pending</option><option value="error">Monitor error</option><option value="not_checked">Not checked</option><option value="current">Monitoring current</option><option value="reviewed">Clinically reviewed</option></select></label>
+    <button class="secondary-button review-clear" id="clearFilters" type="button" hidden>Clear filters</button>
   </section>
 
   <div class="portal-message" id="portalMessage" role="status" aria-live="polite">Loading clinical review status…</div>
@@ -73,6 +74,6 @@
 </dialog>
 
 <footer class="app-footer"><div class="clinical-caution"><strong>Monitoring is not clinical review.</strong> Record a decision only after directly comparing the deployed content with the selected authoritative sources.</div><p class="app-footer__meta">Protected by Authelia · © <span data-current-year></span> Noah PA-C</p></footer>
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

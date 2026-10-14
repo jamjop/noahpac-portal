@@ -8,7 +8,7 @@
 <title>Clinical Documents — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/index.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app documents-app">
@@ -33,7 +33,10 @@
 </header>
 
 <div class="page-wrap document-workspace">
-  <label class="legacy-search-panel document-search" for="doc-search"><span class="legacy-search-label">Find a document</span><span class="search-wrap"><span class="search-icon-wrap"><i data-lucide="search" class="icon-search"></i></span><input id="doc-search" type="search" placeholder="Search by diagnosis or tool name…" autocomplete="off"></span></label>
+  <section class="document-search" aria-label="Find a clinical document">
+    <label for="doc-search"><span class="legacy-search-label">Find a document or screening tool</span><span class="search-wrap"><span class="search-icon-wrap"><i data-lucide="search" class="icon-search"></i></span><input id="doc-search" type="search" placeholder="Search by diagnosis or tool name…" autocomplete="off"></span></label>
+    <div class="document-search__status"><span id="doc-count" aria-live="polite"></span><button class="app-clear-button" id="doc-clear" type="button" hidden>Clear search</button></div>
+  </section>
 
   <main id="tools-grid" tabindex="-1">
 
@@ -228,6 +231,6 @@
 
 </div>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

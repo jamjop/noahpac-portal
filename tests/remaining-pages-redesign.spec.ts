@@ -65,6 +65,8 @@ test.describe('Remaining-page redesign', () => {
     await page.getByLabel('Find a document').fill('carpal tunnel');
     await expect(page.getByText('Carpal Tunnel Syndrome', { exact: true })).toBeVisible();
     await expect(page.getByText('Shoulder — General Program')).toBeHidden();
+    await expect(page.locator('#doc-count')).toHaveText('1 match');
+    await expect(page).toHaveURL(/q=carpal\+tunnel/);
 
     await page.goto('/reportable/');
     await page.getByLabel('Search reportable conditions').fill('anthrax');
@@ -91,6 +93,7 @@ test.describe('Remaining-page redesign', () => {
     await page.goto('/clinical-assistant/');
     await expect(page.getByLabel('Clinical question')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Ask' })).toBeVisible();
+    await expect(page.getByText('Reference-library scope')).toBeVisible();
 
     await page.goto('/wound/');
     const tetanus = page.getByRole('tab', { name: 'Tetanus' });

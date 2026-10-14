@@ -48,6 +48,11 @@
         <h2 id="update-history">Update history</h2>
         <p id="updates-summary">Loading update record…</p>
       </div>
+      <div class="updates-controls" aria-label="Filter clinical updates">
+        <label><span>Search updates</span><input id="updates-search" type="search" placeholder="Search tools, changes, or sources…" autocomplete="off"></label>
+        <label><span>Change type</span><select id="updates-type"><option value="all">All change types</option><option value="clinical">Clinical content</option><option value="governance">Governance</option><option value="interface">Interface</option></select></label>
+        <button class="app-clear-button" id="updates-clear" type="button" hidden>Clear filters</button>
+      </div>
       <div id="updates-list" class="updates-list" aria-live="polite"></div>
       <noscript><p class="updates-error">JavaScript is required to load the structured update record. The same record is available in <a href="/clinical-changelog.json">clinical-changelog.json</a>.</p></noscript>
     </section>

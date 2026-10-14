@@ -60,9 +60,14 @@ function topicCard(topic) {
 function renderTopics() {
   const query=document.getElementById('topicSearch').value.trim().toLowerCase();
   const filter=document.getElementById('statusFilter').value;
-  const topics=state.topics.filter(t=>(filter==='all'||t.state===filter)&&(!query||`${t.title} ${t.id}`.toLowerCase().includes(query)));
+  const priority={pending:0,error:1,not_checked:2,current:3,reviewed:4};
+  const topics=state.topics.filter(t=>(filter==='all'||t.state===filter)&&(!query||`${t.title} ${t.id}`.toLowerCase().includes(query))).sort((a,b)=>(priority[a.state]??9)-(priority[b.state]??9)||a.title.localeCompare(b.title));
   list.replaceChildren(...topics.map(topicCard));
-  message.textContent=topics.length ? `${topics.length} clinical topic${topics.length===1?'':'s'} shown.` : 'No topics match these filters.';
+  const actionable=topics.filter(topic=>['pending','error','not_checked'].includes(topic.state)).length;
+  message.textContent=topics.length ? `${topics.length} clinical topic${topics.length===1?'':'s'} shown${actionable ? ` · ${actionable} requiring attention` : ''}.` : 'No topics match these filters.';
+  document.getElementById('clearFilters').hidden=!query&&filter==='all';
+  const params=new URLSearchParams(); if(query) params.set('q',document.getElementById('topicSearch').value.trim()); if(filter!=='all') params.set('status',filter);
+  history.replaceState(null,'',`${location.pathname}${params.size?`?${params}`:''}`);
 }
 
 function openReview(topic) {
@@ -91,6 +96,10 @@ async function loadStatus() {
   } catch (error) { message.textContent=error.message; list.replaceChildren(); }
 }
 
+const initialParams=new URLSearchParams(location.search);
+document.getElementById('topicSearch').value=initialParams.get('q')||'';
+if(Object.prototype.hasOwnProperty.call(labels,initialParams.get('status'))) document.getElementById('statusFilter').value=initialParams.get('status');
+
 form.addEventListener('change',event=>{
   if (event.target.name==='decision') { const updated=event.target.value==='content-updated'; document.getElementById('changeReferenceField').hidden=!updated; document.getElementById('changeReference').required=updated; }
 });
@@ -112,6 +121,7 @@ form.addEventListener('submit',async event=>{
 document.getElementById('topicSearch').addEventListener('input',renderTopics);
 document.getElementById('statusFilter').addEventListener('change',renderTopics);
 document.getElementById('refreshButton').addEventListener('click',loadStatus);
+document.getElementById('clearFilters').addEventListener('click',()=>{document.getElementById('topicSearch').value='';document.getElementById('statusFilter').value='all';renderTopics();document.getElementById('topicSearch').focus();});
 document.getElementById('closeDialog').addEventListener('click',()=>dialog.close());
 document.getElementById('cancelReview').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{ if(event.target===dialog) dialog.close(); });

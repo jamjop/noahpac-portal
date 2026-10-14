@@ -23,6 +23,8 @@
 body{padding-bottom:24px}
 .header-inner{max-width:760px;margin:0 auto;padding:22px 16px 18px}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.assistant-context{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:22px 0 4px;padding:14px 16px;border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface)}
+.assistant-context div{display:grid;gap:3px}.assistant-context strong{color:var(--app-text);font-size:13px}.assistant-context span{color:var(--app-text-muted);font-size:12px;line-height:1.45}
 
 #chat-log{display:flex;flex-direction:column;gap:16px;margin:20px 0}
 
@@ -36,6 +38,7 @@ body{padding-bottom:24px}
 .msg-source{display:inline-block;margin:2px 6px 2px 0;padding:3px 8px;border-radius:50px;background:var(--purple-soft);color:var(--ink-soft);text-decoration:none;font-size:11.5px}
 .msg-source:hover{text-decoration:underline}
 .msg-source.no-link{cursor:default}
+.msg-actions{display:flex;justify-content:flex-end;margin-top:10px}.msg-copy{min-height:36px;padding:6px 9px;border:1px solid var(--app-border);border-radius:var(--app-radius-sm);background:transparent;color:var(--app-text-secondary);font:inherit;font-size:11px;font-weight:700;cursor:pointer}.msg-copy:hover{color:var(--app-accent);border-color:var(--app-accent)}
 
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink-muted)}
 .icon-empty{width:32px;height:32px;opacity:.5;margin-bottom:12px}
@@ -44,14 +47,15 @@ body{padding-bottom:24px}
 .privacy-notice{margin:12px 0 4px;padding:12px 14px;border-left:3px solid var(--warn);border-radius:var(--r-sm);background:var(--warn-soft);color:var(--ink-soft);font-size:12px;line-height:1.55}
 .privacy-notice strong{color:var(--ink)}
 .ask-form{display:grid;grid-template-columns:1fr 44px;gap:8px;position:sticky;bottom:16px;background:var(--bg);padding:8px 0}
-#question-input{flex:1;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:14px}
+#question-input{width:100%;min-height:52px;max-height:150px;resize:vertical;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;box-sizing:border-box}
 #question-input:focus{outline:2px solid var(--purple);outline-offset:2px;border-color:var(--purple)}
 #ask-submit{display:flex;align-items:center;justify-content:center;width:44px;border-radius:var(--r);border:none;background:var(--purple);color:#fff;cursor:pointer}
 #ask-submit:disabled{opacity:.5;cursor:default}
 #ask-submit:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .icon-send{width:18px;height:18px}
-.privacy-confirm{grid-column:1 / -1;display:flex;align-items:flex-start;gap:8px;min-height:44px;padding:8px 4px;color:var(--ink-soft);font-size:12px;line-height:1.45}.privacy-confirm input{width:18px;height:18px;flex:0 0 auto}
+.question-count{grid-column:1/-1;justify-self:end;margin-top:-5px;color:var(--app-text-muted);font-size:10px}.privacy-confirm{grid-column:1 / -1;display:flex;align-items:flex-start;gap:8px;min-height:44px;padding:4px;color:var(--ink-soft);font-size:12px;line-height:1.45}.privacy-confirm input{width:18px;height:18px;flex:0 0 auto}
 
 .typing-indicator{align-self:flex-start;color:var(--ink-muted);font-size:13px;font-style:italic}
 
 footer{margin-top:24px;font-size:11.5px;color:var(--ink-muted);line-height:1.5}
+@media(max-width:560px){.assistant-context{align-items:flex-start;flex-direction:column}.assistant-context .app-clear-button{align-self:flex-start}.msg{max-width:92%}}

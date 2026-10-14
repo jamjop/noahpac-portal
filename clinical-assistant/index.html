@@ -7,7 +7,7 @@
 <title>Clinical Assistant — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app assistant-app clinical-assistant-app">
@@ -34,6 +34,11 @@
 
 <div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
+  <section class="assistant-context" aria-label="Assistant scope">
+    <div><strong>Reference-library scope</strong><span>Answers use indexed documents only. Open and verify the cited sources before clinical use.</span></div>
+    <button class="app-clear-button" id="new-conversation" type="button" hidden>New conversation</button>
+  </section>
+
   <div id="chat-log" aria-live="polite"></div>
 
   <div id="empty-state" class="empty-state">
@@ -46,18 +51,19 @@
   </div>
 
   <form id="ask-form" class="ask-form">
-    <input
+    <textarea
       id="question-input"
-      type="text"
       aria-label="Clinical question"
       placeholder="Ask a clinical question…"
       autocomplete="off"
       maxlength="2000"
+      rows="2"
       required
-    />
+    ></textarea>
     <button type="submit" id="ask-submit" aria-label="Ask">
       <i data-lucide="send" class="icon-send"></i>
     </button>
+    <span class="question-count" id="question-count">0 / 2000</span>
     <label class="privacy-confirm"><input type="checkbox" id="identifiers-removed" required> I confirm that I removed direct patient identifiers.</label>
   </form>
 
@@ -68,6 +74,6 @@
 
 </div>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

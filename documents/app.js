@@ -6,26 +6,21 @@
 
   var noResults = document.getElementById('no-results');
   var grid = document.getElementById('tools-grid');
+  var external = document.getElementById('ext-refs');
+  var count = document.getElementById('doc-count');
+  var clear = document.getElementById('doc-clear');
 
-  input.addEventListener('input', function () {
-    var q = this.value.trim().toLowerCase();
+  function filterDocuments() {
+    var q = input.value.trim().toLowerCase();
     var rows = document.querySelectorAll('.tool-row');
+    var externalRows = document.querySelectorAll('.ext-row');
     var cols = document.querySelectorAll('.category-col');
-
-    if (!q) {
-      rows.forEach(function (r) { r.classList.remove('hidden-tool'); });
-      cols.forEach(function (c) { c.style.display = ''; });
-      noResults.style.display = 'none';
-      grid.style.display = 'grid';
-      return;
-    }
-
-    var anyVisible = false;
-    rows.forEach(function (r) {
+    var visible = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('.tool-row,.ext-row'), function (r) {
       var text = (r.dataset.search || '') + ' ' + r.textContent;
-      var match = text.toLowerCase().includes(q);
+      var match = !q || text.toLowerCase().includes(q);
       r.classList.toggle('hidden-tool', !match);
-      if (match) anyVisible = true;
+      if (match) visible += 1;
     });
 
     cols.forEach(function (col) {
@@ -36,7 +31,20 @@
       col.style.display = hasVisible ? '' : 'none';
     });
 
-    noResults.style.display = anyVisible ? 'none' : 'block';
-    grid.style.display = anyVisible ? 'grid' : 'none';
-  });
+    var localVisible = Array.prototype.some.call(rows, function (r) { return !r.classList.contains('hidden-tool'); });
+    var externalVisible = Array.prototype.some.call(externalRows, function (r) { return !r.classList.contains('hidden-tool'); });
+    noResults.style.display = visible ? 'none' : 'block';
+    grid.style.display = localVisible ? 'grid' : 'none';
+    external.style.display = externalVisible ? '' : 'none';
+    count.textContent = q ? visible + ' match' + (visible === 1 ? '' : 'es') : (rows.length + externalRows.length) + ' resources';
+    clear.hidden = !q;
+    var params = new URLSearchParams();
+    if (input.value.trim()) params.set('q', input.value.trim());
+    history.replaceState(null, '', location.pathname + (params.size ? '?' + params.toString() : ''));
+  }
+
+  input.value = new URLSearchParams(location.search).get('q') || '';
+  input.addEventListener('input', filterDocuments);
+  clear.addEventListener('click', function () { input.value = ''; filterDocuments(); input.focus(); });
+  filterDocuments();
 })();
