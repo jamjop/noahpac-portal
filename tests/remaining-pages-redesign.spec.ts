@@ -67,6 +67,8 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByText('Shoulder — General Program')).toBeHidden();
     await expect(page.locator('#doc-count')).toHaveText('1 match');
     await expect(page).toHaveURL(/q=carpal\+tunnel/);
+    await page.getByRole('button', { name: 'Clear search' }).click();
+    await expect(page.getByRole('link', { name: /Asthma Control Test/ })).toHaveAttribute('href', /thoracic\.org/);
 
     await page.goto('/reportable/');
     await page.getByLabel('Search reportable conditions').fill('anthrax');
