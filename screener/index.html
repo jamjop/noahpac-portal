@@ -25,20 +25,25 @@
     <div class="app-header__title">
       <p class="app-header__eyebrow">Preventive care workflow</p>
       <h1>Screening Recommendations</h1>
-      <p class="app-header__lede">Patient-specific USPSTF screening recommendations based on age, sex, and selected risk factors.</p>
+      <p class="app-header__lede">Patient-specific USPSTF guidance based on age, screening-relevant sex, and selected risk factors.</p>
     </div>
   </div>
 </header>
 
 <div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
 
-  <div class="input-area">
+  <div class="screening-note" role="note">
+    <strong>Applicable guidance, not a due-status tracker.</strong>
+    Prior screening dates, results, exclusions, and complete history are not assessed.
+  </div>
+
+  <div class="input-area" id="profileInputs">
 
     <div class="criterion" id="c-patient">
       <div class="c-header">
         <div>
           <div class="c-name">Patient</div>
-          <div class="c-desc">Age and sex determine which USPSTF recommendations apply</div>
+          <div class="c-desc">Sex is used only to match sex- and anatomy-specific USPSTF guidance.</div>
         </div>
       </div>
       <div class="patient-row">
@@ -47,13 +52,13 @@
           <input type="number" id="age" min="0" max="110" value="50" inputmode="numeric">
         </div>
         <div class="patient-field sex-field">
-          <span class="field-label">Sex</span>
-          <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
-            <button class="seg-btn active" data-sex="female">
+          <span class="field-label" id="sex-label">Screening-relevant sex</span>
+          <div class="seg" id="sexSeg" role="group" aria-labelledby="sex-label">
+            <button type="button" class="seg-btn active" data-sex="female" aria-pressed="true">
               <span class="val-badge">F</span>
               <span class="val-label">Female</span>
             </button>
-            <button class="seg-btn" data-sex="male">
+            <button type="button" class="seg-btn" data-sex="male" aria-pressed="false">
               <span class="val-badge">M</span>
               <span class="val-label">Male</span>
             </button>
@@ -62,32 +67,49 @@
       </div>
     </div>
 
-    <div class="criterion" id="c-risks">
-      <div class="c-header">
-        <div>
-          <div class="c-name">Risk Factors &amp; Status</div>
-          <div class="c-desc">Optional — refines which recommendations apply</div>
-        </div>
+    <details class="criterion risk-disclosure" id="c-risks">
+      <summary>
+        <span><span class="c-name">Additional risk factors</span><span class="c-desc">Optional — refines applicable guidance</span></span>
+        <span class="selected-count" id="selectedCount">None selected</span>
+      </summary>
+      <div class="flag-grid" id="flagGrid">
+        <fieldset class="risk-group" data-only="female"><legend>Pregnancy &amp; reproductive status</legend>
+          <label class="check-row"><input type="checkbox" id="f_pregnant"><span class="check-label">Currently pregnant</span></label>
+          <label class="check-row"><input type="checkbox" id="f_postmenopausal"><span class="check-label">Postmenopausal</span></label>
+          <label class="check-row"><input type="checkbox" id="f_brcaHistory"><span class="check-label">Personal/family history suggesting BRCA-related cancer</span></label>
+        </fieldset>
+        <fieldset class="risk-group"><legend>Tobacco exposure</legend>
+          <label class="check-row"><input type="checkbox" id="f_everSmoked"><span class="check-label">Has ever smoked</span></label>
+          <label class="check-row"><input type="checkbox" id="f_heavySmoker"><span class="check-label">≥20 pack-year history, smokes now or quit &lt;15 years ago</span></label>
+        </fieldset>
+        <fieldset class="risk-group"><legend>Metabolic &amp; cardiovascular</legend>
+          <label class="check-row"><input type="checkbox" id="f_bmi25"><span class="check-label">Overweight or obesity (BMI ≥25)</span></label>
+          <label class="check-row"><input type="checkbox" id="f_cvdRisk"><span class="check-label">≥1 cardiovascular risk factor (dyslipidemia, diabetes, hypertension, smoking)</span></label>
+        </fieldset>
+        <fieldset class="risk-group"><legend>Sexual health &amp; infectious disease</legend>
+          <label class="check-row"><input type="checkbox" id="f_sexuallyActive"><span class="check-label">Sexually active</span></label>
+          <label class="check-row"><input type="checkbox" id="f_stiRisk"><span class="check-label">Increased risk for STI, hepatitis B, or tuberculosis</span></label>
+        </fieldset>
       </div>
-      <div class="flag-grid check-rows" id="flagGrid">
-        <label class="check-row" data-only="female"><input type="checkbox" id="f_pregnant"><span class="check-label">Currently pregnant</span></label>
-        <label class="check-row" data-only="female"><input type="checkbox" id="f_postmenopausal"><span class="check-label">Postmenopausal</span></label>
-        <label class="check-row"><input type="checkbox" id="f_everSmoked"><span class="check-label">Has ever smoked</span></label>
-        <label class="check-row"><input type="checkbox" id="f_heavySmoker"><span class="check-label">≥20 pack-year history, smokes now or quit &lt;15 yrs ago</span></label>
-        <label class="check-row"><input type="checkbox" id="f_bmi25"><span class="check-label">Overweight or obesity (BMI ≥25)</span></label>
-        <label class="check-row"><input type="checkbox" id="f_sexuallyActive"><span class="check-label">Sexually active</span></label>
-        <label class="check-row"><input type="checkbox" id="f_stiRisk"><span class="check-label">Increased risk for STI / hepatitis B / TB</span></label>
-        <label class="check-row"><input type="checkbox" id="f_cvdRisk"><span class="check-label">≥1 cardiovascular risk factor (dyslipidemia, diabetes, HTN, smoking)</span></label>
-        <label class="check-row" data-only="female"><input type="checkbox" id="f_brcaHistory"><span class="check-label">Personal/family history suggesting BRCA-related cancer</span></label>
-      </div>
-    </div>
+    </details>
 
   </div>
 
-  <div class="copy-bar" id="copyBar" hidden>
-    <button class="copy-btn" id="copyBtn">&#x2398; Copy recommendations</button>
+  <section class="profile-summary" aria-labelledby="profile-summary-title">
+    <div><span class="summary-label" id="profile-summary-title">Patient profile</span><strong id="profileSummary">50-year-old female · No additional risk factors selected</strong></div>
+    <button type="button" class="edit-profile" id="editProfile">Edit profile</button>
+  </section>
+
+  <div class="results-toolbar">
+    <div><h2>Applicable screening guidance</h2><p id="resultSummary">Updating recommendations…</p></div>
+    <button type="button" class="copy-btn" id="copyBtn" hidden>Copy guidance</button>
   </div>
-  <div class="results" id="results"></div>
+  <div class="grade-legend" aria-label="USPSTF grade key">
+    <span><b class="chip A">A</b> Recommend</span><span><b class="chip B">B</b> Recommend</span><span><b class="chip C">C</b> Individual decision</span><span><b class="chip D">D</b> Recommend against</span><span><b class="chip I">I</b> Insufficient evidence</span>
+  </div>
+  <div class="results" id="results" aria-live="polite" aria-busy="false"></div>
+  <p class="results-caveat">Recommendations outside the selected age, sex, or risk profile are not shown. Review the complete USPSTF statement for exclusions and patient-specific considerations.</p>
+  <div class="sr-only" id="screenReaderStatus" role="status" aria-live="polite"></div>
 </div>
 
 <footer class="app-footer legacy-footer">
@@ -96,6 +118,6 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

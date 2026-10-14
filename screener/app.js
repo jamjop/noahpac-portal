@@ -62,6 +62,12 @@ const FLAG_LABELS = {
   cvdRisk:"≥1 cardiovascular risk factor", brcaHistory:"history suggesting BRCA-related cancer"
 };
 
+const FLAG_INPUT_IDS = {
+  pregnant:"f_pregnant", postmenopausal:"f_postmenopausal", everSmoked:"f_everSmoked",
+  heavySmoker:"f_heavySmoker", bmi25:"f_bmi25", sexuallyActive:"f_sexuallyActive",
+  stiRisk:"f_stiRisk", cvdRisk:"f_cvdRisk", brcaHistory:"f_brcaHistory"
+};
+
 let DATA = BUILTIN;
 const state = { age: 50, sex: "female" };
 
@@ -72,6 +78,11 @@ const els = {
   flagGrid: document.getElementById('flagGrid'),
   copyBar: document.getElementById('copyBar'),
   copyBtn: document.getElementById('copyBtn'),
+  profileSummary: document.getElementById('profileSummary'),
+  resultSummary: document.getElementById('resultSummary'),
+  selectedCount: document.getElementById('selectedCount'),
+  editProfile: document.getElementById('editProfile'),
+  screenReaderStatus: document.getElementById('screenReaderStatus'),
   footerLastChecked: document.querySelector('footer .last-checked')
 };
 
@@ -109,66 +120,67 @@ function dedupForSex(recs) {
   return recs.filter(r => r.sex !== "any" || !femaleTopics.has(r.name.split(" -- ")[0]));
 }
 
-function render() {
+function getMatches() {
   const age = Math.max(0, Math.min(110, parseInt(els.age.value || "0", 10)));
-  const f = flags();
-  // hide female-only flags for male patients
-  document.querySelectorAll('.flag-grid label[data-only]').forEach(l => {
-    l.style.display = (l.dataset.only === state.sex) ? "" : "none";
-  });
-
+  const selected = flags();
+  let eligible = dedupForSex(DATA.recs.filter(r => sexMatch(r.sex, state.sex) && age >= r.minAge && age <= r.maxAge));
   const firm = [], conditional = [];
-  for (const r of DATA.recs) {
-    if (!sexMatch(r.sex, state.sex)) continue;
-    if (age < r.minAge || age > r.maxAge) continue;
-    const req = r.requires || [];
-    const unmet = req.filter(k => !f[k]);
-    if (unmet.length === 0) firm.push(r);
-    else conditional.push({ rec: r, unmet });
-  }
-  if (state.sex === "female") {
-    const femaleTopics = new Set(
-      [...firm, ...conditional.map(x=>x.rec)].filter(r=>r.sex==="female").map(r=>r.name.split(" -- ")[0])
-    );
-    const ok = r => r.sex !== "any" || !femaleTopics.has(r.name.split(" -- ")[0]);
-    firm.splice(0, firm.length, ...firm.filter(ok));
-    conditional.splice(0, conditional.length, ...conditional.filter(({rec})=>ok(rec)));
-  }
-  const order = {A:0,B:1,C:2};
-  firm.sort((a,b)=>(order[a.grade]??3)-(order[b.grade]??3));
+  eligible.forEach(r => {
+    const unmet = (r.requires || []).filter(k => !selected[k]);
+    unmet.length ? conditional.push({rec:r, unmet}) : firm.push(r);
+  });
+  const order = {A:0,B:1,C:2,D:3,I:4};
+  firm.sort((a,b)=>(order[a.grade]??5)-(order[b.grade]??5));
+  conditional.sort((a,b)=>(order[a.rec.grade]??5)-(order[b.rec.grade]??5));
+  const eligibleNames = new Set(eligible.map(r => r.name));
+  const unmatched = DATA.recs.filter(r => !eligibleNames.has(r.name));
+  return {age, selected, firm, conditional, unmatched};
+}
 
-  let html = "";
-  const recRow = (r, condText) => `
-    <div class="rec">
-      <div class="rec-title">
-        <span class="chip ${esc(r.grade)}">${esc(r.grade)}</span>
-        ${r.sex==="female"?'<span class="tag women">W</span>':r.sex==="male"?'<span class="tag men">M</span>':""}
-        <span class="rec-name">${esc(r.name)}</span>
-      </div>
-      ${r.freq?`<div class="freq">${esc(r.freq)}</div>`:""}
-      <div class="rec-detail">${esc(r.detail||"")}</div>
-      ${condText?`<div class="cond">Applies if: ${esc(condText)}</div>`:""}
-    </div>`;
+function patientSummary(age, selected) {
+  const active = Object.entries(selected).filter(([,value]) => value).map(([key]) => FLAG_LABELS[key] || key);
+  return `${age}-year-old ${state.sex} · ${active.length ? active.join(' · ') : 'No additional risk factors selected'}`;
+}
 
+function whyText(r, age) {
+  const parts = [`age ${age}`];
+  if (r.sex === 'female') parts.push('female-specific guidance');
+  if (r.sex === 'male') parts.push('male-specific guidance');
+  return `Matched by ${parts.join(' and ')}`;
+}
+
+function render() {
+  const {age, selected, firm, conditional, unmatched} = getMatches();
+  document.querySelectorAll('.flag-grid [data-only]').forEach(group => {
+    group.hidden = group.dataset.only !== state.sex;
+  });
   const recommended = firm.filter(r=>r.grade==="A"||r.grade==="B");
   const individualized = firm.filter(r=>r.grade==="C");
-
-  html += `<div class="group-head"><span class="group-name">Recommended</span><span class="group-count">${recommended.length}</span></div>`;
-  html += recommended.length ? recommended.map(r=>recRow(r)).join("") :
-    `<div class="empty">No Grade A/B screenings firmly apply at age ${age} with the selected factors.</div>`;
-
-  if (individualized.length) {
-    html += `<div class="group-head"><span class="group-name">Individualized decision (Grade C)</span><span class="group-count">${individualized.length}</span></div>`;
-    html += individualized.map(r=>recRow(r)).join("");
-  }
-  if (conditional.length) {
-    html += `<div class="group-head"><span class="group-name">May apply — depends on risk factors</span><span class="group-count">${conditional.length}</span></div>`;
-    html += conditional.map(({rec,unmet}) =>
-      recRow(rec, unmet.map(k=>FLAG_LABELS[k]||k).join("; "))).join("");
-  }
+  const other = firm.filter(r=>!["A","B","C"].includes(r.grade));
+  const recRow = (r, unmet=[]) => {
+    const condition = unmet.map(k=>FLAG_LABELS[k]||k).join('; ');
+    const action = unmet.length === 1 && FLAG_INPUT_IDS[unmet[0]]
+      ? `<button type="button" class="risk-action" data-risk="${esc(unmet[0])}">Mark as ${esc(FLAG_LABELS[unmet[0]])}</button>` : '';
+    return `<details class="rec">
+      <summary><span class="chip ${esc(r.grade)}" aria-label="USPSTF Grade ${esc(r.grade)}">${esc(r.grade)}</span>
+        <span class="rec-heading"><span class="rec-title">${esc(r.name)}</span><span class="rec-meta">${r.freq?`<span class="freq">${esc(r.freq)}</span>`:''}<span class="why">${esc(whyText(r,age))}</span>${r.sex==='female'?'<span class="tag women">Female</span>':r.sex==='male'?'<span class="tag men">Male</span>':''}</span></span>
+      </summary><div class="rec-body"><p class="rec-detail">${esc(r.detail||'Review the complete recommendation statement.')}</p>${condition?`<p class="cond">May apply if: ${esc(condition)}</p>${action}`:''}</div>
+    </details>`;
+  };
+  const group = (name, items, renderItem) => `<section class="result-group"><div class="group-head"><h3 class="group-name">${name}</h3><span class="group-count">${items.length}</span></div>${items.length?items.map(renderItem).join(''):'<div class="empty">No guidance in this group matches the selected profile.</div>'}</section>`;
+  let html = group('Recommended · Grades A/B', recommended, r=>recRow(r));
+  if (individualized.length) html += group('Individualized decision · Grade C', individualized, r=>recRow(r));
+  if (conditional.length) html += group('May apply with additional risk', conditional, item=>recRow(item.rec,item.unmet));
+  if (other.length) html += group('Other USPSTF guidance', other, r=>recRow(r));
+  html += `<details class="unmatched-group"><summary>Not currently matched to this profile <span>${unmatched.length}</span></summary><p>These recommendations fall outside the selected age or screening-relevant sex. This does not establish that screening is unnecessary.</p><ul>${unmatched.map(r=>`<li>${esc(r.name)}</li>`).join('')}</ul></details>`;
   els.results.innerHTML = html;
-  const hasAny = recommended.length || individualized.length || conditional.length;
-  els.copyBar.hidden = !hasAny;
+  const activeCount = Object.values(selected).filter(Boolean).length;
+  els.selectedCount.textContent = activeCount ? `${activeCount} selected` : 'None selected';
+  els.profileSummary.textContent = patientSummary(age, selected);
+  const total = recommended.length + individualized.length + conditional.length + other.length;
+  els.resultSummary.textContent = `${total} potentially applicable recommendation${total===1?'':'s'} · ${recommended.length} Grade A/B`;
+  els.copyBtn.hidden = total === 0;
+  els.screenReaderStatus.textContent = `Guidance updated. ${total} potentially applicable recommendations.`;
 }
 
 /* events */
@@ -176,31 +188,27 @@ els.age.addEventListener('input', render);
 els.sexSeg.addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   els.sexSeg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  els.sexSeg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
   b.classList.add('active');
   state.sex = b.dataset.sex;
   if (state.sex === "male") { const p=document.getElementById('f_pregnant'); if(p) p.checked=false; }
   render();
 });
 els.flagGrid.addEventListener('change', render);
+els.results.addEventListener('click', e => {
+  const action = e.target.closest('[data-risk]');
+  if (!action) return;
+  const input = document.getElementById(FLAG_INPUT_IDS[action.dataset.risk]);
+  if (input) { input.checked = true; render(); }
+});
+els.editProfile.addEventListener('click', () => {
+  document.getElementById('profileInputs').scrollIntoView({behavior:'smooth',block:'start'});
+  els.age.focus({preventScroll:true});
+});
 
 function buildText() {
-  const age = Math.max(0, Math.min(110, parseInt(els.age.value || "0", 10)));
-  const f = flags();
+  const {age, selected:f, firm, conditional} = getMatches();
   const sexLabel = state.sex === "female" ? "female" : "male";
-
-  const firm = [], conditional = [];
-  for (const r of DATA.recs) {
-    if (!sexMatch(r.sex, state.sex)) continue;
-    if (age < r.minAge || age > r.maxAge) continue;
-    const unmet = (r.requires || []).filter(k => !f[k]);
-    if (unmet.length === 0) firm.push(r);
-    else conditional.push({ rec: r, unmet });
-  }
-  if (state.sex === "female") {
-    const femaleTopics = new Set(firm.filter(r=>r.sex==="female").map(r=>r.name.split(" -- ")[0]));
-    firm.splice(0, firm.length, ...firm.filter(r => r.sex!=="any" || !femaleTopics.has(r.name.split(" -- ")[0])));
-  }
-  firm.sort((a,b)=>({A:0,B:1,C:2}[a.grade]??3)-({A:0,B:1,C:2}[b.grade]??3));
 
   const recommended   = firm.filter(r => r.grade === "A" || r.grade === "B");
   const individualized = firm.filter(r => r.grade === "C");
@@ -208,7 +216,7 @@ function buildText() {
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
   const lines = [
-    "USPSTF Screening Recommendations",
+    "USPSTF Applicable Screening Guidance",
     `Patient: ${age}-year-old ${sexLabel}`,
   ];
   if (activeFlags.length) lines.push(`Risk factors: ${activeFlags.join(", ")}`);
@@ -231,11 +239,12 @@ function buildText() {
 
   section("Recommended (A/B)", recommended);
   if (individualized.length) section("Individualized decision (C)", individualized);
+  if (conditional.length) section("May apply with additional risk", conditional, item => item.unmet.map(k=>FLAG_LABELS[k]||k).join('; '));
 
   const src = DATA.meta?.source === "builtin"
     ? `Built-in dataset · verified ${DATA.meta.updated}`
     : `Live data · USPSTF Prevention TaskForce API · updated ${DATA.meta?.updated||"?"}`;
-  lines.push(`Source: ${src}`, "uspreventiveservicestaskforce.org");
+  lines.push("Note: Prior screening dates, results, exclusions, and complete history were not assessed.", `Source: ${src}`, "uspreventiveservicestaskforce.org");
   return lines.join("\n");
 }
 
@@ -243,14 +252,16 @@ els.copyBtn.addEventListener('click', () => {
   navigator.clipboard.writeText(buildText()).then(() => {
     els.copyBtn.classList.add('copied');
     els.copyBtn.textContent = '✓ Copied';
+    els.screenReaderStatus.textContent = 'Guidance copied to clipboard.';
     setTimeout(() => {
       els.copyBtn.classList.remove('copied');
-      els.copyBtn.innerHTML = '&#x2398; Copy recommendations';
+      els.copyBtn.textContent = 'Copy guidance';
     }, 2000);
   });
 });
 
-/* try live data, fall back to builtin */
+/* Render the built-in guidance immediately, then replace it with live data. */
+render();
 fetch('data/uspstf.json', {cache:'no-cache'})
   .then(r => { if(!r.ok) throw 0; return r.json(); })
   .then(j => {
