@@ -14,7 +14,7 @@ const PAGES = [
   ['/screener/', 'Screening Recommendations'],
   ['/sti-guide/', 'STI Guidelines'],
   ['/toxicology/', 'Toxicology / Antidote Reference'],
-  ['/vaccines/', 'Vaccines Due'],
+  ['/vaccines/', 'Vaccine Schedule Guidance'],
   ['/wound/', 'Wound Care'],
 ] as const;
 

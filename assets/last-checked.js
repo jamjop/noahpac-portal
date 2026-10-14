@@ -54,6 +54,7 @@
       });
       document.querySelectorAll('.review-status').forEach(function (status) {
         var label = status.querySelector('span:last-child');
+        status.classList.remove('is-pending');
         status.classList.toggle('stale', stale && !needsReview && !checkError);
         status.classList.toggle('needs-review', needsReview);
         status.classList.toggle('check-error', checkError);

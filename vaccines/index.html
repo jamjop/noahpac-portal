@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/fonts.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vaccines Due — Noah PA-C</title>
+<title>Vaccine Schedule Guidance — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body class="clinical-app legacy-app decision-app vaccines-app">
 
-<a class="skip-link" href="#main-content">Skip to Vaccines Due</a>
+<a class="skip-link" href="#main-content">Skip to vaccine schedule guidance</a>
 <header class="app-header app-header--unified">
   <div class="app-header__inner">
     <div class="app-header__bar">
@@ -24,70 +24,102 @@
     </div>
     <div class="app-header__title">
       <p class="app-header__eyebrow">Immunization workflow</p>
-      <h1>Vaccines Due</h1>
-      <p class="app-header__lede">Patient-specific ACIP, AAP, and ACOG immunization recommendations and catch-up guidance.</p>
+      <h1>Vaccine Schedule Guidance</h1>
+      <p class="app-header__lede">Age- and risk-based ACIP, AAP, and ACOG immunization guidance with optional catch-up recommendations.</p>
+      <span class="review-status is-pending" data-cadence="References reviewed quarterly"><span class="review-status__dot" aria-hidden="true"></span><span>References reviewed quarterly · checking status</span></span>
     </div>
   </div>
 </header>
 
 <div class="wrap legacy-main" id="main-content" role="main" tabindex="-1">
-  <div class="panel">
-    <div class="input-row">
+  <section class="panel" aria-labelledby="patient-profile-title">
+    <div class="panel-heading">
+      <div>
+        <p class="panel-kicker">Step 1</p>
+        <h2 id="patient-profile-title">Patient profile</h2>
+      </div>
+      <p>Start with age and sex, then add only the guidance options that apply.</p>
+    </div>
+    <div class="input-row input-row--primary">
       <div class="input-group">
         <label class="field-label" for="age">Patient age</label>
         <div class="age-input-row">
           <input type="number" id="age" min="0" max="999" value="2" inputmode="numeric">
-          <div class="unit-toggle">
-            <button id="unitYr" class="active">yr</button>
-            <button id="unitMo">mo</button>
+          <div class="unit-toggle" role="group" aria-label="Age unit">
+            <button id="unitYr" class="active" type="button" aria-pressed="true">Years</button>
+            <button id="unitMo" type="button" aria-pressed="false">Months</button>
           </div>
         </div>
       </div>
       <div class="input-group">
         <span class="field-label">Sex</span>
         <div class="seg" id="sexSeg" role="group" aria-label="Patient sex">
-          <button data-sex="female" class="active">Female</button>
-          <button data-sex="male">Male</button>
+          <button data-sex="female" class="active" type="button" aria-pressed="true">Female</button>
+          <button data-sex="male" type="button" aria-pressed="false">Male</button>
         </div>
       </div>
+    </div>
+    <div class="guidance-divider" aria-hidden="true"></div>
+    <div class="guidance-heading">
+      <p class="panel-kicker">Step 2</p>
+      <h3>Additional guidance</h3>
+    </div>
+    <div class="input-row input-row--guidance">
       <div class="input-group">
         <span class="field-label">Schedule source</span>
         <div class="seg" id="sourceSeg" role="group" aria-label="Schedule source">
-          <button data-source="acip" class="active">ACIP</button>
-          <button data-source="aap">AAP</button>
-          <button data-source="acog">ACOG</button>
+          <button data-source="acip" class="active" type="button" aria-pressed="true">ACIP</button>
+          <button data-source="aap" type="button" aria-pressed="false">AAP</button>
+          <button data-source="acog" type="button" aria-pressed="false">ACOG</button>
         </div>
       </div>
       <div class="input-group">
-        <span class="field-label">Catch-up recs</span>
+        <span class="field-label">Catch-up guidance</span>
         <div class="seg" id="catchupSeg" role="group" aria-label="Include catch-up recommendations">
-          <button id="catchupBtn">Include catch-up</button>
+          <button id="catchupBtn" type="button" aria-pressed="false">Include catch-up</button>
         </div>
       </div>
     </div>
     <details class="flags">
-      <summary>Special conditions</summary>
+      <summary><span>Special conditions</span><span class="flag-count" id="flagCount">None selected</span></summary>
       <div class="flag-grid" id="flagGrid">
-        <label data-only="female"><input type="checkbox" id="f_pregnant"> Currently pregnant</label>
-        <label><input type="checkbox" id="f_immunocompromised"> Immunocompromised (transplant, biologics, high-dose steroids)</label>
-        <label><input type="checkbox" id="f_hiv"> HIV positive</label>
-        <label><input type="checkbox" id="f_asplenia"> Asplenia / functional asplenia (incl. sickle cell)</label>
-        <label><input type="checkbox" id="f_liverDz"> Chronic liver disease (incl. HBV/HCV carrier)</label>
-        <label><input type="checkbox" id="f_ckd"> Chronic kidney disease / ESRD / dialysis</label>
-        <label><input type="checkbox" id="f_diabetes"> Diabetes mellitus</label>
-        <label><input type="checkbox" id="f_heartDz"> Chronic heart disease (incl. CHF; not HTN alone)</label>
-        <label><input type="checkbox" id="f_lungDz"> Chronic lung disease (COPD, asthma — not mild intermittent)</label>
-        <label><input type="checkbox" id="f_hcw"> Healthcare worker</label>
-        <label data-only="male"><input type="checkbox" id="f_msm"> MSM</label>
-        <label><input type="checkbox" id="f_noRecords"> No vaccination records / assume unvaccinated</label>
+        <fieldset class="flag-group">
+          <legend>Immune status</legend>
+          <label><input type="checkbox" id="f_immunocompromised"> <span>Immunocompromised <small>Transplant, biologics, or high-dose steroids</small></span></label>
+          <label><input type="checkbox" id="f_hiv"> <span>HIV positive</span></label>
+          <label><input type="checkbox" id="f_asplenia"> <span>Asplenia or functional asplenia <small>Including sickle cell disease</small></span></label>
+        </fieldset>
+        <fieldset class="flag-group">
+          <legend>Chronic conditions</legend>
+          <label><input type="checkbox" id="f_liverDz"> <span>Chronic liver disease <small>Including HBV/HCV carrier</small></span></label>
+          <label><input type="checkbox" id="f_ckd"> <span>Chronic kidney disease, ESRD, or dialysis</span></label>
+          <label><input type="checkbox" id="f_diabetes"> <span>Diabetes mellitus</span></label>
+          <label><input type="checkbox" id="f_heartDz"> <span>Chronic heart disease <small>Including CHF; not hypertension alone</small></span></label>
+          <label><input type="checkbox" id="f_lungDz"> <span>Chronic lung disease <small>COPD or asthma other than mild intermittent</small></span></label>
+        </fieldset>
+        <fieldset class="flag-group">
+          <legend>Pregnancy and exposure</legend>
+          <label data-only="female"><input type="checkbox" id="f_pregnant"> <span>Currently pregnant</span></label>
+          <label data-only="male"><input type="checkbox" id="f_msm"> <span>MSM</span></label>
+          <label><input type="checkbox" id="f_hcw"> <span>Healthcare worker</span></label>
+          <label><input type="checkbox" id="f_noRecords"> <span>No vaccination records <small>Assume unvaccinated</small></span></label>
+        </fieldset>
       </div>
     </details>
-  </div>
+  </section>
 
-  <div class="copy-bar" id="copyBar" hidden>
-    <button class="copy-btn" id="copyBtn">&#x2398; Copy schedule</button>
+  <div class="result-toolbar" id="copyBar" hidden>
+    <div class="patient-summary">
+      <p class="panel-kicker">Current profile</p>
+      <p id="patientSummary"></p>
+      <p class="summary-caution">Age- and risk-based guidance only; confirm documented vaccine history, intervals, and contraindications.</p>
+    </div>
+    <div class="result-actions" aria-label="Schedule actions">
+      <button class="secondary-btn" id="copyBtn" type="button">Copy</button>
+      <button class="secondary-btn" id="printBtn" type="button">Print</button>
+    </div>
   </div>
-  <div class="results" id="results"></div>
+  <div class="results" id="results" aria-live="polite" aria-relevant="additions text"></div>
 </div>
 
 <footer class="app-footer legacy-footer">
@@ -96,7 +128,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

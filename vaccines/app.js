@@ -263,8 +263,11 @@ const els = {
   sexSeg: document.getElementById('sexSeg'),
   results: document.getElementById('results'),
   flagGrid: document.getElementById('flagGrid'),
+  flagCount: document.getElementById('flagCount'),
   copyBar: document.getElementById('copyBar'),
   copyBtn: document.getElementById('copyBtn'),
+  printBtn: document.getElementById('printBtn'),
+  patientSummary: document.getElementById('patientSummary'),
 };
 
 function flags(){
@@ -278,11 +281,31 @@ function getAgeMonths(){
   return state.unit === "yr" ? v * 12 : v;
 }
 
+function syncPressed(container, activeButton) {
+  container.querySelectorAll('button').forEach(button => {
+    button.setAttribute('aria-pressed', String(button === activeButton));
+  });
+}
+
+function updateProfileSummary(f) {
+  const selected = Object.entries(f).filter(([, value]) => value).map(([key]) => CONDITION_LABELS[key] || key);
+  const age = state.unit === "yr"
+    ? `${Math.round(state.ageMonths / 12)}-year-old`
+    : `${state.ageMonths}-month-old`;
+  const source = state.source.toUpperCase();
+  const catchup = state.showCatchup ? "catch-up included" : "routine schedule";
+  const conditions = selected.length ? selected.join(", ") : "no special conditions";
+  els.patientSummary.textContent = `${age} ${state.sex} · ${source} · ${catchup} · ${conditions}`;
+  els.flagCount.textContent = selected.length ? `${selected.length} selected` : "None selected";
+  els.flagCount.classList.toggle('has-selection', selected.length > 0);
+}
+
 function render(){
   const ageM = getAgeMonths();
   const ageY = ageM / 12;
   const f = flags();
   state.ageMonths = ageM;
+  updateProfileSummary(f);
 
   /* hide sex-specific flags */
   document.querySelectorAll('.flag-grid label[data-only]').forEach(l => {
@@ -382,32 +405,38 @@ function render(){
 
   const recRow = (v, note, condNote, type) => {
     const chipClass = type === "cond" ? "chip cond" : type === "catchup" ? "chip catchup" : type === "shared" ? "chip shared" : "chip";
-    const chipLabel = type === "cond" ? "COND" : type === "catchup" ? "CATCH-UP" : type === "shared" ? "SCDM" : "DUE";
-    const condText = condNote ? `<div class="cond-note">Also indicated: ${esc(condNote)}</div>` : "";
-    const noteText = note ? `<div class="cond-note">${esc(note)}</div>` : "";
-    return `<div class="rec">
-      <div class="rec-title">${esc(v.name)}
-        <span class="${chipClass}">${chipLabel}</span>
-        <span class="freq">${esc(v.freq)}</span>
+    const chipLabel = type === "cond" ? "Condition-specific" : type === "catchup" ? "Catch-up" : type === "shared" ? "Shared decision" : "Routine for age";
+    const reasons = [note, condNote ? `Also indicated: ${condNote}` : null].filter(Boolean);
+    const reasonText = reasons.length ? `<p class="reason">${reasons.map(esc).join(" · ")}</p>` : "";
+    return `<article class="rec" data-type="${esc(type)}">
+      <div class="rec-header">
+        <div class="rec-identity">
+          <h3 class="rec-name">${esc(v.name)}</h3>
+          <span class="${chipClass}">${chipLabel}</span>
+        </div>
+        <div class="timing"><span class="timing-label">Timing</span><span class="freq">${esc(v.freq)}</span></div>
       </div>
-      <div class="rec-detail">${esc(v.detail)}</div>
-      ${noteText}${condText}
-    </div>`;
+      ${reasonText}
+      <p class="rec-detail"><span class="rec-detail-label">Clinical guidance</span><span class="rec-detail-text">${esc(v.detail)}</span></p>
+    </article>`;
   };
 
   let html = "";
 
   const routineLabel = state.showCatchup ? "Routine / Catch-up" : "Routine";
-  html += `<div class="group-head"><span class="group-name">${routineLabel}</span><span class="group-count">${routine.length}</span></div>`;
+  html += `<div class="group-head"><h2 class="group-name">${routineLabel}</h2><span class="group-count" aria-label="${routine.length} recommendations">${routine.length}</span></div>`;
+  html += `<p class="group-description">Recommendations based on age${state.showCatchup ? " and the selected catch-up settings" : ""}.</p>`;
   html += routine.length ? routine.map(({v,note,condNote}) => recRow(v, note, condNote, note && note.includes("catch") ? "catchup" : "routine")).join("") :
-    `<div class="empty">No routine vaccines due at this age with the current inputs.</div>`;
+    `<div class="empty">No routine vaccine guidance appears for this age with the current inputs.</div>`;
 
   if (condDriven.length) {
-    html += `<div class="group-head"><span class="group-name">Due — Condition-specific</span><span class="group-count">${condDriven.length}</span></div>`;
+    html += `<div class="group-head"><h2 class="group-name">Condition-specific</h2><span class="group-count" aria-label="${condDriven.length} recommendations">${condDriven.length}</span></div>`;
+    html += `<p class="group-description">Additional guidance triggered by the selected health, pregnancy, or exposure factors.</p>`;
     html += condDriven.map(({v,note}) => recRow(v, note, null, "cond")).join("");
   }
   if (sharedDecision.length) {
-    html += `<div class="group-head"><span class="group-name">Shared Clinical Decision</span><span class="group-count">${sharedDecision.length}</span></div>`;
+    html += `<div class="group-head"><h2 class="group-name">Shared clinical decision</h2><span class="group-count" aria-label="${sharedDecision.length} recommendations">${sharedDecision.length}</span></div>`;
+    html += `<p class="group-description">Consider individual risk, preferences, prior vaccination, and current guidance.</p>`;
     html += sharedDecision.map(({v,note}) => recRow(v, note, null, "shared")).join("");
   }
 
@@ -436,16 +465,15 @@ function buildText(){
   if (state.showCatchup) lines.push("Includes: catch-up recommendations");
   lines.push(`Generated: ${today}`, "");
 
-  const allVax = [...els.results.querySelectorAll('.rec')];
   let section = "";
   for (const node of els.results.children) {
     if (node.classList.contains('group-head')) {
       section = node.querySelector('.group-name')?.textContent || "";
       lines.push(`── ${section} ──`, "");
     } else if (node.classList.contains('rec')) {
-      const title = node.querySelector('.rec-title')?.childNodes[0]?.textContent?.trim() || "";
+      const title = node.querySelector('.rec-name')?.textContent?.trim() || "";
       const freq = node.querySelector('.freq')?.textContent?.trim() || "";
-      const detail = node.querySelector('.rec-detail')?.textContent?.trim() || "";
+      const detail = node.querySelector('.rec-detail-text')?.textContent?.trim() || "";
       lines.push(`• ${title}${freq ? `  ·  ${freq}` : ""}`);
       if (detail) lines.push(`  ${detail}`);
       lines.push("");
@@ -472,6 +500,7 @@ els.sexSeg.addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   els.sexSeg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
+  syncPressed(els.sexSeg, b);
   state.sex = b.dataset.sex;
   if (state.sex==="male"){ const p=document.getElementById('f_pregnant'); if(p) p.checked=false; }
   render();
@@ -481,20 +510,26 @@ els.sourceSeg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   els.sourceSeg.querySelectorAll('button').forEach(x => x.classList.remove('active'));
   b.classList.add('active');
+  syncPressed(els.sourceSeg, b);
   state.source = b.dataset.source;
   render();
 });
 els.catchupBtn.addEventListener('click', () => {
   state.showCatchup = !state.showCatchup;
   els.catchupBtn.classList.toggle('active', state.showCatchup);
+  els.catchupBtn.setAttribute('aria-pressed', String(state.showCatchup));
   render();
 });
 els.copyBtn.addEventListener('click', () => {
   navigator.clipboard.writeText(buildText()).then(() => {
     els.copyBtn.classList.add('copied');
-    els.copyBtn.textContent = '✓ Copied';
-    setTimeout(() => { els.copyBtn.classList.remove('copied'); els.copyBtn.innerHTML='&#x2398; Copy schedule'; }, 2000);
+    els.copyBtn.textContent = 'Copied';
+    setTimeout(() => { els.copyBtn.classList.remove('copied'); els.copyBtn.textContent='Copy'; }, 2000);
   });
 });
+els.printBtn.addEventListener('click', () => window.print());
+
+els.unitYr.addEventListener('click', () => syncPressed(els.unitYr.parentElement, els.unitYr));
+els.unitMo.addEventListener('click', () => syncPressed(els.unitMo.parentElement, els.unitMo));
 
 render();

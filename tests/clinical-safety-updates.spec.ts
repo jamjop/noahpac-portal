@@ -40,7 +40,7 @@ test.describe('Clinical safety updates', () => {
   test('vaccine tool distinguishes CDC shared decision-making from AAP routine infant guidance', async ({ page }) => {
     await page.goto('/vaccines/');
     await page.locator('#age').fill('1');
-    await expect(page.locator('.rec', { hasText: 'COVID-19' })).toContainText('SCDM');
+    await expect(page.locator('.rec', { hasText: 'COVID-19' })).toContainText('Shared decision');
     await page.locator('[data-source="aap"]').click();
     await expect(page.locator('.rec', { hasText: 'COVID-19' })).toContainText('AAP universal recommendation');
   });

@@ -388,6 +388,11 @@ footer .last-checked.stale .dot{
   background:var(--risk);
   box-shadow:0 0 0 3px var(--risk-soft);
 }
+.review-status.is-pending{color:var(--app-text-muted)}
+.review-status.is-pending .review-status__dot{
+  background:var(--app-text-muted);
+  box-shadow:none;
+}
 .last-checked.needs-review{color:var(--warn)}
 .last-checked.check-error{color:var(--risk)}
 .app-header__bar .review-status{display:none}
