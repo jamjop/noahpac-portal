@@ -17,6 +17,16 @@ const LABEL_SECTIONS = [
 
 const TRUNC = 600;
 const fullTexts = new Map();
+const queryInput = document.getElementById('q');
+const clearSearch = document.getElementById('clearSearch');
+
+function syncSearchState(q, {replace = false} = {}) {
+  clearSearch.hidden = !q;
+  const url = new URL(location.href);
+  if (q) url.searchParams.set('q', q);
+  else url.searchParams.delete('q');
+  history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 function setContent(html){
   const content = document.getElementById('content');
@@ -68,7 +78,10 @@ function renderDrug(label, recalls, q) {
 
   // Drug header
   let html = `<section class="drug-header-card" aria-labelledby="drug-result-title">
-    <h2 class="drug-title" id="drug-result-title">${esc(title)}</h2>
+    <div class="drug-header-card__title-row">
+      <div><p class="drug-result-eyebrow">FDA label match</p><h2 class="drug-title" id="drug-result-title">${esc(title)}</h2></div>
+      <button class="result-link-button" type="button" data-action="copy-link">Copy link</button>
+    </div>
     <div class="drug-meta">
       ${routes.map(r=>`<span class="meta-pill route">${esc(r)}</span>`).join('')}
       ${brandNames.slice(0,6).map(b=>`<span class="meta-pill brand">${esc(b)}</span>`).join('')}
@@ -138,6 +151,15 @@ function renderDrug(label, recalls, q) {
 
 // Accordion toggle
 document.getElementById('content').addEventListener('click', e => {
+  const linkButton = e.target.closest('[data-action="copy-link"]');
+  if (linkButton) {
+    navigator.clipboard.writeText(location.href).then(() => {
+      linkButton.textContent = 'Copied';
+      linkButton.classList.add('copied');
+      setTimeout(() => { linkButton.textContent = 'Copy link'; linkButton.classList.remove('copied'); }, 1800);
+    });
+    return;
+  }
   const head = e.target.closest('.label-head');
   if (head) {
     const secId = head.dataset.sec;
@@ -162,12 +184,32 @@ document.getElementById('content').addEventListener('click', e => {
 // Search submission
 document.getElementById('drugSearchForm').addEventListener('submit', e => {
   e.preventDefault();
-  search(document.getElementById('q').value.trim());
+  const q = queryInput.value.trim();
+  if (!q) return;
+  syncSearchState(q);
+  search(q);
+});
+
+queryInput.addEventListener('input', () => { clearSearch.hidden = !queryInput.value.trim(); });
+clearSearch.addEventListener('click', () => {
+  queryInput.value = '';
+  syncSearchState('');
+  setContent('<div class="reference-status state" role="status">Enter a drug name to retrieve FDA label data and recent recalls.</div>');
+  queryInput.focus();
+});
+
+window.addEventListener('popstate', () => {
+  const q = new URLSearchParams(location.search).get('q') || '';
+  queryInput.value = q;
+  clearSearch.hidden = !q;
+  if (q) search(q);
+  else setContent('<div class="reference-status state" role="status">Enter a drug name to retrieve FDA label data and recent recalls.</div>');
 });
 
 // Deep-link: ?q=
 const urlQ = new URLSearchParams(location.search).get('q');
 if (urlQ) {
-  document.getElementById('q').value = urlQ;
+  queryInput.value = urlQ;
+  syncSearchState(urlQ, {replace:true});
   search(urlQ);
 }

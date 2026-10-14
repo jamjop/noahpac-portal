@@ -260,30 +260,54 @@ const LABS = [
 // ── Rendering ─────────────────────────────────────────────────────────────────
 
 let activeId = null;
+const searchInput = document.getElementById('ddxSearch');
+const clearSearch = document.getElementById('clearSearch');
+
+function syncUrl(id, {replace = false} = {}) {
+  const url = new URL(location.href);
+  if (id) url.searchParams.set('lab', id);
+  else url.searchParams.delete('lab');
+  history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 function buildNav() {
-  const q = document.getElementById('ddxSearch').value.trim().toLowerCase();
+  const q = searchInput.value.trim().toLowerCase();
   const nav = document.getElementById('tabNav');
   nav.innerHTML = '';
+  clearSearch.hidden = !q;
+  let matchCount = 0;
 
   CATS.forEach(cat => {
     const items = LABS.filter(l => l.cat === cat.id &&
       (!q || l.name.toLowerCase().includes(q)));
+    if (!items.length) return;
+    matchCount += items.length;
+    const group = document.createElement('div');
+    group.className = 'ddx-nav-group';
+    const heading = document.createElement('p');
+    heading.className = 'ddx-nav-heading';
+    heading.textContent = cat.label;
+    group.appendChild(heading);
     items.forEach(l => {
       const btn = document.createElement('button');
       btn.className = 'tab-btn' + (l.id === activeId ? ' active' : '');
       btn.dataset.id = l.id;
       btn.textContent = l.name;
+      btn.setAttribute('aria-current', l.id === activeId ? 'true' : 'false');
       btn.addEventListener('click', () => showLab(l.id));
-      nav.appendChild(btn);
+      group.appendChild(btn);
     });
+    nav.appendChild(group);
   });
+  document.getElementById('ddxResultCount').textContent = `${matchCount} test${matchCount === 1 ? '' : 's'}`;
+  if (!matchCount) nav.innerHTML = '<p class="ddx-nav-empty">No laboratory values match this search.</p>';
 }
 
-function showLab(id) {
+function showLab(id, {replace = false} = {}) {
   const lab = LABS.find(l => l.id === id);
   if (!lab) return;
   activeId = id;
+  syncUrl(id, {replace});
   buildNav();
 
   const highHtml = lab.high
@@ -312,9 +336,21 @@ function showLab(id) {
     <div class="ddx-range">${esc(lab.unit)} &nbsp;·&nbsp; Normal: ${esc(lab.range)}</div>
     ${lab.note ? `<p class="ddx-note">${esc(lab.note)}</p>` : ''}
     ${colsHtml}
-    <button class="copy-btn" id="copyBtn">&#x2398; Copy differentials</button>`;
+    <div class="ddx-actions"><button class="copy-btn" id="copyBtn">&#x2398; Copy differentials</button><button class="copy-btn copy-btn--secondary" id="copyLinkBtn">Copy link</button></div>`;
 
   document.getElementById('copyBtn').addEventListener('click', () => copyDdx(lab));
+  document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
+  document.querySelector(`.tab-btn[data-id="${id}"]`)?.scrollIntoView({block:'nearest', inline:'nearest'});
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = document.getElementById('copyLinkBtn');
+    if (!btn) return;
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy link'; btn.classList.remove('copied'); }, 1800);
+  });
 }
 
 function copyDdx(lab) {
@@ -342,4 +378,15 @@ function copyDdx(lab) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 buildNav();
-document.getElementById('ddxSearch').addEventListener('input', buildNav);
+searchInput.addEventListener('input', buildNav);
+clearSearch.addEventListener('click', () => {
+  searchInput.value = '';
+  buildNav();
+  searchInput.focus();
+});
+const initialLab = new URLSearchParams(location.search).get('lab');
+if (LABS.some(lab => lab.id === initialLab)) showLab(initialLab, {replace:true});
+window.addEventListener('popstate', () => {
+  const id = new URLSearchParams(location.search).get('lab');
+  if (LABS.some(lab => lab.id === id)) showLab(id, {replace:true});
+});

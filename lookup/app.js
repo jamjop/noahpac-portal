@@ -12,6 +12,17 @@ const TABS = [
 let tab = 'icd';
 let debTimer = null;
 let ctrl = null;
+const qEl = document.getElementById('q');
+const clearSearch = document.getElementById('clearSearch');
+
+function syncUrl({replace = false} = {}) {
+  const url = new URL(location.href);
+  const q = qEl.value.trim();
+  url.searchParams.set('type', tab);
+  if (q) url.searchParams.set('q', q);
+  else url.searchParams.delete('q');
+  history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
 
 // ── NLM fetch helpers ─────────────────────────────────────────────────────────
 
@@ -59,18 +70,22 @@ function setResults(html) {
 function debounce() {
   clearTimeout(debTimer);
   const q = document.getElementById('q').value.trim();
-  if (q.length < 2) { setResults('<div class="reference-status state">Type at least two characters to search.</div>'); return; }
+  clearSearch.hidden = !q;
+  syncUrl({replace:true});
+  if (q.length < 2) { if (ctrl) ctrl.abort(); setResults('<div class="reference-status state">Type at least two characters to search.</div>'); return; }
   debTimer = setTimeout(run, 280);
 }
 
 async function run() {
   const q = document.getElementById('q').value.trim();
+  const requestedTab = tab;
   if (q.length < 2) return;
   if (ctrl) ctrl.abort();
   ctrl = new AbortController();
   spin(true);
   try {
-    const data = await FETCHERS[tab](q, ctrl.signal);
+    const data = await FETCHERS[requestedTab](q, ctrl.signal);
+    if (requestedTab !== tab || q !== qEl.value.trim()) return;
     render(data, q);
   } catch(e) {
     if (e.name === 'AbortError') return;
@@ -87,7 +102,8 @@ function render({type, total, items}, q) {
     setResults(`<div class="reference-status state">No results for &ldquo;${esc(q)}&rdquo;.</div>`);
     return;
   }
-  const countHtml = `<div class="result-count" role="status">${total.toLocaleString()} match${total===1?'':'es'} &middot; showing ${items.length}</div>`;
+  const terminology = TABS.find(item => item.id === type)?.label || type;
+  const countHtml = `<div class="result-summary"><div><span class="result-context">${esc(terminology)}</span><span class="result-count" role="status">${total.toLocaleString()} match${total===1?'':'es'} &middot; showing ${items.length}</span></div><button class="result-link-button" type="button" data-action="copy-link">Copy search link</button></div>`;
   let rows = '';
 
   if (type === 'icd' || type === 'hcpcs') {
@@ -137,6 +153,12 @@ document.getElementById('results').addEventListener('click', e => {
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
     });
+  } else if (btn.dataset.action === 'copy-link') {
+    navigator.clipboard.writeText(location.href).then(() => {
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy search link'; btn.classList.remove('copied'); }, 1800);
+    });
   } else if (btn.dataset.action === 'drugref') {
     window.location.href = `/drugref/?q=${encodeURIComponent(btn.dataset.val)}`;
   }
@@ -172,6 +194,7 @@ function buildTabs() {
 function activateTab(nextTab, {focusSearch} = {focusSearch:false}) {
   if (!TABS.some(t => t.id === nextTab)) return;
   tab = nextTab;
+  syncUrl({replace:true});
   const config = TABS.find(t => t.id === tab);
   document.querySelectorAll('#tabs [role="tab"]').forEach(btn => {
     const active = btn.dataset.id === tab;
@@ -192,9 +215,23 @@ function activateTab(nextTab, {focusSearch} = {focusSearch:false}) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 buildTabs();
-const qEl = document.getElementById('q');
-qEl.placeholder = TABS[0].ph;
+const initialParams = new URLSearchParams(location.search);
+const initialTab = initialParams.get('type');
+if (TABS.some(item => item.id === initialTab)) activateTab(initialTab);
+qEl.value = initialParams.get('q') || '';
+clearSearch.hidden = !qEl.value;
+qEl.placeholder = TABS.find(item => item.id === tab).ph;
+syncUrl({replace:true});
 qEl.addEventListener('input', debounce);
+clearSearch.addEventListener('click', () => {
+  qEl.value = '';
+  clearSearch.hidden = true;
+  if (ctrl) ctrl.abort();
+  syncUrl({replace:true});
+  setResults('<div class="reference-status state">Type at least two characters to search.</div>');
+  qEl.focus();
+});
+if (qEl.value.trim().length >= 2) run();
 document.addEventListener('keydown', e => {
   const target = e.target;
   const editing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || target?.isContentEditable;

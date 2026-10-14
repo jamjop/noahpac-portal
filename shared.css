@@ -926,6 +926,19 @@ html[data-theme="dark"] .clinical-app{
   white-space:nowrap;
 }
 .reference-search-button:hover{filter:brightness(.92)}
+.reference-clear-button{
+  min-height:44px;
+  padding:8px 13px;
+  border:1px solid var(--app-border-strong);
+  border-radius:var(--app-radius-sm);
+  background:transparent;
+  color:var(--app-text-secondary);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.reference-clear-button:hover{border-color:var(--app-accent);background:var(--app-accent-soft);color:var(--app-accent)}
 .reference-search-help{
   margin:10px 0 0;
   color:var(--app-text-muted);

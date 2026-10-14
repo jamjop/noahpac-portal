@@ -40,6 +40,9 @@ test.describe('Searchable reference redesign', () => {
     await page.getByLabel('Generic or brand name').fill('warfarin');
     await page.getByRole('button', { name: 'Search', exact: true }).click();
 
+    await expect(page).toHaveURL(/\?q=warfarin/);
+    await expect(page.getByRole('button', { name: 'Clear', exact: true })).toBeVisible();
+
     await expect(page.getByRole('heading', { name: 'Warfarin Sodium', exact: true })).toBeVisible();
     await expect(page.getByText('Warfarin can cause major or fatal bleeding.')).toBeVisible();
     await expect(page.getByText('Warfarin sodium tablets')).toBeVisible();
@@ -51,6 +54,25 @@ test.describe('Searchable reference redesign', () => {
     await expect(section).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#sec-indications_and_usage')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Show full section' })).toBeVisible();
+  });
+
+  test('FDA Label Search restores a linked search and clear returns to its initial state', async ({ page }) => {
+    await page.route('**/drug/label.json?**', route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(FDA_LABEL),
+    }));
+    await page.route('**/drug/enforcement.json?**', route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ results: [] }),
+    }));
+
+    await page.goto('/drugref/?q=warfarin');
+    await expect(page.getByRole('heading', { name: 'Warfarin Sodium', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Clear', exact: true }).click();
+    await expect(page).not.toHaveURL(/\?q=/);
+    await expect(page.getByText('Enter a drug name to retrieve FDA label data and recent recalls.')).toBeVisible();
   });
 
   test('Code & Terminology Lookup supports tab keyboard navigation and RxTerms results', async ({ page }) => {
@@ -72,10 +94,40 @@ test.describe('Searchable reference redesign', () => {
     await expect(drugTab).toHaveAttribute('aria-selected', 'true');
 
     await page.getByLabel('Search RxTerms drug names').fill('metformin');
+    await expect(page).toHaveURL(/type=drug/);
+    await expect(page).toHaveURL(/q=metformin/);
     await expect(page.getByText('metformin 500 MG Oral Tablet')).toBeVisible();
     await expect(page.getByText('RxCUI 860975')).toBeVisible();
     await expect(page.getByText('Oral', { exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: /FDA label/ })).toBeVisible();
+  });
+
+  test('Code & Terminology Lookup restores linked terminology and query state', async ({ page }) => {
+    await page.route('**/api/loinc_items/v3/search?**', route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([1, [], {}, [['2951-2', 'Sodium [Moles/volume] in Serum or Plasma', 'CHEM']]]),
+    }));
+
+    await page.goto('/lookup/?type=loinc&q=sodium');
+    await expect(page.getByRole('tab', { name: 'LOINC' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByLabel('Search LOINC laboratory terms')).toHaveValue('sodium');
+    await expect(page.getByText('2951-2', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Clear search' }).click();
+    await expect(page).not.toHaveURL(/q=/);
+  });
+
+  test('Lab Value DDx exposes grouped search state and stable laboratory links', async ({ page }) => {
+    await page.goto('/ddx/?lab=potassium');
+    await expect(page.getByRole('heading', { name: 'Potassium (K⁺)', exact: true })).toBeVisible();
+    await expect(page.locator('.cat-nav .tab-btn.active')).toHaveText('Potassium (K⁺)');
+    await expect(page.locator('#ddxResultCount')).toContainText('test');
+
+    await page.getByLabel('Find a laboratory value').fill('ferritin');
+    await expect(page.locator('.cat-nav .tab-btn')).toHaveCount(1);
+    await expect(page.locator('#ddxResultCount')).toHaveText('1 test');
+    await page.getByRole('button', { name: 'Clear', exact: true }).click();
+    await expect(page.locator('.cat-nav .tab-btn')).toHaveCount(41);
   });
 
   test('Code & Terminology Lookup searches official HCPCS Level II data without presenting it as CPT', async ({ page }) => {
@@ -106,7 +158,9 @@ test.describe('Searchable reference redesign', () => {
 
     await page.getByLabel('Search laboratory reference').fill('troponin');
     await expect(page.locator('.td-name').filter({ hasText: /Troponin/i }).first()).toBeVisible();
-    const note = page.locator('.td-note').first();
+    const troponinRow = page.locator('.td-name').filter({ hasText: /Troponin/i }).first().locator('..');
+    await troponinRow.getByRole('button', { name: 'Details' }).click();
+    const note = troponinRow.locator('.td-note');
     await expect(note).toBeVisible();
     await expect(note).not.toHaveCSS('display', 'none');
     await expect(page.locator('#labResultSummary')).toContainText(/test/);
@@ -115,7 +169,7 @@ test.describe('Searchable reference redesign', () => {
   test('all three pages fit phone and tablet viewports without horizontal document overflow', async ({ page }) => {
     for (const width of [375, 768]) {
       await page.setViewportSize({ width, height: 900 });
-      for (const path of ['/drugref/', '/lookup/', '/labs/']) {
+      for (const path of ['/drugref/', '/lookup/', '/labs/', '/ddx/?lab=sodium']) {
         await page.goto(path);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(overflow, `${path} overflow at ${width}px`).toBeLessThanOrEqual(1);

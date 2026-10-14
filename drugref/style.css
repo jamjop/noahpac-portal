@@ -21,6 +21,12 @@ body{margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'In
   margin-bottom:12px;
 }
 .drug-title{margin:0;color:var(--app-text);font-size:24px;font-weight:750;line-height:1.2;letter-spacing:-.025em}
+.drug-header-card__title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.drug-result-eyebrow{margin:0 0 5px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
+.result-link-button{min-height:40px;padding:7px 11px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-sm);background:transparent;color:var(--app-text-secondary);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.result-link-button:hover{border-color:var(--app-accent);color:var(--app-accent)}
+.result-link-button.copied{border-color:var(--ok);background:var(--ok);color:#fff}
+.drug-reference-app .reference-clear-button{align-self:flex-end;min-height:48px}
 .drug-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
 .meta-pill{
   display:inline-flex;
@@ -161,6 +167,7 @@ body{margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'In
   .drug-header-card{padding:17px}
   .boxed-warning{padding:15px}
   .recall-status{width:100%;margin-left:0}
+  .drug-header-card__title-row{align-items:center}
 }
 
 @media(prefers-color-scheme:dark){

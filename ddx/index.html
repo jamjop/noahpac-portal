@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab Value DDx — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
-<body class="clinical-app legacy-app reference-app ddx-app">
+<body class="clinical-app reference-app ddx-app">
 <div>
   <a class="skip-link" href="#main-content">Skip to Lab Value DDx</a>
 <header class="app-header app-header--unified">
@@ -29,20 +29,34 @@
     </div>
   </div>
 </header>
-  <div class="page-body legacy-main" id="main-content" role="main" tabindex="-1">
-    <label class="legacy-search-panel" for="ddxSearch"><span class="legacy-search-label">Find a laboratory value</span><input type="search" id="ddxSearch" class="tab-search" placeholder="Search laboratory values" autocomplete="off" spellcheck="false"></label>
-    <nav class="cat-nav" id="tabNav" aria-label="Laboratory values"></nav>
-    <div class="pane" id="pane">
-      <div class="placeholder">Select a condition from the list</div>
+  <main class="ddx-workspace" id="main-content" tabindex="-1">
+    <section class="reference-search-panel ddx-search-panel" aria-labelledby="ddx-search-title">
+      <div class="reference-search-panel__header">
+        <div>
+          <h2 class="reference-search-panel__title" id="ddx-search-title">Search the laboratory index</h2>
+          <p class="reference-search-panel__description">Search the index, then select a result to compare common causes of high and low values.</p>
+        </div>
+        <span class="ddx-result-count" id="ddxResultCount" role="status"></span>
+      </div>
+      <div class="ddx-search-row">
+        <label class="reference-search-field" for="ddxSearch"><span>Find a laboratory value</span><input type="search" id="ddxSearch" placeholder="e.g. potassium, TSH, ferritin" autocomplete="off" spellcheck="false"></label>
+        <button class="reference-clear-button" id="clearSearch" type="button" hidden>Clear</button>
+      </div>
+    </section>
+    <div class="ddx-layout">
+      <nav class="cat-nav" id="tabNav" aria-label="Laboratory values"></nav>
+      <section class="pane" id="pane" aria-live="polite">
+        <div class="placeholder">Select a laboratory value from the index.</div>
+      </section>
     </div>
-  </div>
+  </main>
 </div>
-<footer class="app-footer legacy-footer">
+<footer class="app-footer">
   <p class="source-note">
     Compiled from standard internal medicine differential diagnosis references (e.g., UpToDate, Harrison's Principles of Internal Medicine). Not exhaustive — verify against primary literature. Not medical advice.
   </p>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
