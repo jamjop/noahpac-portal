@@ -118,12 +118,29 @@ const CONDITIONS = [
 
 const TIMING_ORDER = ["Immediate","1 business day","7 days"];
 const TIMING_CLS   = {"Immediate":"t-immediate","1 business day":"t-day","7 days":"t-week"};
+let searchQuery = '';
+let categoryFilter = 'all';
+let timingFilter = 'all';
 
-function render(query) {
-  const q = (query||"").toLowerCase().trim();
-  const filtered = q ? CONDITIONS.filter(c =>
-    c.name.toLowerCase().includes(q) || c.note.toLowerCase().includes(q) || c.cat.toLowerCase().includes(q)
-  ) : CONDITIONS;
+function esc(value) { return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function slug(value) { return String(value).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+
+function filterButtons(rootId, values, selected, label) {
+  document.getElementById(rootId).innerHTML = values.map(value => `<button type="button" data-value="${esc(value)}" aria-pressed="${value === selected}">${value === 'all' ? `All ${label}` : esc(value)}</button>`).join('');
+}
+
+function syncUrl(openCondition) {
+  const url = new URL(location.href);
+  searchQuery ? url.searchParams.set('q', searchQuery) : url.searchParams.delete('q');
+  categoryFilter !== 'all' ? url.searchParams.set('type', categoryFilter) : url.searchParams.delete('type');
+  timingFilter !== 'all' ? url.searchParams.set('timing', timingFilter) : url.searchParams.delete('timing');
+  openCondition ? url.searchParams.set('condition', openCondition) : url.searchParams.delete('condition');
+  history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+function render() {
+  const q = searchQuery;
+  const filtered = CONDITIONS.filter(c => (!q || c.name.toLowerCase().includes(q) || c.note.toLowerCase().includes(q) || c.cat.toLowerCase().includes(q)) && (categoryFilter === 'all' || c.cat === categoryFilter) && (timingFilter === 'all' || c.timing === timingFilter));
 
   const grouped = {};
   filtered.forEach(c => {
@@ -134,7 +151,8 @@ function render(query) {
 
   const root = document.getElementById("list-root");
   if (filtered.length === 0) {
-    root.innerHTML = `<div class="empty">No conditions match "${query}"</div>`;
+    root.innerHTML = `<div class="empty">No conditions match the selected filters.</div>`;
+    document.getElementById('reportResultSummary').textContent = '0 conditions';
     return;
   }
 
@@ -156,16 +174,53 @@ function render(query) {
           <span class="group-count">${g.items.length}</span>
         </div>
         <div class="cond-list">
-          ${g.items.map(c => `
-            <div class="cond-item">
-              <span class="cond-name">${c.name}</span>
-              ${c.note ? `<span class="cond-note">${c.note}</span>` : ""}
-            </div>
-          `).join("")}
+          ${g.items.map(c => {
+            const id = `condition-${slug(c.name)}`;
+            return `
+            <article class="cond-item" id="${id}">
+              <div class="cond-summary"><a class="cond-name" href="#${id}">${esc(c.name)}</a>${c.note ? `<button class="cond-toggle" type="button" aria-expanded="false" aria-controls="${id}-note">Instructions</button>` : ''}</div>
+              ${c.note ? `<div class="cond-note" id="${id}-note" hidden>${esc(c.note)}</div>` : ""}
+            </article>`;
+          }).join("")}
         </div>
       </div>`;
   }).join("");
+  document.getElementById('reportResultSummary').textContent = `${filtered.length} condition${filtered.length === 1 ? '' : 's'}`;
 }
 
-document.getElementById("search").addEventListener("input", e => render(e.target.value));
+const params = new URLSearchParams(location.search);
+searchQuery = (params.get('q') || '').trim().toLowerCase();
+categoryFilter = ['Infectious','Other'].includes(params.get('type')) ? params.get('type') : 'all';
+timingFilter = TIMING_ORDER.includes(params.get('timing')) ? params.get('timing') : 'all';
+document.getElementById('search').value = searchQuery;
+filterButtons('categoryFilters', ['all','Infectious','Other'], categoryFilter, 'types');
+filterButtons('timingFilters', ['all', ...TIMING_ORDER], timingFilter, 'timelines');
+
+document.getElementById('search').addEventListener('input', event => { searchQuery = event.target.value.trim().toLowerCase(); render(); syncUrl(); });
+for (const [rootId, setter] of [['categoryFilters', value => categoryFilter = value], ['timingFilters', value => timingFilter = value]]) {
+  document.getElementById(rootId).addEventListener('click', event => {
+    const button = event.target.closest('button[data-value]');
+    if (!button) return;
+    setter(button.dataset.value);
+    button.parentElement.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    render(); syncUrl();
+  });
+}
+document.getElementById('clearReportFilters').addEventListener('click', () => {
+  searchQuery = ''; categoryFilter = 'all'; timingFilter = 'all'; document.getElementById('search').value = '';
+  filterButtons('categoryFilters', ['all','Infectious','Other'], categoryFilter, 'types');
+  filterButtons('timingFilters', ['all', ...TIMING_ORDER], timingFilter, 'timelines');
+  render(); syncUrl(); document.getElementById('search').focus();
+});
+document.getElementById('list-root').addEventListener('click', event => {
+  const button = event.target.closest('.cond-toggle'); if (!button) return;
+  const note = document.getElementById(button.getAttribute('aria-controls')); const open = button.getAttribute('aria-expanded') !== 'true';
+  button.setAttribute('aria-expanded', String(open)); note.hidden = !open;
+  syncUrl(open ? button.closest('.cond-item').id.replace(/^condition-/, '') : '');
+});
 render();
+const initialCondition = params.get('condition');
+if (initialCondition) {
+  const item = document.getElementById(`condition-${initialCondition}`); const button = item?.querySelector('.cond-toggle');
+  if (button) { button.click(); item.scrollIntoView({block:'center'}); }
+}

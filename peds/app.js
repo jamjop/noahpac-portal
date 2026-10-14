@@ -32,6 +32,8 @@ function round5(n) { return Math.round(n / 5) * 5; }
 
 // nearest 0.5
 function roundHalf(n) { return Math.round(n * 2) / 2; }
+function slug(value) { return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function escAttr(value) { return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
 
 // ── ETT sizing ────────────────────────────────────────────────────────────────
 
@@ -46,8 +48,9 @@ function ettSize(ageYr) {
 
 function card(name, val, unit, note, variant, rangeText) {
   const cls = variant ? ` ${variant}` : '';
-  return `<article class="dose-card${cls}">
-    <h3 class="dose-name">${name}</h3>
+  const id = `dose-${slug(name)}`;
+  return `<article class="dose-card${cls}" id="${id}" data-dose-search="${escAttr(String(name + ' ' + unit + ' ' + note + ' ' + (rangeText || '')).toLowerCase())}">
+    <h3 class="dose-name"><a href="#${id}">${name}</a></h3>
     <div><span class="dose-val">${val}</span><span class="dose-unit">${unit}</span></div>
     ${rangeText ? `<div class="dose-range">${rangeText}</div>` : ''}
     ${note ? `<div class="dose-note">${note}</div>` : ''}
@@ -56,6 +59,23 @@ function card(name, val, unit, note, variant, rangeText) {
 
 function sectionHeading(id, label) {
   return `<h2 class="sec-head" id="${id}">${label}</h2>`;
+}
+
+function applyDoseSearch() {
+  const query = document.getElementById('doseSearch').value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('#content .dose-card').forEach(card => {
+    const match = !query || card.dataset.doseSearch.includes(query);
+    card.hidden = !match;
+    if (match) visible += 1;
+  });
+  document.querySelectorAll('#content .dose-grid').forEach(grid => {
+    const hasVisibleCards = [...grid.querySelectorAll('.dose-card')].some(card => !card.hidden);
+    grid.hidden = !hasVisibleCards;
+    const heading = grid.previousElementSibling;
+    if (heading?.classList.contains('sec-head')) heading.hidden = !hasVisibleCards;
+  });
+  document.getElementById('doseResultSummary').textContent = query ? `${visible} matching result${visible === 1 ? '' : 's'}` : `${visible} results`;
 }
 
 // ── Main render ───────────────────────────────────────────────────────────────
@@ -234,6 +254,7 @@ function render(wt, ageYr = null) {
   </div>`;
 
   document.getElementById('content').innerHTML = html;
+  applyDoseSearch();
 }
 
 // ── Placeholder skeleton (shown before weight is entered) ──────────────────────
@@ -300,6 +321,7 @@ function renderPlaceholder() {
   html += `</div>`;
 
   document.getElementById('content').innerHTML = html;
+  applyDoseSearch();
 }
 
 // ── UI logic ──────────────────────────────────────────────────────────────────
@@ -342,6 +364,11 @@ function go() {
 document.getElementById('calcBtn').addEventListener('click', go);
 ['wtKg','ageNum','ageUnit'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+});
+document.getElementById('doseSearch').addEventListener('input', applyDoseSearch);
+document.getElementById('editPatient').addEventListener('click', () => {
+  document.getElementById('wtKg').focus();
+  document.getElementById('patient-weight-title').scrollIntoView({behavior:'smooth', block:'center'});
 });
 
 // Show skeleton on load so users see all categories immediately

@@ -8,7 +8,7 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body class="clinical-app reference-app labs-app">
 <a class="skip-link" href="#main-content">Skip to laboratory reference</a>
@@ -59,6 +59,10 @@
         <span class="lab-search-icon" aria-hidden="true">⌕</span>
       </div>
     </div>
+    <div class="reference-filter-state" id="labFilterState" hidden>
+      <span id="labFilterDescription"></span>
+      <button class="quiet-clear" id="clearLabFilters" type="button">Clear filters</button>
+    </div>
   </section>
 
   <div class="labs-layout">
@@ -80,6 +84,6 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

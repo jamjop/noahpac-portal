@@ -62,6 +62,10 @@
   border-radius:var(--app-radius-md);
   background:var(--app-surface-subtle);
 }
+.patient-context{position:sticky;top:0;z-index:12;margin:-12px 0 20px;box-shadow:var(--app-shadow-raised)}
+.edit-patient{min-height:40px;margin-left:4px;padding:7px 10px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-sm);background:transparent;color:var(--app-accent);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.dose-finder{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,420px) auto;align-items:end;gap:16px;margin:0 0 24px;padding:16px;border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface)}
+.dose-finder h2{margin:0;color:var(--app-text);font-size:15px}.dose-finder p{margin:4px 0 0;color:var(--app-text-muted);font-size:12px}.dose-finder input{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-md);background:var(--app-surface);color:var(--app-text);font:inherit;font-size:14px}.dose-finder output{padding-bottom:12px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:10px;white-space:nowrap}
 .brose-bar[hidden]{display:none}
 .brose-swatch{width:24px;height:24px;flex:0 0 auto;border:1px solid var(--app-swatch-border);border-radius:6px}
 .brose-label{color:var(--app-text-secondary);font-size:13px}
@@ -93,7 +97,7 @@
   border-radius:var(--app-radius-md);
   background:var(--app-surface);
 }
-.dose-name{margin:0 0 10px;color:var(--app-text);font-size:13px;font-weight:750;line-height:1.4}
+.dose-card[hidden],.dose-grid[hidden],.sec-head[hidden]{display:none}.dose-name{margin:0 0 10px;color:var(--app-text);font-size:13px;font-weight:750;line-height:1.4}.dose-name a{color:inherit;text-decoration:none}.dose-name a:hover{text-decoration:underline;text-underline-offset:3px}
 .dose-val{color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:750;line-height:1.25}
 .dose-unit{margin-left:4px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:11px}
 .dose-range{margin-top:5px;color:var(--app-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.45}
@@ -123,6 +127,7 @@ html[data-theme="dark"] .pediatric-app{--app-surface-subtle:#141a26;--app-border
   .input-grid{grid-template-columns:minmax(180px,1fr) auto minmax(240px,1fr)}
   .calc-btn{grid-column:1/-1;width:100%}
   .dose-grid,.equip-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dose-finder{grid-template-columns:minmax(0,1fr) minmax(260px,1fr)}.dose-finder output{grid-column:1/-1;padding-bottom:0}
 }
 
 @media(max-width:700px){
@@ -135,7 +140,8 @@ html[data-theme="dark"] .pediatric-app{--app-surface-subtle:#141a26;--app-border
   .age-fields{grid-template-columns:1fr 1fr}
   .calc-btn{grid-column:auto}
   .brose-bar{align-items:flex-start;flex-wrap:wrap}
-  .brose-weight{margin-left:34px;width:100%}
+  .brose-weight{margin-left:auto}.edit-patient{width:100%;margin-left:34px}
+  .dose-finder{grid-template-columns:1fr;gap:12px}.dose-finder output{grid-column:auto}
   .dose-grid,.equip-row{grid-template-columns:1fr}
   .dose-card{min-height:0}
   .sec-head{margin-top:26px;font-size:17px}

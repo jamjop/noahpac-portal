@@ -237,23 +237,35 @@ const LABS = [
 let activeCat = 'all';
 let searchQuery = '';
 
+function slug(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function syncUrl(openLab) {
+  const url = new URL(window.location.href);
+  searchQuery ? url.searchParams.set('q', searchQuery) : url.searchParams.delete('q');
+  activeCat !== 'all' ? url.searchParams.set('cat', activeCat) : url.searchParams.delete('cat');
+  openLab ? url.searchParams.set('lab', openLab) : url.searchParams.delete('lab');
+  history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
 function buildCatFilters() {
   const wrap = document.getElementById('catFilters');
   wrap.innerHTML = '';
   const allBtn = document.createElement('button');
-  allBtn.className = 'tab-btn active';
+  allBtn.className = `tab-btn${activeCat === 'all' ? ' active' : ''}`;
   allBtn.textContent = 'All';
   allBtn.dataset.cat = 'all';
   allBtn.type = 'button';
-  allBtn.setAttribute('aria-pressed', 'true');
+  allBtn.setAttribute('aria-pressed', String(activeCat === 'all'));
   wrap.appendChild(allBtn);
   for (const c of CATS) {
     const btn = document.createElement('button');
-    btn.className = 'tab-btn';
+    btn.className = `tab-btn${activeCat === c.id ? ' active' : ''}`;
     btn.textContent = c.label;
     btn.dataset.cat = c.id;
     btn.type = 'button';
-    btn.setAttribute('aria-pressed', 'false');
+    btn.setAttribute('aria-pressed', String(activeCat === c.id));
     wrap.appendChild(btn);
   }
   wrap.addEventListener('click', e => {
@@ -266,6 +278,7 @@ function buildCatFilters() {
       b.setAttribute('aria-pressed', String(active));
     });
     render();
+    syncUrl();
   });
   wrap.addEventListener('keydown', e => {
     if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key)) return;
@@ -308,11 +321,12 @@ function render() {
       const rangeHtml = hasSexDiff
         ? `<div class="td-range">${esc(l.male)}</div><div class="td-range-f">F: ${esc(l.female)}</div>`
         : `<div class="td-range">${esc(l.male)}</div>`;
-      return `<tr>
-        <td class="td-name" data-label="Test">${esc(l.name)}</td>
+      const itemId = `lab-${slug(l.name)}`;
+      return `<tr id="${itemId}" data-lab-card>
+        <td class="td-name" data-label="Test"><a class="lab-anchor" href="#${itemId}">${esc(l.name)}</a><button class="lab-detail-toggle" type="button" aria-expanded="false" aria-controls="${itemId}-note">Details</button></td>
         <td data-label="Range">${rangeHtml}</td>
         <td class="td-units" data-label="Units">${esc(l.units)}</td>
-        <td class="td-note" data-label="Clinical notes">${esc(l.note)}</td>
+        <td class="td-note" id="${itemId}-note" data-label="Clinical notes">${esc(l.note)}</td>
       </tr>`;
     }).join('');
 
@@ -341,12 +355,57 @@ function render() {
   content.setAttribute('aria-busy', 'false');
   const category = activeCat === 'all' ? 'all categories' : CATS.find(c => c.id === activeCat)?.label || 'selected category';
   summary.textContent = `${totalCount} test${totalCount === 1 ? '' : 's'} · ${category}`;
+  const state = document.getElementById('labFilterState');
+  const description = document.getElementById('labFilterDescription');
+  state.hidden = !searchQuery && activeCat === 'all';
+  description.textContent = [searchQuery && `Search: “${searchQuery}”`, activeCat !== 'all' && `Category: ${category}`].filter(Boolean).join(' · ');
 }
 
 document.getElementById('labSearch').addEventListener('input', e => {
   searchQuery = e.target.value.trim().toLowerCase();
   render();
+  syncUrl();
 });
+
+document.getElementById('clearLabFilters').addEventListener('click', () => {
+  searchQuery = '';
+  activeCat = 'all';
+  document.getElementById('labSearch').value = '';
+  document.querySelectorAll('#catFilters .tab-btn').forEach(button => {
+    const active = button.dataset.cat === 'all';
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  render();
+  syncUrl();
+  document.getElementById('labSearch').focus();
+});
+
+document.getElementById('labContent').addEventListener('click', event => {
+  const button = event.target.closest('.lab-detail-toggle');
+  if (!button) return;
+  const row = button.closest('[data-lab-card]');
+  const expanded = button.getAttribute('aria-expanded') !== 'true';
+  button.setAttribute('aria-expanded', String(expanded));
+  row.classList.toggle('is-expanded', expanded);
+  syncUrl(expanded ? row.id.replace(/^lab-/, '') : '');
+});
+
+const initialParams = new URLSearchParams(location.search);
+searchQuery = (initialParams.get('q') || '').trim().toLowerCase();
+activeCat = CATS.some(cat => cat.id === initialParams.get('cat')) ? initialParams.get('cat') : 'all';
+document.getElementById('labSearch').value = searchQuery;
 
 buildCatFilters();
 render();
+
+const initialLab = initialParams.get('lab');
+if (initialLab) {
+  const row = document.getElementById(`lab-${initialLab}`);
+  const button = row?.querySelector('.lab-detail-toggle');
+  if (row && button) {
+    row.classList.add('is-expanded');
+    button.setAttribute('aria-expanded', 'true');
+    row.scrollIntoView({block:'center'});
+  }
+}
