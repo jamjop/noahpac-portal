@@ -46,7 +46,7 @@ USER_AGENT    = 'noahpac-vaccines-monitor/1.0'
 ALERT_TITLE   = 'ACIP/AAP/ACOG Vaccine Schedule Update'
 CDC_SCHED_URL = 'https://www.cdc.gov/vaccines/schedules/'
 AAP_SCHED_URL = 'https://www.aap.org/en/patient-care/immunizations/immunization-schedule-and-resources/'
-ACOG_IMMU_URL = 'https://www.acog.org/womens-health/immunization-for-women'
+ACOG_IMMU_URL = 'https://www.acog.org/womens-health/infographics/maternal-immunization-schedule'
 
 SEARCHES = [
     # ── ACIP / CDC ──
@@ -121,7 +121,7 @@ PAGE_SOURCES = [
     },
     {
         'id':   'acog_page_date',
-        'name': 'ACOG Immunization for Women page',
+        'name': 'ACOG Maternal Immunization Schedule',
         'url':  ACOG_IMMU_URL,
         'date_patterns': [
             r'(?:updated?|reviewed?|published?)[:\s]+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
