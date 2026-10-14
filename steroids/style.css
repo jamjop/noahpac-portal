@@ -43,6 +43,7 @@
 .clinical-field{display:flex;min-width:0;flex-direction:column;gap:7px}.clinical-field--full{grid-column:1/-1}
 .clinical-field label{color:var(--app-text-secondary);font-size:12px;font-weight:700}.clinical-field input,.clinical-field select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--app-border-strong);border-radius:9px;background:var(--app-surface);color:var(--app-text);font-size:15px}
 .input-with-unit{display:flex;align-items:center;gap:9px}.input-with-unit input{min-width:0}.input-with-unit__unit{min-width:48px;color:var(--app-text-muted);font-size:12px}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.form-actions button{min-height:44px;padding:8px 12px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-sm);background:transparent;color:var(--app-text-secondary);font:inherit;font-size:12px;font-weight:700;cursor:pointer}.form-actions button:first-child{border-color:var(--app-accent);color:var(--app-accent)}.form-actions button.copied{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
 .results-rail{display:flex;flex-direction:column;gap:12px}.results-rail__intro h2{margin:0;font-size:19px}.results-rail__eyebrow{margin:0 0 3px;color:var(--app-accent);font-size:11px;font-weight:700;text-transform:uppercase}
 .result-panel{overflow:hidden}.result-panel-head{margin:0;padding:12px 16px;border-bottom:1px solid var(--app-border);background:var(--app-surface-subtle);font-size:11px}.result-panel-body{min-height:76px;padding:16px}
 .reference-card{overflow:hidden}.reference-card__header{display:flex;justify-content:space-between;gap:16px;padding:18px 20px 14px;border-bottom:1px solid var(--app-border)}.reference-card__header h2{margin:0;font-size:16px}.reference-card__note{color:var(--app-text-muted);font-size:12px}.reference-table-wrap{overflow-x:auto}.reference-table{width:100%;border-collapse:collapse;font-size:13px}.reference-table th,.reference-table td{padding:10px 13px;border-bottom:1px solid var(--app-border);text-align:left}
@@ -128,7 +129,7 @@ html[data-theme="dark"] .steroid-app{--app-surface-subtle:#141a26;--app-border-s
   .clinical-form-grid{grid-template-columns:1fr;gap:14px}.clinical-field--full{grid-column:auto}
   .taper-panel__header{flex-direction:column;gap:8px;padding:17px}
   .taper-panel>.result-panel-body{padding:17px}
-  .reference-table{min-width:720px}
+  .reference-table,.reference-table tbody{display:block}.reference-table tr{display:grid;margin:10px;border:1px solid var(--app-border);border-radius:var(--app-radius-md);background:var(--app-surface)}.reference-table tr:has(th),.reference-table tr:has(td[colspan]){display:none}.reference-table td{display:grid;min-width:0;grid-template-columns:120px minmax(0,1fr);gap:10px;border-bottom:1px solid var(--app-border);overflow-wrap:anywhere}.reference-table td::before{content:attr(data-label);color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase}
 }
 
 @media(max-width:540px){

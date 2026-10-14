@@ -35,6 +35,7 @@
   font-size:14px;
 }
 .calc-filter input::placeholder{color:var(--app-text-muted)}
+.calc-filter-state{display:flex;min-height:32px;align-items:center;justify-content:space-between;gap:10px;margin:-8px 0 8px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:10px}.calc-filter-state button{min-height:32px;padding:5px 8px;border:0;background:transparent;color:var(--app-accent);font:inherit;font-weight:700;cursor:pointer}.calc-filter-state button[hidden]{display:none}
 .cat-nav{display:flex;flex-direction:column;gap:2px}
 .cat-nav .tab-btn{
   width:100%;

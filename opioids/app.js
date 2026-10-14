@@ -112,12 +112,14 @@ function calcAndRender() {
       if (mme >= 90) flagHtml = '<div class="mme-flag risk">⚠ ≥90 MME/day — high risk threshold (CDC 2022)</div>';
       else if (mme >= 50) flagHtml = '<div class="mme-flag warn">⚠ ≥50 MME/day — moderate risk; reassess necessity</div>';
       const patchNote = fromOp && fromOp.patch ? `<div class="conv-detail">${esc(fromOp.name)} ${fromDose} mcg/hr — daily dose (patch worn continuously)</div>` : '';
+      const regimenNote = fromOp && !fromOp.patch ? `<div class="conv-detail">${esc(fromOp.name)} ${fromDose} ${esc(fromOp.unit)} × ${freq}/day · factor ${(fromRoute === 'IV / SC' ? fromOp.mme_iv : fromOp.mme_oral)}</div>` : '';
       currentMmeEl.innerHTML = `
         <div class="mme-row">
           <span class="mme-num ${esc(cls)}">${mme.toFixed(1)}</span>
           <span class="mme-label">MME / day</span>
         </div>
         ${patchNote}
+        ${regimenNote}
         ${flagHtml}`;
     }
   }
@@ -163,13 +165,22 @@ function buildRefTable() {
   for (const [name, oral, iv, factor] of rows) {
     const cls = specialIds.includes(name) ? ' class="special"' : '';
     tbl.innerHTML += `<tr${cls}>
-      <td>${esc(name)}</td>
-      <td class="mono">${esc(oral)}</td>
-      <td class="mono">${esc(iv)}</td>
-      <td class="mono">${esc(factor)}</td>
+      <td data-label="Opioid">${esc(name)}</td>
+      <td class="mono" data-label="Oral dose">${esc(oral)}</td>
+      <td class="mono" data-label="IV / SC dose">${esc(iv)}</td>
+      <td class="mono" data-label="MME factor">${esc(factor)}</td>
     </tr>`;
   }
   tbl.innerHTML += `<tr><td colspan="4" style="font-size:11px;color:var(--ink-muted);padding:6px 10px">All values approximate equivalence to oral morphine 30 mg. Source: CDC 2022 Opioid Prescribing Guideline, FDA, clinical references.</td></tr>`;
+}
+
+async function copySummary() {
+  const output = document.getElementById('currentMme').innerText.trim();
+  if (!output || output === 'Enter dose above') return;
+  await navigator.clipboard.writeText(`Opioid MME estimate\n${output}\nFor current-regimen risk context only; not for replacement-opioid dosing.`);
+  const button = document.getElementById('copySummary');
+  button.textContent = 'Copied'; button.classList.add('copied');
+  setTimeout(() => { button.textContent = 'Copy summary'; button.classList.remove('copied'); }, 1600);
 }
 
 function wireListeners() {
@@ -183,6 +194,14 @@ function wireListeners() {
     });
     el.addEventListener('input', calcAndRender);
   }
+  document.getElementById('copySummary').addEventListener('click', copySummary);
+  document.getElementById('resetForm').addEventListener('click', () => {
+    document.getElementById('fromDrug').value = 'morphine';
+    populateRoutes('fromDrug','fromRoute','fromUnit');
+    document.getElementById('fromDose').value = '';
+    document.getElementById('fromFreq').value = '2';
+    calcAndRender(); document.getElementById('fromDose').focus();
+  });
 }
 
 populateSelects();

@@ -95,6 +95,7 @@ function calcAndRender() {
         <span class="mme-num ${esc(cls)}">${hcEquiv.toFixed(1)}</span>
         <span class="mme-label">mg/day hydrocortisone-equiv</span>
       </div>
+      <div class="conv-detail">${esc(fromSt.name)} ${fromDose} mg × ${freq}/day = ${(fromDose * freq).toFixed(2)} mg/day current regimen</div>
       <div class="conv-detail">≈ ${prednisoneEquiv.toFixed(1)} mg/day prednisone-equivalent</div>
       ${flagHtml}`;
   }
@@ -165,14 +166,24 @@ function buildRefTable() {
   for (const s of STEROIDS) {
     const gc = Math.round((20 / s.equiv_dose) * 10) / 10;
     tbl.innerHTML += `<tr>
-      <td>${esc(s.name)}</td>
-      <td class="mono">${esc(String(s.equiv_dose))}</td>
-      <td class="mono">${esc(String(gc))}×</td>
-      <td class="mono">${s.mc === 0 ? 'None' : esc(String(s.mc)) + '×'}</td>
-      <td>${esc(s.duration)}</td>
+      <td data-label="Steroid">${esc(s.name)}</td>
+      <td class="mono" data-label="Equivalent dose">${esc(String(s.equiv_dose))}</td>
+      <td class="mono" data-label="Glucocorticoid">${esc(String(gc))}×</td>
+      <td class="mono" data-label="Mineralocorticoid">${s.mc === 0 ? 'None' : esc(String(s.mc)) + '×'}</td>
+      <td data-label="Duration">${esc(s.duration)}</td>
     </tr>`;
   }
   tbl.innerHTML += `<tr><td colspan="5" style="font-size:11px;color:var(--ink-muted);padding:6px 10px">Equivalent doses referenced to hydrocortisone 20 mg. Potency is relative to hydrocortisone = 1×. Source: Endocrine Society, standard clinical pharmacology references.</td></tr>`;
+}
+
+async function copySummary() {
+  const equiv = document.getElementById('currentEquiv').innerText.trim();
+  const converted = document.getElementById('convResult').innerText.trim();
+  if (!equiv || equiv === 'Enter dose above') return;
+  await navigator.clipboard.writeText(`Corticosteroid equivalency summary\n${equiv}\nConverted dose: ${converted}\nApproximate equivalency only; verify indication, formulation, and patient-specific factors.`);
+  const button = document.getElementById('copySummary');
+  button.textContent = 'Copied'; button.classList.add('copied');
+  setTimeout(() => { button.textContent = 'Copy summary'; button.classList.remove('copied'); }, 1600);
 }
 
 function wireListeners() {
@@ -183,7 +194,15 @@ function wireListeners() {
     el.addEventListener('change', calcAndRender);
     el.addEventListener('input', calcAndRender);
   }
-
+  document.getElementById('copySummary').addEventListener('click', copySummary);
+  document.getElementById('resetForm').addEventListener('click', () => {
+    document.getElementById('fromDrug').value = 'prednisone';
+    document.getElementById('fromDose').value = '';
+    document.getElementById('fromFreq').value = '1';
+    document.getElementById('fromDuration').value = 'long';
+    document.getElementById('toDrug').value = 'hydrocortisone';
+    calcAndRender(); document.getElementById('fromDose').focus();
+  });
 }
 
 populateSelects();

@@ -8,7 +8,7 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body class="clinical-app calculator-app">
 <a class="skip-link" href="#main-content">Skip to calculator</a>
@@ -49,6 +49,7 @@
       <span class="calc-filter__label">Find a calculator</span>
       <input id="calcFilter" type="search" placeholder="Search 24 calculators" autocomplete="off">
     </label>
+    <div class="calc-filter-state"><output id="calcFilterSummary" aria-live="polite">24 calculators</output><button id="clearCalcFilter" type="button" hidden>Clear</button></div>
     <nav class="cat-nav" id="tabNav" role="tablist" aria-label="Choose a medical calculator"></nav>
     <p class="calc-nav-empty" id="calcNavEmpty" hidden>No calculators match that search.</p>
   </aside>
@@ -61,7 +62,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

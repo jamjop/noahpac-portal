@@ -1421,6 +1421,9 @@ function showCalc(id){
   const pane = document.getElementById('pane');
   const calc = CALCS.find(c=>c.id===id);
   if(!calc) return;
+  const url = new URL(location.href);
+  url.searchParams.set('calc', id);
+  history.replaceState(null, '', `${url.pathname}${url.search}`);
   pane.setAttribute('aria-labelledby', `calc-tab-${id}`);
 
   // Set up layout: header above, two-column body below
@@ -1505,6 +1508,8 @@ tabNav.addEventListener('keydown', event => {
 
 const calcFilter = document.getElementById('calcFilter');
 const calcNavEmpty = document.getElementById('calcNavEmpty');
+const calcFilterSummary = document.getElementById('calcFilterSummary');
+const clearCalcFilter = document.getElementById('clearCalcFilter');
 calcFilter.addEventListener('input', () => {
   const query = calcFilter.value.trim().toLocaleLowerCase();
   let matches = 0;
@@ -1515,6 +1520,15 @@ calcFilter.addEventListener('input', () => {
     if(match) matches++;
   });
   calcNavEmpty.hidden = matches !== 0;
+  calcFilterSummary.textContent = `${matches} calculator${matches === 1 ? '' : 's'}`;
+  clearCalcFilter.hidden = !query;
 });
 
-showCalc(CALCS[0].id);
+clearCalcFilter.addEventListener('click', () => {
+  calcFilter.value = '';
+  calcFilter.dispatchEvent(new Event('input'));
+  calcFilter.focus();
+});
+
+const requestedCalc = new URLSearchParams(location.search).get('calc');
+showCalc(CALCS.some(calc => calc.id === requestedCalc) ? requestedCalc : CALCS[0].id);
