@@ -138,8 +138,8 @@ body{margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'In
   .cat-nav__title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .cat-nav__buttons{flex-direction:row;gap:7px;overflow-x:auto;scrollbar-width:none}
   .cat-nav__buttons::-webkit-scrollbar{display:none}
-  .tab-btn{width:auto;min-height:44px;flex:0 0 auto;padding:8px 13px;border-color:var(--app-border-strong);border-radius:999px}
-  .tab-btn.active,.tab-btn[aria-pressed="true"]{border-color:var(--app-accent);background:var(--app-accent);color:var(--app-accent-contrast)}
+  .tab-btn{width:auto;min-height:44px;flex:0 0 auto;padding:8px 13px;border-color:transparent;border-radius:var(--app-radius-sm)}
+  .tab-btn.active,.tab-btn[aria-pressed="true"]{border-color:color-mix(in srgb,var(--app-accent) 22%,var(--app-border));background:var(--app-accent-soft);color:var(--app-accent)}
   .lab-table th:nth-child(1){width:22%}
   .lab-table th:nth-child(2){width:21%}
   .lab-table th:nth-child(3){width:15%}

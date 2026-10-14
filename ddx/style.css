@@ -25,9 +25,9 @@
 @media(max-width:799px){
   .cat-nav{display:flex;overflow-x:auto;scrollbar-width:none;padding:10px 16px;gap:6px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
   .cat-nav::-webkit-scrollbar{display:none}
-  .cat-nav .tab-btn{flex-shrink:0;background:transparent;border:1.5px solid var(--line);border-radius:50px;color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:8px 16px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
-  .cat-nav .tab-btn:hover{border-color:var(--purple);color:var(--purple)}
-  .cat-nav .tab-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+  .cat-nav .tab-btn{min-height:44px;flex-shrink:0;background:transparent;border:1px solid transparent;border-radius:var(--r-sm);color:var(--ink-muted);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:8px 16px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+  .cat-nav .tab-btn:hover{background:var(--purple-soft);color:var(--purple)}
+  .cat-nav .tab-btn.active{background:var(--purple-soft);color:var(--purple);border-color:color-mix(in srgb,var(--purple) 22%,var(--line))}
 }
 
 .tab-search{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 10px;border:1.5px solid rgba(255,255,255,.3);border-radius:var(--r-sm);background:rgba(255,255,255,.1);color:#fff;width:130px;flex-shrink:0;align-self:flex-start;margin-top:4px}
@@ -64,7 +64,7 @@
 
 @media(prefers-color-scheme:dark){
   .cat-nav .tab-btn{border-color:var(--line);color:var(--ink-soft)}
-  .cat-nav .tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+  .cat-nav .tab-btn.active{background:var(--purple-soft);border-color:color-mix(in srgb,var(--purple) 22%,var(--line));color:var(--purple)}
   .ddx-list li{box-shadow:var(--sh)}
   .ddx-col-head.high{background:var(--risk-soft);color:var(--risk)}
   .ddx-col-head.low{background:var(--ok-soft);color:var(--ok)}

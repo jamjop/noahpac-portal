@@ -18,10 +18,11 @@ body{margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'In
 .lookup-app .reference-search-panel{padding:20px;border:1px solid var(--app-border);border-radius:12px;background:var(--app-surface)}
 .lookup-app .reference-tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
 .lookup-app .reference-tab{
-  min-height:44px;padding:8px 14px;border:1px solid var(--app-border-strong);border-radius:999px;
+  min-height:44px;padding:8px 14px;border:1px solid transparent;border-radius:var(--app-radius-sm);
   background:transparent;color:var(--app-text-secondary);font:650 13px 'Inter',system-ui,sans-serif;cursor:pointer
 }
-.lookup-app .reference-tab[aria-selected="true"]{border-color:var(--app-accent);background:var(--app-accent);color:var(--app-accent-contrast)}
+.lookup-app .reference-tab:hover{background:var(--app-accent-soft);color:var(--app-accent)}
+.lookup-app .reference-tab[aria-selected="true"]{border-color:color-mix(in srgb,var(--app-accent) 22%,var(--app-border));background:var(--app-accent-soft);color:var(--app-accent)}
 .lookup-app .reference-search-field{display:flex;flex-direction:column;gap:7px}
 .lookup-app .reference-search-field label{color:var(--app-text-secondary);font-size:12px;font-weight:700}
 .lookup-app .reference-search-control{position:relative;display:flex}

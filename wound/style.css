@@ -128,9 +128,9 @@ footer{max-width:1000px}
 
 /* ── Tabs ── */
 .tab-bar{display:flex;gap:8px;max-width:1000px;margin:0 auto;padding:16px 16px 16px}
-.tab-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:7px 16px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.tab-btn:hover{background:var(--purple-soft);border-color:var(--purple-mid)}
-.tab-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.tab-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:7px 16px;border-radius:var(--r-sm);border:1px solid transparent;background:transparent;color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.tab-btn:hover{background:var(--purple-soft);color:var(--purple)}
+.tab-btn.active{background:var(--purple-soft);border-color:color-mix(in srgb,var(--purple) 22%,var(--line));color:var(--purple)}
 .tab-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .tab-panel[hidden]{display:none}
 

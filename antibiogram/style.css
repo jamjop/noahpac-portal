@@ -61,8 +61,9 @@ body{padding-bottom:50px}
 
 /* gram tabs */
 .gram-tabs{display:flex;gap:8px;margin:16px 0 12px}
-.gram-tab{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:7px 16px;border-radius:50px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.gram-tab.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.gram-tab{min-height:44px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:7px 16px;border-radius:var(--r-sm);border:1px solid transparent;background:transparent;color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.gram-tab:hover{background:var(--purple-soft);color:var(--purple)}
+.gram-tab.active{background:var(--purple-soft);border-color:color-mix(in srgb,var(--purple) 22%,var(--line));color:var(--purple)}
 .gram-tab:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 
 /* table wrapper */
@@ -107,5 +108,5 @@ footer a{color:var(--purple)}
 @media print{.tbl-wrap{border:none;box-shadow:none} .c-hi{background:var(--c-hi-bg)!important} .c-mid{background:var(--c-mid-bg)!important} .c-lo{background:var(--c-lo-bg)!important}}
 
 @media(prefers-color-scheme:dark){
-  .gram-tab.active{background:var(--purple);border-color:var(--purple);color:#fff}
+  .gram-tab.active{background:var(--purple-soft);border-color:color-mix(in srgb,var(--purple) 22%,var(--line));color:var(--purple)}
 }

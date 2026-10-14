@@ -288,13 +288,13 @@ html[data-theme="dark"] .calculator-app{--perc-pos-ink:#ffdc8a}
   .cat-nav::-webkit-scrollbar{display:none}
   .cat-nav .tab-btn{
     width:auto;
-    min-height:40px;
+    min-height:44px;
     flex:0 0 auto;
     padding:9px 13px;
-    border:1px solid var(--app-border);
-    border-radius:999px;
+    border:1px solid transparent;
+    border-radius:var(--app-radius-sm);
   }
-  .cat-nav .tab-btn.active{border-color:var(--app-accent);background:var(--app-accent);color:#fff}
+  .cat-nav .tab-btn.active{border-color:color-mix(in srgb,var(--app-accent) 22%,var(--app-border));background:var(--app-accent-soft);color:var(--app-accent)}
   .calc-nav-empty{padding:8px 0 2px}
   .pane{width:min(100% - 32px,760px);margin:0 auto}
 }
