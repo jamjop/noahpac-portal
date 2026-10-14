@@ -38,3 +38,17 @@ sudo test ! -e /var/www/noahpac-portal/clinical-assistant/chroma_data
 Do not delete the Chroma directory as routine cleanup. It is generated data,
 but it is the assistant's live reference index and requires re-ingestion to
 recreate. Back it up with other application state.
+
+## Python dependencies
+
+Direct API and ingestion dependencies are pinned in
+`clinical-assistant/requirements.txt`. After changing that file, or when a
+dependency import is missing, install and validate it with:
+
+```bash
+sudo /var/www/noahpac-portal/ops/install-clinical-assistant-dependencies.sh
+```
+
+The installer does not run ingestion or modify the Chroma index. It validates
+all API and ingestion imports and then confirms that the running API still
+reports healthy.

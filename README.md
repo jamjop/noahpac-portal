@@ -122,6 +122,9 @@ boundary are documented in [`docs/CLINICAL_REVIEW_PORTAL.md`](docs/CLINICAL_REVI
 The Clinical Assistant's production virtual environment and Chroma index live
 outside the web root; migration and recovery details are in
 [`docs/CLINICAL_ASSISTANT_RUNTIME.md`](docs/CLINICAL_ASSISTANT_RUNTIME.md).
+Its direct Python dependencies are pinned in
+`clinical-assistant/requirements.txt` and installed with the documented
+root-only dependency installer.
 
 Clinical ownership, review state, cadence, and authoritative-source mappings
 for all 26 tools are recorded in `clinical-review.json`. The weekly source-link
