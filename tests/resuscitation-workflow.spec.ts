@@ -1,15 +1,21 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('ALS and PALS field workflows', () => {
-  test('use complete grouped mobile navigation and stable deep links', async ({ page }) => {
+  test('use complete mobile section scrollers and stable deep links', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/als/#stroke');
-    await expect(page.locator('#sectionSelect')).toHaveValue('stroke');
+    await expect(page.getByRole('tab', { name: 'Stroke' })).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator('#content')).toHaveAttribute('data-section', 'stroke');
-    await expect(page.locator('#sectionSelect option')).toHaveCount(8);
+    await expect(page.locator('#tabNav [role="tab"]')).toHaveCount(8);
     await page.goto('/pals/#respiratory');
-    await expect(page.locator('#sectionSelect')).toHaveValue('resp');
-    await expect(page.locator('#sectionSelect option')).toHaveCount(8);
+    await expect(page.getByRole('tab', { name: 'Respiratory' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#tabNav [role="tab"]')).toHaveCount(8);
+    await expect(page.locator('#tabNav')).toHaveCSS('overflow-x', 'auto');
+    await page.goto('/pals/#medications');
+    await expect.poll(async()=>{
+      const box = await page.getByRole('tab', { name: 'Medications' }).boundingBox();
+      return box ? box.x + box.width : 9999;
+    }).toBeLessThanOrEqual(390);
   });
 
   test('presents algorithm priorities and compact reference detail', async ({ page }) => {

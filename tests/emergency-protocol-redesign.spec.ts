@@ -74,7 +74,7 @@ test.describe('Emergency protocol redesign', () => {
         await page.goto(protocol.path);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(overflow, `${protocol.path} overflow at ${width}px`).toBeLessThanOrEqual(1);
-        const navControl = protocol.path === '/tccc/' ? page.locator('.protocol-tab[aria-selected="true"]') : page.locator('#sectionSelect');
+        const navControl = page.locator('.protocol-tab[aria-selected="true"]');
         const navHeight = await navControl.evaluate(el => el.getBoundingClientRect().height);
         expect(navHeight).toBeGreaterThanOrEqual(44);
       }
@@ -82,7 +82,7 @@ test.describe('Emergency protocol redesign', () => {
 
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto('/pals/');
-    await page.locator('#sectionSelect').selectOption('meds');
+    await page.getByRole('tab', { name: 'Medications' }).click();
     await expect(page.locator('.med-reference')).toBeVisible();
     await expect(page.locator('.med-card').first()).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

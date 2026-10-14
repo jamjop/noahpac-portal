@@ -19,7 +19,6 @@
   const config = configs[type];
   const nav = document.getElementById('tabNav');
   const pane = document.getElementById('content');
-  const select = document.getElementById('sectionSelect');
   const status = document.getElementById('cacheStatus');
   const esc = value => String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const slug = value => String(value||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -29,10 +28,13 @@
   const labels = Object.fromEntries(buttons.map(button=>[button.dataset.id,button.textContent.trim()]));
 
   nav.innerHTML = config.groups.map(([group,ids])=>`<div class="nav-group"><div class="nav-group-label">${esc(group)}</div>${ids.map(id=>buttons.find(button=>button.dataset.id===id)?.outerHTML||'').join('')}</div>`).join('');
-  select.innerHTML = config.groups.map(([group,ids])=>`<optgroup label="${esc(group)}">${ids.map(id=>`<option value="${id}">${esc(labels[id])}</option>`).join('')}</optgroup>`).join('');
   const clickSection = id => nav.querySelector(`[data-id="${id}"]`)?.click();
-  select.addEventListener('change',()=>{clickSection(select.value); history.replaceState(null,'',`#${config.hashes[select.value]}`); localStorage.setItem(`${type}-section`,select.value);});
-  nav.addEventListener('click',event=>{const button=event.target.closest('[data-id]');if(!button)return;select.value=button.dataset.id;history.replaceState(null,'',`#${config.hashes[button.dataset.id]}`);localStorage.setItem(`${type}-section`,button.dataset.id);});
+  const centerActiveTab = (behavior='auto') => {
+    const active = nav.querySelector('[aria-selected="true"]');
+    if (!active || !matchMedia('(max-width: 860px)').matches) return;
+    active.scrollIntoView({behavior,block:'nearest',inline:'center'});
+  };
+  nav.addEventListener('click',event=>{const button=event.target.closest('[data-id]');if(!button)return;history.replaceState(null,'',`#${config.hashes[button.dataset.id]}`);localStorage.setItem(`${type}-section`,button.dataset.id);centerActiveTab('smooth');});
 
   const medicationIndex = [];
   if (type === 'als') {
@@ -99,7 +101,7 @@
 
   function enhance() {
     if(pane.querySelector('.algorithm-overview'))return;
-    const id=pane.dataset.section; select.value=id; const meta=config.meta[id]; const title=pane.querySelector('.sec-title');
+    const id=pane.dataset.section; const meta=config.meta[id]; const title=pane.querySelector('.sec-title');
     addWeightContext();
     if(title&&meta) title.insertAdjacentHTML('afterend',`<section class="algorithm-overview"><span>${esc(meta[0])}</span><p>${esc(meta[1])}</p></section>`);
     pane.querySelectorAll('.phase-label,.callout-label').forEach((label,index)=>{const owner=label.closest('.phase,.callout');if(!owner)return;owner.id=`${id}-${slug(label.textContent)}-${index}`;});
@@ -112,6 +114,7 @@
   }
   const observer=new MutationObserver(()=>enhance());observer.observe(pane,{childList:true});enhance();
   const requestedId=hashToId[initialRequestedHash]||localStorage.getItem(`${type}-section`);if(requestedId&&labels[requestedId])clickSection(requestedId);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>centerActiveTab()));
   window.addEventListener('hashchange',()=>{const id=hashToId[location.hash.slice(1).split('--')[0]];if(id)clickSection(id);});
 
   const cachePath=`/${type}/index.html`;
