@@ -17,10 +17,8 @@ import anthropic
 import chromadb
 import voyageai
 from flask import Flask, jsonify, request
+from runtime_paths import CHROMA_DIR, LIBRARY_DIR
 from safety import detected_identifier
-
-APP_DIR = Path(__file__).parent
-CHROMA_DIR = APP_DIR / "chroma_data"
 
 VOYAGE_API_KEY = os.environ.get("VOYAGE_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
@@ -49,7 +47,7 @@ If you didn't use any of the excerpts, write: SOURCES: none
 def citation_date(meta):
     if meta.get("source_date"):
         return meta["source_date"], meta.get("date_basis", "PDF metadata")
-    base = Path("/var/www/noahpac-portal/documents/pdfs") if meta.get("corpus") == "existing_hep" else APP_DIR / "library"
+    base = Path("/var/www/noahpac-portal/documents/pdfs") if meta.get("corpus") == "existing_hep" else LIBRARY_DIR
     path = base / Path(meta.get("source_filename", "")).name
     if path.is_file():
         return datetime.datetime.fromtimestamp(path.stat().st_mtime).date().isoformat(), "file modified"

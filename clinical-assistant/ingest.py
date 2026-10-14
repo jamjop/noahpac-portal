@@ -16,11 +16,10 @@ import chromadb
 import pdfplumber
 import voyageai
 from pdf2image import convert_from_path
+from runtime_paths import CHROMA_DIR, LIBRARY_DIR
 
-APP_DIR = Path(__file__).parent
 CORPUS_A_DIR = Path("/var/www/noahpac-portal/documents/pdfs")
-CORPUS_B_DIR = APP_DIR / "library"
-CHROMA_DIR = APP_DIR / "chroma_data"
+CORPUS_B_DIR = LIBRARY_DIR
 
 CHUNK_SIZE_CHARS = 3200  # ~800 tokens at ~4 chars/token
 CHUNK_OVERLAP_CHARS = 400  # ~100 tokens

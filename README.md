@@ -119,6 +119,9 @@ Systemd unit templates and secure setup instructions are in `ops/systemd/` and `
 
 The private review workflow, service installer, Nginx locations, and Authelia
 boundary are documented in [`docs/CLINICAL_REVIEW_PORTAL.md`](docs/CLINICAL_REVIEW_PORTAL.md).
+The Clinical Assistant's production virtual environment and Chroma index live
+outside the web root; migration and recovery details are in
+[`docs/CLINICAL_ASSISTANT_RUNTIME.md`](docs/CLINICAL_ASSISTANT_RUNTIME.md).
 
 Clinical ownership, review state, cadence, and authoritative-source mappings
 for all 26 tools are recorded in `clinical-review.json`. The weekly source-link

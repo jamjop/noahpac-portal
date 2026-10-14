@@ -1,0 +1,42 @@
+[Unit]
+Description=Noah PA-C Clinical Assistant API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/noahpac-portal/clinical-assistant
+Environment=CLINICAL_ASSISTANT_STATE_DIR=/var/lib/noahpac-clinical-assistant
+Environment=CLINICAL_ASSISTANT_LIBRARY_DIR=/var/www/noahpac-portal/clinical-assistant/library
+# The existing root-only file uses shell export syntax, so source it rather
+# than using EnvironmentFile= (which does not interpret `export KEY=value`).
+ExecStart=/bin/bash -c 'set -a; source /etc/clinical-assistant-api.env; set +a; exec /opt/noahpac/clinical-assistant/venv/bin/python3 /var/www/noahpac-portal/clinical-assistant/api_server.py'
+Restart=on-failure
+RestartSec=5
+UMask=0027
+
+# Keep executable dependencies read-only and grant writes only to Chroma state.
+StateDirectory=noahpac-clinical-assistant
+StateDirectoryMode=0750
+ReadWritePaths=/var/lib/noahpac-clinical-assistant
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
