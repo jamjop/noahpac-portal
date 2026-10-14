@@ -28,6 +28,16 @@
 .document-search label{display:grid;gap:.45rem}
 .document-search__status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:.65rem;color:var(--app-text-muted);font-size:.78rem}
 .hidden-tool{display:none!important}
+.document-categories{display:flex;gap:6px;margin:-.35rem 0 1.75rem;padding:4px 0;overflow-x:auto;scrollbar-width:none;overscroll-behavior-inline:contain}
+.document-categories::-webkit-scrollbar{display:none}
+.document-categories a{display:inline-flex;align-items:center;min-height:40px;padding:7px 11px;border:1px solid var(--app-border);border-radius:999px;background:var(--app-surface);color:var(--app-text-secondary);font-size:.75rem;font-weight:650;text-decoration:none;white-space:nowrap}
+.document-categories a:hover{border-color:var(--app-border-strong);color:var(--app-accent)}
+.category-col,#ext-refs{scroll-margin-top:16px}
+.documents-app .cat-heading{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.category-count{display:inline-grid;min-width:22px;height:22px;place-items:center;padding:0 6px;border-radius:999px;background:var(--app-surface-subtle);color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:0}
+.documents-app .tool-name{flex:1;min-width:0;line-height:1.45}
+.document-kind{flex:0 0 auto;align-self:center;margin-left:auto;padding-left:10px;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.035em;text-transform:uppercase;white-space:nowrap}
+.documents-app .ext-row .document-kind{margin-left:0}
 
 /* Documents use a quiet semantic icon system: files for hosted handouts and
    clipboards for externally hosted assessment forms. */
@@ -54,5 +64,10 @@
 
 /* ── Print: clean handout, no chrome ── */
 @media print {
-  .back-link, .search-wrap, footer, #ext-refs { display: none; }
+  .back-link, .search-wrap, .document-categories, footer, #ext-refs { display: none; }
+}
+
+@media(max-width:700px){
+  .document-categories{position:sticky;top:0;z-index:8;padding:8px 0;background:var(--bg)}
+  .document-kind{font-size:.58rem}
 }

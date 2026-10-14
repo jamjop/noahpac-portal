@@ -9,6 +9,48 @@
   var external = document.getElementById('ext-refs');
   var count = document.getElementById('doc-count');
   var clear = document.getElementById('doc-clear');
+  var categoryNav = document.getElementById('document-categories');
+
+  function slug(value) {
+    return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function addResourceKind(row) {
+    var url = new URL(row.href, location.href);
+    var externalLink = url.origin !== location.origin;
+    var pdf = /\.pdf$/i.test(url.pathname);
+    var label = document.createElement('span');
+    label.className = 'document-kind';
+    label.textContent = externalLink ? (pdf ? 'External PDF' : 'Website') : 'PDF';
+    var arrow = row.querySelector('.ext-arrow');
+    row.insertBefore(label, arrow || null);
+  }
+
+  var navLinks = [];
+  document.querySelectorAll('.category-col').forEach(function (section) {
+    var heading = section.querySelector('.cat-heading');
+    var title = heading.textContent.trim();
+    var total = section.querySelectorAll('.tool-row').length;
+    section.id = 'documents-' + slug(title);
+    var headingCount = document.createElement('span');
+    headingCount.className = 'category-count';
+    headingCount.textContent = String(total);
+    headingCount.setAttribute('aria-label', total + ' resources');
+    heading.appendChild(headingCount);
+    navLinks.push({ href: '#' + section.id, label: title });
+  });
+
+  var externalHeading = external.querySelector('.cat-heading');
+  var externalTotal = external.querySelectorAll('.ext-row').length;
+  var externalCount = document.createElement('span');
+  externalCount.className = 'category-count';
+  externalCount.textContent = String(externalTotal);
+  externalCount.setAttribute('aria-label', externalTotal + ' resources');
+  externalHeading.appendChild(externalCount);
+  navLinks.push({ href: '#ext-refs', label: 'Screening forms' });
+  categoryNav.innerHTML = navLinks.map(function (item) { return '<a href="' + item.href + '">' + item.label + '</a>'; }).join('');
+
+  document.querySelectorAll('.tool-row,.ext-row').forEach(addResourceKind);
 
   function filterDocuments() {
     var q = input.value.trim().toLowerCase();

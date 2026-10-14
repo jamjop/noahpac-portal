@@ -8,7 +8,7 @@
 <title>Clinical Documents — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/index.css">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app documents-app">
@@ -37,6 +37,8 @@
     <label for="doc-search"><span class="legacy-search-label">Find a document or screening tool</span><span class="search-wrap"><span class="search-icon-wrap"><i data-lucide="search" class="icon-search"></i></span><input id="doc-search" type="search" placeholder="Search by diagnosis or tool name…" autocomplete="off"></span></label>
     <div class="document-search__status"><span id="doc-count" aria-live="polite"></span><button class="app-clear-button" id="doc-clear" type="button" hidden>Clear search</button></div>
   </section>
+
+  <nav class="document-categories" id="document-categories" aria-label="Document categories"></nav>
 
   <main id="tools-grid" tabindex="-1">
 
@@ -195,7 +197,7 @@
   <p id="no-results">No documents match your search.</p>
 
   <section id="ext-refs">
-    <h2 class="cat-heading">Clinical Tools</h2>
+    <h2 class="cat-heading">Screening &amp; Assessment Forms</h2>
     <div class="ext-list">
       <a class="ext-row" data-search="asthma control test act pulmonary adult age 12 printable pdf children's mercy" href="https://www.childrensmercy.org/contentassets/5cd01da6eead4dcd9e3c2333692501d8/act_adulteng.pdf" target="_blank" rel="noopener">
         <span class="ext-icon"><i data-lucide="clipboard-check" class="icon-ext"></i></span>
@@ -231,6 +233,6 @@
 
 </div>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

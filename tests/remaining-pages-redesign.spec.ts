@@ -64,6 +64,10 @@ test.describe('Remaining-page redesign', () => {
     await page.goto('/documents/');
     await expect(page.locator('.tool-row .lucide-file-text').first()).toBeVisible();
     await expect(page.locator('.ext-row .lucide-clipboard-check').first()).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Document categories' }).getByRole('link')).toHaveCount(8);
+    await expect(page.getByRole('heading', { name: /Screening & Assessment Forms/ })).toBeVisible();
+    await expect(page.locator('.tool-row .document-kind').first()).toHaveText('PDF');
+    await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.document-kind')).toHaveText('External PDF');
     await page.getByLabel('Find a document').fill('carpal tunnel');
     await expect(page.getByText('Carpal Tunnel Syndrome', { exact: true })).toBeVisible();
     await expect(page.getByText('Shoulder — General Program')).toBeHidden();
