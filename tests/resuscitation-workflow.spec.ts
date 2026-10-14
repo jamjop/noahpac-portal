@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('ALS and PALS field workflows', () => {
+  test('install offline assets independently so one failed request cannot block the cache', async ({ request }) => {
+    for (const route of ['/als/sw.js', '/pals/sw.js']) {
+      const source = await (await request.get(route)).text();
+      expect(source).toContain('Promise.allSettled');
+      expect(source).not.toContain('.addAll(');
+    }
+  });
+
   test('use complete mobile section scrollers and stable deep links', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/als/#stroke');

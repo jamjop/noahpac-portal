@@ -1,4 +1,4 @@
-const CACHE = 'pals-v20';
+const CACHE = 'pals-v21';
 const ASSETS = [
   '/pals/',
   '/pals/index.html',
@@ -13,7 +13,13 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  // Cache assets independently so one transient failure does not prevent the
+  // rest of the offline reference from installing.
+  e.waitUntil(
+    caches.open(CACHE).then(c =>
+      Promise.allSettled(ASSETS.map(url => c.add(url)))
+    )
+  );
   self.skipWaiting();
 });
 
