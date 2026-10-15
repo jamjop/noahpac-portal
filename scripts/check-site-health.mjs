@@ -31,16 +31,27 @@ const FRESHNESS_ROUTES = [
 ];
 
 const EXTERNAL_LINKS = [
-  'https://www.uptodate.com/',
-  'https://www.droracle.ai/',
-  'https://humanatlas.io/',
-  'https://www.cdc.gov/std/treatment-guidelines/',
-  'https://www.orthoinfo.org/recovery/rotator-cuff-and-shoulder-conditioning-program/',
-  'https://aims.uw.edu/resource/generalized-anxiety-disorder-subscale-gad-7/',
-  'https://www.aapcc.org/',
-  'https://www.acmt.net/',
-  'https://www.samhsa.gov/find-help/national-helpline',
-  'https://www.cdc.gov/overdose-prevention/',
+  { url: 'https://www.uptodate.com/' },
+  { url: 'https://www.droracle.ai/' },
+  { url: 'https://humanatlas.io/' },
+  { url: 'https://www.cdc.gov/std/treatment-guidelines/' },
+  { url: 'https://www.orthoinfo.org/recovery/rotator-cuff-and-shoulder-conditioning-program/' },
+  {
+    url: 'https://www.childrensmercy.org/contentassets/5cd01da6eead4dcd9e3c2333692501d8/act_adulteng.pdf',
+    contentType: 'application/pdf',
+  },
+  {
+    url: 'https://www.phqscreeners.com/images/sites/g/files/g10060481/f/201412/PHQ-9_English.pdf',
+    contentType: 'application/pdf',
+  },
+  {
+    url: 'https://aims.uw.edu/wordpress/wp-content/uploads/2023/06/GAD-7_English_0.pdf',
+    contentType: 'application/pdf',
+  },
+  { url: 'https://www.aapcc.org/' },
+  { url: 'https://www.acmt.net/' },
+  { url: 'https://www.samhsa.gov/find-help/national-helpline' },
+  { url: 'https://www.cdc.gov/overdose-prevention/' },
 ];
 
 const API_CHECKS = [
@@ -158,12 +169,17 @@ async function checkRemote() {
     }
   }
 
-  for (const url of EXTERNAL_LINKS) {
+  for (const { url, contentType } of EXTERNAL_LINKS) {
     try {
       let response = await request(url, { method: 'HEAD', redirect: 'follow' });
       if (response.status === 405) response = await request(url, { method: 'GET', redirect: 'follow' });
-      if (response.status === 404 || response.status === 410 || response.status >= 500) fail(`external link returned ${response.status}: ${url}`);
-      else pass(`external link reachable (${response.status}): ${url}`);
+      if (response.status === 404 || response.status === 410 || response.status >= 500) {
+        fail(`external link returned ${response.status}: ${url}`);
+      } else if (contentType && !response.headers.get('content-type')?.toLowerCase().includes(contentType)) {
+        fail(`external document returned unexpected content type (${response.headers.get('content-type') || 'missing'}): ${url}`);
+      } else {
+        pass(`external link reachable (${response.status}): ${url}`);
+      }
       await response.body?.cancel();
     } catch (error) {
       warn(`external link could not be verified this run: ${url} (${error.message})`);
