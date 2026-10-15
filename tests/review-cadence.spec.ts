@@ -33,16 +33,52 @@ test.describe('Review cadence labels', () => {
     }
   });
 
+  // Not /calculators/: that page is under a clinical-review gate (REVIEW_REQUIRED_AFTER in assets/last-checked.js),
+  // so any check dated before the gate, or without clinically_reviewed, shows "review pending" and can never be
+  // merely overdue. Use a quarterly page that has no gate.
   test('uses amber only when a page is overdue', async ({ page }) => {
+    await page.route('**/sepsis/last_checked.json', (route) => route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ date: '2020-01-01' }),
+    }));
+    await page.goto('/sepsis/');
+    const cadence = page.locator('.app-header__title > .review-status');
+    await expect(cadence).toHaveClass(/stale/);
+    await expect(cadence).not.toHaveClass(/needs-review/);
+    await expect(cadence.locator('.review-status__dot')).toBeVisible();
+    await expect(cadence).toHaveAttribute('title', /Last checked for updates/);
+  });
+
+  test('keeps a clinically gated page pending when its last check predates the review requirement, however old', async ({ page }) => {
     await page.route('**/calculators/last_checked.json', (route) => route.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({ date: '2020-01-01' }),
     }));
     await page.goto('/calculators/');
     const cadence = page.locator('.app-header__title > .review-status');
-    await expect(cadence).toHaveClass(/stale/);
-    await expect(cadence.locator('.review-status__dot')).toBeVisible();
-    await expect(cadence).toHaveAttribute('title', /Last checked for updates/);
+    await expect(cadence).toHaveClass(/needs-review/);
+    await expect(cadence).not.toHaveClass(/stale/);
+    await expect(cadence).toContainText('Clinical update review pending');
+  });
+
+  test('keeps a clinically gated page pending until a clinical review is recorded', async ({ page }) => {
+    await page.route('**/calculators/last_checked.json', (route) => route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ date: '2026-10-15', status: 'no_change', review_pending: false }),
+    }));
+    await page.goto('/calculators/');
+    await expect(page.locator('.app-header__title > .review-status')).toHaveClass(/needs-review/);
+  });
+
+  test('clears the clinical gate only when a review is recorded on or after the requirement date', async ({ page }) => {
+    await page.route('**/calculators/last_checked.json', (route) => route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ date: '2026-10-15', status: 'no_change', review_pending: false, clinically_reviewed: true }),
+    }));
+    await page.goto('/calculators/');
+    const cadence = page.locator('.app-header__title > .review-status');
+    await expect(cadence).not.toHaveClass(/needs-review/);
+    await expect(cadence).toHaveText('References reviewed quarterly');
   });
 
   test('shows an explicit pending state when a source change awaits review', async ({ page }) => {
