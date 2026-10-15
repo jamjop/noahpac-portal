@@ -60,7 +60,9 @@ def public_topic(tool: dict, sources: dict) -> dict:
         if source:
             source_items.append({"id": source_id, "title": source["title"], "url": source["url"]})
     raw_status = status.get("status", "not_checked")
-    if status.get("review_pending") or raw_status in {"changed", "held_for_review", "review_required"}:
+    required_after = tool.get("review_required_after")
+    status_date = status.get("date", "")
+    if status.get("review_pending") or raw_status in {"changed", "held_for_review", "review_required"} or (required_after and (not status.get("clinically_reviewed") or status_date < required_after)):
         state = "pending"
     elif raw_status == "error":
         state = "error"

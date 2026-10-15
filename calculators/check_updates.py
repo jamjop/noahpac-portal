@@ -86,8 +86,22 @@ SEARCHES = [
     # ── Renal ────────────────────────────────────────────────────────────────
     {
         'id':      'kdigo_ckd',
-        'name':    'KDIGO CKD Guidelines (eGFR / CKD-EPI / CrCl)',
-        'query':   '"Kidney Disease: Improving Global Outcomes" AND ("chronic kidney disease" OR eGFR OR "glomerular filtration" OR "creatinine clearance") AND (guideline[pt] OR update[ti])',
+        'name':    'KDIGO CKD Guidelines (eGFR / CKD-EPI / KFRE / CrCl)',
+        'query':   '("Kidney Disease: Improving Global Outcomes" OR "Kidney Failure Risk Equation") AND ("chronic kidney disease" OR eGFR OR "glomerular filtration" OR "creatinine clearance" OR KFRE) AND (guideline[pt] OR update[ti] OR validation[ti])',
+        'reldate': 400,
+    },
+
+    # ── Electrocardiography / metabolic ─────────────────────────────────────
+    {
+        'id':      'qtc_correction',
+        'name':    'QT/QTc Measurement and Correction Guidance',
+        'query':   '(QTc OR "corrected QT" OR Fridericia OR Bazett) AND (guideline[pt] OR update[ti] OR statement[pt] OR consensus[ti])',
+        'reldate': 400,
+    },
+    {
+        'id':      'hyperglycemic_crisis',
+        'name':    'Adult DKA / HHS Consensus Guidance',
+        'query':   '("diabetic ketoacidosis" OR "hyperosmolar hyperglycemic state" OR "hyperglycemic crisis") AND (consensus[ti] OR guideline[pt] OR update[ti])',
         'reldate': 400,
     },
 

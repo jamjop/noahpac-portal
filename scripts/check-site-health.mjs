@@ -48,6 +48,14 @@ const EXTERNAL_LINKS = [
     url: 'https://aims.uw.edu/wordpress/wp-content/uploads/2023/06/GAD-7_English_0.pdf',
     contentType: 'application/pdf',
   },
+  {
+    url: 'https://www.faa.gov/ame_guide/media/STOP_BANG_Questionnaire.pdf',
+    contentType: 'application/pdf',
+  },
+  {
+    url: 'https://www.faa.gov/ame_guide/media/Epworth_Sleepiness_Scale.pdf',
+    contentType: 'application/pdf',
+  },
   { url: 'https://www.aapcc.org/' },
   { url: 'https://www.acmt.net/' },
   { url: 'https://www.samhsa.gov/find-help/national-helpline' },

@@ -4,6 +4,26 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-15-calculator-expansion",
+      "date": "2026-10-15",
+      "type": "clinical",
+      "title": "Focused renal, cardiac, hepatic, and metabolic calculations",
+      "summary": "Expanded the calculator workspace with source-limited risk estimates and laboratory context while keeping related assessments within their existing clinical workflows.",
+      "clinical_change": true,
+      "scope": "KFRE, QTc, hyperglycemia laboratory context, HAS-BLED, and Child-Pugh",
+      "affected_routes": ["/calculators/", "/documents/"],
+      "changes": [
+        "Integrated the North American four-variable KFRE into CKD G/A staging for the validated adult CKD G3–G5 population.",
+        "Added Fridericia- and Bazett-corrected QT intervals with rate and tracing limitations.",
+        "Added corrected sodium, effective and total calculated osmolality, and optional anion gap without presenting the results as a DKA/HHS diagnosis.",
+        "Integrated HAS-BLED into CHA2DS2-VASc with an explicit warning not to use bleeding scores alone to withhold anticoagulation.",
+        "Integrated Child-Pugh into MELD with visible subjective ascites and encephalopathy inputs.",
+        "Linked government-hosted STOP-BANG and Epworth Sleepiness Scale PDFs without copying the instruments into the repository.",
+        "Marked the calculator collection for clinician review before its pending state can be cleared."
+      ],
+      "source_ids": ["tangri_kfre", "kdigo_ckd_2024", "fda_qtc", "ada_hyperglycemic_crisis_2024", "acc_aha_af_2023", "aasld_meld_child_pugh"]
+    },
+    {
       "id": "2026-10-15-adult-urgency-disposition",
       "date": "2026-10-15",
       "type": "clinical",

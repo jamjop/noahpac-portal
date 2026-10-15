@@ -100,7 +100,20 @@ const CALCS = [
         ${checkPts("chads-female","Sex category: Female",1,"Note: female sex adds risk only when other criteria ≥1")}
       </div>
       <div id="chads-result" class="result-card"><div class="result-placeholder">—</div></div>
-      <button class="copy-btn" id="chads-copy">&#x2398; Copy result</button>`;
+      <div class="section-label section-label-gap">HAS-BLED bleeding-risk factors</div>
+      <div class="checks">
+        ${checkPts("hasbled-htn","Uncontrolled hypertension (SBP >160 mmHg)",1)}
+        ${checkPts("hasbled-renal","Abnormal renal function",1)}
+        ${checkPts("hasbled-liver","Abnormal liver function",1)}
+        ${checkPts("hasbled-stroke","Prior stroke",1)}
+        ${checkPts("hasbled-bleed","Major bleeding history or predisposition",1)}
+        ${checkPts("hasbled-inr","Labile INR / time in therapeutic range <60%",1)}
+        ${checkPts("hasbled-age","Age ≥65 years",1)}
+        ${checkPts("hasbled-drugs","Antiplatelet agent or NSAID use",1)}
+        ${checkPts("hasbled-alcohol","Excess alcohol use (≥8 units/week)",1)}
+      </div>
+      <button class="copy-btn" id="chads-copy">&#x2398; Copy combined result</button>
+      <p class="note">HAS-BLED identifies bleeding risks that may be modifiable and patients needing closer follow-up. It discriminates only modestly and must not be used alone to withhold anticoagulation. Abnormal renal and liver function, and drugs and alcohol, may each contribute one point. <a href="https://professional.heart.org/-/media/Files/Professional/Quality-Improvement/Get-With-the-Guidelines/Get-With-The-Guidelines-AFIB/AFib-Month/joglaretal20232023accahaaccphrsguidelineforthediagnosisandmanagementofatrialfibrillation.pdf" target="_blank" rel="noopener">2023 ACC/AHA/ACCP/HRS source</a>.</p>`;
       addListeners("chads", calcChads);
     }
   },
@@ -309,8 +322,14 @@ const CALCS = [
         ${field("Sodium","meld-na","number","mEq/L","138","100","160")}
       </div>
       <div id="meld-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <div class="section-label section-label-gap">Child-Pugh classification</div>
+      <div class="fields">
+        ${field("Albumin","child-albumin","number","g/dL","3.2","1","6")}
+        ${selectField("Ascites","child-ascites",[["1","None"],["2","Slight / controlled"],["3","Moderate-severe / refractory"]])}
+        ${selectField("Encephalopathy","child-enceph",[["1","None"],["2","Grade 1–2"],["3","Grade 3–4"]])}
+      </div>
       <button class="copy-btn" id="meld-copy">&#x2398; Copy result</button>
-      <p class="note">Creatinine capped at 4.0 mg/dL (minimum 1.0). Sodium clamped to 125–137 mEq/L for MELD-Na. Dialysis patients: set creatinine to 4.0.</p>`;
+      <p class="note">Creatinine is capped at 4.0 mg/dL (minimum 1.0); sodium is clamped to 125–137 mEq/L for MELD-Na. Dialysis patients: set creatinine to 4.0. Child-Pugh is intended for documented cirrhosis and includes subjective ascites and encephalopathy assessments; it should not be generated from laboratory values alone. <a href="https://www.aasld.org/liver-fellow-network/core-series/back-basics/evolution-meld-scores" target="_blank" rel="noopener">AASLD source</a>.</p>`;
       addListeners("meld", calcMeld);
     }
   },
@@ -592,11 +611,13 @@ const CALCS = [
       <div class="fields">
         ${field("eGFR","ckd-egfr","number","mL/min/1.73m²","75","1","200")}
         ${field("Urine ACR","ckd-acr","number","mg/g","12","0","20000")}
+        ${field("Age for KFRE","ckd-age","number","years","55","18","100")}
+        ${selectField("Sex for KFRE","ckd-sex",[["female","Female"],["male","Male"]])}
         ${selectField("Chronicity / kidney damage","ckd-chronic",[["unknown","Not established ≥3 months"],["yes","Established ≥3 months or other marker present"]])}
       </div>
       <div id="ckd-stage-result" class="result-card"><div class="result-placeholder">—</div></div>
       <button class="copy-btn" id="ckd-stage-copy">&#x2398; Copy result</button>
-      <p class="note">CKD requires abnormal kidney structure/function for at least 3 months. G1–G2 with A1 albuminuria does not establish CKD without another marker of kidney damage. Confirm an elevated urine ACR, address reversible causes, and use the full clinical context. This tool displays the KDIGO G/A prognosis category; it does not calculate the Kidney Failure Risk Equation. <a href="https://kdigo.org/guidelines/ckd-evaluation-and-management/" target="_blank" rel="noopener">KDIGO 2024 source</a>.</p>`;
+      <p class="note">CKD requires abnormal kidney structure/function for at least 3 months. G1–G2 with A1 albuminuria does not establish CKD without another marker. The North American four-variable KFRE is displayed only for adults with CKD G3–G5 (eGFR 10–59) and uses age, sex, eGFR, and urine ACR to estimate treated kidney-failure risk; it is not validated for AKI or kidney-transplant recipients. <a href="https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf" target="_blank" rel="noopener">KDIGO 2024 source</a>.</p>`;
       addListeners("ckd-stage", calcCkdStage);
     }
   },
@@ -631,6 +652,42 @@ const CALCS = [
       <button class="copy-btn" id="drug-screen-copy">&#x2398; Copy result</button>
       <p class="note">One or more times is a positive screen and warrants confidential follow-up about substances, frequency, route, overdose risk, impaired control, and treatment needs. Screening should be performed only when diagnosis, treatment, and appropriate care are available. This is not a diagnostic instrument and does not assess acuity. <a href="https://cde.nida.nih.gov/sites/nida_cde/files/SingleQuestion_ProfessAdmin_v1.0_2013Nov18.pdf" target="_blank" rel="noopener">NIDA source</a>.</p>`;
       addListeners("drug-screen", calcDrugScreen);
+    }
+  },
+
+  {
+    id:"qtc", name:"QTc (Bazett + Fridericia)", num:"24",
+    eyebrow:"Electrocardiography", source:"FDA E14 QT/QTc correction formulas",
+    render: pane => {
+      pane.innerHTML = calcHeader("Corrected QT Interval (QTc)","Electrocardiography","Bazett and Fridericia rate correction") + `
+      <div class="fields">
+        ${field("Measured QT","qtc-qt","number","ms","400","150","800")}
+        ${field("Heart rate","qtc-hr","number","bpm","70","20","250")}
+        ${selectField("Sex reference","qtc-sex",[["male","Male"],["female","Female"]])}
+      </div>
+      <div id="qtc-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="qtc-copy">&#x2398; Copy result</button>
+      <p class="note">Fridericia is emphasized because Bazett commonly overcorrects at faster rates and undercorrects below 60 bpm. Automated values require confirmation when the tracing has wide QRS, irregular rhythm, artifact, or an uncertain T-wave endpoint. QTc ≥500 ms is a high-risk signal, not a stand-alone diagnosis. <a href="https://www.fda.gov/files/drugs/published/E14-Clinical-Evaluation-of-QT-QTc-Interval-Prolongation-and-Proarrhythmic-Potential-for-Non-Antiarrhythmic-Drugs.pdf" target="_blank" rel="noopener">FDA source</a>.</p>`;
+      addListeners("qtc", calcQtc);
+    }
+  },
+
+  {
+    id:"hyperglycemia", name:"Hyperglycemia Labs", num:"25",
+    eyebrow:"Metabolic / Acute Care", source:"2024 ADA-led hyperglycemic-crisis consensus",
+    render: pane => {
+      pane.innerHTML = calcHeader("Hyperglycemia Laboratory Context","Metabolic / Acute Care","Corrected sodium, osmolality, and anion gap") + `
+      <div class="fields">
+        ${field("Measured sodium","hyper-na","number","mEq/L","135","90","190")}
+        ${field("Glucose","hyper-glucose","number","mg/dL","600","20","2000")}
+        ${field("BUN (optional)","hyper-bun","number","mg/dL","30","1","300")}
+        ${field("Chloride (optional)","hyper-cl","number","mEq/L","100","50","160")}
+        ${field("Bicarbonate (optional)","hyper-hco3","number","mEq/L","18","1","50")}
+      </div>
+      <div id="hyperglycemia-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="hyperglycemia-copy">&#x2398; Copy result</button>
+      <p class="note">Calculated values support laboratory interpretation but do not diagnose DKA or HHS. Evaluate ketones/β-hydroxybutyrate, pH, bicarbonate, volume status, mental status, potassium, renal function, and clinical trajectory. Use measured osmolality when available and follow a monitored treatment protocol. <a href="https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A" target="_blank" rel="noopener">2024 consensus source</a>.</p>`;
+      addListeners("hyperglycemia", calcHyperglycemia);
     }
   },
 ];
@@ -718,7 +775,7 @@ function calcFib4(){
 }
 
 function calcCkdStage(){
-  const egfr=num('ckd-egfr'), acr=num('ckd-acr'), chronic=sel('ckd-chronic');
+  const egfr=num('ckd-egfr'), acr=num('ckd-acr'), age=num('ckd-age'), sex=sel('ckd-sex'), chronic=sel('ckd-chronic');
   if(!Number.isFinite(egfr)||egfr<=0||!Number.isFinite(acr)||acr<0){
     setResult('ckd-stage-result','<div class="result-placeholder">Enter valid eGFR and urine ACR</div>'); return;
   }
@@ -729,6 +786,20 @@ function calcCkdStage(){
   let detail=`${g}: eGFR ${egfr.toFixed(0)} · ${a}: urine ACR ${acr.toFixed(0)} mg/g · ${prognosis.replace(/^./,c=>c.toUpperCase())} KDIGO progression risk.`;
   if((g==='G1'||g==='G2')&&a==='A1') detail += chronic==='yes'?' CKD requires the separate marker of kidney damage selected above.':' These values alone do not establish CKD.';
   else if(chronic!=='yes') detail += ' Confirm chronicity (≥3 months) before diagnosing CKD.';
+  if(egfr>=10&&egfr<60&&acr>=1&&age>=18&&age<=100){
+    const male=sex==='male'?1:0;
+    const lp=-0.2201*(age/10-7.036)+0.2467*(male-0.5642)-0.5567*(egfr/5-7.222)+0.4510*(Math.log(acr)-5.137);
+    const risk2=(1-Math.pow(0.9750,Math.exp(lp)))*100;
+    const risk5=(1-Math.pow(0.9240,Math.exp(lp)))*100;
+    detail += ` North American 4-variable KFRE: ${risk2.toFixed(1)}% at 2 years and ${risk5.toFixed(1)}% at 5 years.`;
+    if(risk2>40) detail += ' The 2-year estimate exceeds the KDIGO threshold used to inform kidney-replacement education and preparation.';
+    else if(risk2>10) detail += ' The 2-year estimate exceeds the KDIGO threshold used to inform multidisciplinary care.';
+    else if(risk5>=3) detail += ' The 5-year estimate is within the KDIGO risk range that can help inform nephrology referral.';
+  }else if(egfr<10||egfr>=60){
+    detail += ' KFRE is not displayed outside its intended eGFR 10–59 population.';
+  }else if(acr<1){
+    detail += ' Enter a reportable urine ACR of at least 1 mg/g to calculate KFRE.';
+  }
   const risk=prognosis==='low'?'low':prognosis==='moderate'?'moderate':'high';
   setResult('ckd-stage-result',resultCard(`${g} ${a}`,`${prognosis.replace(/^./,c=>c.toUpperCase())} progression risk`,detail,risk),risk);
 }
@@ -807,7 +878,15 @@ function calcChads(){
   else if(pts===1){ riskClass=''; riskLabel='Score 1 — Low-moderate risk'; detail='Annual stroke risk ~1.3%. Consider anticoagulation based on individual risk-benefit; female sex alone (score=1) does not warrant anticoagulation.'; }
   else if(pts<=3){ riskClass='warn'; riskLabel=`Score ${pts} — Moderate-high risk`; detail='Annual stroke risk 2–4%. Oral anticoagulation recommended unless contraindicated. Reassess bleeding risk (HAS-BLED).'; }
   else{ riskClass='risk'; riskLabel=`Score ${pts} — High risk`; detail='Annual stroke risk >4%. Oral anticoagulation recommended (NOAC preferred over warfarin in non-valvular AFib). Reassess bleeding risk.'; }
-  setResult('chads-result', resultCard(String(pts), riskLabel, detail, riskClass), riskClass);
+  const hasBledIds=['hasbled-htn','hasbled-renal','hasbled-liver','hasbled-stroke','hasbled-bleed','hasbled-inr','hasbled-age','hasbled-drugs','hasbled-alcohol'];
+  const hasBled=hasBledIds.reduce((sum,id)=>sum+(chk(id)?1:0),0);
+  const selected=hasBledIds.filter(id=>chk(id)).map(id=>document.getElementById(id)?.closest('label')?.textContent?.replace(/^\+1\s*/, '').trim()).filter(Boolean);
+  const hasLabel=hasBled>=3?'High bleeding-risk score; address modifiable factors and follow more closely':hasBled===0?'No HAS-BLED factors selected':'Review and modify bleeding-risk factors where possible';
+  setResult('chads-result', `<div class="result-num ${esc(riskClass)}">${esc(String(pts))}</div>
+    <div class="result-label">${esc(riskLabel)}</div>
+    <div class="result-detail">${esc(detail)}
+      <div class="sub-result"><strong>HAS-BLED: ${esc(String(hasBled))} / 9</strong><br>${esc(hasLabel)}${selected.length?`<br><span class="calc-note">Selected: ${esc(selected.join('; '))}</span>`:''}<br><span class="calc-note">Do not use this score alone to withhold anticoagulation.</span></div>
+    </div>`, riskClass);
 }
 
 function calcWellsDvt(){
@@ -950,13 +1029,60 @@ function calcMeld(){
   else if(meld<40){ riskClass='risk'; mort='~50–70%'; label='MELD 30–39 — Very high'; }
   else{ riskClass='risk'; mort='>70%'; label='MELD ≥40 — Critical'; }
 
+  const albumin=num('child-albumin');
+  const ascites=Number(sel('child-ascites'));
+  const enceph=Number(sel('child-enceph'));
+  let childHtml='<span class="calc-note">Enter valid Child-Pugh inputs for documented cirrhosis.</span>';
+  if(Number.isFinite(albumin)&&albumin>0&&[ascites,enceph].every(Number.isFinite)){
+    const biliPts=bili<2?1:bili<=3?2:3;
+    const albuminPts=albumin>3.5?1:albumin>=2.8?2:3;
+    const inrPts=inr<1.7?1:inr<=2.2?2:3;
+    const child=biliPts+albuminPts+inrPts+ascites+enceph;
+    const childClass=child<=6?'A':child<=9?'B':'C';
+    childHtml=`<strong>Child-Pugh: ${esc(String(child))} points · Class ${childClass}</strong><br><span class="calc-note">Bilirubin ${biliPts} + albumin ${albuminPts} + INR ${inrPts} + ascites ${ascites} + encephalopathy ${enceph}. Confirm the subjective findings clinically.</span>`;
+  }
   setResult('meld-result', `<div class="result-num ${esc(riskClass)}">${esc(String(meld))}</div>
     <div class="result-label">${esc(label)}</div>
     <div class="result-detail">Estimated 90-day mortality: ${esc(mort)}.
     <div class="sub-result">
       <strong>MELD-Na: ${esc(String(meldNa))}</strong><br>
-      <span class="calc-note">MELD-Na incorporates serum sodium and is now used by UNOS for liver transplant waitlist prioritization (MELD ≥11).</span>
-    </div></div>`, riskClass);
+      <span class="calc-note">MELD-Na incorporates serum sodium.</span>
+    </div><div class="sub-result">${childHtml}</div></div>`, riskClass);
+}
+
+function calcQtc(){
+  const qt=num('qtc-qt'), hr=num('qtc-hr'), sex=sel('qtc-sex');
+  if(!Number.isFinite(qt)||!Number.isFinite(hr)||qt<=0||hr<=0){
+    setResult('qtc-result','<div class="result-placeholder">Enter a measured QT and heart rate</div>'); return;
+  }
+  const rr=60/hr;
+  const bazett=qt/Math.sqrt(rr);
+  const fridericia=qt/Math.cbrt(rr);
+  const upper=sex==='female'?460:450;
+  let risk='', label='Within common adult reference range';
+  if(fridericia>=500){risk='risk';label='Marked QTc prolongation (≥500 ms)';}
+  else if(fridericia>upper){risk='warn';label=`Prolonged above common ${sex} reference (${upper} ms)`;}
+  const detail=`Fridericia QTc ${Math.round(fridericia)} ms · Bazett QTc ${Math.round(bazett)} ms · RR ${rr.toFixed(2)} s. Confirm the measured QT and interpret QRS duration, rhythm, medications, electrolytes, and clinical context.`;
+  setResult('qtc-result',resultCard(`${Math.round(fridericia)} ms`,label,detail,risk),risk);
+}
+
+function calcHyperglycemia(){
+  const na=num('hyper-na'), glucose=num('hyper-glucose'), bun=num('hyper-bun'), cl=num('hyper-cl'), hco3=num('hyper-hco3');
+  if(!Number.isFinite(na)||!Number.isFinite(glucose)||na<=0||glucose<=0){
+    setResult('hyperglycemia-result','<div class="result-placeholder">Enter measured sodium and glucose</div>'); return;
+  }
+  const correctedNa=na+1.6*(Math.max(glucose-100,0)/100);
+  const effective=2*na+glucose/18;
+  const total=Number.isFinite(bun)&&bun>0?effective+bun/2.8:null;
+  const ag=Number.isFinite(cl)&&Number.isFinite(hco3)?na-(cl+hco3):null;
+  let risk='', label='Interpret with the full hyperglycemic-crisis evaluation';
+  if(effective>300||(total!==null&&total>320)){risk='risk';label='Calculated hyperosmolality threshold present';}
+  else if(glucose>=250||(ag!==null&&ag>12)){risk='warn';label='Abnormal metabolic context requires evaluation';}
+  const parts=[`Corrected sodium ${correctedNa.toFixed(1)} mEq/L`,`Effective osmolality ${effective.toFixed(1)} mOsm/kg`];
+  if(total!==null) parts.push(`Total calculated osmolality ${total.toFixed(1)} mOsm/kg`);
+  if(ag!==null) parts.push(`Anion gap ${ag.toFixed(0)} mEq/L`);
+  const detail=`${parts.join(' · ')}. These calculations do not establish or exclude DKA/HHS; correlate with β-hydroxybutyrate/ketones, pH, bicarbonate, measured osmolality when available, volume status, potassium, and mental status.`;
+  setResult('hyperglycemia-result',resultCard(`${effective.toFixed(1)}`,label,detail,risk),risk);
 }
 
 /* ── New calc functions ── */
@@ -1410,8 +1536,8 @@ function buildResultColumn(criteriaCol, resultCol) {
 /* ── Navigation ── */
 const CALC_GROUPS = [
   { name:'Medication & liver', ids:['accutane','fib4','meld'] },
-  { name:'Cardiovascular', ids:['ascvd','chads','heart','wellsdvt','wellspe'] },
-  { name:'Renal & metabolic', ids:['crcl','egfr','ckd-stage','electro'] },
+  { name:'Cardiovascular', ids:['ascvd','chads','qtc','heart','wellsdvt','wellspe'] },
+  { name:'Renal & metabolic', ids:['crcl','egfr','ckd-stage','electro','hyperglycemia'] },
   { name:'Acute care', ids:['alvarado','curb65','ottawa','pecarn'] },
   { name:'Screening', ids:['audit-c','drug-screen','gad7','phq9'] },
   { name:'Perioperative & general', ids:['gupta','rcri','edd','weight-change'] },

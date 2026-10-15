@@ -41,6 +41,18 @@ class ReviewPortalTest(unittest.TestCase):
         self.assertEqual(topic["state"], "pending")
         self.assertEqual(topic["sources"][0]["id"], "ssc")
 
+    def test_new_required_review_date_reopens_previously_reviewed_topic(self):
+        status_path = api.REPO / "sepsis" / "last_checked.json"
+        status_path.write_text(json.dumps({
+            "date": "2026-10-11", "status": "no_change",
+            "review_pending": False, "clinically_reviewed": True,
+        }))
+        manifest = json.loads(api.MANIFEST.read_text())
+        manifest["tools"][0]["review_required_after"] = "2026-10-15"
+        api.MANIFEST.write_text(json.dumps(manifest))
+
+        self.assertEqual(api.dashboard()["topics"][0]["state"], "pending")
+
     def test_review_records_authenticated_identity_and_audit(self):
         result = api.record_review(self.submission(), "noah.pa")
         self.assertTrue(result["ok"])

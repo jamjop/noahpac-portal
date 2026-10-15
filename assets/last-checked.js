@@ -18,6 +18,7 @@
 // A page with no cadence tag keeps the green badge (no staleness check).
 (function () {
   var CADENCE_MAX_DAYS = { weekly: 8, monthly: 32, quarterly: 92, annually: 370 };
+  var REVIEW_REQUIRED_AFTER = { '/calculators/': '2026-10-15' };
 
   function maxAgeDays() {
     var el = document.querySelector('.update-cadence, .review-status');
@@ -39,7 +40,8 @@
       var formatted = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
       var limit = maxAgeDays();
       var stale = limit !== null && (Date.now() - d.getTime()) > limit * 86400000;
-      var needsReview = Boolean(data.review_pending) || ['changed', 'held_for_review', 'review_required'].includes(data.status);
+      var requiredAfter = REVIEW_REQUIRED_AFTER[location.pathname];
+      var needsReview = Boolean(data.review_pending) || ['changed', 'held_for_review', 'review_required'].includes(data.status) || Boolean(requiredAfter && (!data.clinically_reviewed || data.date < requiredAfter));
       var checkError = data.status === 'error';
       targets.forEach(function (target) {
         var prefix = checkError

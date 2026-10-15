@@ -4,8 +4,8 @@ test('clinical updates are rendered from the structured record', async ({ page }
   await page.goto('/updates/');
   await expect(page.getByRole('heading', { name: 'Clinical updates', exact: true })).toBeVisible();
   const cards = page.locator('.update-card');
-  await expect(cards).toHaveCount(8);
-  await expect(cards.first()).toContainText('Adult urgency and disposition support');
+  await expect(cards).toHaveCount(9);
+  await expect(cards.first()).toContainText('Focused renal, cardiac, hepatic, and metabolic calculations');
   await expect(page.getByText('HCPCS Level II terminology search')).toBeVisible();
   await expect(page.getByText('Focused primary-care tools and safety controls')).toBeVisible();
   await expect(page.getByText('Clearer tool names and connected stewardship workflows')).toBeVisible();
@@ -17,7 +17,7 @@ test('clinical updates are rendered from the structured record', async ({ page }
   await expect(page.locator('.update-card')).toHaveCount(2);
   await expect(page).toHaveURL(/type=governance/);
   await page.getByRole('button', { name: 'Clear filters' }).click();
-  await expect(page.locator('.update-card')).toHaveCount(8);
+  await expect(page.locator('.update-card')).toHaveCount(9);
 });
 
 test('clinical updates remain usable on a phone in dark mode', async ({ page }) => {

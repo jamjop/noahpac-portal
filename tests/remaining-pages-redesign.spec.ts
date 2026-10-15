@@ -77,6 +77,8 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByRole('link', { name: /Asthma Control Test/ })).toHaveAttribute('href', /childrensmercy\.org\/.+act_adulteng\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ })).toHaveAttribute('href', /aims\.uw\.edu\/.+GAD-7_English_0\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind')).toHaveText('External PDF');
+    await expect(page.getByRole('link', { name: /STOP-BANG Questionnaire/ })).toHaveAttribute('href', /faa\.gov\/.+STOP_BANG_Questionnaire\.pdf/);
+    await expect(page.getByRole('link', { name: /Epworth Sleepiness Scale/ })).toHaveAttribute('href', /faa\.gov\/.+Epworth_Sleepiness_Scale\.pdf/);
     const gadTitle = await page.getByRole('link', { name: /GAD-7/ }).locator('.ext-name').boundingBox();
     const gadKind = await page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind').boundingBox();
     expect(gadTitle).not.toBeNull();
