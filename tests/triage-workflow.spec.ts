@@ -66,5 +66,11 @@ test.describe('Adult Urgency & Disposition workflow', () => {
     await page.goto(URL);
     const dimensions = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
     expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1);
+    const spacing = await page.evaluate(() => {
+      const guidance = document.querySelector('#urgency-state')!.getBoundingClientRect();
+      const copy = document.querySelector('#copy-summary')!.getBoundingClientRect();
+      return copy.top - guidance.bottom;
+    });
+    expect(spacing).toBeGreaterThanOrEqual(16);
   });
 });
