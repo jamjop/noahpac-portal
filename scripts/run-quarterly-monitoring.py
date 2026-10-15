@@ -10,6 +10,7 @@ import datetime
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -58,6 +59,32 @@ def load_report() -> list[dict]:
         return json.loads(path.read_text())
     except (json.JSONDecodeError, OSError):
         return []
+
+
+FETCH_WARNING = re.compile(r"fetch failed", re.IGNORECASE)
+
+
+def page_fetch_warning_topics(results: list[dict]) -> list[str]:
+    """Topics whose result mentions a failed page fetch.
+
+    A topic whose monitor ran to completion but could not read one of its source
+    pages exits 0 and reports the problem inside its findings, so it is not a
+    topic failure, but it is not "clean" either: the page was not checked.
+    """
+    topics = []
+    for item in results:
+        details = [str(finding.get("detail", "")) for finding in item.get("findings", []) or []]
+        if item.get("status") != "error" and any(FETCH_WARNING.search(text) for text in details):
+            topics.append(str(item.get("app_id")))
+    return sorted(set(topics))
+
+
+def write_heartbeat(job: str) -> None:
+    """Prometheus 'last success' heartbeat, same helper the topic monitors use."""
+    sys.path.insert(0, str(REPO / "lib"))
+    import pubmed_watcher  # noqa: PLC0415
+
+    pubmed_watcher.write_heartbeat(job)
 
 
 def write_error(topic: str, name: str, detail: str) -> None:
@@ -155,6 +182,9 @@ def main() -> int:
         else:
             ensure_result(topic, name)
 
+    # Read this before the reporter runs: it deletes the report file after sending.
+    warned = page_fetch_warning_topics(load_report())
+
     expected = json.dumps([
         [topic, name, f"https://noahpac.com/{topic}/"] for topic, name in topics
     ])
@@ -169,10 +199,14 @@ def main() -> int:
     else:
         report_failed = False
 
+    clean = len(topics) - topic_failures - len([t for t in warned if t in {topic for topic, _ in topics}])
+    warning_text = f", {len(warned)} with a page-fetch warning ({', '.join(warned)})" if warned else ""
     print(
-        f"{'High-risk monthly' if args.high_risk else 'Quarterly'} monitoring complete: {len(topics) - topic_failures} clean, "
-        f"{topic_failures} topic failure(s), report {'failed' if report_failed else 'sent'}."
+        f"{'High-risk monthly' if args.high_risk else 'Quarterly'} monitoring complete: {clean} clean"
+        f"{warning_text}, {topic_failures} topic failure(s), report {'failed' if report_failed else 'sent'}."
     )
+    if not topic_failures and not report_failed:
+        write_heartbeat("high_risk_monitor" if args.high_risk else "quarterly_monitor")
     return 1 if topic_failures or report_failed else 0
 
 

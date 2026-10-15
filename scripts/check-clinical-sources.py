@@ -140,6 +140,17 @@ def main() -> int:
     for result in failures:
         print(f"FAILED {result['id']}: {result.get('http_status') or result.get('error')}")
     print(f"Clinical source check complete: {len(results) - len(failures)} reachable, {len(failures)} failed.")
+    # Heartbeat means "the job ran and wrote its result" (failing sources are reported by the exit code below),
+    # so a stopped timer is distinguishable from sources that are down.
+    try:
+        import sys
+
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "lib"))
+        import pubmed_watcher  # noqa: PLC0415
+
+        pubmed_watcher.write_heartbeat("source_links")
+    except Exception as exc:  # noqa: BLE001
+        print(f"WARNING: could not write heartbeat: {exc}")
     return 1 if failures else 0
 
 
