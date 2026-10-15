@@ -1,0 +1,7 @@
+{
+  "date": "2026-10-15",
+  "status": "review_required",
+  "review_pending": true,
+  "clinically_reviewed": false,
+  "note": "Initial adult escalation workflow requires source-based clinician review before the review state can be cleared."
+}
