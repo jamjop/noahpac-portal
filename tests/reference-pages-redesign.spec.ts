@@ -130,6 +130,33 @@ test.describe('Searchable reference redesign', () => {
     await expect(page.locator('.cat-nav .tab-btn')).toHaveCount(41);
   });
 
+  test('Lab Value DDx uses a categorized chooser instead of a long mobile scroller', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/ddx/?lab=potassium');
+
+    const chooser = page.locator('#labChooserToggle');
+    await expect(chooser).toBeVisible();
+    await expect(chooser).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#tabNav')).toBeHidden();
+
+    await chooser.click();
+    await expect(chooser).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#tabNav')).toBeVisible();
+    await expect(page.locator('.ddx-nav-group')).toHaveCount(11);
+    await expect(page.locator('.ddx-nav-group[open]')).toHaveCount(1);
+
+    await page.getByLabel('Find a laboratory value').fill('ferritin');
+    await expect(page.locator('.cat-nav .tab-btn')).toHaveCount(1);
+    await expect(page.locator('.ddx-nav-group[open]')).toHaveCount(1);
+    await page.locator('.cat-nav .tab-btn').click();
+
+    await expect(page).toHaveURL(/lab=ferritin/);
+    await expect(page.getByRole('heading', { name: 'Ferritin', exact: true })).toBeVisible();
+    await expect(chooser).toContainText('Ferritin');
+    await expect(chooser).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#tabNav')).toBeHidden();
+  });
+
   test('Code & Terminology Lookup searches official HCPCS Level II data without presenting it as CPT', async ({ page }) => {
     await page.route('**/api/hcpcs/v3/search?**', route => route.fulfill({
       status: 200,

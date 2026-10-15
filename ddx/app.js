@@ -262,6 +262,34 @@ const LABS = [
 let activeId = null;
 const searchInput = document.getElementById('ddxSearch');
 const clearSearch = document.getElementById('clearSearch');
+const chooserToggle = document.getElementById('labChooserToggle');
+const currentLabLabel = document.getElementById('currentLabLabel');
+const mobileChooser = window.matchMedia('(max-width: 820px)');
+
+function setChooserOpen(open, {focus = false} = {}) {
+  const nav = document.getElementById('tabNav');
+  chooserToggle.setAttribute('aria-expanded', String(open));
+  nav.classList.toggle('is-open', open);
+  if (open) {
+    const activeCategory = LABS.find(lab => lab.id === activeId)?.cat;
+    if (activeCategory) nav.querySelector(`.ddx-nav-group[data-category="${activeCategory}"]`)?.setAttribute('open', '');
+  } else if (focus) {
+    chooserToggle.focus({preventScroll:true});
+  }
+}
+
+function syncChooserMode() {
+  const nav = document.getElementById('tabNav');
+  if (!mobileChooser.matches) {
+    nav.classList.remove('is-open');
+    chooserToggle.setAttribute('aria-expanded', 'false');
+    nav.querySelectorAll('.ddx-nav-group').forEach(group => { group.open = true; });
+  } else {
+    const activeCategory = LABS.find(lab => lab.id === activeId)?.cat;
+    setChooserOpen(false);
+    nav.querySelectorAll('.ddx-nav-group').forEach(group => { group.open = group.dataset.category === activeCategory; });
+  }
+}
 
 function syncUrl(id, {replace = false} = {}) {
   const url = new URL(location.href);
@@ -273,6 +301,7 @@ function syncUrl(id, {replace = false} = {}) {
 function buildNav() {
   const q = searchInput.value.trim().toLowerCase();
   const nav = document.getElementById('tabNav');
+  const openCategories = new Set(Array.from(nav.querySelectorAll('.ddx-nav-group[open]')).map(group => group.dataset.category));
   nav.innerHTML = '';
   clearSearch.hidden = !q;
   let matchCount = 0;
@@ -282,11 +311,13 @@ function buildNav() {
       (!q || l.name.toLowerCase().includes(q)));
     if (!items.length) return;
     matchCount += items.length;
-    const group = document.createElement('div');
+    const group = document.createElement('details');
     group.className = 'ddx-nav-group';
-    const heading = document.createElement('p');
+    group.dataset.category = cat.id;
+    group.open = !mobileChooser.matches || Boolean(q) || openCategories.has(cat.id) || LABS.find(lab => lab.id === activeId)?.cat === cat.id;
+    const heading = document.createElement('summary');
     heading.className = 'ddx-nav-heading';
-    heading.textContent = cat.label;
+    heading.innerHTML = `<span>${esc(cat.label)}</span><span class="ddx-nav-count">${items.length}</span>`;
     group.appendChild(heading);
     items.forEach(l => {
       const btn = document.createElement('button');
@@ -294,7 +325,7 @@ function buildNav() {
       btn.dataset.id = l.id;
       btn.textContent = l.name;
       btn.setAttribute('aria-current', l.id === activeId ? 'true' : 'false');
-      btn.addEventListener('click', () => showLab(l.id));
+      btn.addEventListener('click', () => showLab(l.id, {fromChooser:true}));
       group.appendChild(btn);
     });
     nav.appendChild(group);
@@ -303,10 +334,11 @@ function buildNav() {
   if (!matchCount) nav.innerHTML = '<p class="ddx-nav-empty">No laboratory values match this search.</p>';
 }
 
-function showLab(id, {replace = false} = {}) {
+function showLab(id, {replace = false, fromChooser = false} = {}) {
   const lab = LABS.find(l => l.id === id);
   if (!lab) return;
   activeId = id;
+  currentLabLabel.textContent = lab.name;
   syncUrl(id, {replace});
   buildNav();
 
@@ -340,7 +372,13 @@ function showLab(id, {replace = false} = {}) {
 
   document.getElementById('copyBtn').addEventListener('click', () => copyDdx(lab));
   document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
-  document.querySelector(`.tab-btn[data-id="${id}"]`)?.scrollIntoView({block:'nearest', inline:'nearest'});
+  if (!mobileChooser.matches) document.querySelector(`.tab-btn[data-id="${id}"]`)?.scrollIntoView({block:'nearest'});
+  if (mobileChooser.matches && fromChooser) {
+    setChooserOpen(false);
+    const pane = document.getElementById('pane');
+    pane.focus({preventScroll:true});
+    pane.scrollIntoView({block:'start', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }
 }
 
 function copyLink() {
@@ -378,14 +416,21 @@ function copyDdx(lab) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 buildNav();
-searchInput.addEventListener('input', buildNav);
+chooserToggle.addEventListener('click', () => setChooserOpen(chooserToggle.getAttribute('aria-expanded') !== 'true'));
+searchInput.addEventListener('input', () => {
+  buildNav();
+  if (mobileChooser.matches && searchInput.value.trim()) setChooserOpen(true);
+});
 clearSearch.addEventListener('click', () => {
   searchInput.value = '';
+  if (mobileChooser.matches) document.querySelectorAll('.ddx-nav-group').forEach(group => { group.open = false; });
   buildNav();
   searchInput.focus();
 });
 const initialLab = new URLSearchParams(location.search).get('lab');
 if (LABS.some(lab => lab.id === initialLab)) showLab(initialLab, {replace:true});
+syncChooserMode();
+mobileChooser.addEventListener('change', syncChooserMode);
 window.addEventListener('popstate', () => {
   const id = new URLSearchParams(location.search).get('lab');
   if (LABS.some(lab => lab.id === id)) showLab(id, {replace:true});

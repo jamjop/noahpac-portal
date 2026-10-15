@@ -6,7 +6,7 @@ const NAVIGATION_CONTROLS = [
   ['/pals/', '.protocol-tab[aria-selected="true"]'],
   ['/calculators/', '.calc-chooser-toggle'],
   ['/labs/', '.cat-nav .tab-btn.active'],
-  ['/ddx/', '.cat-nav .tab-btn.active'],
+  ['/ddx/', '.ddx-chooser-toggle'],
   ['/lookup/', '.reference-tab[aria-selected="true"]'],
   ['/wound/', '.tab-bar .tab-btn[aria-selected="true"]'],
   ['/antibiogram/', '.gram-tab[aria-selected="true"]'],
@@ -19,7 +19,6 @@ test('navigation rails use compact rectangular controls on mobile', async ({ pag
     await page.goto(route);
     // DDx intentionally opens without a selected lab; choose one before
     // validating its selected navigation state.
-    if (route === '/ddx/') await page.locator('.cat-nav .tab-btn').first().click();
     const control = page.locator(selector).first();
     await expect(control, `${route} has an active navigation control`).toBeVisible();
     const geometry = await control.evaluate((element) => {
