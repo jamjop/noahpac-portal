@@ -1,6 +1,7 @@
 // Facility list is loaded at runtime from the antibiogram manifest.
 
 let FACILITY_SUSC = {};
+const STALE_DAYS = 60;
 
 // Each facility's antibiogram is extracted from a different PDF, so the same
 // organism appears under many spellings ("E. coli" / "Escherichia coli",
@@ -56,6 +57,28 @@ function periodEndDate(period) {
     return new Date(year, qEndMonth, qEndDay);
   }
   return null;
+}
+
+function updateStaleWarning() {
+  const facility = FACILITY_SUSC[selectedFacility];
+  let warning = document.getElementById('stale-warning');
+
+  if (!facility?.isStale) {
+    warning?.remove();
+    return;
+  }
+
+  if (!warning) {
+    warning = document.createElement('div');
+    warning.className = 'state warn stale-warn';
+    warning.id = 'stale-warning';
+    document.getElementById('result-area').before(warning);
+  }
+
+  warning.textContent =
+    `⚠ Antibiogram data may be outdated (${facility.name}). ` +
+    `The data is more than ${STALE_DAYS} days past its stated period — ` +
+    `verify current resistance rates with your pharmacy or infection control team.`;
 }
 
 const ABX_NAME = {
@@ -364,9 +387,6 @@ async function loadFacilities() {
   );
 
   const failedIds    = [];
-  const staleFacIds  = [];
-  const STALE_DAYS   = 60;
-
   results.forEach((result, i) => {
     if (result.status !== 'fulfilled') {
       failedIds.push(facilityIds[i]);
@@ -389,18 +409,14 @@ async function loadFacilities() {
         const canon = ORG_CANONICAL[String(org.name).toLowerCase()];
         if (canon) put(canon, org.s);                         // empiric's canonical label
       });
+      const endDate = periodEndDate(f.period);
+      const daysSinceEnd = endDate ? (Date.now() - endDate.getTime()) / 86_400_000 : null;
       FACILITY_SUSC[f.id] = {
         label: `${f.name} — ${f.location} (${f.period})`,
+        name: f.name || f.id,
         data,
+        isStale: daysSinceEnd !== null && daysSinceEnd > STALE_DAYS,
       };
-
-      const endDate = periodEndDate(f.period);
-      if (endDate) {
-        const daysSinceEnd = (Date.now() - endDate.getTime()) / 86_400_000;
-        if (daysSinceEnd > STALE_DAYS) {
-          staleFacIds.push(f.name || f.id);
-        }
-      }
     } catch (e) {
       failedIds.push(facilityIds[i]);
     }
@@ -418,17 +434,6 @@ async function loadFacilities() {
     warn.id = 'load-warning';
     warn.textContent = `Data unavailable for: ${failedIds.join(', ')}. Results may be incomplete.`;
     document.getElementById("result-area").before(warn);
-  }
-
-  if (staleFacIds.length) {
-    const staleWarn = document.createElement('div');
-    staleWarn.className = 'state warn stale-warn';
-    staleWarn.id = 'stale-warning';
-    staleWarn.textContent =
-      `⚠ Antibiogram data may be outdated (${staleFacIds.join(', ')}). ` +
-      `The data is more than ${STALE_DAYS} days past its stated period — ` +
-      `verify current resistance rates with your pharmacy or infection control team.`;
-    document.getElementById("result-area").before(staleWarn);
   }
 
   if (!FACILITY_SUSC[selectedFacility]) {
@@ -453,10 +458,12 @@ async function loadFacilities() {
   });
   facSel.addEventListener("change", () => {
     selectedFacility = facSel.value;
+    updateStaleWarning();
     render();
     syncUrl();
   });
 
+  updateStaleWarning();
   render();
 }
 

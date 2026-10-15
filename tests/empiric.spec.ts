@@ -197,6 +197,16 @@ test.describe('Empiric Therapy Tool – data-load error states', () => {
 
 test.describe('Empiric Therapy Tool – stale-data warning', () => {
 
+  test('uses the selected production dataset rather than stale facilities elsewhere in the manifest', async ({ page }) => {
+    await page.goto(EMPIRIC_URL);
+
+    await expect(page.locator('#fac-sel')).toHaveValue('trinity');
+    await expect(page.locator('#stale-warning')).toHaveCount(0);
+
+    await page.locator('#fac-sel').selectOption('chi_bismarck');
+    await expect(page.locator('#stale-warning')).toContainText('CHI St. Alexius Health');
+  });
+
   // ── 6. Old period → stale-data banner visible ────────────────────────────
 
   test('shows stale-data warning when a facility period is more than 60 days old', async ({ page }) => {
@@ -220,9 +230,9 @@ test.describe('Empiric Therapy Tool – stale-data warning', () => {
     expect(text).toContain('Test Hospital A');
   });
 
-  // ── 7. Both facilities stale → banner lists both ─────────────────────────
+  // ── 7. Warning follows only the selected facility ────────────────────────
 
-  test('lists all stale facilities in the warning banner', async ({ page }) => {
+  test('shows only the selected stale facility in the warning banner', async ({ page }) => {
     const STALE_FAC_B = JSON.stringify({
       id: 'fac_b',
       name: 'Test Hospital B',
@@ -247,7 +257,29 @@ test.describe('Empiric Therapy Tool – stale-data warning', () => {
     await expect(staleEl).toBeVisible({ timeout: 10_000 });
     const text = await staleEl.textContent();
     expect(text).toContain('Test Hospital A');
-    expect(text).toContain('Test Hospital B');
+    expect(text).not.toContain('Test Hospital B');
+
+    await page.locator('#fac-sel').selectOption('fac_b');
+    await expect(staleEl).toContainText('Test Hospital B');
+    await expect(staleEl).not.toContainText('Test Hospital A');
+  });
+
+  test('removes the stale warning when a current facility is selected', async ({ page }) => {
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: STALE_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: FRESH_FAC_B })
+    );
+
+    await page.goto(EMPIRIC_URL);
+    await expect(page.locator('#stale-warning')).toContainText('Test Hospital A');
+
+    await page.locator('#fac-sel').selectOption('fac_b');
+    await expect(page.locator('#stale-warning')).toHaveCount(0);
   });
 
   // ── 8. Current-quarter period → no stale banner ──────────────────────────
