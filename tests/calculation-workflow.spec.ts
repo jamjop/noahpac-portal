@@ -12,6 +12,24 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.getByRole('tab')).toHaveCount(24);
   });
 
+  test('mobile calculator chooser expands, filters, selects, and collapses', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/calculators/?calc=heart');
+
+    const chooser = page.locator('#calcChooserToggle');
+    await expect(chooser).toHaveAttribute('aria-expanded', 'false');
+    await chooser.click();
+    await expect(chooser).toHaveAttribute('aria-expanded', 'true');
+
+    await page.getByLabel('Find a calculator').fill('renal');
+    await expect(page.locator('.tab-btn:visible')).toHaveCount(2);
+    await page.getByRole('tab', { name: 'Creatinine Clearance' }).click();
+
+    await expect(chooser).toContainText('Creatinine Clearance');
+    await expect(chooser).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('.calc-title')).toHaveText('Creatinine Clearance');
+  });
+
   test('opioid summary exposes the regimen math, copies, and resets safely', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('/opioids/');

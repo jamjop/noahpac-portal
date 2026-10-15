@@ -4,7 +4,7 @@ const NAVIGATION_CONTROLS = [
   ['/tccc/', '.protocol-tab[aria-selected="true"]'],
   ['/als/', '.protocol-tab[aria-selected="true"]'],
   ['/pals/', '.protocol-tab[aria-selected="true"]'],
-  ['/calculators/', '.cat-nav .tab-btn.active'],
+  ['/calculators/', '.calc-chooser-toggle'],
   ['/labs/', '.cat-nav .tab-btn.active'],
   ['/ddx/', '.cat-nav .tab-btn.active'],
   ['/lookup/', '.reference-tab[aria-selected="true"]'],

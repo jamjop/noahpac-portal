@@ -1408,6 +1408,15 @@ function buildResultColumn(criteriaCol, resultCol) {
 }
 
 /* ── Navigation ── */
+const CALC_GROUPS = [
+  { name:'Medication & liver', ids:['accutane','fib4','meld'] },
+  { name:'Cardiovascular', ids:['ascvd','chads','heart','wellsdvt','wellspe'] },
+  { name:'Renal & metabolic', ids:['crcl','egfr','ckd-stage','electro'] },
+  { name:'Acute care', ids:['alvarado','curb65','ottawa','pecarn'] },
+  { name:'Screening', ids:['audit-c','drug-screen','gad7','phq9'] },
+  { name:'Perioperative & general', ids:['gupta','rcri','edd','weight-change'] },
+];
+
 let currentCalc = null;
 function showCalc(id){
   currentCalc = id;
@@ -1421,6 +1430,11 @@ function showCalc(id){
   const pane = document.getElementById('pane');
   const calc = CALCS.find(c=>c.id===id);
   if(!calc) return;
+  currentCalcLabel.textContent = calc.name;
+  if(mobileCalculatorNav.matches){
+    calcNavigation.classList.remove('is-open');
+    calcChooserToggle.setAttribute('aria-expanded','false');
+  }
   const url = new URL(location.href);
   url.searchParams.set('calc', id);
   history.replaceState(null, '', `${url.pathname}${url.search}`);
@@ -1475,19 +1489,45 @@ function showCalc(id){
 
 /* Build nav */
 const tabNav = document.getElementById('tabNav');
-CALCS.forEach(c=>{
-  const btn=document.createElement('button');
-  btn.type='button';
-  btn.id=`calc-tab-${c.id}`;
-  btn.className='tab-btn';
-  btn.dataset.id=c.id;
-  btn.textContent=c.name;
-  btn.setAttribute('role','tab');
-  btn.setAttribute('aria-controls','pane');
-  btn.setAttribute('aria-selected','false');
-  btn.tabIndex=-1;
-  btn.addEventListener('click',()=>showCalc(c.id));
-  tabNav.appendChild(btn);
+const calcNavigation = document.querySelector('.calc-navigation');
+const calcChooserToggle = document.getElementById('calcChooserToggle');
+const calcChooserPanel = document.getElementById('calcChooserPanel');
+const currentCalcLabel = document.getElementById('currentCalcLabel');
+const mobileCalculatorNav = window.matchMedia('(max-width: 900px)');
+
+CALC_GROUPS.forEach(group=>{
+  const section=document.createElement('div');
+  section.className='calc-nav-group';
+  section.dataset.group=group.name;
+  section.setAttribute('role','presentation');
+  const heading=document.createElement('div');
+  heading.className='calc-nav-group__label';
+  heading.textContent=group.name;
+  section.appendChild(heading);
+  group.ids.forEach(id=>{
+    const c=CALCS.find(calc=>calc.id===id);
+    if(!c) return;
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.id=`calc-tab-${c.id}`;
+    btn.className='tab-btn';
+    btn.dataset.id=c.id;
+    btn.textContent=c.name;
+    btn.setAttribute('role','tab');
+    btn.setAttribute('aria-controls','pane');
+    btn.setAttribute('aria-selected','false');
+    btn.tabIndex=-1;
+    btn.addEventListener('click',()=>showCalc(c.id));
+    section.appendChild(btn);
+  });
+  tabNav.appendChild(section);
+});
+
+calcChooserToggle.addEventListener('click',()=>{
+  const open=!calcNavigation.classList.contains('is-open');
+  calcNavigation.classList.toggle('is-open',open);
+  calcChooserToggle.setAttribute('aria-expanded',String(open));
+  if(open) requestAnimationFrame(()=>calcFilter.focus());
 });
 
 tabNav.addEventListener('keydown', event => {
@@ -1518,6 +1558,9 @@ calcFilter.addEventListener('input', () => {
     const match = !query || `${calc.name} ${calc.eyebrow}`.toLocaleLowerCase().includes(query);
     button.hidden = !match;
     if(match) matches++;
+  });
+  tabNav.querySelectorAll('.calc-nav-group').forEach(group=>{
+    group.hidden=!group.querySelector('.tab-btn:not([hidden])');
   });
   calcNavEmpty.hidden = matches !== 0;
   calcFilterSummary.textContent = `${matches} calculator${matches === 1 ? '' : 's'}`;

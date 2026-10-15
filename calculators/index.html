@@ -45,13 +45,19 @@
 
 <main class="page-body" id="main-content">
   <aside class="calc-navigation" aria-label="Calculator navigation">
-    <label class="calc-filter">
-      <span class="calc-filter__label">Find a calculator</span>
-      <input id="calcFilter" type="search" placeholder="Search 24 calculators" autocomplete="off">
-    </label>
-    <div class="calc-filter-state"><output id="calcFilterSummary" aria-live="polite">24 calculators</output><button id="clearCalcFilter" type="button" hidden>Clear</button></div>
-    <nav class="cat-nav" id="tabNav" role="tablist" aria-label="Choose a medical calculator"></nav>
-    <p class="calc-nav-empty" id="calcNavEmpty" hidden>No calculators match that search.</p>
+    <button class="calc-chooser-toggle" id="calcChooserToggle" type="button" aria-expanded="false" aria-controls="calcChooserPanel">
+      <span class="calc-chooser-toggle__copy"><span>Choose calculator</span><strong id="currentCalcLabel">Accutane Dosing</strong></span>
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
+    </button>
+    <div class="calc-chooser-panel" id="calcChooserPanel">
+      <label class="calc-filter">
+        <span class="calc-filter__label">Find a calculator</span>
+        <input id="calcFilter" type="search" placeholder="Search 24 calculators" autocomplete="off">
+      </label>
+      <div class="calc-filter-state"><output id="calcFilterSummary" aria-live="polite">24 calculators</output><button id="clearCalcFilter" type="button" hidden>Clear</button></div>
+      <nav class="cat-nav" id="tabNav" role="tablist" aria-label="Choose a medical calculator"></nav>
+      <p class="calc-nav-empty" id="calcNavEmpty" hidden>No calculators match that search.</p>
+    </div>
   </aside>
   <section class="pane" id="pane" role="tabpanel" tabindex="-1" aria-live="off"></section>
 </main>
@@ -62,7 +68,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>
