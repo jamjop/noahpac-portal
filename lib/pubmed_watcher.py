@@ -9,6 +9,7 @@ import json
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
 import urllib.parse
 import datetime
@@ -230,9 +231,16 @@ def fetch_page(url: str, user_agent: str = 'noahpac-monitor/1.0', timeout: int =
     Fetch a page's HTML directly. If the direct fetch fails (e.g. blocked
     by the target's bot protection), fall back to an on-demand Wayback
     Machine capture — archive.org's crawler is often not blocked even when
-    this host's direct requests are (confirmed for cdc.gov, 2026-07-09:
-    every cdc.gov path 403s this host's outbound IP via Akamai regardless
-    of User-Agent, but web.archive.org/save/<url> can still reach it).
+    this host's direct requests are (cdc.gov 403'd every request on
+    2026-07-09, and the Wayback capture can time out).
+
+    cdc.gov (Akamai) is picky about the User-Agent: on 2026-10-15 it
+    answered 403 to this monitor's custom UAs ("noahpac-*-monitor/1.0") and
+    to a browser-style UA, but 200 to the stock urllib/curl UAs, on the same
+    pages from the same host. So a 403 from a cdc.gov host is retried once
+    with no custom User-Agent (urllib's default) before the Wayback fallback.
+    The monitor still identifies itself everywhere else, and for cdc.gov
+    whenever the identified request is accepted.
 
     Raises on total failure (both direct and Wayback fetch failed) — the
     original direct-fetch exception is chained via `from`.
@@ -250,9 +258,18 @@ def fetch_page(url: str, user_agent: str = 'noahpac-monitor/1.0', timeout: int =
     dropped outright, since a direct fetch would never produce one.
     """
     try:
-        req = urllib.request.Request(url, headers={'User-Agent': user_agent})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode('utf-8', errors='replace')
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': user_agent})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read().decode('utf-8', errors='replace')
+        except urllib.error.HTTPError as exc:
+            host = urllib.parse.urlparse(url).hostname or ''
+            if exc.code != 403 or not (host == 'cdc.gov' or host.endswith('.cdc.gov')):
+                raise
+            print(f"  (cdc.gov returned 403 to User-Agent {user_agent!r}; retrying with urllib's default)",
+                  file=sys.stderr)
+            with urllib.request.urlopen(urllib.request.Request(url), timeout=timeout) as resp:
+                return resp.read().decode('utf-8', errors='replace')
     except Exception as direct_exc:
         try:
             wb_req = urllib.request.Request(WAYBACK_SAVE_BASE + url, headers={'User-Agent': user_agent})
