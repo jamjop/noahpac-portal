@@ -321,7 +321,19 @@ function copySummary() {
   const site = SITES.find(s => s.id === selectedSite);
   const facility = FACILITY_SUSC[selectedFacility];
   const lines = [site.label, `Facility: ${facility?.label || selectedFacility}`, `Likely organism: ${selectedOrg || 'Any / unknown'}`, ''];
-  site.regimens.forEach(regimen => lines.push(`${regimen.name} — ${regimen.dose}${regimen.note ? ` — ${regimen.note}` : ''}`));
+  site.regimens.forEach(regimen => {
+    let resistance = '';
+    if (selectedOrg) {
+      const susceptibility = regimen.abx ? getSusc(selectedOrg, regimen.abx) : undefined;
+      const resistanceLabel = typeof susceptibility === 'number'
+        ? `${100 - susceptibility}%`
+        : susceptibility === 'nr'
+          ? 'not recommended (~; no numeric rate reported)'
+          : 'not reported / not tested';
+      resistance = ` — Local resistance: ${resistanceLabel}`;
+    }
+    lines.push(`${regimen.name} — ${regimen.dose}${resistance}${regimen.note ? ` — ${regimen.note}` : ''}`);
+  });
   lines.push('', 'Verify allergies, renal function, severity, culture data, and current guidance.');
   navigator.clipboard.writeText(lines.join('\n')).then(() => flashResultButton('copy', 'Copied'));
 }

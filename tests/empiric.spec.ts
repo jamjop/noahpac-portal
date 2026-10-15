@@ -333,6 +333,30 @@ test.describe('Empiric Therapy Tool – stale-data warning', () => {
 
 });
 
+test.describe('Empiric Therapy Tool – copied summary', () => {
+  test('includes local resistance rates for the selected organism', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.route('**/antibiogram/data/manifest.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_MANIFEST })
+    );
+    await page.route('**/antibiogram/data/fac_a.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_FAC_A })
+    );
+    await page.route('**/antibiogram/data/fac_b.json', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: VALID_FAC_B })
+    );
+
+    await page.goto(`${EMPIRIC_URL}?site=uti&facility=fac_a&organism=E.%20coli`);
+    await page.getByRole('button', { name: 'Copy summary' }).click();
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+
+    expect(copied).toContain('Likely organism: E. coli');
+    expect(copied).toContain('TMP-SMX — 160/800 mg BID × 3d — Local resistance: 32%');
+    expect(copied).toContain('Ciprofloxacin — 250 mg BID × 3d — Local resistance: 28%');
+    expect(copied).toContain('Nitrofurantoin — 100 mg ER BID × 5d — Local resistance: not reported / not tested');
+  });
+});
+
 // ── Dark-mode stale-data banner ───────────────────────────────────────────────
 //
 // The #stale-warning banner uses .state.warn which relies on --warn-soft and
