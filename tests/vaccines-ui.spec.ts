@@ -8,16 +8,44 @@ test.describe('Vaccine schedule guidance UI', () => {
     await expect(page.locator('#patientSummary')).toHaveText(/2-year-old female · ACIP · routine schedule · no special conditions/i);
     await expect(page.locator('#unitYr')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('[data-source="acip"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#sourceContext')).toContainText('baseline schedule');
     await expect(page.locator('#catchupBtn')).toHaveAttribute('aria-pressed', 'false');
 
     await page.locator('[data-source="aap"]').click();
     await expect(page.locator('[data-source="aap"]')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('[data-source="acip"]')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('#patientSummary')).toContainText('AAP');
+    await expect(page.locator('#sourceContext')).toContainText('COVID-19, influenza, and HPV');
 
     await page.locator('#catchupBtn').click();
     await expect(page.locator('#catchupBtn')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#patientSummary')).toContainText('catch-up included');
+  });
+
+  test('applies source-specific AAP and ACOG recommendations', async ({ page }) => {
+    await page.goto('/vaccines/');
+
+    await page.locator('#age').fill('9');
+    await page.locator('[data-source="aap"]').click();
+    await expect(page.locator('.rec', { hasText: 'Human Papillomavirus' })).toContainText('AAP recommends initiating HPV vaccination at age 9');
+
+    await page.locator('#age').fill('20');
+    await page.locator('[data-source="acog"]').click();
+    await expect(page.locator('#sourceContext')).toContainText('pregnancy-specific guidance');
+    await page.getByText('Special conditions', { exact: true }).click();
+    await page.locator('#f_pregnant').check();
+    await expect(page.locator('.rec', { hasText: 'RSV Vaccine — Maternal' })).toBeVisible();
+    await expect(page.locator('.rec', { hasText: 'Tdap / Td' })).toContainText('ideally at 27–32 weeks');
+  });
+
+  test('shows MenB as shared decision-making through age 23 for every source', async ({ page }) => {
+    await page.goto('/vaccines/');
+    await page.locator('#age').fill('20');
+
+    for (const source of ['acip', 'aap', 'acog']) {
+      await page.locator(`[data-source="${source}"]`).click();
+      await expect(page.locator('.rec', { hasText: 'Meningococcal B' })).toContainText('Shared decision');
+    }
   });
 
   test('summarizes selected conditions and explains recommendation categories', async ({ page }) => {

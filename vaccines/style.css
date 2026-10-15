@@ -99,6 +99,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .seg button:hover{background:var(--purple-soft);color:var(--purple)}
 #sourceSeg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 #sourceSeg button{width:100%}
+.source-context{
+  margin:8px 0 0;
+  color:var(--ink-muted);
+  font-size:12px;
+  line-height:1.5;
+}
 #catchupBtn{border-color:var(--line);white-space:nowrap}
 
 .flags{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}

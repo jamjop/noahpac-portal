@@ -173,16 +173,11 @@ const VACCINES = [
   },
   {
     id:"menb", name:"Meningococcal B", abbr:"MenB",
-    routine:{min:16*12,max:18*12},
+    routine:{min:16*12,max:23*12},
     doses:"2–3 doses", freq:"16–23 yr (shared decision)",
     detail:"Shared clinical decision-making for ages 16–23 (preferred 16–18). Recommended for high-risk patients (asplenia, complement deficiency) at any age ≥10.",
     requires:[], sexSpecific:null,
     conditionExtra:[{conds:["asplenia","immunocompromised"], note:"Recommended regardless of age — asplenia or complement deficiency"}],
-    aap:{
-      routineMax:23*12,
-      freq:"16–23 yr (AAP: recommended at each preventive visit)",
-      detail:"AAP recommends MenB vaccine for all adolescents aged 16–23 years at routine preventive care visits, not limited to shared clinical decision-making. 2–3 doses depending on brand: Bexsero 2 doses ≥1 month apart; Trumenba 2 doses ≥6 months apart (or 3-dose accelerated schedule). Also recommended for high-risk patients (asplenia, complement deficiency) at any age ≥10.",
-    },
   },
   {
     id:"menabcwy", name:"Meningococcal ABCWY (Penbraya)", abbr:"MenABCWY",
@@ -268,6 +263,13 @@ const els = {
   copyBtn: document.getElementById('copyBtn'),
   printBtn: document.getElementById('printBtn'),
   patientSummary: document.getElementById('patientSummary'),
+  sourceContext: document.getElementById('sourceContext'),
+};
+
+const SOURCE_CONTEXT = {
+  acip: "ACIP selected — CDC/ACIP recommendations are used as the baseline schedule.",
+  aap: "AAP selected — pediatric differences are applied for COVID-19, influenza, and HPV guidance.",
+  acog: "ACOG selected — pregnancy-specific guidance is applied when pregnancy is selected; other recommendations retain the ACIP base.",
 };
 
 function flags(){
@@ -305,6 +307,7 @@ function render(){
   const ageY = ageM / 12;
   const f = flags();
   state.ageMonths = ageM;
+  els.sourceContext.textContent = SOURCE_CONTEXT[state.source];
   updateProfileSummary(f);
 
   /* hide sex-specific flags */
@@ -344,8 +347,8 @@ function render(){
 
     /* Routine age range */
     if (ageM >= v.routine.min && ageM <= v.routine.max) {
-      /* MenB: shared decision under ACIP; routine under AAP */
-      if (v.id === "menb" && ageM >= 16*12 && ageM <= 23*12 && !f.asplenia && !f.immunocompromised && state.source === "acip") {
+      /* MenB: shared decision for healthy patients ages 16–23. */
+      if (v.id === "menb" && ageM >= 16*12 && ageM <= 23*12 && !f.asplenia && !f.immunocompromised) {
         sharedDecision.push({v, note:null});
       } else {
         routine.push({v, note:null});
