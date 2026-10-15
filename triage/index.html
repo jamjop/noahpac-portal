@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conservative adult urgency and disposition support for clinicians, with emergency threats, vital-sign context, red flags, and safety-net documentation.">
+  <title>Adult Urgency &amp; Disposition — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="clinical-app triage-app">
+<a class="skip-link" href="#main-content">Skip to urgency assessment</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Clinician review required</span>
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Emergency &amp; Acute Care</p>
+      <h1>Adult Urgency &amp; Disposition</h1>
+      <p class="app-header__lede">Conservative adult escalation support for acute complaints and disposition decisions.</p>
+    </div>
+  </div>
+</header>
+
+<nav class="section-nav" aria-label="Urgency assessment sections">
+  <div class="section-nav__inner">
+    <a href="#threats">Immediate threats</a><a href="#vitals">Vital signs</a><a href="#red-flags">Red flags</a><a href="#modifiers">Risk modifiers</a><a href="#safeguards">Safeguards</a>
+  </div>
+</nav>
+
+<main class="page-body" id="main-content">
+  <div class="workflow-col">
+    <aside class="scope-note" aria-label="Scope and limitations">
+      <strong>Clinician-facing escalation support—not a diagnosis or validated triage scale.</strong>
+      <span>For adults age 18 and older. Do not delay emergency response to complete this form. Use local protocols, available resources, and clinical judgment. Pediatric and obstetric-specific pathways are outside this tool’s scope.</span>
+    </aside>
+
+    <section class="assessment-card" id="threats" aria-labelledby="threats-title">
+      <div class="card-heading"><span class="step-badge step-badge--danger">1</span><div><h2 id="threats-title">Immediate threats</h2><p>Any selected item overrides later sections and supports emergency response or ED evaluation.</p></div></div>
+      <div class="choice-list" id="threat-list">
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Unresponsive, pulseless, apneic, or not breathing normally"><span><strong>Unresponsive, pulseless, apneic, or not breathing normally</strong><small>Activate the appropriate resuscitation response immediately.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Threatened airway, severe respiratory distress, or central cyanosis"><span><strong>Threatened airway, severe respiratory distress, or central cyanosis</strong><small>Includes inability to speak, stridor, exhaustion, or rapidly worsening work of breathing.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Shock, persistent syncope, poor perfusion, or uncontrolled major bleeding"><span><strong>Shock, persistent syncope, poor perfusion, or uncontrolled major bleeding</strong><small>Do not delay hemorrhage control, emergency support, or transport.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="New focal neurologic deficit, ongoing seizure, or severe acute altered mental status"><span><strong>New focal neurologic deficit, ongoing seizure, or severe acute altered mental status</strong><small>Note last-known-well when stroke is possible.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Possible ACS or other time-critical chest pain syndrome"><span><strong>Possible ACS or other time-critical chest pain syndrome</strong><small>Pressure, squeezing, or discomfort with dyspnea, diaphoresis, nausea, syncope, or radiation.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Anaphylaxis or rapidly progressive angioedema"><span><strong>Anaphylaxis or rapidly progressive angioedema</strong><small>Airway, breathing, circulation, or rapidly evolving multisystem involvement.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Imminent risk of suicide, violence, or inability to maintain immediate safety"><span><strong>Imminent risk of suicide, violence, or inability to maintain immediate safety</strong><small>Maintain safety and activate emergency behavioral-health response.</small></span></label>
+      </div>
+    </section>
+
+    <section class="assessment-card" id="vitals" aria-labelledby="vitals-title">
+      <div class="card-heading"><span class="step-badge">2</span><div><h2 id="vitals-title">Vital-sign context</h2><p>Enter observed adult values. Marked abnormalities use NEWS2 Scale 1 single-parameter score-3 boundaries as escalation prompts, not as a diagnosis or disposition rule.</p></div></div>
+      <div class="vital-grid">
+        <label><span>Respiratory rate <small>/min</small></span><input id="rr" type="number" inputmode="decimal" min="0" max="80" placeholder="—"></label>
+        <label><span>SpO₂ <small>%</small></span><input id="spo2" type="number" inputmode="decimal" min="40" max="100" placeholder="—"></label>
+        <label><span>Systolic BP <small>mmHg</small></span><input id="sbp" type="number" inputmode="decimal" min="30" max="300" placeholder="—"></label>
+        <label><span>Heart rate <small>/min</small></span><input id="hr" type="number" inputmode="decimal" min="0" max="300" placeholder="—"></label>
+        <label><span>Temperature <small>°C</small></span><input id="temp" type="number" inputmode="decimal" min="25" max="45" step="0.1" placeholder="—"></label>
+        <label><span>Mental status</span><select id="mental"><option value="">Not entered</option><option value="alert">Alert / baseline</option><option value="confusion">New confusion or altered mentation</option></select></label>
+      </div>
+      <div class="vital-note" id="vital-note" role="status" aria-live="polite">Enter available vital signs; incomplete values prevent a lower-acuity result.</div>
+      <p class="scale-note">The SpO₂ threshold shown is NEWS2 Scale 1. Use Scale 2 only for patients with confirmed hypercapnic respiratory failure and follow the NEWS2/local protocol rather than this abbreviated screen.</p>
+    </section>
+
+    <section class="assessment-card" id="red-flags" aria-labelledby="red-flags-title">
+      <div class="card-heading"><span class="step-badge step-badge--danger">3</span><div><h2 id="red-flags-title">Complaint red flags</h2><p>Select any current feature that warrants emergency evaluation even if initial vital signs appear reassuring.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Sudden neurologic or vision change"><span><strong>Sudden neurologic or vision change</strong><small>Weakness, numbness, speech difficulty, ataxia, vision loss, or thunderclap headache.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Severe or rapidly worsening respiratory symptoms"><span><strong>Severe or rapidly worsening respiratory symptoms</strong><small>Dyspnea at rest, hemoptysis, hypoxemia, exhaustion, or pleuritic symptoms with instability.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Severe abdominal pain, peritoneal findings, or GI hemorrhage"><span><strong>Severe abdominal pain, peritoneal findings, or GI hemorrhage</strong><small>Includes hematemesis, significant melena/hematochezia, pulsatile mass, or pain out of proportion.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Possible sepsis with organ dysfunction or rapid deterioration"><span><strong>Possible sepsis with organ dysfunction or rapid deterioration</strong><small>Confusion, dyspnea, poor perfusion, extreme discomfort, or concerning trajectory with suspected infection.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Serious trauma, compartment or neurovascular concern"><span><strong>Serious trauma, compartment or neurovascular concern</strong><small>High-risk mechanism, open fracture, threatened limb, expanding hematoma, or spinal deficit.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="emergency" data-label="Pregnancy or postpartum emergency warning sign"><span><strong>Pregnancy or postpartum emergency warning sign</strong><small>Severe headache/vision change, chest pain, dyspnea, seizure, heavy bleeding, severe abdominal pain, or severe hypertension.</small></span></label>
+      </div>
+    </section>
+
+    <section class="assessment-card" id="modifiers" aria-labelledby="modifiers-title">
+      <div class="card-heading"><span class="step-badge step-badge--warn">4</span><div><h2 id="modifiers-title">Factors lowering the escalation threshold</h2><p>These do not establish a diagnosis, but support same-day assessment or a higher level of care when the presentation is uncertain.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-tier="urgent" data-label="Pregnant or within 1 year postpartum"><span><strong>Pregnant or within 1 year postpartum</strong><small>Use an obstetric-specific pathway and designated facility when appropriate.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="urgent" data-label="Immunocompromised, neutropenic, transplant, or active cancer therapy"><span><strong>Immunocompromised, neutropenic, transplant, or active cancer therapy</strong></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="urgent" data-label="Anticoagulated or significant bleeding risk"><span><strong>Anticoagulated or significant bleeding risk</strong></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="urgent" data-label="Frailty, age-related vulnerability, or major cardiopulmonary disease"><span><strong>Frailty, age-related vulnerability, or major cardiopulmonary disease</strong></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="urgent" data-label="Recent surgery, procedure, hospitalization, or indwelling device"><span><strong>Recent surgery, procedure, hospitalization, or indwelling device</strong></span></label>
+        <label class="choice-row"><input type="checkbox" data-tier="urgent" data-label="Unreliable observation, transportation, communication, or follow-up"><span><strong>Unreliable observation, transportation, communication, or follow-up</strong></span></label>
+      </div>
+    </section>
+
+    <section class="assessment-card" id="safeguards" aria-labelledby="safeguards-title">
+      <div class="card-heading"><span class="step-badge">5</span><div><h2 id="safeguards-title">Lower-acuity safeguards</h2><p>All three confirmations are required before this tool will display a lower-acuity pathway.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" class="safeguard" data-label="No listed immediate threat or complaint red flag identified"><span><strong>No listed immediate threat or complaint red flag identified</strong></span></label>
+        <label class="choice-row"><input type="checkbox" class="safeguard" data-label="Complete vital signs reviewed in clinical context"><span><strong>Complete vital signs reviewed in clinical context</strong></span></label>
+        <label class="choice-row"><input type="checkbox" class="safeguard" data-label="Reliable follow-up, observation, and explicit return precautions"><span><strong>Reliable follow-up, observation, and explicit return precautions</strong></span></label>
+      </div>
+    </section>
+
+    <details class="references">
+      <summary>Sources and implementation limits</summary>
+      <div>
+        <p>This tool does not reproduce or assign Emergency Severity Index (ESI) levels. ACEP and ENA recommend a validated triage scale for formal emergency-department triage.</p>
+        <ul>
+          <li><a href="https://www.ena.org/sites/default/files/2025-08/Emergency%20Department%20Triage.pdf" target="_blank" rel="noopener">ACEP/ENA Emergency Department Triage statement (2025)</a></li>
+          <li><a href="https://www.rcp.ac.uk/resources/national-early-warning-score-news-2/" target="_blank" rel="noopener">Royal College of Physicians NEWS2</a></li>
+          <li><a href="https://www.heart.org/en/about-us/heart-attack-and-stroke-symptoms" target="_blank" rel="noopener">American Heart Association emergency cardiovascular warning signs</a></li>
+          <li><a href="https://www.cdc.gov/stroke/signs-symptoms/" target="_blank" rel="noopener">CDC stroke signs and symptoms</a></li>
+          <li><a href="https://www.cdc.gov/sepsis/about/" target="_blank" rel="noopener">CDC sepsis signs and symptoms</a></li>
+          <li><a href="https://www.acog.org/womens-health/faqs/preeclampsia-and-high-blood-pressure-during-pregnancy" target="_blank" rel="noopener">ACOG pregnancy warning signs</a></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <aside class="result-col" aria-label="Urgency guidance summary">
+    <section class="summary-panel" id="summary-panel">
+      <p class="summary-eyebrow">Current guidance</p>
+      <div class="urgency-state urgency-state--incomplete" id="urgency-state" role="status" aria-live="polite" aria-atomic="true">
+        <span class="urgency-label">Assessment incomplete</span>
+        <strong>Complete the immediate-threat and red-flag review.</strong>
+        <p>This tool will not infer a lower level of urgency from blank fields.</p>
+      </div>
+      <div class="summary-findings"><h2>Selected findings</h2><ul id="finding-list"><li>No findings selected</li></ul></div>
+      <div class="summary-actions"><button type="button" id="copy-summary">Copy documentation summary</button><button type="button" id="reset-assessment" class="secondary">Reset</button></div>
+      <p class="summary-caution">A checklist cannot exclude serious illness. Escalate whenever the overall presentation, trajectory, or clinician concern exceeds the displayed tier.</p>
+    </section>
+  </aside>
+</main>
+
+<footer class="app-footer">
+  <p class="last-checked"></p>
+  <p class="app-footer__source">Adult clinician reference only. Not a replacement for ESI, local triage policy, emergency medical direction, diagnosis-specific evaluation, or clinical judgment.</p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+</footer>
+
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js" defer></script>
+</body>
+</html>

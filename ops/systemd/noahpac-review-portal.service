@@ -42,6 +42,7 @@ ReadWritePaths=-/var/www/noahpac-portal/steroids/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/sti-guide/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/tccc/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/toxicology/last_checked.json
+ReadWritePaths=-/var/www/noahpac-portal/triage/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/vaccines/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/wound/last_checked.json
 

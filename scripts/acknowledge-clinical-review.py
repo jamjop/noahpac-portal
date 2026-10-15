@@ -12,7 +12,7 @@ REPO = Path(__file__).resolve().parent.parent
 TOPICS = {
     "abx", "allergy", "als", "antibiogram", "anticoag", "calculators",
     "naloxone", "opioids", "pals", "peds", "reportable", "sepsis",
-    "steroids", "sti-guide", "tccc", "toxicology", "vaccines", "wound",
+    "steroids", "sti-guide", "tccc", "toxicology", "triage", "vaccines", "wound",
 }
 AUDIT_LOG = Path(os.environ.get(
     "NOAHPAC_REVIEW_AUDIT_LOG",

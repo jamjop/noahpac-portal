@@ -37,11 +37,12 @@ TOPICS = [
     ("steroids", "Corticosteroid Equivalency & Taper Guidance"),
     ("anticoag", "Anticoagulation Reversal"),
     ("toxicology", "Toxicology / Antidote Reference"),
+    ("triage", "Adult Urgency & Disposition"),
 ]
 HIGH_RISK_TOPIC_IDS = {
     "sti-guide", "naloxone", "abx", "tccc", "vaccines", "calculators",
     "peds", "als", "pals", "opioids", "sepsis", "allergy", "steroids",
-    "anticoag", "toxicology",
+    "anticoag", "toxicology", "triage",
 }
 
 

@@ -15,7 +15,7 @@ const ROUTES = [
   '/calculators/', '/clinical-assistant/', '/ddx/', '/documents/', '/drugref/',
   '/empiric/', '/labs/', '/lookup/', '/naloxone/', '/opioids/', '/pals/',
   '/peds/', '/reportable/', '/screener/', '/sepsis/', '/steroids/',
-  '/review/', '/sti-guide/', '/tccc/', '/toxicology/', '/updates/', '/vaccines/', '/wound/',
+  '/review/', '/sti-guide/', '/tccc/', '/toxicology/', '/triage/', '/updates/', '/vaccines/', '/wound/',
 ];
 const PRIVATE_ROUTES = ['/clinical-assistant/', '/review/'];
 
@@ -27,7 +27,7 @@ const REMOVED_V2 = [
 const FRESHNESS_ROUTES = [
   'abx', 'allergy', 'als', 'antibiogram', 'anticoag', 'calculators', 'naloxone',
   'opioids', 'pals', 'peds', 'reportable', 'sepsis', 'steroids', 'sti-guide',
-  'tccc', 'toxicology', 'vaccines', 'wound',
+  'tccc', 'toxicology', 'triage', 'vaccines', 'wound',
 ];
 
 const EXTERNAL_LINKS = [

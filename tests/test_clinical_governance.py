@@ -31,12 +31,12 @@ class ClinicalGovernanceTests(unittest.TestCase):
             env=env, capture_output=True, text=True, check=False,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertIn("26 tools", completed.stdout)
+        self.assertIn("27 tools", completed.stdout)
 
     def test_all_manifest_routes_and_monitors_exist(self):
         manifest = json.loads((REPO / "clinical-review.json").read_text())
-        self.assertEqual(len(manifest["tools"]), 26)
-        self.assertEqual(len({tool["id"] for tool in manifest["tools"]}), 26)
+        self.assertEqual(len(manifest["tools"]), 27)
+        self.assertEqual(len({tool["id"] for tool in manifest["tools"]}), 27)
         for tool in manifest["tools"]:
             self.assertTrue((REPO / tool["path"].strip("/") / "index.html").is_file())
             if tool["monitor"]:

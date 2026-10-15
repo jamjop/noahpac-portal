@@ -58,6 +58,7 @@
     "/reportable/": "References reviewed quarterly",
     "/screener/": "Recommendations updated weekly",
     "/sepsis/": "References reviewed quarterly",
+    "/triage/": "Clinician review required",
     "/steroids/": "References reviewed quarterly",
     "/sti-guide/": "References reviewed quarterly",
     "/tccc/": "References reviewed quarterly",

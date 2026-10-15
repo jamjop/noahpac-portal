@@ -1,8 +1,26 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-11",
+  "updated": "2026-10-15",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-15-adult-urgency-disposition",
+      "date": "2026-10-15",
+      "type": "clinical",
+      "title": "Adult urgency and disposition support",
+      "summary": "Added a conservative clinician-facing workflow for recognizing adult emergency threats, physiologic concern, complaint red flags, and factors that lower the threshold for escalation.",
+      "clinical_change": true,
+      "scope": "Adult acute-care escalation and safety-net documentation",
+      "affected_routes": ["/triage/"],
+      "changes": [
+        "Added immediate-threat and complaint-specific red-flag screening that overrides lower-acuity pathways.",
+        "Added adult vital-sign context using NEWS2 Scale 1 single-parameter score-3 boundaries as escalation prompts rather than a diagnosis or disposition rule, with an explicit Scale 2 limitation.",
+        "Required complete vital signs and three explicit safety confirmations before displaying a lower-acuity pathway.",
+        "Added copyable documentation, monthly surveillance, authoritative source links, and a mandatory pending clinician-review state.",
+        "Did not reproduce ESI levels, diagnose conditions, provide pediatric triage, or declare home care safe."
+      ],
+      "source_ids": ["acep_ena_triage_2025", "rcp_news2", "aha_emergency_signs", "cdc_stroke_signs", "cdc_sepsis_signs", "acog_preeclampsia"]
+    },
     {
       "id": "2026-10-11-clinical-review-portal",
       "date": "2026-10-11",
