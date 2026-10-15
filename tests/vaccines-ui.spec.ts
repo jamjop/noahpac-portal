@@ -75,6 +75,27 @@ test.describe('Vaccine schedule guidance UI', () => {
     expect(overflows).toBe(false);
   });
 
+  test('prints a focused vaccine guidance summary instead of the interactive page', async ({ page }) => {
+    await page.goto('/vaccines/');
+    await page.locator('#age').fill('20');
+    await page.locator('[data-sex="male"]').click();
+    await page.locator('[data-source="aap"]').click();
+    await page.getByText('Special conditions', { exact: true }).click();
+    await page.locator('#f_hcw').check();
+    await page.emulateMedia({ media: 'print' });
+
+    await expect(page.locator('.print-report')).toBeVisible();
+    await expect(page.locator('#printAge')).toHaveText('20 years');
+    await expect(page.locator('#printSex')).toHaveText('Male');
+    await expect(page.locator('#printSource')).toHaveText('AAP with ACIP base');
+    await expect(page.locator('#printConditions')).toHaveText('healthcare worker');
+    await expect(page.locator('.results')).toBeVisible();
+    await expect(page.locator('.panel')).toBeHidden();
+    await expect(page.locator('.result-toolbar')).toBeHidden();
+    await expect(page.locator('.app-header')).toBeHidden();
+    await expect(page.locator('.app-footer')).toBeHidden();
+  });
+
   test('shows one resolved update state instead of a transient success state', async ({ page }) => {
     await page.route('**/vaccines/last_checked.json', route => route.fulfill({
       contentType: 'application/json',

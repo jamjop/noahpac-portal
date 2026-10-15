@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vaccine Schedule Guidance — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script><link rel="stylesheet" href="/shared.css">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body class="clinical-app legacy-app decision-app vaccines-app">
 
@@ -109,6 +109,24 @@
     </details>
   </section>
 
+  <section class="print-report" aria-label="Printable vaccine guidance summary">
+    <div class="print-report__heading">
+      <div>
+        <p class="print-report__brand">Noah PA-C Clinical Tools</p>
+        <h1>Vaccine Guidance Summary</h1>
+      </div>
+      <p class="print-report__date"><span>Generated</span><strong id="printGenerated"></strong></p>
+    </div>
+    <dl class="print-profile">
+      <div><dt>Age</dt><dd id="printAge"></dd></div>
+      <div><dt>Sex</dt><dd id="printSex"></dd></div>
+      <div><dt>Schedule source</dt><dd id="printSource"></dd></div>
+      <div><dt>Guidance scope</dt><dd id="printScope"></dd></div>
+      <div class="print-profile__conditions"><dt>Selected conditions</dt><dd id="printConditions"></dd></div>
+    </dl>
+    <p class="print-report__notice">Age- and risk-based guidance only. Confirm vaccine history, dose count, minimum intervals, products, and contraindications before administration.</p>
+  </section>
+
   <div class="result-toolbar" id="copyBar" hidden>
     <div class="patient-summary">
       <p class="panel-kicker">Current profile</p>
@@ -129,7 +147,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

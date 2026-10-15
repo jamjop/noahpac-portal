@@ -264,6 +264,12 @@ const els = {
   printBtn: document.getElementById('printBtn'),
   patientSummary: document.getElementById('patientSummary'),
   sourceContext: document.getElementById('sourceContext'),
+  printAge: document.getElementById('printAge'),
+  printSex: document.getElementById('printSex'),
+  printSource: document.getElementById('printSource'),
+  printScope: document.getElementById('printScope'),
+  printConditions: document.getElementById('printConditions'),
+  printGenerated: document.getElementById('printGenerated'),
 };
 
 const SOURCE_CONTEXT = {
@@ -298,6 +304,14 @@ function updateProfileSummary(f) {
   const catchup = state.showCatchup ? "catch-up included" : "routine schedule";
   const conditions = selected.length ? selected.join(", ") : "no special conditions";
   els.patientSummary.textContent = `${age} ${state.sex} · ${source} · ${catchup} · ${conditions}`;
+  els.printAge.textContent = state.unit === "yr"
+    ? `${Math.round(state.ageMonths / 12)} years`
+    : `${state.ageMonths} months`;
+  els.printSex.textContent = state.sex.charAt(0).toUpperCase() + state.sex.slice(1);
+  els.printSource.textContent = source === "ACIP" ? "CDC / ACIP" : `${source} with ACIP base`;
+  els.printScope.textContent = state.showCatchup ? "Routine and catch-up guidance" : "Routine guidance";
+  els.printConditions.textContent = selected.length ? selected.join(", ") : "None selected";
+  els.printGenerated.textContent = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
   els.flagCount.textContent = selected.length ? `${selected.length} selected` : "None selected";
   els.flagCount.classList.toggle('has-selection', selected.length > 0);
 }
