@@ -4,6 +4,23 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-15-act-score-calculator",
+      "date": "2026-10-15",
+      "type": "clinical",
+      "title": "Asthma Control Test score interpretation",
+      "summary": "Added a license-conscious ACT score calculator that accepts item scores from the authorized form without reproducing the copyrighted questionnaire.",
+      "clinical_change": true,
+      "scope": "ACT total and published control threshold for patients age 12 and older",
+      "affected_routes": ["/calculators/", "/documents/"],
+      "changes": [
+        "Added five constrained 1–5 item-score inputs and automatic total calculation from 5 to 25.",
+        "Displays the published well-controlled, not-well-controlled, and very-poorly-controlled cut points with a three-point minimal-important-difference note.",
+        "Links to the existing publisher-attributed ACT PDF and intentionally does not reproduce questionnaire wording.",
+        "Keeps treatment decisions outside the score and marks the calculator collection for clinician review."
+      ],
+      "source_ids": ["ats_ers_asthma_control", "qualitymetric_act"]
+    },
+    {
       "id": "2026-10-15-calculator-expansion",
       "date": "2026-10-15",
       "type": "clinical",

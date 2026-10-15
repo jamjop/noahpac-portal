@@ -656,7 +656,28 @@ const CALCS = [
   },
 
   {
-    id:"qtc", name:"QTc (Bazett + Fridericia)", num:"24",
+    id:"act", name:"Asthma Control Test Score", num:"24",
+    eyebrow:"Asthma Control", source:"ACT score for patients age 12 and older",
+    render: pane => {
+      const scores=[["","Select score"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]];
+      pane.innerHTML = calcHeader("Asthma Control Test Score","Asthma Control","Score the licensed ACT form without reproducing its questionnaire") + `
+      <p class="note"><strong>Complete the official ACT form first.</strong> Enter each item score below. The questionnaire wording is intentionally not reproduced here. <a href="https://www.childrensmercy.org/contentassets/5cd01da6eead4dcd9e3c2333692501d8/act_adulteng.pdf" target="_blank" rel="noopener">Open the printable ACT PDF</a>.</p>
+      <div class="fields">
+        ${selectField("Official form item 1 score","act-q1",scores)}
+        ${selectField("Official form item 2 score","act-q2",scores)}
+        ${selectField("Official form item 3 score","act-q3",scores)}
+        ${selectField("Official form item 4 score","act-q4",scores)}
+        ${selectField("Official form item 5 score","act-q5",scores)}
+      </div>
+      <div id="act-result" class="result-card"><div class="result-placeholder">—</div></div>
+      <button class="copy-btn" id="act-copy">&#x2398; Copy result</button>
+      <p class="note">For patients age ≥12 and a four-week recall period. Total range 5–25; ≥20 is the published well-controlled threshold and ≤19 indicates asthma is not well controlled. A change of 3 points is commonly treated as the minimal important difference. The ACT supports—but does not replace—assessment of exacerbation risk, spirometry, adherence, inhaler technique, exposures, and treatment. ACT is a trademark of QualityMetric Incorporated; use the linked authorized form for administration. <a href="https://academic.oup.com/ajrccm/article/180/1/59/8524580" target="_blank" rel="noopener">ATS/ERS source</a>.</p>`;
+      addListeners("act", calcAct);
+    }
+  },
+
+  {
+    id:"qtc", name:"QTc (Bazett + Fridericia)", num:"25",
     eyebrow:"Electrocardiography", source:"FDA E14 QT/QTc correction formulas",
     render: pane => {
       pane.innerHTML = calcHeader("Corrected QT Interval (QTc)","Electrocardiography","Bazett and Fridericia rate correction") + `
@@ -673,7 +694,7 @@ const CALCS = [
   },
 
   {
-    id:"hyperglycemia", name:"Hyperglycemia Labs", num:"25",
+    id:"hyperglycemia", name:"Hyperglycemia Labs", num:"26",
     eyebrow:"Metabolic / Acute Care", source:"2024 ADA-led hyperglycemic-crisis consensus",
     render: pane => {
       pane.innerHTML = calcHeader("Hyperglycemia Laboratory Context","Metabolic / Acute Care","Corrected sodium, osmolality, and anion gap") + `
@@ -816,6 +837,20 @@ function calcAuditC(){
 function calcDrugScreen(){
   const positive=sel('drug-screen-answer')==='1';
   setResult('drug-screen-result',resultCard(positive?'Positive':'Negative',positive?'Follow-up assessment indicated':'No drug use reported in the past year',positive?'Assess substance, frequency, route, consequences, overdose risk, and treatment needs.':'Repeat screening according to local preventive-care practice.',positive?'moderate':'low'),positive?'moderate':'low');
+}
+
+function calcAct(){
+  const itemIds=['act-q1','act-q2','act-q3','act-q4','act-q5'];
+  const itemScores=itemIds.map(id=>Number(sel(id)));
+  if(itemScores.some(score=>!Number.isInteger(score)||score<1||score>5)){
+    setResult('act-result','<div class="result-placeholder">Enter all five official form item scores</div>'); return;
+  }
+  const score=itemScores.reduce((sum,value)=>sum+value,0);
+  let label='Well controlled by the published ACT threshold', risk='low';
+  if(score<=15){label='Very poorly controlled by published ACT cut points';risk='high';}
+  else if(score<=19){label='Not well controlled';risk='moderate';}
+  const detail=`Total ${score} / 25 from item scores ${itemScores.join(', ')}. Interpret with symptoms, exacerbation history, lung function, adherence, inhaler technique, and the current treatment plan; the score alone does not determine therapy.`;
+  setResult('act-result',resultCard(`${score} / 25`,label,detail,risk),risk);
 }
 
 function calcAscvd(){
@@ -1539,7 +1574,7 @@ const CALC_GROUPS = [
   { name:'Cardiovascular', ids:['ascvd','chads','qtc','heart','wellsdvt','wellspe'] },
   { name:'Renal & metabolic', ids:['crcl','egfr','ckd-stage','electro','hyperglycemia'] },
   { name:'Acute care', ids:['alvarado','curb65','ottawa','pecarn'] },
-  { name:'Screening', ids:['audit-c','drug-screen','gad7','phq9'] },
+  { name:'Screening', ids:['act','audit-c','drug-screen','gad7','phq9'] },
   { name:'Perioperative & general', ids:['gupta','rcri','edd','weight-change'] },
 ];
 

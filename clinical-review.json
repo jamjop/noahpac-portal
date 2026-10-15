@@ -48,6 +48,8 @@
     ,"ada_hyperglycemic_crisis_2024": {"title": "2024 Hyperglycemic Crises in Adults Consensus Report", "url": "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A"}
     ,"acc_aha_af_2023": {"title": "2023 ACC/AHA/ACCP/HRS Atrial Fibrillation Guideline", "url": "https://professional.heart.org/en/science-news/2023-acc-aha-accp-hrs-guideline-for-the-diagnosis-and-management-of-atrial-fibrillation"}
     ,"aasld_meld_child_pugh": {"title": "AASLD Evolution of MELD and Child-Pugh Scores", "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/evolution-meld-scores"}
+    ,"ats_ers_asthma_control": {"title": "ATS/ERS Statement on Asthma Control and Exacerbations", "url": "https://academic.oup.com/ajrccm/article/180/1/59/8524580"}
+    ,"qualitymetric_act": {"title": "QualityMetric Asthma Control Test Overview", "url": "https://www.qualitymetric.com/wp-content/uploads/2023/03/ACT_KaiserPermanente_CaseStudy_v2.pdf"}
   },
   "tools": [
     {"id":"abx","path":"/abx/","title":"Antibiotic Reference","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"abx/check_updates.py","source_ids":["pubmed","idsa_gas_2025","cdc_gas"]},
@@ -55,7 +57,7 @@
     {"id":"als","path":"/als/","title":"Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"als/check_updates.py","source_ids":["aha_als_2025"]},
     {"id":"antibiogram","path":"/antibiogram/","title":"ND Antibiogram","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"antibiogram/auto_update.py","source_ids":["nd_antibiograms"]},
     {"id":"anticoag","path":"/anticoag/","title":"Anticoagulation Reversal","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"anticoag/check_updates.py","source_ids":["chest_periop_2022","fda_andexxa"]},
-    {"id":"calculators","path":"/calculators/","title":"Clinical Calculators","risk_tier":"high","status":"review_required","review_required_after":"2026-10-15","review_cadence":"monthly","monitor":"calculators/check_updates.py","source_ids":["pubmed","aasld_fib4","kdigo_ckd_2024","tangri_kfre","fda_qtc","ada_hyperglycemic_crisis_2024","acc_aha_af_2023","aasld_meld_child_pugh","va_audit_c","nida_single_question"]},
+    {"id":"calculators","path":"/calculators/","title":"Clinical Calculators","risk_tier":"high","status":"review_required","review_required_after":"2026-10-15","review_cadence":"monthly","monitor":"calculators/check_updates.py","source_ids":["pubmed","aasld_fib4","kdigo_ckd_2024","tangri_kfre","fda_qtc","ada_hyperglycemic_crisis_2024","acc_aha_af_2023","aasld_meld_child_pugh","ats_ers_asthma_control","qualitymetric_act","va_audit_c","nida_single_question"]},
     {"id":"clinical-assistant","path":"/clinical-assistant/","title":"Clinical Assistant","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"ddx","path":"/ddx/","title":"Differential Diagnosis Reference","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"documents","path":"/documents/","title":"Clinical Documents","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},

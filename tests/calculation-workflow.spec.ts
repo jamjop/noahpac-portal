@@ -9,7 +9,7 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#calcFilterSummary')).toContainText('calculator');
     await page.getByRole('button', { name: 'Clear', exact: true }).click();
     await expect(page.getByLabel('Find a calculator')).toHaveValue('');
-    await expect(page.getByRole('tab')).toHaveCount(26);
+    await expect(page.getByRole('tab')).toHaveCount(27);
   });
 
   test('mobile calculator chooser expands, filters, selects, and collapses', async ({ page }) => {

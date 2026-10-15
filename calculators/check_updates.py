@@ -104,6 +104,12 @@ SEARCHES = [
         'query':   '("diabetic ketoacidosis" OR "hyperosmolar hyperglycemic state" OR "hyperglycemic crisis") AND (consensus[ti] OR guideline[pt] OR update[ti])',
         'reldate': 400,
     },
+    {
+        'id':      'asthma_control_test',
+        'name':    'Asthma Control Test Validation and Interpretation',
+        'query':   '("Asthma Control Test" OR "ACT score") AND (validation[ti] OR guideline[pt] OR statement[pt] OR update[ti])',
+        'reldate': 400,
+    },
 
     # ── Hepatology ───────────────────────────────────────────────────────────
     {

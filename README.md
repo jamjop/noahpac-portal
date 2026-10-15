@@ -30,7 +30,7 @@ loopback-only, sandboxed Python service.
 | `antibiogram/` | ND Antibiogram | Local susceptibility data from ND facilities; checked quarterly against HHS PDFs with extraction validation and human-review holds |
 | `tccc/` | TCCC Field Reference | CoTCCC 1 May 2026 guidelines; PWA with offline support |
 | `vaccines/` | ACIP / AAP / ACOG Immunization Schedule | Birth-to-adult schedule; ACIP 2026; patient age/condition screener with AAP and ACOG source toggle |
-| `calculators/` | Clinical Calculators | 26 calculators and screens, including ASCVD, VTE and QTc tools, renal equations with CKD G/A staging and KFRE, MELD with Child-Pugh, hyperglycemia laboratory context, FIB-4, PHQ-9, GAD-7, AUDIT-C, the single-question drug-use screen, and acute-care decision rules |
+| `calculators/` | Clinical Calculators | 27 calculators and screens, including ASCVD, VTE and QTc tools, renal equations with CKD G/A staging and KFRE, MELD with Child-Pugh, hyperglycemia laboratory context, FIB-4, ACT score interpretation, PHQ-9, GAD-7, AUDIT-C, the single-question drug-use screen, and acute-care decision rules |
 | `als/` | Advanced Life Support | AHA 2020 ACLS algorithms: VF/pVT, Asystole/PEA, Bradycardia, Tachycardia, Post-Arrest Care (TTM), ACS, Stroke; PWA |
 | `pals/` | Pediatric Advanced Life Support | AHA 2020 PALS algorithms: weight-based cardiac arrest, arrhythmia, and post-arrest care; Broselow-matched dosing; PWA |
 | `opioids/` | Opioid Conversion | Equianalgesic conversion with MME and CDC risk thresholds |
