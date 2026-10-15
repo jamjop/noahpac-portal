@@ -11,7 +11,11 @@ fi
 
 cd "$TARGET"
 
-if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+# Monitors rewrite */last_checked.json at runtime (and the review portal writes them when a clinician records a
+# review), so a tracked one (triage/last_checked.json) would otherwise make this check fail after every run.
+# Those files are runtime state, not hand edits, and must be preserved. Everything else still blocks the deploy.
+# If an incoming commit changes one of them, the fast-forward merge below refuses to overwrite the local copy.
+if [[ -n "$(git status --porcelain --untracked-files=no -- . ':(exclude,glob)**/last_checked.json')" ]]; then
   echo "Refusing to deploy over tracked local changes." >&2
   exit 1
 fi
