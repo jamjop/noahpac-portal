@@ -21,6 +21,7 @@
 }
 
 body{padding-bottom:24px}
+@media(min-width:601px){.clinical-assistant-app .app-header__inner{width:min(calc(100% - 32px),780px)}}
 .header-inner{max-width:760px;margin:0 auto;padding:22px 16px 18px}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px}
 .assistant-context{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:22px 0 4px;padding:14px 16px;border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface)}

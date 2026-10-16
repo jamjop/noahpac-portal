@@ -52,6 +52,7 @@
   }
 }
 body{padding-bottom:50px}
+@media(min-width:601px){.antibiogram-app .app-header__inner{width:min(calc(100% - 32px),1100px)}}
 .wrap{max-width:960px;margin:0 auto;padding:0 16px}
 .header-inner{max-width:960px;margin:0 auto;padding:22px 16px 18px}
 

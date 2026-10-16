@@ -11,6 +11,7 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'Inter',system-ui,sans-serif}
+@media(min-width:601px){.lookup-app .app-header__inner{width:min(calc(100% - 32px),920px)}}
 .source-note{margin:10px 0 0;font-size:12px}
 
 /* Minimal local fallbacks keep search usable if the shared stylesheet fails. */
