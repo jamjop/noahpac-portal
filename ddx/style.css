@@ -1,5 +1,6 @@
 .ddx-app *{box-sizing:border-box}
 .ddx-workspace{width:min(calc(100% - 32px),1040px);margin:0 auto;padding:30px 0 72px}
+@media(min-width:821px){.ddx-app .app-header__inner{width:min(calc(100% - 32px),1040px)}}
 .ddx-search-panel{margin-bottom:18px}
 .ddx-search-panel .reference-search-panel__header{align-items:flex-start}
 .ddx-result-count{flex:0 0 auto;padding:5px 8px;border-radius:5px;background:var(--purple-soft);color:var(--purple);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
