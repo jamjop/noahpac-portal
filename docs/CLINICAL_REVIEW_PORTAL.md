@@ -12,6 +12,15 @@ claims affected by that trigger. Scheduled comprehensive reviews stay broad.
 Older pending records whose evidence was not retained are clearly labeled
 `Legacy broad detection` and must not be presented as focused evidence.
 
+When a retained previous version exists, the portal presents bounded
+side-by-side `Previous` and `Current` hunks with line numbers. Every displayed
+hunk has its own clinician checkbox; the API rejects the review unless the
+submitted hunk IDs exactly match the current packet. A checkbox documents that
+the reviewer examined that change—it does not assert that automation judged it
+clinically correct. New publications have no old version, and legacy alerts
+have no reconstructable snapshot, so those packets continue to show direct
+evidence links with an explicit comparison-unavailable notice.
+
 ## Security model
 
 - Nginx and Authelia require two-factor authentication for both the frontend
@@ -26,7 +35,8 @@ Older pending records whose evidence was not retained are clearly labeled
   between page load and submission causes a conflict instead of clearing a
   newer alert.
 - Submissions must identify the complete current set of event IDs, affected
-  claim IDs, and packet source IDs; stale or expanded packets are rejected.
+  claim IDs, packet source IDs, and verified old/new hunk IDs; stale, partial,
+  or expanded packets are rejected.
 - The dedicated `noahpac-review` service account can write only the protected
   audit directory and the explicit `last_checked.json` files. The systemd unit
   otherwise uses a read-only filesystem and additional sandboxing.
@@ -89,6 +99,20 @@ Open and resolved evidence packets are retained under
 `/var/lib/noahpac-monitor/review-events/`. The portal never resolves a packet
 until the required primary review—and, for critical claims, independent review
 by a different authenticated identity—has been recorded.
+
+If clinical content is changed in response to a packet, attach the exact Git
+implementation comparison before completing the review:
+
+```bash
+sudo /usr/bin/python3 /var/www/noahpac-portal/scripts/attach-clinical-implementation-diff.py \
+  EVENT_ID --base PREVIOUS_DEPLOYED_COMMIT --head UPDATED_DEPLOYED_COMMIT \
+  --path sepsis/app.js --path sepsis/index.html
+```
+
+The command accepts only repository revisions and changed repository paths,
+stores bounded text hunks in the existing protected event file, and refuses to
+alter resolved events. Reopen `/review/` after attaching it; the packet revision
+changes deliberately so a previously loaded form cannot submit stale evidence.
 
 The status files are runtime state and are excluded by `.gitignore`; portal
 submissions therefore do not dirty the production Git checkout. The existing

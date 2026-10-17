@@ -209,3 +209,21 @@ def update_events(event_ids: list[str], updates: dict) -> None:
                 continue
             raise ValueError(f"Review event {event_id} is unavailable")
         _atomic_json(path, event | _clean(updates))
+
+
+def attach_implementation_hunks(event_id: str, hunks: list[dict], comparison: dict) -> dict:
+    """Attach an explicit deployed-content comparison to an open packet."""
+    if not isinstance(event_id, str) or not event_id.isalnum():
+        raise ValueError("Invalid review event ID")
+    path = EVENT_DIR / f"{event_id}.json"
+    event = _load(path, {})
+    if not event:
+        raise ValueError(f"Review event {event_id} is unavailable")
+    if event.get("status") == "resolved":
+        raise ValueError("Cannot alter a resolved review event")
+    payload = event | {
+        "implementation_hunks": _clean(hunks),
+        "implementation_comparison": _clean(comparison),
+    }
+    _atomic_json(path, payload)
+    return payload

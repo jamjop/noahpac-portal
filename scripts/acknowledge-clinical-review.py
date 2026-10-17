@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--note", required=True, help="Guideline/version or review summary")
     parser.add_argument("--source-id", required=True, action="append", help="Approved source identifier reviewed; repeat as needed")
     parser.add_argument("--claim", required=True, action="append", help="Mapped clinical claim identifier reviewed; repeat as needed")
+    parser.add_argument("--verify-hunk", action="append", default=[], help="Old/new hunk identifier personally verified; repeat for every displayed hunk")
     parser.add_argument("--source-version", required=True, help="Versions, publication dates, or access dates examined")
     parser.add_argument("--limitations", default="", help="Known limitations or unresolved questions")
     parser.add_argument("--stage", choices=("primary", "secondary"), default="primary")
@@ -51,6 +52,7 @@ def main() -> int:
         "source_ids": args.source_id,
         "claim_ids": args.claim,
         "event_ids": [event["id"] for event in topic["review_events"]],
+        "verified_hunk_ids": args.verify_hunk,
         "source_versions": args.source_version,
         "limitations": args.limitations,
         "review_stage": args.stage,

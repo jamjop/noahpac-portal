@@ -146,6 +146,7 @@ def main() -> int:
 
     page_changed = False
     page_notes: list[str] = []
+    page_findings: list[dict] = []
     page_errors: list[str] = []
 
     for page_cfg in PAGE_SOURCES:
@@ -162,6 +163,15 @@ def main() -> int:
             page_changed = True
             note = f"{page_cfg['name']} date → {current}"
             page_notes.append(note)
+            page_findings.append({
+                'detail': f"{page_cfg['name']} date changed: {known!r} → {current!r}",
+                'url': page_cfg['url'],
+                'source_id': {
+                    'cdc_page_date': 'cdc_vaccines',
+                    'aap_page_date': 'aap_vaccines',
+                }.get(page_cfg['id']),
+                'diff_hunks': result.get('diff_hunks', []),
+            })
             print(f"  Date changed: {known!r} → {current!r}")
         state[page_cfg['id']] = current
 
@@ -212,7 +222,7 @@ def main() -> int:
 
     print(message)
     pw.push_notify(user, token, ALERT_TITLE, message, APP_URL, APP_NAME)
-    findings = [{'detail': n} for n in page_notes]
+    findings = page_findings
     findings.extend({'detail': f'Page check error: {e}'} for e in page_errors)
     findings.extend(
         {'search': name, 'title': m['title'], 'pmid': m['pmid'],

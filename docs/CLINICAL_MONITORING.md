@@ -103,10 +103,15 @@ the same evidence and two-stage review model. Example primary review:
 sudo /usr/bin/python3 /var/www/noahpac-portal/scripts/acknowledge-clinical-review.py \
   sepsis --reviewer "REVIEWER.ONE" --decision no-change \
   --source-id ssc_2026 --claim sepsis-screening \
+  --verify-hunk HUNK_ID \
   --source-version "SSC 2026 guideline accessed 2026-10-17" \
   --limitations "None identified" \
   --note "Compared all deployed thresholds and escalation language."
 ```
+
+Repeat `--verify-hunk` for every old/new hunk listed by the portal/API. Omit it
+only when the packet has no retained comparison (for example, a new publication
+or legacy detection). The API enforces an exact match.
 
 For a critical mapping, a different authenticated reviewer completes the same
 command with `--stage secondary`. Do not acknowledge an item merely because a

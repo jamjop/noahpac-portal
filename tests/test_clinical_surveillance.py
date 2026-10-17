@@ -53,9 +53,17 @@ class FingerprintMappingTests(unittest.TestCase):
         self.assertEqual(fingerprints.affected_tools("source", claims), ["a", "b"])
 
     def test_generates_bounded_text_diff(self):
-        diff = fingerprints.text_diff("Heading\nDose 5 mg", "Heading\nDose 10 mg")
-        self.assertIn("-Dose 5 mg", diff)
-        self.assertIn("+Dose 10 mg", diff)
+        hunks, truncated = fingerprints.build_hunks("Heading\nDose 5 mg", "Heading\nDose 10 mg")
+        self.assertFalse(truncated)
+        self.assertEqual(len(hunks), 1)
+        self.assertEqual(hunks[0]["old_lines"][-1]["text"], "Dose 5 mg")
+        self.assertEqual(hunks[0]["new_lines"][-1]["text"], "Dose 10 mg")
+        self.assertTrue(hunks[0]["old_lines"][-1]["changed"])
+
+    def test_diff_represents_an_added_file(self):
+        hunks, _ = fingerprints.build_hunks("", "New clinical content")
+        self.assertEqual(hunks[0]["old_lines"], [])
+        self.assertEqual(hunks[0]["new_lines"][0]["text"], "New clinical content")
 
 
 class FocusedReviewEventTests(unittest.TestCase):
@@ -95,6 +103,13 @@ class FocusedReviewEventTests(unittest.TestCase):
         )
         self.assertEqual(event["source_ids"], ["other"])
         self.assertEqual(event["claim_ids"], ["other-claim"])
+
+    def test_attaches_implementation_hunks_to_open_event(self):
+        event = events.create_event("tool", "topic-monitor", [{"pmid":"123"}])
+        updated = events.attach_implementation_hunks(event["id"], [{"id":"a" * 20}], {
+            "base":"b" * 40, "head":"c" * 40,
+        })
+        self.assertEqual(updated["implementation_hunks"][0]["id"], "a" * 20)
 
 
 class ReviewEvidencePersistenceTests(unittest.TestCase):

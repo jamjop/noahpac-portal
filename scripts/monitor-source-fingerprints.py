@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import difflib
 import hashlib
 from html.parser import HTMLParser
 import json
@@ -16,6 +15,9 @@ import sys
 import tempfile
 import urllib.request
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
+from diff_hunks import build_hunks  # noqa: E402
 
 REPO = Path(os.environ.get("NOAHPAC_REPO", "/var/www/noahpac-portal")).resolve()
 MANIFEST = REPO / "clinical-review.json"
@@ -82,16 +84,6 @@ def normalized_text(raw: bytes, content_type: str) -> str:
         if clean:
             lines.append(clean)
     return "\n".join(lines)
-
-
-def text_diff(previous: str, current: str) -> str:
-    if not previous or not current:
-        return ""
-    lines = list(difflib.unified_diff(
-        previous.splitlines(), current.splitlines(),
-        fromfile="previous source", tofile="current source", n=2, lineterm="",
-    ))
-    return "\n".join(lines)[:12_000]
 
 
 def atomic_text(path: Path, content: str) -> None:
@@ -189,11 +181,15 @@ def main() -> int:
                 current_text = ""
                 extraction_error = str(exc)[:500]
             if old and old.get("sha256") != fingerprint["sha256"]:
+                hunks, diff_truncated = (build_hunks(
+                    previous_text, current_text, kind="source", label=source["title"]
+                ) if previous_text and current_text else ([], False))
                 changes.append({
                     "id": source_id, "source_id": source_id,
                     "title": source["title"], "url": source["url"], "tool_ids": tool_ids,
                     "previous_sha256": old.get("sha256"), "current_sha256": fingerprint["sha256"],
-                    "diff_excerpt": text_diff(previous_text, current_text),
+                    "diff_hunks": hunks,
+                    "diff_truncated": diff_truncated,
                     "extraction_error": extraction_error,
                 })
             next_state["sources"][source_id] = fingerprint | {"checked_at": now, "title": source["title"], "url": source["url"]}

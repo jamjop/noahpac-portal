@@ -111,9 +111,26 @@ def public_event(event: dict) -> dict:
         key: event.get(key) for key in (
             "id", "title", "trigger_type", "detected_at", "status",
             "evidence_scope", "source_ids", "claim_ids", "findings",
+            "implementation_hunks", "implementation_comparison",
             "primary_reviewer", "primary_reviewed_at",
         )
     }
+
+
+def event_hunk_ids(events: list[dict]) -> set[str]:
+    """Return every explicit source or implementation hunk requiring review."""
+    identifiers = set()
+    for event in events:
+        for hunk in event.get("implementation_hunks", []):
+            if isinstance(hunk, dict) and isinstance(hunk.get("id"), str):
+                identifiers.add(hunk["id"])
+        for finding in event.get("findings", []):
+            if not isinstance(finding, dict):
+                continue
+            for hunk in finding.get("diff_hunks", []):
+                if isinstance(hunk, dict) and isinstance(hunk.get("id"), str):
+                    identifiers.add(hunk["id"])
+    return identifiers
 
 
 def public_topic(tool: dict, sources: dict, claims: list[dict]) -> dict:
@@ -177,6 +194,7 @@ def public_topic(tool: dict, sources: dict, claims: list[dict]) -> dict:
         "review_claim_ids": sorted(target_claim_ids),
         "review_source_ids": sorted(target_source_ids),
         "review_events": [public_event(event) for event in events],
+        "review_hunk_ids": sorted(event_hunk_ids(events)),
         "independent_review_required": any(
             claim.get("independent_review") == "required"
             for claim in claims if claim.get("id") in target_claim_ids
@@ -205,6 +223,7 @@ def validate_submission(data: dict, authenticated_user: str) -> dict:
     source_ids = data.get("source_ids")
     claim_ids = data.get("claim_ids")
     event_ids = data.get("event_ids")
+    verified_hunk_ids = data.get("verified_hunk_ids", [])
     review_stage = str(data.get("review_stage", "primary"))
     source_versions = str(data.get("source_versions", "")).strip()
     limitations = str(data.get("limitations", "")).strip()
@@ -227,6 +246,12 @@ def validate_submission(data: dict, authenticated_user: str) -> dict:
         raise ReviewError("Focused review event selection is missing or invalid.")
     if any(not isinstance(item, str) for item in event_ids) or len(set(event_ids)) != len(event_ids):
         raise ReviewError("Focused review event selection is invalid.")
+    if not isinstance(verified_hunk_ids, list) or len(verified_hunk_ids) > 200:
+        raise ReviewError("Change-hunk verification is invalid.")
+    if any(not isinstance(item, str) or not re.fullmatch(r"[0-9a-f]{20}", item) for item in verified_hunk_ids):
+        raise ReviewError("Change-hunk verification is invalid.")
+    if len(set(verified_hunk_ids)) != len(verified_hunk_ids):
+        raise ReviewError("Change-hunk verification is invalid.")
     if review_stage not in {"primary", "secondary"}:
         raise ReviewError("Review stage is invalid.")
     if len(source_versions) < 3 or len(source_versions) > 1000:
@@ -257,18 +282,22 @@ def validate_submission(data: dict, authenticated_user: str) -> dict:
     required_event_ids = {event["id"] for event in events}
     required_claim_ids = {claim_id for event in events for claim_id in event.get("claim_ids", [])}
     required_source_ids = {source_id for event in events for source_id in event.get("source_ids", [])}
+    required_hunk_ids = event_hunk_ids(events)
     if set(event_ids) != required_event_ids:
         raise ReviewError("The focused review packet changed; reload the portal.")
     if set(claim_ids) != required_claim_ids or not set(claim_ids).issubset(approved_claim_ids):
         raise ReviewError("Confirm every clinical content area in this focused review packet.")
     if required_source_ids and not required_source_ids.issubset(set(source_ids)):
         raise ReviewError("Review every authoritative source identified by this focused packet.")
+    if set(verified_hunk_ids) != required_hunk_ids:
+        raise ReviewError("Verify every old-versus-new change hunk in this focused packet.")
     targeted_claims = [claim for claim in approved_claims if claim["id"] in required_claim_ids]
     return {
         "topic": topic, "decision": decision, "note": note,
         "expected_revision": expected_revision, "sources": resolved,
         "change_reference": change_reference, "reviewer": authenticated_user,
         "claim_ids": claim_ids, "event_ids": event_ids, "review_stage": review_stage,
+        "verified_hunk_ids": verified_hunk_ids,
         "source_versions": source_versions, "limitations": limitations,
         "independent_review_required": any(claim.get("independent_review") == "required" for claim in targeted_claims),
     }
@@ -306,6 +335,7 @@ def record_review(data: dict, authenticated_user: str) -> dict:
                 "secondary_review_source_ids": [source["id"] for source in item["sources"]],
                 "secondary_review_claim_ids": item["claim_ids"],
                 "secondary_review_event_ids": item["event_ids"],
+                "secondary_verified_hunk_ids": item["verified_hunk_ids"],
                 "secondary_source_versions": item["source_versions"],
                 "secondary_review_limitations": item["limitations"],
             }
@@ -321,6 +351,7 @@ def record_review(data: dict, authenticated_user: str) -> dict:
                 "review_source_ids": [source["id"] for source in item["sources"]],
                 "review_claim_ids": item["claim_ids"],
                 "review_event_ids": item["event_ids"],
+                "review_verified_hunk_ids": item["verified_hunk_ids"],
                 "review_source_versions": item["source_versions"],
                 "review_limitations": item["limitations"],
                 "review_decision": item["decision"], "reviewed_at": now,
@@ -334,6 +365,7 @@ def record_review(data: dict, authenticated_user: str) -> dict:
             f"{item['review_stage']}_reviewed_at": now,
             "decision": item["decision"],
             "review_note": item["note"],
+            "verified_hunk_ids": item["verified_hunk_ids"],
         }
         try:
             review_event_module().update_events(item["event_ids"], event_updates)

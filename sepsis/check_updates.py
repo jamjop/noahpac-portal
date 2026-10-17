@@ -131,7 +131,12 @@ def main() -> int:
     pw.push_notify(user, token, ALERT_TITLE, message, APP_URL, APP_NAME)
     report_findings = []
     if page_changed:
-        report_findings.append({'detail': f"SSC Adult Guidelines version changed: {known_version!r} → {page_result['value']!r}"})
+        report_findings.append({
+            'detail': f"SSC Adult Guidelines version changed: {known_version!r} → {page_result['value']!r}",
+            'url': SCCM_ADULT_URL,
+            'source_id': 'ssc_2026',
+            'diff_hunks': page_result.get('diff_hunks', []),
+        })
     if page_error:
         report_findings.append({'detail': f'Page check error: {page_error}'})
     report_findings.extend(

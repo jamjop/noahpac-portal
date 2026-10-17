@@ -40,7 +40,7 @@ class ReviewPortalTest(unittest.TestCase):
 
     def submission(self):
         topic = api.dashboard()["topics"][0]
-        return {"topic":"sepsis","decision":"no-change","note":"Compared all deployed sepsis content with the current campaign source.","source_ids":["ssc"],"claim_ids":["sepsis-guidance"],"event_ids":[event["id"] for event in topic["review_events"]],"source_versions":"SSC current guideline accessed 2026-10-17","limitations":"None identified.","review_stage":"primary","expected_revision":topic["revision"],"change_reference":"","confirmed":True}
+        return {"topic":"sepsis","decision":"no-change","note":"Compared all deployed sepsis content with the current campaign source.","source_ids":["ssc"],"claim_ids":["sepsis-guidance"],"event_ids":[event["id"] for event in topic["review_events"]],"verified_hunk_ids":topic["review_hunk_ids"],"source_versions":"SSC current guideline accessed 2026-10-17","limitations":"None identified.","review_stage":"primary","expected_revision":topic["revision"],"change_reference":"","confirmed":True}
 
     def test_dashboard_exposes_pending_topic_and_approved_source(self):
         topic = api.dashboard()["topics"][0]
@@ -88,6 +88,22 @@ class ReviewPortalTest(unittest.TestCase):
         self.assertTrue(result["ok"])
         status = json.loads((api.REPO / "sepsis" / "last_checked.json").read_text())
         self.assertEqual(status["review_decision"], "not-applicable")
+
+    def test_every_source_diff_hunk_must_be_verified(self):
+        hunk = {"id":"a" * 20,"kind":"source","label":"SSC marker","old_lines":[],"new_lines":[]}
+        api.review_event_module().create_event(
+            "sepsis", "document-fingerprint",
+            [{"source_id":"ssc","detail":"Version changed","diff_hunks":[hunk]}],
+            source_ids=["ssc"],
+        )
+        topic = api.dashboard()["topics"][0]
+        self.assertEqual(topic["review_hunk_ids"], ["a" * 20])
+        data = self.submission()
+        data["expected_revision"] = topic["revision"]
+        data["event_ids"] = [event["id"] for event in topic["review_events"]]
+        data["verified_hunk_ids"] = []
+        with self.assertRaisesRegex(api.ReviewError, "Verify every old-versus-new"):
+            api.record_review(data, "noah.pa")
 
     def test_new_required_review_date_reopens_previously_reviewed_topic(self):
         status_path = api.REPO / "sepsis" / "last_checked.json"

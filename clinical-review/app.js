@@ -24,6 +24,37 @@ function triggerLabel(value) {
   return ({'topic-monitor':'Literature or guideline monitor','document-fingerprint':'Source document changed','urgent-official-alert':'Official urgent alert','legacy-detection':'Legacy broad detection','scheduled-review':'Scheduled comprehensive review'})[value] || value || 'Monitored source change';
 }
 
+function diffSide(title, lines, emptyText) {
+  const side=el('section','diff-side');
+  side.append(el('h5',null,title));
+  const code=el('div','diff-code');
+  if (!lines.length) code.append(el('div','diff-line diff-line--empty',emptyText));
+  lines.forEach(line=>{
+    const row=el('div',`diff-line${line.changed?' diff-line--changed':''}`);
+    row.append(el('span','diff-line__number',String(line.number)),el('code',null,line.text||' '));
+    code.append(row);
+  });
+  side.append(code);
+  return side;
+}
+
+function hunkView(hunk) {
+  const card=el('article',`diff-hunk diff-hunk--${hunk.kind||'source'}`);
+  const heading=el('div','diff-hunk__heading');
+  const title=el('div');
+  title.append(el('strong',null,hunk.label||'Text change'),el('span','evidence-finding__meta',hunk.kind==='implementation'?'Noah PA-C implementation':'Authoritative source'));
+  heading.append(title,el('span','diff-hunk__range',`Old ${hunk.old_start||'—'} → new ${hunk.new_start||'—'}`));
+  const comparison=el('div','diff-comparison');
+  comparison.append(diffSide('Previous',hunk.old_lines||[],'Not present'),diffSide('Current',hunk.new_lines||[],'Removed'));
+  const confirmation=el('label','hunk-confirmation');
+  const input=el('input'); input.type='checkbox'; input.name='hunk'; input.value=hunk.id;
+  confirmation.append(input,el('span',null,'I verified this specific change is accurately understood and addressed by my decision.'));
+  card.append(heading,comparison);
+  if (hunk.truncated) card.append(el('p','evidence-warning','This hunk was bounded for display. Open the authoritative source or Git comparison before confirming it.'));
+  card.append(confirmation);
+  return card;
+}
+
 function findingView(finding) {
   const item=el('div','evidence-finding');
   if (finding.title) item.append(el('strong','evidence-finding__title',finding.title));
@@ -31,7 +62,9 @@ function findingView(finding) {
   if (metadata) item.append(el('span','evidence-finding__meta',metadata));
   if (finding.detail) item.append(el('p',null,finding.detail));
   if (finding.abstract) { const details=el('details','evidence-abstract'); details.append(el('summary',null,'View abstract'),el('p',null,finding.abstract)); item.append(details); }
-  if (finding.diff_excerpt) { const details=el('details','evidence-diff'); details.append(el('summary',null,'View source text changes'),el('pre',null,finding.diff_excerpt)); item.append(details); }
+  (finding.diff_hunks||[]).forEach(hunk=>item.append(hunkView(hunk)));
+  if (finding.diff_truncated) item.append(el('p','evidence-warning','Additional source changes were omitted from this bounded packet. Review the complete authoritative source before deciding.'));
+  if (finding.diff_excerpt && !(finding.diff_hunks||[]).length) { const details=el('details','evidence-diff'); details.append(el('summary',null,'View legacy source text changes'),el('pre',null,finding.diff_excerpt)); item.append(details); }
   if (finding.previous_sha256 && finding.current_sha256) item.append(el('span','evidence-finding__meta',`Document fingerprint ${finding.previous_sha256.slice(0,10)}… → ${finding.current_sha256.slice(0,10)}…`));
   if (finding.extraction_error) item.append(el('p','evidence-warning',`Text comparison unavailable: ${finding.extraction_error}`));
   if (finding.url) { const link=el('a','evidence-link','Open detected source ↗'); link.href=finding.url; link.target='_blank'; link.rel='noopener noreferrer'; item.append(link); }
@@ -45,6 +78,15 @@ function eventView(event) {
   header.append(copy,el('span','evidence-scope',event.evidence_scope==='focused'?'Focused':'Broad review'));
   card.append(header);
   (event.findings||[]).forEach(finding=>card.append(findingView(finding)));
+  if ((event.implementation_hunks||[]).length) {
+    const intro=el('div','implementation-heading');
+    intro.append(el('strong',null,'Noah PA-C implementation changes'),el('p',null,'Compare the prior deployed content with the updated implementation below.'));
+    card.append(intro);
+    (event.implementation_hunks||[]).forEach(hunk=>card.append(hunkView(hunk)));
+  }
+  const hasHunks=(event.implementation_hunks||[]).length||(event.findings||[]).some(finding=>(finding.diff_hunks||[]).length);
+  if (!hasHunks && ['legacy-detection','scheduled-review'].includes(event.trigger_type)) card.append(el('p','evidence-warning','Line-by-line comparison unavailable: this alert predates retained snapshots or represents a scheduled review.'));
+  else if (!hasHunks) card.append(el('p','evidence-finding__meta','No old version exists for this newly detected evidence. Review the linked source and record whether it affects the deployed content.'));
   return card;
 }
 
@@ -118,7 +160,8 @@ function openReview(topic) {
   document.getElementById('dialogError').textContent='';
   document.getElementById('changeReferenceField').hidden=true;
   const evidence=document.getElementById('reviewEvidence'); evidence.replaceChildren(...(topic.review_events||[]).map(eventView));
-  document.getElementById('evidenceCount').textContent=`${(topic.review_events||[]).length} packet${(topic.review_events||[]).length===1?'':'s'}`;
+  const hunkCount=(topic.review_hunk_ids||[]).length;
+  document.getElementById('evidenceCount').textContent=`${(topic.review_events||[]).length} packet${(topic.review_events||[]).length===1?'':'s'}${hunkCount?` · ${hunkCount} change${hunkCount===1?'':'s'}`:''}`;
   const targetClaims=new Set(topic.review_claim_ids||topic.claims.map(claim=>claim.id));
   const claims=document.getElementById('claimChecklist'); claims.replaceChildren();
   topic.claims.filter(claim=>targetClaims.has(claim.id)).forEach(claim=>{
@@ -155,10 +198,12 @@ form.addEventListener('submit',async event=>{
   const submit=document.getElementById('submitReview'); const error=document.getElementById('dialogError'); error.textContent='';
   const sourceIds=[...form.querySelectorAll('input[name="source"]:checked')].map(input=>input.value);
   const claimIds=[...form.querySelectorAll('input[name="claim"]:checked')].map(input=>input.value);
+  const verifiedHunkIds=[...form.querySelectorAll('input[name="hunk"]:checked')].map(input=>input.value);
   if (!sourceIds.length) { error.textContent='Select at least one authoritative source you reviewed.'; return; }
   if (claimIds.length!==(state.active.review_claim_ids||state.active.claims.map(claim=>claim.id)).length) { error.textContent='Confirm every clinical content area in this focused packet.'; return; }
+  if (verifiedHunkIds.length!==(state.active.review_hunk_ids||[]).length) { error.textContent='Check every old-versus-new change before recording this review.'; return; }
   const decision=form.elements.decision.value;
-  const payload={topic:document.getElementById('reviewTopic').value,expected_revision:document.getElementById('reviewRevision').value,review_stage:document.getElementById('reviewStage').value,event_ids:(state.active.review_events||[]).map(event=>event.id),source_ids:sourceIds,claim_ids:claimIds,source_versions:document.getElementById('sourceVersions').value,limitations:document.getElementById('reviewLimitations').value,decision,note:document.getElementById('reviewNote').value,change_reference:document.getElementById('changeReference').value,confirmed:document.getElementById('reviewConfirmed').checked};
+  const payload={topic:document.getElementById('reviewTopic').value,expected_revision:document.getElementById('reviewRevision').value,review_stage:document.getElementById('reviewStage').value,event_ids:(state.active.review_events||[]).map(event=>event.id),source_ids:sourceIds,claim_ids:claimIds,verified_hunk_ids:verifiedHunkIds,source_versions:document.getElementById('sourceVersions').value,limitations:document.getElementById('reviewLimitations').value,decision,note:document.getElementById('reviewNote').value,change_reference:document.getElementById('changeReference').value,confirmed:document.getElementById('reviewConfirmed').checked};
   submit.disabled=true; submit.textContent='Recording…';
   try {
     const response=await fetch('/review/api/reviews',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'NoahPACReviewPortal'},body:JSON.stringify(payload)});

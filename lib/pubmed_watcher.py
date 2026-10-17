@@ -16,6 +16,8 @@ import datetime
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from diff_hunks import marker_hunk
+
 PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
 EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 TEXTFILE_DIR  = Path("/var/lib/node_exporter/textfile_collector")
@@ -379,7 +381,12 @@ def check_page_source(name: str, url: str, date_patterns: list[str], known_value
         if m:
             current = m.group(1).strip()
             changed = bool(known_value) and current != known_value
-            return {'value': current, 'changed': changed, 'error': None}
+            result = {'value': current, 'changed': changed, 'error': None}
+            if changed:
+                result['diff_hunks'] = [marker_hunk(
+                    known_value, current, label=f'{name} version marker'
+                )]
+            return result
 
     return {'value': known_value, 'changed': False,
             'error': f'{name}: no date/version pattern matched (page structure may have changed)'}

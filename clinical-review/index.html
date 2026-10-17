@@ -8,8 +8,8 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=4">
-  <link rel="stylesheet" href="focused-review.css?v=1">
+  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="focused-review.css?v=2">
 </head>
 <body class="clinical-app review-portal-app">
 <a class="skip-link" href="#main-content">Skip to clinical reviews</a>
@@ -62,7 +62,7 @@
     <input type="hidden" id="reviewRevision">
     <input type="hidden" id="reviewStage" value="primary">
 
-    <section class="evidence-section" aria-labelledby="evidenceTitle"><div class="evidence-heading"><div><p class="section-kicker">Focused review packet</p><h3 id="evidenceTitle">What changed</h3></div><span class="evidence-count" id="evidenceCount"></span></div><div class="evidence-list" id="reviewEvidence"></div></section>
+    <section class="evidence-section" aria-labelledby="evidenceTitle"><div class="evidence-heading"><div><p class="section-kicker">Focused review packet</p><h3 id="evidenceTitle">What changed</h3><p class="evidence-instructions">Compare each available previous/current change and check it individually. New publications have no previous version; legacy alerts may not have retained snapshots.</p></div><span class="evidence-count" id="evidenceCount"></span></div><div class="evidence-list" id="reviewEvidence"></div></section>
     <fieldset><legend>Mapped clinical content areas reviewed</legend><div class="claim-checklist" id="claimChecklist"></div></fieldset>
     <fieldset><legend>Authoritative sources personally reviewed</legend><div class="source-checklist" id="sourceChecklist"></div></fieldset>
     <fieldset><legend>Clinical decision</legend><div class="decision-grid">
@@ -81,6 +81,6 @@
 </dialog>
 
 <footer class="app-footer"><div class="clinical-caution"><strong>Monitoring is not clinical review.</strong> Record a decision only after directly comparing the deployed content with the selected authoritative sources.</div><p class="app-footer__meta">Protected by Authelia · © <span data-current-year></span> Noah PA-C</p></footer>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
