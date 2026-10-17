@@ -20,6 +20,30 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(undefined, {dateStyle:'medium'}).format(date);
 }
 
+function sourceVersionDraft(topic) {
+  const accessed=new Intl.DateTimeFormat(undefined,{dateStyle:'long'}).format(new Date());
+  const targetIds=new Set(topic.review_source_ids||topic.sources.map(source=>source.id));
+  const lines=topic.sources.filter(source=>targetIds.has(source.id)).map(source=>{
+    const metadata=source.publication_date?`published ${source.publication_date}`:source.version?`version ${source.version}`:null;
+    return `${source.title}${metadata?` — ${metadata}`:''}; accessed ${accessed}.`;
+  });
+  const seen=new Set();
+  (topic.review_events||[]).forEach(event=>(event.findings||[]).forEach(finding=>{
+    if (!finding.pubdate || !finding.title) return;
+    const key=`${finding.pmid||''}:${finding.title}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    lines.push(`${finding.title} — published ${finding.pubdate}${finding.pmid?`; PMID ${finding.pmid}`:''}.`);
+  }));
+  let draft='';
+  for (const line of lines) {
+    const candidate=draft?`${draft}\n${line}`:line;
+    if (candidate.length>1000) break;
+    draft=candidate;
+  }
+  return draft;
+}
+
 function triggerLabel(value) {
   return ({'topic-monitor':'Literature or guideline monitor','document-fingerprint':'Source document changed','urgent-official-alert':'Official urgent alert','legacy-detection':'Legacy broad detection','scheduled-review':'Scheduled comprehensive review'})[value] || value || 'Monitored source change';
 }
@@ -159,6 +183,7 @@ function openReview(topic) {
   document.getElementById('dialogTitle').textContent=stage==='secondary'?`${topic.title} — independent review`:topic.title;
   document.getElementById('dialogError').textContent='';
   document.getElementById('changeReferenceField').hidden=true;
+  document.getElementById('sourceVersions').value=sourceVersionDraft(topic);
   const evidence=document.getElementById('reviewEvidence'); evidence.replaceChildren(...(topic.review_events||[]).map(eventView));
   const hunkCount=(topic.review_hunk_ids||[]).length;
   document.getElementById('evidenceCount').textContent=`${(topic.review_events||[]).length} packet${(topic.review_events||[]).length===1?'':'s'}${hunkCount?` · ${hunkCount} change${hunkCount===1?'':'s'}`:''}`;

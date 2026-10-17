@@ -35,13 +35,15 @@ test('review portal displays the queue and submits a source-backed acknowledgeme
   await page.getByLabel(/Sepsis recognition/).check();
   await page.getByLabel(/Surviving Sepsis Campaign/).check();
   await page.getByLabel(/No change required/).check();
-  await page.getByLabel('Source versions or publication dates').fill('SSC guideline accessed October 17, 2026.');
+  await expect(page.getByLabel('Source versions or publication dates')).toHaveValue(/Surviving Sepsis Campaign; accessed .+\./);
   await page.getByLabel('Known limitations or unresolved questions').fill('None identified.');
   await page.getByLabel('Review note').fill('Compared the deployed content with the complete current guideline.');
   await page.getByLabel(/I personally compared/).check();
   await page.getByRole('button', {name:'Record review'}).click();
   await expect.poll(() => submission).not.toBeNull();
-  expect(submission).toMatchObject({topic:'sepsis',decision:'no-change',review_stage:'primary',event_ids:['event123'],source_ids:['ssc_2026'],claim_ids:['sepsis-guidance'],verified_hunk_ids:['aaaaaaaaaaaaaaaaaaaa'],source_versions:'SSC guideline accessed October 17, 2026.',confirmed:true,expected_revision:'0123456789abcdef'});
+  expect(submission).toMatchObject({topic:'sepsis',decision:'no-change',review_stage:'primary',event_ids:['event123'],source_ids:['ssc_2026'],claim_ids:['sepsis-guidance'],verified_hunk_ids:['aaaaaaaaaaaaaaaaaaaa'],confirmed:true,expected_revision:'0123456789abcdef'});
+  expect(String(submission?.source_versions)).toContain('Surviving Sepsis Campaign; accessed');
+  expect(String(submission?.source_versions)).toContain('Updated sepsis recommendations — published 2026; PMID 123456.');
 });
 
 test('review portal fits a phone and retains dark mode', async ({ page }) => {
