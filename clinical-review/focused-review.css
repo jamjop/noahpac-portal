@@ -1,0 +1,2 @@
+.review-dialog .decision-grid{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){.review-dialog .decision-grid{grid-template-columns:1fr}}

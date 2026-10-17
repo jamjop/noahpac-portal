@@ -22,6 +22,7 @@ if ! id "${SERVICE_USER}" >/dev/null 2>&1; then
 fi
 
 install -d -o root -g "${SERVICE_USER}" -m 2770 /var/lib/noahpac-monitor
+install -d -o root -g "${SERVICE_USER}" -m 2770 /var/lib/noahpac-monitor/review-events
 touch /var/lib/noahpac-monitor/review-audit.jsonl /var/lib/noahpac-monitor/review.lock
 chown root:"${SERVICE_USER}" /var/lib/noahpac-monitor/review-audit.jsonl /var/lib/noahpac-monitor/review.lock
 chmod 0660 /var/lib/noahpac-monitor/review-audit.jsonl /var/lib/noahpac-monitor/review.lock

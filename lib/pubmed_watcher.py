@@ -13,6 +13,7 @@ import urllib.error
 import urllib.request
 import urllib.parse
 import datetime
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
@@ -65,6 +66,33 @@ def esummary(pmids: list[str],
             'source':  item.get('source', ''),
             'pubdate': item.get('pubdate', ''),
         }
+    return result
+
+
+def eabstracts(pmids: list[str],
+               user_agent: str = 'noahpac-monitor/1.0') -> dict[str, str]:
+    """Return bounded PubMed abstracts for focused clinician review packets."""
+    if not pmids:
+        return {}
+    params = urllib.parse.urlencode({
+        'db': 'pubmed', 'id': ','.join(pmids), 'retmode': 'xml',
+    })
+    req = urllib.request.Request(
+        f"{EUTILS_BASE}/efetch.fcgi?{params}", headers={'User-Agent': user_agent}
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        root = ET.fromstring(resp.read())
+    result = {}
+    for article in root.findall('.//PubmedArticle'):
+        pmid = article.findtext('.//PMID', '').strip()
+        parts = []
+        for abstract in article.findall('.//Abstract/AbstractText'):
+            text = ''.join(abstract.itertext()).strip()
+            label = abstract.attrib.get('Label')
+            if text:
+                parts.append(f"{label}: {text}" if label else text)
+        if pmid and parts:
+            result[pmid] = '\n'.join(parts)[:4000]
     return result
 
 
@@ -139,16 +167,42 @@ def write_quarterly_result(app_id: str, app_name: str, app_url: str,
     write_heartbeat(app_id)
     report_file = Path(f"/tmp/quarterly-report-{datetime.date.today()}.json")
     try:
+        event_findings = [dict(item) for item in findings]
+        missing_abstracts = [
+            str(item['pmid']) for item in event_findings
+            if item.get('pmid') and not item.get('abstract')
+        ]
+        abstracts = {}
+        if missing_abstracts:
+            try:
+                abstracts = eabstracts(missing_abstracts)
+            except Exception as exc:
+                print(f"WARNING: could not retain PubMed abstracts: {exc}", file=sys.stderr)
+        for item in event_findings:
+            if item.get('pmid'):
+                pmid = str(item['pmid'])
+                item.setdefault('url', f'https://pubmed.ncbi.nlm.nih.gov/{pmid}/')
+                if abstracts.get(pmid):
+                    item.setdefault('abstract', abstracts[pmid])
         existing = json.loads(report_file.read_text()) if report_file.exists() else []
         existing.append({
             'app_id':   app_id,
             'app_name': app_name,
             'app_url':  app_url,
             'status':   status,
-            'findings': findings,
+            'findings': event_findings,
             'ran_at':   datetime.datetime.now().isoformat(timespec='minutes'),
         })
         report_file.write_text(json.dumps(existing, indent=2))
+        if status in {'changed', 'held_for_review', 'review_required'} and event_findings:
+            try:
+                import review_events
+                review_events.create_event(
+                    app_id, 'topic-monitor', event_findings,
+                    title=f'{app_name}: monitored evidence changed',
+                )
+            except Exception as event_exc:
+                print(f"WARNING: could not preserve focused review event: {event_exc}", file=sys.stderr)
     except Exception as exc:
         print(f"WARNING: could not write quarterly report: {exc}", file=sys.stderr)
 
@@ -227,6 +281,7 @@ def run_searches(
                     'title':   m.get('title', ''),
                     'journal': m.get('source', ''),
                     'pubdate': m.get('pubdate', ''),
+                    'url': f'https://pubmed.ncbi.nlm.nih.gov/{pmid}/',
                 }))
 
         state[sid] = sorted(set(known) | set(pmids))

@@ -20,6 +20,34 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(undefined, {dateStyle:'medium'}).format(date);
 }
 
+function triggerLabel(value) {
+  return ({'topic-monitor':'Literature or guideline monitor','document-fingerprint':'Source document changed','urgent-official-alert':'Official urgent alert','legacy-detection':'Legacy broad detection','scheduled-review':'Scheduled comprehensive review'})[value] || value || 'Monitored source change';
+}
+
+function findingView(finding) {
+  const item=el('div','evidence-finding');
+  if (finding.title) item.append(el('strong','evidence-finding__title',finding.title));
+  const metadata=[finding.journal,finding.pubdate,finding.pmid?`PMID ${finding.pmid}`:null].filter(Boolean).join(' · ');
+  if (metadata) item.append(el('span','evidence-finding__meta',metadata));
+  if (finding.detail) item.append(el('p',null,finding.detail));
+  if (finding.abstract) { const details=el('details','evidence-abstract'); details.append(el('summary',null,'View abstract'),el('p',null,finding.abstract)); item.append(details); }
+  if (finding.diff_excerpt) { const details=el('details','evidence-diff'); details.append(el('summary',null,'View source text changes'),el('pre',null,finding.diff_excerpt)); item.append(details); }
+  if (finding.previous_sha256 && finding.current_sha256) item.append(el('span','evidence-finding__meta',`Document fingerprint ${finding.previous_sha256.slice(0,10)}… → ${finding.current_sha256.slice(0,10)}…`));
+  if (finding.extraction_error) item.append(el('p','evidence-warning',`Text comparison unavailable: ${finding.extraction_error}`));
+  if (finding.url) { const link=el('a','evidence-link','Open detected source ↗'); link.href=finding.url; link.target='_blank'; link.rel='noopener noreferrer'; item.append(link); }
+  return item;
+}
+
+function eventView(event) {
+  const card=el('article',`evidence-card evidence-${event.evidence_scope}`);
+  const header=el('div','evidence-card__header');
+  const copy=el('div'); copy.append(el('strong',null,event.title),el('span','evidence-finding__meta',`${triggerLabel(event.trigger_type)} · ${formatDate(event.detected_at)}`));
+  header.append(copy,el('span','evidence-scope',event.evidence_scope==='focused'?'Focused':'Broad review'));
+  card.append(header);
+  (event.findings||[]).forEach(finding=>card.append(findingView(finding)));
+  return card;
+}
+
 function renderSummary(counts) {
   const grid = document.getElementById('summaryGrid');
   grid.replaceChildren();
@@ -44,17 +72,22 @@ function topicCard(topic) {
   [['Monitor status', labels[topic.state] || topic.status],['Status date',formatDate(topic.status_date)],['Last reviewer',topic.secondary_reviewer || topic.reviewer || 'Not recorded'],['Last clinical review',formatDate(topic.secondary_reviewed_at || topic.reviewed_at)],['Next review due',formatDate(topic.next_review_due)]].forEach(([term,value]) => {
     const wrap=el('div'); wrap.append(el('dt',null,term),el('dd',null,value)); details.append(wrap);
   });
+  const packetCount=(topic.review_events||[]).length;
+  const focusedCount=(topic.review_claim_ids||[]).length;
+  const relevantSourceIds=new Set(topic.review_source_ids||topic.sources.map(source=>source.id));
   const sources = el('div','review-sources');
-  sources.append(el('h4',null,'Authoritative sources'));
+  sources.append(el('h4',null,packetCount?'Sources in this packet':'Authoritative sources'));
   const sourceList = el('ul');
-  topic.sources.forEach(source => { const li=el('li'); const a=el('a',null,source.title); a.href=source.url; a.target='_blank'; a.rel='noopener noreferrer'; li.append(a); sourceList.append(li); });
+  topic.sources.filter(source=>relevantSourceIds.has(source.id)).forEach(source => { const li=el('li'); const a=el('a',null,source.title); a.href=source.url; a.target='_blank'; a.rel='noopener noreferrer'; li.append(a); sourceList.append(li); });
   sources.append(sourceList);
-  const claimSummary=el('p','review-card__meta',`${topic.claims.length} mapped content area${topic.claims.length===1?'':'s'} · ${topic.independent_review_required?'independent review required':'independent review recommended'}`);
+  const claimSummary=el('p','review-card__meta',packetCount?`${packetCount} evidence packet${packetCount===1?'':'s'} · ${focusedCount} affected content area${focusedCount===1?'':'s'} · ${topic.independent_review_required?'independent review required':'independent review recommended'}`:`${topic.claims.length} mapped content area${topic.claims.length===1?'':'s'}`);
   const actions=el('div','review-card__actions');
   const pageLink=el('a','secondary-button','Open clinical page'); pageLink.href=topic.path; pageLink.target='_blank'; pageLink.rel='noopener';
-  const reviewLabel=topic.state==='second_review'?'Complete independent review':topic.state==='reviewed'?'Record new review':'Review topic';
-  const review=el('button','primary-button',reviewLabel); review.type='button'; review.addEventListener('click',()=>openReview(topic));
-  actions.append(pageLink,review);
+  actions.append(pageLink);
+  if (['pending','second_review'].includes(topic.state)) {
+    const reviewLabel=topic.state==='second_review'?'Complete independent review':'Review focused packet';
+    const review=el('button','primary-button',reviewLabel); review.type='button'; review.addEventListener('click',()=>openReview(topic)); actions.append(review);
+  }
   article.append(header,details,claimSummary,sources,actions);
   return article;
 }
@@ -84,13 +117,17 @@ function openReview(topic) {
   document.getElementById('dialogTitle').textContent=stage==='secondary'?`${topic.title} — independent review`:topic.title;
   document.getElementById('dialogError').textContent='';
   document.getElementById('changeReferenceField').hidden=true;
+  const evidence=document.getElementById('reviewEvidence'); evidence.replaceChildren(...(topic.review_events||[]).map(eventView));
+  document.getElementById('evidenceCount').textContent=`${(topic.review_events||[]).length} packet${(topic.review_events||[]).length===1?'':'s'}`;
+  const targetClaims=new Set(topic.review_claim_ids||topic.claims.map(claim=>claim.id));
   const claims=document.getElementById('claimChecklist'); claims.replaceChildren();
-  topic.claims.forEach(claim=>{
+  topic.claims.filter(claim=>targetClaims.has(claim.id)).forEach(claim=>{
     const label=el('label'); const input=el('input'); input.type='checkbox'; input.name='claim'; input.value=claim.id;
     const copy=el('span'); copy.append(el('strong',null,claim.scope),el('small',null,`${claim.review_priority} priority · independent review ${claim.independent_review}`)); label.append(input,copy); claims.append(label);
   });
+  const targetSources=new Set(topic.review_source_ids||topic.sources.map(source=>source.id));
   const checklist=document.getElementById('sourceChecklist'); checklist.replaceChildren();
-  topic.sources.forEach(source=>{
+  topic.sources.filter(source=>targetSources.has(source.id)).forEach(source=>{
     const label=el('label'); const input=el('input'); input.type='checkbox'; input.name='source'; input.value=source.id;
     const copy=el('span'); copy.append(el('strong',null,source.title)); const link=el('a',null,'Open source ↗'); link.href=source.url; link.target='_blank'; link.rel='noopener noreferrer'; copy.append(link); label.append(input,copy); checklist.append(label);
   });
@@ -119,9 +156,9 @@ form.addEventListener('submit',async event=>{
   const sourceIds=[...form.querySelectorAll('input[name="source"]:checked')].map(input=>input.value);
   const claimIds=[...form.querySelectorAll('input[name="claim"]:checked')].map(input=>input.value);
   if (!sourceIds.length) { error.textContent='Select at least one authoritative source you reviewed.'; return; }
-  if (claimIds.length!==state.active.claims.length) { error.textContent='Confirm every mapped clinical content area was reviewed.'; return; }
+  if (claimIds.length!==(state.active.review_claim_ids||state.active.claims.map(claim=>claim.id)).length) { error.textContent='Confirm every clinical content area in this focused packet.'; return; }
   const decision=form.elements.decision.value;
-  const payload={topic:document.getElementById('reviewTopic').value,expected_revision:document.getElementById('reviewRevision').value,review_stage:document.getElementById('reviewStage').value,source_ids:sourceIds,claim_ids:claimIds,source_versions:document.getElementById('sourceVersions').value,limitations:document.getElementById('reviewLimitations').value,decision,note:document.getElementById('reviewNote').value,change_reference:document.getElementById('changeReference').value,confirmed:document.getElementById('reviewConfirmed').checked};
+  const payload={topic:document.getElementById('reviewTopic').value,expected_revision:document.getElementById('reviewRevision').value,review_stage:document.getElementById('reviewStage').value,event_ids:(state.active.review_events||[]).map(event=>event.id),source_ids:sourceIds,claim_ids:claimIds,source_versions:document.getElementById('sourceVersions').value,limitations:document.getElementById('reviewLimitations').value,decision,note:document.getElementById('reviewNote').value,change_reference:document.getElementById('changeReference').value,confirmed:document.getElementById('reviewConfirmed').checked};
   submit.disabled=true; submit.textContent='Recording…';
   try {
     const response=await fetch('/review/api/reviews',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'NoahPACReviewPortal'},body:JSON.stringify(payload)});

@@ -5,6 +5,13 @@ an authenticated clinical review queue. It does not perform or claim clinical
 review automatically. A clinician must open the cited sources, compare them
 with the deployed page, select a decision, and attest to that work.
 
+New detections are stored as durable focused review packets. Each packet shows
+the exact retained trigger (publication title/abstract, official alert, page
+version, or source-document text diff) and identifies only the source-backed
+claims affected by that trigger. Scheduled comprehensive reviews stay broad.
+Older pending records whose evidence was not retained are clearly labeled
+`Legacy broad detection` and must not be presented as focused evidence.
+
 ## Security model
 
 - Nginx and Authelia require two-factor authentication for both the frontend
@@ -18,6 +25,8 @@ with the deployed page, select a decision, and attest to that work.
 - Every form contains the revision of the displayed status. A monitor update
   between page load and submission causes a conflict instead of clearing a
   newer alert.
+- Submissions must identify the complete current set of event IDs, affected
+  claim IDs, and packet source IDs; stale or expanded packets are rejected.
 - The dedicated `noahpac-review` service account can write only the protected
   audit directory and the explicit `last_checked.json` files. The systemd unit
   otherwise uses a read-only filesystem and additional sandboxing.
@@ -69,10 +78,17 @@ the current review queue.
 
 ## Operational behavior
 
-Submitting `No change required` records the review immediately. Submitting
-`Content updated` additionally requires a deployed commit or release reference.
+Submitting `No change required` records that the deployed content remains
+accurate. `Not applicable` records that the exact detected evidence does not
+affect the tool. `Content updated` additionally requires a deployed commit or
+release reference.
 The API updates the topic status and appends a JSON record to the root-owned,
 group-writable `/var/lib/noahpac-monitor/review-audit.jsonl` audit log.
+
+Open and resolved evidence packets are retained under
+`/var/lib/noahpac-monitor/review-events/`. The portal never resolves a packet
+until the required primary review—and, for critical claims, independent review
+by a different authenticated identity—has been recorded.
 
 The status files are runtime state and are excluded by `.gitignore`; portal
 submissions therefore do not dirty the production Git checkout. The existing

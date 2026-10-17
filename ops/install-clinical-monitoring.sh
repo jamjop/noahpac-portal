@@ -25,6 +25,8 @@ done
 chmod 600 "$env_file"
 chown root:root "$env_file"
 
+install -d -o root -g root -m 0750 /var/lib/noahpac-monitor/source-snapshots
+
 NOAHPAC_REPO="$repo" /usr/bin/python3 \
   "$repo/scripts/check-clinical-sources.py" --check-config
 NOAHPAC_REPO="$repo" /usr/bin/python3 \

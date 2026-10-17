@@ -39,9 +39,11 @@ both files.
    reachability is operational evidence only; it is not a clinical review.
 6. USPSTF and antibiogram data have their own structured refresh timers.
 
-State and latest reports are stored under `/var/lib/noahpac-monitor`. Fetch
-failures return a non-zero status and trigger the systemd failure notifier;
-they are never reported as "no change."
+State and latest reports are stored under `/var/lib/noahpac-monitor`. Each
+detected change also creates a durable, claim-scoped packet under
+`review-events/`; document text baselines used for before/after comparison are
+stored under `source-snapshots/`. Fetch failures return a non-zero status and
+trigger the systemd failure notifier; they are never reported as "no change."
 
 ## Schedules
 
@@ -78,6 +80,15 @@ The authenticated `/review/` portal requires the reviewer to record:
 - known limitations or unresolved questions;
 - a decision and review note;
 - the deployed commit or release reference when content changed.
+
+For new detections, the portal shows the exact retained evidence (such as a
+new PubMed title and abstract, official-alert link, page-version change, or a
+bounded source-document text diff) and narrows confirmation to the claims and
+sources connected to that evidence. `Not applicable` is a valid reviewed
+disposition when the detected item does not affect deployed content. Items
+created before durable packets are labeled **Legacy broad detection** and
+remain comprehensive because their original evidence cannot be reconstructed
+reliably. Scheduled cadence reviews also remain comprehensive.
 
 Critical mappings require a second review by a different authenticated user.
 The primary review remains pending until the independent reviewer examines the

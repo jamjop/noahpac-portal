@@ -18,6 +18,7 @@ def load(name, relative_path):
 urgent = load("urgent_clinical_monitor", "scripts/monitor-urgent-clinical-feeds.py")
 fingerprints = load("clinical_fingerprint_monitor", "scripts/monitor-source-fingerprints.py")
 watcher = load("pubmed_watcher_under_test", "lib/pubmed_watcher.py")
+events = load("review_events_under_test", "lib/review_events.py")
 
 
 class UrgentFeedParsingTests(unittest.TestCase):
@@ -50,6 +51,50 @@ class FingerprintMappingTests(unittest.TestCase):
             {"tool_id":"c","source_ids":["other"]},
         ]}
         self.assertEqual(fingerprints.affected_tools("source", claims), ["a", "b"])
+
+    def test_generates_bounded_text_diff(self):
+        diff = fingerprints.text_diff("Heading\nDose 5 mg", "Heading\nDose 10 mg")
+        self.assertIn("-Dose 5 mg", diff)
+        self.assertIn("+Dose 10 mg", diff)
+
+
+class FocusedReviewEventTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        root = Path(self.tmp.name)
+        (root / "clinical-review.json").write_text(json.dumps({
+            "sources": {"pubmed":{"title":"PubMed","url":"https://pubmed.ncbi.nlm.nih.gov/"},"other":{"title":"Other","url":"https://example.org/"}},
+            "tools": [{"id":"tool","source_ids":["pubmed","other"]}],
+        }))
+        (root / "clinical-claims.json").write_text(json.dumps({"claims":[
+            {"id":"literature","tool_id":"tool","source_ids":["pubmed"]},
+            {"id":"other-claim","tool_id":"tool","source_ids":["other"]},
+        ]}))
+        events.REPO = root
+        events.EVENT_DIR = root / "events"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_pubmed_event_targets_only_pubmed_backed_claim(self):
+        event = events.create_event("tool", "topic-monitor", [{"pmid":"123","title":"New paper"}])
+        self.assertEqual(event["claim_ids"], ["literature"])
+        self.assertEqual(event["source_ids"], ["pubmed"])
+        self.assertEqual(event["evidence_scope"], "focused")
+
+    def test_duplicate_evidence_is_deduplicated(self):
+        first = events.create_event("tool", "topic-monitor", [{"pmid":"123"}])
+        second = events.create_event("tool", "topic-monitor", [{"pmid":"123"}])
+        self.assertEqual(first["id"], second["id"])
+        self.assertEqual(len(events.list_events("tool")), 1)
+
+    def test_exact_source_url_targets_its_claim(self):
+        event = events.create_event(
+            "tool", "topic-monitor",
+            [{"url":"https://example.org/", "detail":"Page version changed"}],
+        )
+        self.assertEqual(event["source_ids"], ["other"])
+        self.assertEqual(event["claim_ids"], ["other-claim"])
 
 
 class ReviewEvidencePersistenceTests(unittest.TestCase):

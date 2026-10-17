@@ -168,6 +168,15 @@ def main() -> int:
     affected = sorted({tool for finding in findings for tool in finding["tool_ids"]})
     if affected:
         mark_pending(affected)
+        sys.path.insert(0, str(REPO / "lib"))
+        import review_events  # noqa: PLC0415
+        for finding in findings:
+            for tool_id in finding["tool_ids"]:
+                review_events.create_event(
+                    tool_id, "urgent-official-alert", [finding],
+                    title=f"{finding['channel']}: {finding['title']}",
+                    detected_at=next_state["updated_at"],
+                )
     notify(findings)
     atomic_json(REPORT, {"checked_at": next_state["updated_at"], "first_run": first_run, "findings": findings, "failures": failures})
     print(f"Urgent clinical surveillance: {len(findings)} new alert(s), {len(failures)} failure(s).")

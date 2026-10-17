@@ -33,19 +33,61 @@ class ReviewPortalTest(unittest.TestCase):
         api.CLAIM_MANIFEST = root / "clinical-claims.json"
         api.AUDIT_LOG = root / "state" / "review-audit.jsonl"
         api.LOCK_FILE = root / "state" / "review.lock"
+        api.EVENT_DIR = root / "state" / "review-events"
 
     def tearDown(self):
         self.tmp.cleanup()
 
     def submission(self):
         topic = api.dashboard()["topics"][0]
-        return {"topic":"sepsis","decision":"no-change","note":"Compared all deployed sepsis content with the current campaign source.","source_ids":["ssc"],"claim_ids":["sepsis-guidance"],"source_versions":"SSC current guideline accessed 2026-10-17","limitations":"None identified.","review_stage":"primary","expected_revision":topic["revision"],"change_reference":"","confirmed":True}
+        return {"topic":"sepsis","decision":"no-change","note":"Compared all deployed sepsis content with the current campaign source.","source_ids":["ssc"],"claim_ids":["sepsis-guidance"],"event_ids":[event["id"] for event in topic["review_events"]],"source_versions":"SSC current guideline accessed 2026-10-17","limitations":"None identified.","review_stage":"primary","expected_revision":topic["revision"],"change_reference":"","confirmed":True}
 
     def test_dashboard_exposes_pending_topic_and_approved_source(self):
         topic = api.dashboard()["topics"][0]
         self.assertEqual(topic["state"], "pending")
         self.assertEqual(topic["sources"][0]["id"], "ssc")
         self.assertEqual(topic["claims"][0]["id"], "sepsis-guidance")
+        self.assertEqual(topic["review_events"][0]["trigger_type"], "legacy-detection")
+
+    def test_focused_event_limits_required_claims_and_sources(self):
+        claims = json.loads(api.CLAIM_MANIFEST.read_text())
+        claims["claims"].append({"id":"sepsis-other","tool_id":"sepsis","scope":"Unrelated content","source_ids":["other"],"review_priority":"high","independent_review":"recommended"})
+        api.CLAIM_MANIFEST.write_text(json.dumps(claims))
+        manifest = json.loads(api.MANIFEST.read_text())
+        manifest["sources"]["other"] = {"title":"Other", "url":"https://example.org/other"}
+        manifest["tools"][0]["source_ids"].append("other")
+        api.MANIFEST.write_text(json.dumps(manifest))
+        api.review_event_module().create_event(
+            "sepsis", "document-fingerprint", [{"source_id":"ssc","detail":"Section changed"}],
+            source_ids=["ssc"],
+        )
+        topic = api.dashboard()["topics"][0]
+        self.assertEqual(topic["review_claim_ids"], ["sepsis-guidance"])
+        self.assertEqual(topic["review_source_ids"], ["ssc"])
+        self.assertEqual(topic["review_events"][0]["evidence_scope"], "focused")
+
+    def test_focused_review_resolves_event_without_unrelated_claim(self):
+        api.review_event_module().create_event(
+            "sepsis", "topic-monitor",
+            [{"source_id":"ssc","title":"Focused guideline item","url":"https://example.org/ssc"}],
+            source_ids=["ssc"],
+        )
+        topic = api.dashboard()["topics"][0]
+        data = self.submission()
+        data["expected_revision"] = topic["revision"]
+        data["event_ids"] = [event["id"] for event in topic["review_events"]]
+        api.record_review(data, "noah.pa")
+        stored = api.review_event_module().list_events("sepsis", include_resolved=True)
+        self.assertEqual(stored[0]["status"], "resolved")
+        self.assertEqual(stored[0]["decision"], "no-change")
+
+    def test_not_applicable_is_a_valid_reviewed_disposition(self):
+        data = self.submission()
+        data["decision"] = "not-applicable"
+        result = api.record_review(data, "noah.pa")
+        self.assertTrue(result["ok"])
+        status = json.loads((api.REPO / "sepsis" / "last_checked.json").read_text())
+        self.assertEqual(status["review_decision"], "not-applicable")
 
     def test_new_required_review_date_reopens_previously_reviewed_topic(self):
         status_path = api.REPO / "sepsis" / "last_checked.json"

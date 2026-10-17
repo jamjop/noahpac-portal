@@ -10,6 +10,8 @@ const payload = {
     review_note: null, review_decision: null, revision: '0123456789abcdef',
     sources: [{id: 'ssc_2026', title: 'Surviving Sepsis Campaign', url: 'https://example.org/ssc'}],
     claims: [{id:'sepsis-guidance',scope:'Sepsis recognition, escalation, and resuscitation guidance',review_priority:'critical',independent_review:'required',source_ids:['ssc_2026']}],
+    review_claim_ids: ['sepsis-guidance'], review_source_ids: ['ssc_2026'],
+    review_events: [{id:'event123',title:'New sepsis guideline publication',trigger_type:'topic-monitor',detected_at:'2026-10-11T12:00:00Z',status:'open',evidence_scope:'focused',source_ids:['ssc_2026'],claim_ids:['sepsis-guidance'],findings:[{title:'Updated sepsis recommendations',journal:'Critical Care',pubdate:'2026',pmid:'123456',url:'https://pubmed.ncbi.nlm.nih.gov/123456/',abstract:'Updated recommendations affecting screening thresholds.'}]}],
     independent_review_required: true, independent_review_pending: false, next_review_due: null,
   }],
 };
@@ -25,7 +27,8 @@ test('review portal displays the queue and submits a source-backed acknowledgeme
   await expect(page.getByText('Signed in: noah.pa')).toBeVisible();
   await expect(page.getByRole('heading', {name:'Sepsis Screening'})).toBeVisible();
   await expect(page.getByText(/1 requiring attention/)).toBeVisible();
-  await page.getByRole('button', {name:'Review topic'}).click();
+  await page.getByRole('button', {name:'Review focused packet'}).click();
+  await expect(page.getByText('Updated sepsis recommendations')).toBeVisible();
   await page.getByLabel(/Sepsis recognition/).check();
   await page.getByLabel(/Surviving Sepsis Campaign/).check();
   await page.getByLabel(/No change required/).check();
@@ -35,7 +38,7 @@ test('review portal displays the queue and submits a source-backed acknowledgeme
   await page.getByLabel(/I personally compared/).check();
   await page.getByRole('button', {name:'Record review'}).click();
   await expect.poll(() => submission).not.toBeNull();
-  expect(submission).toMatchObject({topic:'sepsis',decision:'no-change',review_stage:'primary',source_ids:['ssc_2026'],claim_ids:['sepsis-guidance'],source_versions:'SSC guideline accessed October 17, 2026.',confirmed:true,expected_revision:'0123456789abcdef'});
+  expect(submission).toMatchObject({topic:'sepsis',decision:'no-change',review_stage:'primary',event_ids:['event123'],source_ids:['ssc_2026'],claim_ids:['sepsis-guidance'],source_versions:'SSC guideline accessed October 17, 2026.',confirmed:true,expected_revision:'0123456789abcdef'});
 });
 
 test('review portal fits a phone and retains dark mode', async ({ page }) => {

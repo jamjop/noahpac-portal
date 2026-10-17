@@ -17,6 +17,8 @@
         "Added daily FDA MedWatch and CDC Health Alert Network surveillance without permitting automatic clinical-content edits.",
         "Added weekly SHA-256 fingerprints for designated stable FDA, KDIGO, and ACEP/ENA source documents.",
         "Added a dedicated monthly Empiric Therapy literature monitor.",
+        "Added durable focused review packets containing exact detected publications, official-alert links, page-version changes, or bounded source-document text diffs.",
+        "Limited routine review confirmation to the claims and sources connected to each retained event while preserving broad scheduled reviews and honestly labeling legacy detections whose details were not retained.",
         "Expanded the review portal to record content areas, source versions, limitations, change references, review due dates, and durable audit evidence.",
         "Required critical content areas to remain pending until a different authenticated reviewer completes an independent review."
       ],

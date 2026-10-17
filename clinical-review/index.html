@@ -8,7 +8,8 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="focused-review.css?v=1">
 </head>
 <body class="clinical-app review-portal-app">
 <a class="skip-link" href="#main-content">Skip to clinical reviews</a>
@@ -28,7 +29,7 @@
     <div class="app-header__title">
       <p class="app-header__eyebrow">Authenticated clinical governance</p>
       <h1>Clinical Review Portal</h1>
-      <p class="app-header__lede">Review monitored references, document your decision, and clear pending states with a protected audit trail.</p>
+      <p class="app-header__lede">Review the specific evidence that triggered an alert, compare only the affected clinical content, and document your decision with a protected audit trail.</p>
     </div>
   </div>
 </header>
@@ -61,10 +62,12 @@
     <input type="hidden" id="reviewRevision">
     <input type="hidden" id="reviewStage" value="primary">
 
+    <section class="evidence-section" aria-labelledby="evidenceTitle"><div class="evidence-heading"><div><p class="section-kicker">Focused review packet</p><h3 id="evidenceTitle">What changed</h3></div><span class="evidence-count" id="evidenceCount"></span></div><div class="evidence-list" id="reviewEvidence"></div></section>
     <fieldset><legend>Mapped clinical content areas reviewed</legend><div class="claim-checklist" id="claimChecklist"></div></fieldset>
     <fieldset><legend>Authoritative sources personally reviewed</legend><div class="source-checklist" id="sourceChecklist"></div></fieldset>
     <fieldset><legend>Clinical decision</legend><div class="decision-grid">
       <label><input type="radio" name="decision" value="no-change" required><span><strong>No change required</strong><small>The deployed content remains accurate.</small></span></label>
+      <label><input type="radio" name="decision" value="not-applicable" required><span><strong>Not applicable</strong><small>The detected item does not affect this tool.</small></span></label>
       <label><input type="radio" name="decision" value="content-updated" required><span><strong>Content updated</strong><small>A reviewed correction has been deployed.</small></span></label>
     </div></fieldset>
     <label class="form-field" id="changeReferenceField" hidden><span>Deployed commit or change reference</span><input type="text" id="changeReference" maxlength="160" placeholder="Commit hash or release reference"></label>
@@ -78,6 +81,6 @@
 </dialog>
 
 <footer class="app-footer"><div class="clinical-caution"><strong>Monitoring is not clinical review.</strong> Record a decision only after directly comparing the deployed content with the selected authoritative sources.</div><p class="app-footer__meta">Protected by Authelia · © <span data-current-year></span> Noah PA-C</p></footer>
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
