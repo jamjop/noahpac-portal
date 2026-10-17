@@ -1,8 +1,27 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-15",
+  "updated": "2026-10-17",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-17-clinical-surveillance-traceability",
+      "date": "2026-10-17",
+      "type": "governance",
+      "title": "Claim-level clinical surveillance and independent review",
+      "summary": "Expanded clinical monitoring from tool-level source discovery to mapped content-area traceability, urgent official alerts, stable-document fingerprints, and evidence-based two-stage review.",
+      "clinical_change": false,
+      "scope": "Clinical governance, monitoring, and review operations",
+      "affected_routes": [],
+      "changes": [
+        "Mapped 26 clinically actionable content areas to approved authoritative sources and added governance gates for every monitored and high-risk tool.",
+        "Added daily FDA MedWatch and CDC Health Alert Network surveillance without permitting automatic clinical-content edits.",
+        "Added weekly SHA-256 fingerprints for designated stable FDA, KDIGO, and ACEP/ENA source documents.",
+        "Added a dedicated monthly Empiric Therapy literature monitor.",
+        "Expanded the review portal to record content areas, source versions, limitations, change references, review due dates, and durable audit evidence.",
+        "Required critical content areas to remain pending until a different authenticated reviewer completes an independent review."
+      ],
+      "source_ids": ["fda_medwatch_feed", "cdc_han", "pubmed", "nd_antibiograms"]
+    },
     {
       "id": "2026-10-15-act-score-calculator",
       "date": "2026-10-15",

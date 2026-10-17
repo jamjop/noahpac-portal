@@ -16,6 +16,7 @@ from urllib.parse import urlparse
 
 REPO = Path(os.environ.get("NOAHPAC_REPO", "/var/www/noahpac-portal")).resolve()
 MANIFEST = REPO / "clinical-review.json"
+CLAIM_MANIFEST = REPO / "clinical-claims.json"
 AUDIT_LOG = Path(os.environ.get("NOAHPAC_REVIEW_AUDIT_LOG", "/var/lib/noahpac-monitor/review-audit.jsonl"))
 LOCK_FILE = Path(os.environ.get("NOAHPAC_REVIEW_LOCK", "/var/lib/noahpac-monitor/review.lock"))
 ALLOWED_ORIGIN = os.environ.get("NOAHPAC_REVIEW_ORIGIN", "https://www.noahpac.com")
@@ -42,16 +43,31 @@ def revision(payload: dict) -> str:
     return hashlib.sha256(raw).hexdigest()[:16]
 
 
-def manifest_data() -> tuple[dict, list[dict]]:
+def next_review_due(reviewed_at: str | None, cadence: str) -> str | None:
+    if not reviewed_at:
+        return None
+    try:
+        reviewed = dt.datetime.fromisoformat(reviewed_at.replace("Z", "+00:00")).date()
+    except ValueError:
+        return None
+    days = {"weekly": 7, "monthly": 31, "quarterly": 92, "annual": 365}.get(cadence)
+    return (reviewed + dt.timedelta(days=days)).isoformat() if days else None
+
+
+def manifest_data() -> tuple[dict, list[dict], dict[str, list[dict]]]:
     data = load_json(MANIFEST)
+    claim_data = load_json(CLAIM_MANIFEST)
     sources = data.get("sources", {})
     tools = [tool for tool in data.get("tools", []) if tool.get("monitor")]
-    if not isinstance(sources, dict) or not tools:
+    claims_by_tool: dict[str, list[dict]] = {}
+    for claim in claim_data.get("claims", []):
+        claims_by_tool.setdefault(claim.get("tool_id", ""), []).append(claim)
+    if not isinstance(sources, dict) or not tools or not claims_by_tool:
         raise ReviewError("Clinical review manifest is unavailable or invalid.")
-    return sources, tools
+    return sources, tools, claims_by_tool
 
 
-def public_topic(tool: dict, sources: dict) -> dict:
+def public_topic(tool: dict, sources: dict, claims: list[dict]) -> dict:
     topic = tool["id"]
     status = load_json(REPO / topic / "last_checked.json")
     source_items = []
@@ -62,7 +78,9 @@ def public_topic(tool: dict, sources: dict) -> dict:
     raw_status = status.get("status", "not_checked")
     required_after = tool.get("review_required_after")
     status_date = status.get("date", "")
-    if status.get("review_pending") or raw_status in {"changed", "held_for_review", "review_required"} or (required_after and (not status.get("clinically_reviewed") or status_date < required_after)):
+    if status.get("independent_review_pending"):
+        state = "second_review"
+    elif status.get("review_pending") or raw_status in {"changed", "held_for_review", "review_required"} or (required_after and (not status.get("clinically_reviewed") or status_date < required_after)):
         state = "pending"
     elif raw_status == "error":
         state = "error"
@@ -85,15 +103,28 @@ def public_topic(tool: dict, sources: dict) -> dict:
         "reviewed_at": status.get("reviewed_at"),
         "review_note": status.get("review_note"),
         "review_decision": status.get("review_decision"),
+        "independent_review_pending": bool(status.get("independent_review_pending")),
+        "primary_reviewer": status.get("primary_reviewer"),
+        "primary_reviewed_at": status.get("primary_reviewed_at"),
+        "secondary_reviewer": status.get("secondary_reviewer"),
+        "secondary_reviewed_at": status.get("secondary_reviewed_at"),
+        "next_review_due": next_review_due(status.get("secondary_reviewed_at") or status.get("reviewed_at"), tool["review_cadence"]),
         "revision": revision(status),
         "sources": source_items,
+        "claims": [{
+            "id": claim["id"], "scope": claim["scope"],
+            "review_priority": claim["review_priority"],
+            "independent_review": claim["independent_review"],
+            "source_ids": claim["source_ids"],
+        } for claim in claims],
+        "independent_review_required": any(claim.get("independent_review") == "required" for claim in claims),
     }
 
 
 def dashboard() -> dict:
-    sources, tools = manifest_data()
-    topics = [public_topic(tool, sources) for tool in tools]
-    order = {"pending": 0, "error": 1, "not_checked": 2, "current": 3, "reviewed": 4}
+    sources, tools, claims_by_tool = manifest_data()
+    topics = [public_topic(tool, sources, claims_by_tool.get(tool["id"], [])) for tool in tools]
+    order = {"pending": 0, "second_review": 1, "error": 2, "not_checked": 3, "current": 4, "reviewed": 5}
     topics.sort(key=lambda item: (order.get(item["state"], 9), item["title"].lower()))
     counts = {key: sum(item["state"] == key for item in topics) for key in order}
     return {"topics": topics, "counts": counts, "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}
@@ -109,6 +140,10 @@ def validate_submission(data: dict, authenticated_user: str) -> dict:
     note = str(data.get("note", "")).strip()
     expected_revision = str(data.get("expected_revision", ""))
     source_ids = data.get("source_ids")
+    claim_ids = data.get("claim_ids")
+    review_stage = str(data.get("review_stage", "primary"))
+    source_versions = str(data.get("source_versions", "")).strip()
+    limitations = str(data.get("limitations", "")).strip()
     change_reference = str(data.get("change_reference", "")).strip()
     if decision not in DECISIONS:
         raise ReviewError("Select a valid review decision.")
@@ -120,10 +155,20 @@ def validate_submission(data: dict, authenticated_user: str) -> dict:
         raise ReviewError("Select at least one authoritative source.")
     if any(not isinstance(item, str) for item in source_ids) or len(set(source_ids)) != len(source_ids):
         raise ReviewError("Source selection is invalid.")
+    if not isinstance(claim_ids, list) or not claim_ids or len(claim_ids) > 30:
+        raise ReviewError("Confirm each mapped clinical content area reviewed.")
+    if any(not isinstance(item, str) for item in claim_ids) or len(set(claim_ids)) != len(claim_ids):
+        raise ReviewError("Clinical content-area selection is invalid.")
+    if review_stage not in {"primary", "secondary"}:
+        raise ReviewError("Review stage is invalid.")
+    if len(source_versions) < 3 or len(source_versions) > 1000:
+        raise ReviewError("Record the source versions or publication dates examined.")
+    if len(limitations) > 1000:
+        raise ReviewError("Limitations must be 1,000 characters or fewer.")
     if decision == "content-updated" and not (7 <= len(change_reference) <= 160):
         raise ReviewError("Provide the deployed commit or change reference.")
 
-    sources, tools = manifest_data()
+    sources, tools, claims_by_tool = manifest_data()
     tool = next((item for item in tools if item.get("id") == topic), None)
     if not tool:
         raise ReviewError("Topic is not eligible for portal review.")
@@ -131,10 +176,17 @@ def validate_submission(data: dict, authenticated_user: str) -> dict:
     if not set(source_ids).issubset(allowed_ids):
         raise ReviewError("One or more sources are not approved for this topic.")
     resolved = [sources[item] | {"id": item} for item in source_ids]
+    approved_claims = claims_by_tool.get(topic, [])
+    approved_claim_ids = {claim["id"] for claim in approved_claims}
+    if set(claim_ids) != approved_claim_ids:
+        raise ReviewError("Every mapped clinical content area must be reviewed and confirmed.")
     return {
         "topic": topic, "decision": decision, "note": note,
         "expected_revision": expected_revision, "sources": resolved,
         "change_reference": change_reference, "reviewer": authenticated_user,
+        "claim_ids": claim_ids, "review_stage": review_stage,
+        "source_versions": source_versions, "limitations": limitations,
+        "independent_review_required": any(claim.get("independent_review") == "required" for claim in approved_claims),
     }
 
 
@@ -148,29 +200,52 @@ def record_review(data: dict, authenticated_user: str) -> dict:
         if revision(current) != item["expected_revision"]:
             raise ReviewError("This topic changed after the page loaded. Reload and review the latest state.")
         now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
-        payload = {
-            "date": dt.date.today().isoformat(), "status": "no_change",
-            "review_pending": False, "clinically_reviewed": True,
-            "reviewer": item["reviewer"], "review_note": item["note"],
-            "review_sources": [source["url"] for source in item["sources"]],
-            "review_source_ids": [source["id"] for source in item["sources"]],
-            "review_decision": item["decision"], "reviewed_at": now,
-        }
-        if item["change_reference"]:
-            payload["change_reference"] = item["change_reference"]
+        if item["review_stage"] == "secondary":
+            if not current.get("independent_review_pending"):
+                raise ReviewError("No independent review is pending for this topic.")
+            if current.get("primary_reviewer") == item["reviewer"]:
+                raise ReviewError("Independent review must be completed by a different authenticated reviewer.")
+            payload = current | {
+                "date": dt.date.today().isoformat(), "status": "no_change",
+                "review_pending": False, "independent_review_pending": False,
+                "clinically_reviewed": True, "secondary_reviewer": item["reviewer"],
+                "secondary_reviewed_at": now, "secondary_review_note": item["note"],
+                "secondary_review_source_ids": [source["id"] for source in item["sources"]],
+                "secondary_review_claim_ids": item["claim_ids"],
+                "secondary_source_versions": item["source_versions"],
+                "secondary_review_limitations": item["limitations"],
+            }
+        else:
+            pending_second = item["independent_review_required"]
+            payload = {
+                "date": dt.date.today().isoformat(),
+                "status": "review_required" if pending_second else "no_change",
+                "review_pending": pending_second, "clinically_reviewed": not pending_second,
+                "independent_review_pending": pending_second,
+                "reviewer": item["reviewer"], "review_note": item["note"],
+                "review_sources": [source["url"] for source in item["sources"]],
+                "review_source_ids": [source["id"] for source in item["sources"]],
+                "review_claim_ids": item["claim_ids"],
+                "review_source_versions": item["source_versions"],
+                "review_limitations": item["limitations"],
+                "review_decision": item["decision"], "reviewed_at": now,
+                "primary_reviewer": item["reviewer"], "primary_reviewed_at": now,
+            }
+            if item["change_reference"]:
+                payload["change_reference"] = item["change_reference"]
         with destination.open("r+", encoding="utf-8") as handle:
             handle.seek(0)
             handle.write(json.dumps(payload, indent=2) + "\n")
             handle.truncate()
             handle.flush()
             os.fsync(handle.fileno())
-        audit = payload | {"topic": item["topic"]}
+        audit = payload | {"topic": item["topic"], "review_stage": item["review_stage"]}
         with AUDIT_LOG.open("a", encoding="utf-8") as handle:
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
             handle.write(json.dumps(audit, sort_keys=True) + "\n")
             handle.flush()
             os.fsync(handle.fileno())
-    return {"ok": True, "topic": item["topic"], "reviewed_at": now}
+    return {"ok": True, "topic": item["topic"], "reviewed_at": now, "independent_review_pending": bool(payload.get("independent_review_pending"))}
 
 
 class Handler(BaseHTTPRequestHandler):

@@ -1,0 +1,11 @@
+[Unit]
+Description=Check official urgent clinical channels daily
+
+[Timer]
+OnCalendar=*-*-* 04:05:00
+Persistent=true
+RandomizedDelaySec=5m
+Unit=noahpac-urgent-clinical.service
+
+[Install]
+WantedBy=timers.target

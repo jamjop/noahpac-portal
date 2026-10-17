@@ -24,8 +24,13 @@ class ReviewPortalTest(unittest.TestCase):
             "sources": {"ssc": {"title":"Surviving Sepsis Campaign", "url":"https://example.org/ssc"}},
             "tools": [{"id":"sepsis","path":"/sepsis/","title":"Sepsis Screening","risk_tier":"high","review_cadence":"monthly","monitor":"sepsis/check_updates.py","source_ids":["ssc"]}],
         }))
+        (root / "clinical-claims.json").write_text(json.dumps({
+            "schema_version": 1,
+            "claims": [{"id":"sepsis-guidance","tool_id":"sepsis","scope":"Sepsis screening and treatment guidance","source_ids":["ssc"],"review_priority":"high","independent_review":"recommended"}],
+        }))
         api.REPO = root
         api.MANIFEST = root / "clinical-review.json"
+        api.CLAIM_MANIFEST = root / "clinical-claims.json"
         api.AUDIT_LOG = root / "state" / "review-audit.jsonl"
         api.LOCK_FILE = root / "state" / "review.lock"
 
@@ -34,12 +39,13 @@ class ReviewPortalTest(unittest.TestCase):
 
     def submission(self):
         topic = api.dashboard()["topics"][0]
-        return {"topic":"sepsis","decision":"no-change","note":"Compared all deployed sepsis content with the current campaign source.","source_ids":["ssc"],"expected_revision":topic["revision"],"change_reference":"","confirmed":True}
+        return {"topic":"sepsis","decision":"no-change","note":"Compared all deployed sepsis content with the current campaign source.","source_ids":["ssc"],"claim_ids":["sepsis-guidance"],"source_versions":"SSC current guideline accessed 2026-10-17","limitations":"None identified.","review_stage":"primary","expected_revision":topic["revision"],"change_reference":"","confirmed":True}
 
     def test_dashboard_exposes_pending_topic_and_approved_source(self):
         topic = api.dashboard()["topics"][0]
         self.assertEqual(topic["state"], "pending")
         self.assertEqual(topic["sources"][0]["id"], "ssc")
+        self.assertEqual(topic["claims"][0]["id"], "sepsis-guidance")
 
     def test_new_required_review_date_reopens_previously_reviewed_topic(self):
         status_path = api.REPO / "sepsis" / "last_checked.json"
@@ -79,6 +85,23 @@ class ReviewPortalTest(unittest.TestCase):
         data["decision"] = "content-updated"
         with self.assertRaisesRegex(api.ReviewError, "deployed commit"):
             api.record_review(data, "noah.pa")
+
+    def test_required_independent_review_needs_a_different_authenticated_user(self):
+        claims = json.loads(api.CLAIM_MANIFEST.read_text())
+        claims["claims"][0]["independent_review"] = "required"
+        api.CLAIM_MANIFEST.write_text(json.dumps(claims))
+        first = api.record_review(self.submission(), "noah.pa")
+        self.assertTrue(first["independent_review_pending"])
+        topic = api.dashboard()["topics"][0]
+        self.assertEqual(topic["state"], "second_review")
+        second = self.submission()
+        second["review_stage"] = "secondary"
+        second["expected_revision"] = topic["revision"]
+        with self.assertRaisesRegex(api.ReviewError, "different authenticated reviewer"):
+            api.record_review(second, "noah.pa")
+        result = api.record_review(second, "reviewer.two")
+        self.assertFalse(result["independent_review_pending"])
+        self.assertEqual(api.dashboard()["topics"][0]["state"], "reviewed")
 
     def test_http_api_requires_forwarded_identity_and_same_origin(self):
         server = api.ThreadingHTTPServer(("127.0.0.1", 0), api.Handler)

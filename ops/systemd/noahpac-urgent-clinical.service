@@ -1,0 +1,13 @@
+[Unit]
+Description=Monitor official urgent Noah PA-C clinical update channels
+After=network-online.target
+Wants=network-online.target
+OnFailure=noahpac-monitor-failure@%n.service
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/noahpac-monitor.env
+ExecStart=/usr/bin/flock -n /run/noahpac-urgent-clinical.lock /usr/bin/python3 /var/www/noahpac-portal/scripts/monitor-urgent-clinical-feeds.py
+StandardOutput=journal
+StandardError=journal

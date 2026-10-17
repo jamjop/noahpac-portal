@@ -26,7 +26,7 @@ touch /var/lib/noahpac-monitor/review-audit.jsonl /var/lib/noahpac-monitor/revie
 chown root:"${SERVICE_USER}" /var/lib/noahpac-monitor/review-audit.jsonl /var/lib/noahpac-monitor/review.lock
 chmod 0660 /var/lib/noahpac-monitor/review-audit.jsonl /var/lib/noahpac-monitor/review.lock
 
-topics=(abx allergy als antibiogram anticoag calculators naloxone opioids pals peds reportable screener sepsis steroids sti-guide tccc toxicology triage vaccines wound)
+topics=(abx allergy als antibiogram anticoag calculators empiric naloxone opioids pals peds reportable screener sepsis steroids sti-guide tccc toxicology triage vaccines wound)
 for topic in "${topics[@]}"; do
   status="${REPO}/${topic}/last_checked.json"
   if [[ ! -e "${status}" ]]; then
@@ -38,7 +38,8 @@ done
 
 install -m 0644 "${REPO}/ops/systemd/${UNIT}" "/etc/systemd/system/${UNIT}"
 systemctl daemon-reload
-systemctl enable --now "${UNIT}"
+systemctl enable "${UNIT}"
+systemctl restart "${UNIT}"
 systemctl --no-pager --full status "${UNIT}"
 
 echo

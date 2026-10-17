@@ -31,6 +31,7 @@ ReadWritePaths=-/var/www/noahpac-portal/als/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/antibiogram/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/anticoag/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/calculators/last_checked.json
+ReadWritePaths=-/var/www/noahpac-portal/empiric/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/naloxone/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/opioids/last_checked.json
 ReadWritePaths=-/var/www/noahpac-portal/pals/last_checked.json

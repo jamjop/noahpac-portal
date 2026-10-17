@@ -8,7 +8,7 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="clinical-app review-portal-app">
 <a class="skip-link" href="#main-content">Skip to clinical reviews</a>
@@ -42,7 +42,7 @@
 
   <section class="review-controls" aria-label="Review filters">
     <label><span>Find a topic</span><input type="search" id="topicSearch" placeholder="Search clinical tools" autocomplete="off"></label>
-    <label><span>Status</span><select id="statusFilter"><option value="all">All statuses</option><option value="pending">Review pending</option><option value="error">Monitor error</option><option value="not_checked">Not checked</option><option value="current">Monitoring current</option><option value="reviewed">Clinically reviewed</option></select></label>
+    <label><span>Status</span><select id="statusFilter"><option value="all">All statuses</option><option value="pending">Review pending</option><option value="second_review">Independent review pending</option><option value="error">Monitor error</option><option value="not_checked">Not checked</option><option value="current">Monitoring current</option><option value="reviewed">Clinically reviewed</option></select></label>
     <button class="secondary-button review-clear" id="clearFilters" type="button" hidden>Clear filters</button>
   </section>
 
@@ -59,13 +59,17 @@
     <p class="dialog-context" id="dialogContext"></p>
     <input type="hidden" id="reviewTopic">
     <input type="hidden" id="reviewRevision">
+    <input type="hidden" id="reviewStage" value="primary">
 
+    <fieldset><legend>Mapped clinical content areas reviewed</legend><div class="claim-checklist" id="claimChecklist"></div></fieldset>
     <fieldset><legend>Authoritative sources personally reviewed</legend><div class="source-checklist" id="sourceChecklist"></div></fieldset>
     <fieldset><legend>Clinical decision</legend><div class="decision-grid">
       <label><input type="radio" name="decision" value="no-change" required><span><strong>No change required</strong><small>The deployed content remains accurate.</small></span></label>
       <label><input type="radio" name="decision" value="content-updated" required><span><strong>Content updated</strong><small>A reviewed correction has been deployed.</small></span></label>
     </div></fieldset>
     <label class="form-field" id="changeReferenceField" hidden><span>Deployed commit or change reference</span><input type="text" id="changeReference" maxlength="160" placeholder="Commit hash or release reference"></label>
+    <label class="form-field"><span>Source versions or publication dates</span><textarea id="sourceVersions" minlength="3" maxlength="1000" rows="3" required placeholder="Example: CDC STI Treatment Guidelines accessed Oct 17, 2026; page last reviewed July 22, 2021."></textarea><small>Record enough detail to reproduce what you reviewed.</small></label>
+    <label class="form-field"><span>Known limitations or unresolved questions</span><textarea id="reviewLimitations" maxlength="1000" rows="3" placeholder="Enter none, or document uncertainty, access limitations, conflicting guidance, or follow-up needed."></textarea></label>
     <label class="form-field"><span>Review note</span><textarea id="reviewNote" minlength="20" maxlength="2000" rows="5" required placeholder="Summarize what you compared and why this decision is appropriate."></textarea><small>20–2,000 characters. This becomes part of the audit record.</small></label>
     <label class="confirmation"><input type="checkbox" id="reviewConfirmed" required><span>I personally compared the deployed content with the selected authoritative sources and confirm this decision.</span></label>
     <div class="dialog-error" id="dialogError" role="alert"></div>
@@ -74,6 +78,6 @@
 </dialog>
 
 <footer class="app-footer"><div class="clinical-caution"><strong>Monitoring is not clinical review.</strong> Record a decision only after directly comparing the deployed content with the selected authoritative sources.</div><p class="app-footer__meta">Protected by Authelia · © <span data-current-year></span> Noah PA-C</p></footer>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

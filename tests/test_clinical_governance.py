@@ -32,6 +32,7 @@ class ClinicalGovernanceTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn("27 tools", completed.stdout)
+        self.assertIn("26 claim mappings", completed.stdout)
 
     def test_all_manifest_routes_and_monitors_exist(self):
         manifest = json.loads((REPO / "clinical-review.json").read_text())
@@ -41,6 +42,16 @@ class ClinicalGovernanceTests(unittest.TestCase):
             self.assertTrue((REPO / tool["path"].strip("/") / "index.html").is_file())
             if tool["monitor"]:
                 self.assertTrue((REPO / tool["monitor"]).is_file())
+
+    def test_every_high_risk_tool_has_claim_traceability_and_monitoring(self):
+        manifest = json.loads((REPO / "clinical-review.json").read_text())
+        claims = json.loads((REPO / "clinical-claims.json").read_text())["claims"]
+        covered = {claim["tool_id"] for claim in claims}
+        for tool in manifest["tools"]:
+            if tool["risk_tier"] == "high":
+                self.assertIn(tool["id"], covered)
+                self.assertTrue(tool["monitor"])
+                self.assertTrue(tool["source_ids"])
 
     def test_failure_alert_dry_run_never_prints_secrets(self):
         env = os.environ.copy()

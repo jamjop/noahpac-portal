@@ -1,0 +1,11 @@
+[Unit]
+Description=Check stable clinical document fingerprints weekly
+
+[Timer]
+OnCalendar=Tue *-*-* 04:35:00
+Persistent=true
+RandomizedDelaySec=5m
+Unit=noahpac-source-fingerprints.service
+
+[Install]
+WantedBy=timers.target

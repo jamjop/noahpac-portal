@@ -106,6 +106,15 @@ def save_last_checked(app_dir: Path, status: str) -> None:
             "date": datetime.date.today().isoformat(),
             "status": status,
         }
+        # Monitoring updates the surveillance state, not the audit evidence.
+        # Preserve the most recent documented review and any in-progress
+        # independent-review handoff until the review portal replaces it.
+        review_fields = {
+            key: value for key, value in previous.items()
+            if key.startswith(("review_", "primary_", "secondary_"))
+            or key in {"reviewer", "reviewed_at", "clinically_reviewed", "change_reference", "independent_review_pending"}
+        }
+        payload.update(review_fields)
         if review_pending:
             payload["review_pending"] = True
         f.write_text(json.dumps(payload, indent=2))

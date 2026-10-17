@@ -29,27 +29,29 @@
     "openfda": {"title": "openFDA Drug APIs", "url": "https://open.fda.gov/apis/drug/"},
     "nlm_clinical_tables": {"title": "NLM Clinical Tables", "url": "https://clinicaltables.nlm.nih.gov/"},
     "pubmed": {"title": "PubMed", "url": "https://pubmed.ncbi.nlm.nih.gov/"}
+    ,"fda_medwatch_feed": {"title": "FDA MedWatch Safety Alerts", "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch/rss.xml", "update_channel": "rss", "urgent": true}
+    ,"cdc_han": {"title": "CDC Health Alert Network", "url": "https://www.cdc.gov/han/php/notices/index.html", "update_channel": "official-alert-index", "urgent": true}
     ,"aasld_fib4": {"title": "AASLD Noninvasive Assessment of Liver Disease", "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/spare-me-jab-noninvasive-assessment-patients-masld"}
-    ,"kdigo_ckd_2024": {"title": "KDIGO 2024 CKD Evaluation and Management Guideline", "url": "https://kdigo.org/guidelines/ckd-evaluation-and-management/"}
+    ,"kdigo_ckd_2024": {"title": "KDIGO 2024 CKD Evaluation and Management Guideline", "url": "https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf", "fingerprint": true}
     ,"va_audit_c": {"title": "VA/DoD Substance Use Disorder Guideline", "url": "https://www.healthquality.va.gov/guidelines/MH/sud/"}
     ,"nida_single_question": {"title": "Single-Question Drug-use Screen Validation", "url": "https://pubmed.ncbi.nlm.nih.gov/20625025/"}
     ,"idsa_gas_2025": {"title": "IDSA 2025 GAS Pharyngitis Guideline Update", "url": "https://www.idsociety.org/practice-guideline/streptococcal-pharyngitis2/"}
     ,"cdc_gas": {"title": "CDC Clinical Guidance for GAS Pharyngitis", "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"}
     ,"cdc_hiv_prep": {"title": "CDC Clinical Guidance for PrEP", "url": "https://www.cdc.gov/hivnexus/hcp/prep/index.html"}
     ,"cdc_hiv_pep": {"title": "CDC Clinical Guidance for PEP", "url": "https://www.cdc.gov/hivnexus/hcp/pep/index.html"}
-    ,"acep_ena_triage_2025": {"title": "ACEP/ENA Emergency Department Triage Statement", "url": "https://www.ena.org/sites/default/files/2025-08/Emergency%20Department%20Triage.pdf"}
+    ,"acep_ena_triage_2025": {"title": "ACEP/ENA Emergency Department Triage Statement", "url": "https://www.ena.org/sites/default/files/2025-08/Emergency%20Department%20Triage.pdf", "fingerprint": true}
     ,"rcp_news2": {"title": "Royal College of Physicians NEWS2", "url": "https://www.rcp.ac.uk/resources/national-early-warning-score-news-2/"}
     ,"aha_emergency_signs": {"title": "AHA Heart Attack, Stroke and Cardiac Arrest Symptoms", "url": "https://www.heart.org/en/about-us/heart-attack-and-stroke-symptoms"}
     ,"cdc_stroke_signs": {"title": "CDC Stroke Signs and Symptoms", "url": "https://www.cdc.gov/stroke/signs-symptoms/"}
     ,"cdc_sepsis_signs": {"title": "CDC About Sepsis", "url": "https://www.cdc.gov/sepsis/about/"}
     ,"acog_preeclampsia": {"title": "ACOG Preeclampsia and Pregnancy Warning Signs", "url": "https://www.acog.org/womens-health/faqs/preeclampsia-and-high-blood-pressure-during-pregnancy"}
     ,"tangri_kfre": {"title": "Tangri Four-variable Kidney Failure Risk Equation", "url": "https://pubmed.ncbi.nlm.nih.gov/26757465/"}
-    ,"fda_qtc": {"title": "FDA E14 QT/QTc Guidance", "url": "https://www.fda.gov/files/drugs/published/E14-Clinical-Evaluation-of-QT-QTc-Interval-Prolongation-and-Proarrhythmic-Potential-for-Non-Antiarrhythmic-Drugs.pdf"}
+    ,"fda_qtc": {"title": "FDA E14 QT/QTc Guidance", "url": "https://www.fda.gov/media/71372/download", "fingerprint": true}
     ,"ada_hyperglycemic_crisis_2024": {"title": "2024 Hyperglycemic Crises in Adults Consensus Report", "url": "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A"}
     ,"acc_aha_af_2023": {"title": "2023 ACC/AHA/ACCP/HRS Atrial Fibrillation Guideline", "url": "https://professional.heart.org/en/science-news/2023-acc-aha-accp-hrs-guideline-for-the-diagnosis-and-management-of-atrial-fibrillation"}
     ,"aasld_meld_child_pugh": {"title": "AASLD Evolution of MELD and Child-Pugh Scores", "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/evolution-meld-scores"}
     ,"ats_ers_asthma_control": {"title": "ATS/ERS Statement on Asthma Control and Exacerbations", "url": "https://academic.oup.com/ajrccm/article/180/1/59/8524580"}
-    ,"qualitymetric_act": {"title": "QualityMetric Asthma Control Test Overview", "url": "https://www.qualitymetric.com/wp-content/uploads/2023/03/ACT_KaiserPermanente_CaseStudy_v2.pdf"}
+    ,"qualitymetric_act": {"title": "Asthma Control Test Development and Validation (Nathan et al.)", "url": "https://pubmed.ncbi.nlm.nih.gov/14713908/"}
   },
   "tools": [
     {"id":"abx","path":"/abx/","title":"Antibiotic Reference","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"abx/check_updates.py","source_ids":["pubmed","idsa_gas_2025","cdc_gas"]},
@@ -62,13 +64,13 @@
     {"id":"ddx","path":"/ddx/","title":"Differential Diagnosis Reference","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"documents","path":"/documents/","title":"Clinical Documents","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"drugref","path":"/drugref/","title":"FDA Label Search","risk_tier":"moderate","status":"live_source","review_cadence":"live-source","monitor":null,"source_ids":["openfda"]},
-    {"id":"empiric","path":"/empiric/","title":"Empiric Therapy","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":null,"source_ids":["nd_antibiograms"]},
+    {"id":"empiric","path":"/empiric/","title":"Empiric Therapy","risk_tier":"high","status":"monitoring_only","review_cadence":"monthly","monitor":"empiric/check_updates.py","source_ids":["pubmed","nd_antibiograms"]},
     {"id":"labs","path":"/labs/","title":"Laboratory Reference","risk_tier":"moderate","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"lookup","path":"/lookup/","title":"Code and Terminology Lookup","risk_tier":"contextual","status":"live_source","review_cadence":"live-source","monitor":null,"source_ids":["nlm_clinical_tables"]},
     {"id":"naloxone","path":"/naloxone/","title":"Naloxone Reference","risk_tier":"high","status":"monitoring_only","review_cadence":"monthly","monitor":"naloxone/check_updates.py","source_ids":["nd_behavioral_data","cdc_opioid_2022"]},
     {"id":"opioids","path":"/opioids/","title":"Opioid MME Estimator","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"opioids/check_updates.py","source_ids":["cdc_opioid_2022"]},
     {"id":"pals","path":"/pals/","title":"Pediatric Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"pals/check_updates.py","source_ids":["aha_pals_2025"]},
-    {"id":"peds","path":"/peds/","title":"Pediatric Dosing","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"peds/check_updates.py","source_ids":["aha_pals_2025"]},
+    {"id":"peds","path":"/peds/","title":"Pediatric Dosing","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"peds/check_updates.py","source_ids":["aha_pals_2025","pubmed"]},
     {"id":"reportable","path":"/reportable/","title":"ND Reportable Conditions","risk_tier":"moderate","status":"monitoring_only","review_cadence":"quarterly","monitor":"reportable/check_updates.py","source_ids":["nd_reportable"]},
     {"id":"screener","path":"/screener/","title":"USPSTF Screener","risk_tier":"high","status":"live_source","review_cadence":"weekly","monitor":"screener/update_uspstf.py","source_ids":["uspstf_api"]},
     {"id":"sepsis","path":"/sepsis/","title":"Sepsis Screening","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"sepsis/check_updates.py","source_ids":["ssc_2026"]},

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "channels": [
+    {
+      "id": "fda_medwatch",
+      "title": "FDA MedWatch Safety Alerts",
+      "type": "rss",
+      "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch/rss.xml",
+      "tool_ids": ["abx", "allergy", "anticoag", "empiric", "naloxone", "opioids", "peds", "steroids", "toxicology", "vaccines"]
+    },
+    {
+      "id": "cdc_han",
+      "title": "CDC Health Alert Network",
+      "type": "han-index",
+      "url": "https://www.cdc.gov/han/site.html",
+      "tool_ids": ["abx", "empiric", "naloxone", "peds", "sepsis", "sti-guide", "triage", "vaccines"]
+    }
+  ]
+}

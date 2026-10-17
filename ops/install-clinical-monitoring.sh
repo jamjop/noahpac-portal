@@ -27,6 +27,10 @@ chown root:root "$env_file"
 
 NOAHPAC_REPO="$repo" /usr/bin/python3 \
   "$repo/scripts/check-clinical-sources.py" --check-config
+NOAHPAC_REPO="$repo" /usr/bin/python3 \
+  "$repo/scripts/monitor-urgent-clinical-feeds.py" --check
+NOAHPAC_REPO="$repo" /usr/bin/python3 \
+  "$repo/scripts/monitor-source-fingerprints.py" --check
 
 units=(
   noahpac-quarterly-monitor.service
@@ -42,6 +46,10 @@ units=(
   noahpac-monitor-failure@.service
   noahpac-source-links.service
   noahpac-source-links.timer
+  noahpac-urgent-clinical.service
+  noahpac-urgent-clinical.timer
+  noahpac-source-fingerprints.service
+  noahpac-source-fingerprints.timer
 )
 
 for unit in "${units[@]}"; do
@@ -57,7 +65,9 @@ systemctl enable --now \
   noahpac-uspstf-update.timer \
   noahpac-uspstf-report.timer \
   noahpac-antibiogram-update.timer \
-  noahpac-source-links.timer
+  noahpac-source-links.timer \
+  noahpac-urgent-clinical.timer \
+  noahpac-source-fingerprints.timer
 
 systemctl list-timers --all --no-pager \
   noahpac-quarterly-monitor.timer \
@@ -65,4 +75,6 @@ systemctl list-timers --all --no-pager \
   noahpac-uspstf-update.timer \
   noahpac-uspstf-report.timer \
   noahpac-antibiogram-update.timer \
-  noahpac-source-links.timer
+  noahpac-source-links.timer \
+  noahpac-urgent-clinical.timer \
+  noahpac-source-fingerprints.timer

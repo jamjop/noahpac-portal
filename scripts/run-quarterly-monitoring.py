@@ -25,6 +25,7 @@ TOPICS = [
     ("sti-guide", "CDC STI Treatment Guidelines"),
     ("naloxone", "ND Overdose / Naloxone Data"),
     ("abx", "Antibiotic Reference"),
+    ("empiric", "Empiric Therapy"),
     ("tccc", "TCCC / CoTCCC Guidelines"),
     ("vaccines", "ACIP/AAP/ACOG Vaccine Schedules"),
     ("calculators", "Clinical Calculators"),
@@ -41,7 +42,7 @@ TOPICS = [
     ("triage", "Adult Urgency & Disposition"),
 ]
 HIGH_RISK_TOPIC_IDS = {
-    "sti-guide", "naloxone", "abx", "tccc", "vaccines", "calculators",
+    "sti-guide", "naloxone", "abx", "empiric", "tccc", "vaccines", "calculators",
     "peds", "als", "pals", "opioids", "sepsis", "allergy", "steroids",
     "anticoag", "toxicology", "triage",
 }
@@ -111,6 +112,11 @@ def write_error(topic: str, name: str, detail: str) -> None:
         "status": "error",
         "error": "Automated monitoring job failed; inspect the systemd journal.",
     }
+    payload.update({
+        key: value for key, value in previous.items()
+        if key.startswith(("review_", "primary_", "secondary_"))
+        or key in {"reviewer", "reviewed_at", "clinically_reviewed", "change_reference", "independent_review_pending"}
+    })
     if previous.get("review_pending") or previous.get("status") in {
         "changed", "held_for_review", "review_required"
     }:

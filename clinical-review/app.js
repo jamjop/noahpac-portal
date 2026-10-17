@@ -1,7 +1,7 @@
 'use strict';
 
 const state = {topics: [], active: null};
-const labels = {pending:'Review pending', error:'Monitor error', not_checked:'Not checked', current:'Monitoring current', reviewed:'Clinically reviewed'};
+const labels = {pending:'Review pending', second_review:'Independent review pending', error:'Monitor error', not_checked:'Not checked', current:'Monitoring current', reviewed:'Clinically reviewed'};
 const list = document.getElementById('reviewList');
 const message = document.getElementById('portalMessage');
 const dialog = document.getElementById('reviewDialog');
@@ -23,7 +23,7 @@ function formatDate(value) {
 function renderSummary(counts) {
   const grid = document.getElementById('summaryGrid');
   grid.replaceChildren();
-  [['pending','Pending'],['error','Errors'],['reviewed','Reviewed'],['current','Monitoring current']].forEach(([key,label]) => {
+  [['pending','Pending'],['second_review','Second review'],['error','Errors'],['reviewed','Reviewed'],['current','Monitoring current']].forEach(([key,label]) => {
     const card = el('div', `summary-card status-${key}`);
     card.append(el('strong','summary-number',String(counts[key] || 0)), el('span','summary-label',label));
     grid.append(card);
@@ -41,7 +41,7 @@ function topicCard(topic) {
   header.append(titleWrap,badge);
 
   const details = el('dl','review-details');
-  [['Monitor status', labels[topic.state] || topic.status],['Status date',formatDate(topic.status_date)],['Last reviewer',topic.reviewer || 'Not recorded'],['Last clinical review',formatDate(topic.reviewed_at)]].forEach(([term,value]) => {
+  [['Monitor status', labels[topic.state] || topic.status],['Status date',formatDate(topic.status_date)],['Last reviewer',topic.secondary_reviewer || topic.reviewer || 'Not recorded'],['Last clinical review',formatDate(topic.secondary_reviewed_at || topic.reviewed_at)],['Next review due',formatDate(topic.next_review_due)]].forEach(([term,value]) => {
     const wrap=el('div'); wrap.append(el('dt',null,term),el('dd',null,value)); details.append(wrap);
   });
   const sources = el('div','review-sources');
@@ -49,21 +49,23 @@ function topicCard(topic) {
   const sourceList = el('ul');
   topic.sources.forEach(source => { const li=el('li'); const a=el('a',null,source.title); a.href=source.url; a.target='_blank'; a.rel='noopener noreferrer'; li.append(a); sourceList.append(li); });
   sources.append(sourceList);
+  const claimSummary=el('p','review-card__meta',`${topic.claims.length} mapped content area${topic.claims.length===1?'':'s'} · ${topic.independent_review_required?'independent review required':'independent review recommended'}`);
   const actions=el('div','review-card__actions');
   const pageLink=el('a','secondary-button','Open clinical page'); pageLink.href=topic.path; pageLink.target='_blank'; pageLink.rel='noopener';
-  const review=el('button','primary-button',topic.state === 'reviewed' ? 'Record new review' : 'Review topic'); review.type='button'; review.addEventListener('click',()=>openReview(topic));
+  const reviewLabel=topic.state==='second_review'?'Complete independent review':topic.state==='reviewed'?'Record new review':'Review topic';
+  const review=el('button','primary-button',reviewLabel); review.type='button'; review.addEventListener('click',()=>openReview(topic));
   actions.append(pageLink,review);
-  article.append(header,details,sources,actions);
+  article.append(header,details,claimSummary,sources,actions);
   return article;
 }
 
 function renderTopics() {
   const query=document.getElementById('topicSearch').value.trim().toLowerCase();
   const filter=document.getElementById('statusFilter').value;
-  const priority={pending:0,error:1,not_checked:2,current:3,reviewed:4};
+  const priority={pending:0,second_review:1,error:2,not_checked:3,current:4,reviewed:5};
   const topics=state.topics.filter(t=>(filter==='all'||t.state===filter)&&(!query||`${t.title} ${t.id}`.toLowerCase().includes(query))).sort((a,b)=>(priority[a.state]??9)-(priority[b.state]??9)||a.title.localeCompare(b.title));
   list.replaceChildren(...topics.map(topicCard));
-  const actionable=topics.filter(topic=>['pending','error','not_checked'].includes(topic.state)).length;
+  const actionable=topics.filter(topic=>['pending','second_review','error','not_checked'].includes(topic.state)).length;
   message.textContent=topics.length ? `${topics.length} clinical topic${topics.length===1?'':'s'} shown${actionable ? ` · ${actionable} requiring attention` : ''}.` : 'No topics match these filters.';
   document.getElementById('clearFilters').hidden=!query&&filter==='all';
   const params=new URLSearchParams(); if(query) params.set('q',document.getElementById('topicSearch').value.trim()); if(filter!=='all') params.set('status',filter);
@@ -77,8 +79,16 @@ function openReview(topic) {
   document.getElementById('dialogContext').textContent=`Current state: ${labels[topic.state]}. Status dated ${formatDate(topic.status_date)}.`;
   document.getElementById('reviewTopic').value=topic.id;
   document.getElementById('reviewRevision').value=topic.revision;
+  const stage=topic.independent_review_pending?'secondary':'primary';
+  document.getElementById('reviewStage').value=stage;
+  document.getElementById('dialogTitle').textContent=stage==='secondary'?`${topic.title} — independent review`:topic.title;
   document.getElementById('dialogError').textContent='';
   document.getElementById('changeReferenceField').hidden=true;
+  const claims=document.getElementById('claimChecklist'); claims.replaceChildren();
+  topic.claims.forEach(claim=>{
+    const label=el('label'); const input=el('input'); input.type='checkbox'; input.name='claim'; input.value=claim.id;
+    const copy=el('span'); copy.append(el('strong',null,claim.scope),el('small',null,`${claim.review_priority} priority · independent review ${claim.independent_review}`)); label.append(input,copy); claims.append(label);
+  });
   const checklist=document.getElementById('sourceChecklist'); checklist.replaceChildren();
   topic.sources.forEach(source=>{
     const label=el('label'); const input=el('input'); input.type='checkbox'; input.name='source'; input.value=source.id;
@@ -107,13 +117,15 @@ form.addEventListener('submit',async event=>{
   event.preventDefault();
   const submit=document.getElementById('submitReview'); const error=document.getElementById('dialogError'); error.textContent='';
   const sourceIds=[...form.querySelectorAll('input[name="source"]:checked')].map(input=>input.value);
+  const claimIds=[...form.querySelectorAll('input[name="claim"]:checked')].map(input=>input.value);
   if (!sourceIds.length) { error.textContent='Select at least one authoritative source you reviewed.'; return; }
+  if (claimIds.length!==state.active.claims.length) { error.textContent='Confirm every mapped clinical content area was reviewed.'; return; }
   const decision=form.elements.decision.value;
-  const payload={topic:document.getElementById('reviewTopic').value,expected_revision:document.getElementById('reviewRevision').value,source_ids:sourceIds,decision,note:document.getElementById('reviewNote').value,change_reference:document.getElementById('changeReference').value,confirmed:document.getElementById('reviewConfirmed').checked};
+  const payload={topic:document.getElementById('reviewTopic').value,expected_revision:document.getElementById('reviewRevision').value,review_stage:document.getElementById('reviewStage').value,source_ids:sourceIds,claim_ids:claimIds,source_versions:document.getElementById('sourceVersions').value,limitations:document.getElementById('reviewLimitations').value,decision,note:document.getElementById('reviewNote').value,change_reference:document.getElementById('changeReference').value,confirmed:document.getElementById('reviewConfirmed').checked};
   submit.disabled=true; submit.textContent='Recording…';
   try {
     const response=await fetch('/review/api/reviews',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'NoahPACReviewPortal'},body:JSON.stringify(payload)});
-    const data=await response.json(); if (!response.ok) throw new Error(data.error||'Unable to record review.'); dialog.close(); await loadStatus(); message.textContent=`Clinical review recorded for ${state.active.title}.`;
+    const data=await response.json(); if (!response.ok) throw new Error(data.error||'Unable to record review.'); dialog.close(); await loadStatus(); message.textContent=data.independent_review_pending?`Primary review recorded for ${state.active.title}; independent review is now required.`:`Clinical review recorded for ${state.active.title}.`;
   } catch (err) { error.textContent=err.message; }
   finally { submit.disabled=false; submit.textContent='Record review'; }
 });

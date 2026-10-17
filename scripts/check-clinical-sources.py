@@ -15,13 +15,14 @@ from urllib.parse import urlparse
 
 REPO = Path(os.environ.get("NOAHPAC_REPO", "/var/www/noahpac-portal")).resolve()
 DEFAULT_MANIFEST = REPO / "clinical-review.json"
+DEFAULT_CLAIMS = REPO / "clinical-claims.json"
 DEFAULT_OUTPUT = Path(os.environ.get(
     "NOAHPAC_SOURCE_STATUS", "/var/lib/noahpac-monitor/source-links.json"
 ))
 SOFT_HTTP_CODES = {401, 403, 405, 406, 429}
 
 
-def validate_manifest(path: Path) -> tuple[dict, list[str]]:
+def validate_manifest(path: Path, claims_path: Path = DEFAULT_CLAIMS) -> tuple[dict, list[str]]:
     errors: list[str] = []
     try:
         manifest = json.loads(path.read_text())
@@ -39,6 +40,7 @@ def validate_manifest(path: Path) -> tuple[dict, list[str]]:
         tools = []
 
     seen: set[str] = set()
+    tool_by_id: dict[str, dict] = {}
     for source_id, source in sources.items():
         url = source.get("url", "") if isinstance(source, dict) else ""
         parsed = urlparse(url)
@@ -50,6 +52,7 @@ def validate_manifest(path: Path) -> tuple[dict, list[str]]:
             errors.append(f"missing or duplicate tool id: {tool_id!r}")
             continue
         seen.add(tool_id)
+        tool_by_id[tool_id] = tool
         route = tool.get("path", "")
         if not route.startswith("/") or not route.endswith("/"):
             errors.append(f"tool {tool_id} has invalid path {route!r}")
@@ -61,6 +64,55 @@ def validate_manifest(path: Path) -> tuple[dict, list[str]]:
         for source_id in tool.get("source_ids", []):
             if source_id not in sources:
                 errors.append(f"tool {tool_id} references unknown source {source_id}")
+
+    try:
+        claim_manifest = json.loads(claims_path.read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"Cannot read clinical claim map: {exc}")
+        claim_manifest = {}
+    if claim_manifest.get("schema_version") != 1:
+        errors.append("clinical claim map schema_version must be 1")
+    claims = claim_manifest.get("claims", [])
+    if not isinstance(claims, list) or not claims:
+        errors.append("clinical claim map must contain claims")
+        claims = []
+    claim_ids: set[str] = set()
+    covered_tools: set[str] = set()
+    for claim in claims:
+        claim_id = claim.get("id", "") if isinstance(claim, dict) else ""
+        tool_id = claim.get("tool_id", "") if isinstance(claim, dict) else ""
+        if not claim_id or claim_id in claim_ids:
+            errors.append(f"missing or duplicate claim id: {claim_id!r}")
+            continue
+        claim_ids.add(claim_id)
+        if tool_id not in tool_by_id:
+            errors.append(f"claim {claim_id} references unknown tool {tool_id!r}")
+            continue
+        covered_tools.add(tool_id)
+        if not str(claim.get("scope", "")).strip():
+            errors.append(f"claim {claim_id} has no review scope")
+        source_ids = claim.get("source_ids", [])
+        if not isinstance(source_ids, list) or not source_ids:
+            errors.append(f"claim {claim_id} has no sources")
+        for source_id in source_ids:
+            if source_id not in sources:
+                errors.append(f"claim {claim_id} references unknown source {source_id}")
+            elif source_id not in tool_by_id[tool_id].get("source_ids", []):
+                errors.append(f"claim {claim_id} source {source_id} is not approved for tool {tool_id}")
+        if claim.get("review_priority") not in {"high", "critical"}:
+            errors.append(f"claim {claim_id} has invalid review_priority")
+        if claim.get("independent_review") not in {"recommended", "required"}:
+            errors.append(f"claim {claim_id} has invalid independent_review policy")
+
+    for tool_id, tool in tool_by_id.items():
+        if tool.get("monitor") and tool_id not in covered_tools:
+            errors.append(f"monitored tool {tool_id} has no claim-level source mapping")
+        if tool.get("risk_tier") != "high":
+            continue
+        if not tool.get("monitor"):
+            errors.append(f"high-risk tool {tool_id} has no clinical monitor")
+        if not tool.get("source_ids"):
+            errors.append(f"high-risk tool {tool_id} has no approved source")
     return manifest, errors
 
 
@@ -109,19 +161,21 @@ def write_atomic(path: Path, payload: dict) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--claims", type=Path, default=DEFAULT_CLAIMS)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--check-config", action="store_true")
     parser.add_argument("--timeout", type=int, default=30)
     parser.add_argument("--workers", type=int, default=6)
     args = parser.parse_args()
 
-    manifest, errors = validate_manifest(args.manifest)
+    manifest, errors = validate_manifest(args.manifest, args.claims)
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         return 2
     if args.check_config:
-        print(f"Clinical source configuration valid: {len(manifest['tools'])} tools, {len(manifest['sources'])} sources.")
+        claim_count = len(json.loads(args.claims.read_text()).get("claims", []))
+        print(f"Clinical source configuration valid: {len(manifest['tools'])} tools, {len(manifest['sources'])} sources, {claim_count} claim mappings.")
         return 0
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.workers)) as executor:
