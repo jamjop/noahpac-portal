@@ -1,6 +1,4 @@
 (function () {
-  lucide.createIcons();
-
   var input = document.getElementById('doc-search');
   if (!input) return;
 
@@ -19,11 +17,23 @@
     var url = new URL(row.href, location.href);
     var externalLink = url.origin !== location.origin;
     var pdf = /\.pdf$/i.test(url.pathname);
+    var publisher = '';
+    var publisherBadge = row.querySelector('.ext-badge');
+    if (publisherBadge) {
+      publisher = publisherBadge.textContent.replace('↗', '').trim();
+      publisherBadge.remove();
+    }
     var label = document.createElement('span');
     label.className = 'document-kind';
-    label.textContent = externalLink ? (pdf ? 'External PDF' : 'Website') : 'PDF';
+    label.textContent = externalLink
+      ? (pdf ? 'External PDF' : 'Publisher website') + (publisher ? ' · ' + publisher : '')
+      : 'PDF · Hosted locally';
+    var leadingIcon = row.querySelector('[data-lucide]');
+    if (leadingIcon) leadingIcon.setAttribute('data-lucide', row.classList.contains('ext-row') ? 'clipboard-check' : 'activity');
     if (row.classList.contains('ext-row')) {
       row.querySelector('.ext-body').appendChild(label);
+      var existingAction = row.querySelector('.ext-arrow');
+      if (existingAction) existingAction.classList.add('document-action');
       return;
     }
     var name = row.querySelector('.tool-name');
@@ -31,6 +41,11 @@
     body.className = 'document-row__body';
     row.insertBefore(body, name);
     body.append(name, label);
+    var action = document.createElement('span');
+    action.className = 'document-action';
+    action.setAttribute('aria-hidden', 'true');
+    action.innerHTML = '<i data-lucide="' + (externalLink ? 'external-link' : 'file-down') + '"></i>';
+    row.appendChild(action);
   }
 
   var navLinks = [];
@@ -58,6 +73,7 @@
   categoryNav.innerHTML = navLinks.map(function (item) { return '<a href="' + item.href + '">' + item.label + '</a>'; }).join('');
 
   document.querySelectorAll('.tool-row,.ext-row').forEach(addResourceKind);
+  lucide.createIcons();
 
   function filterDocuments() {
     var q = input.value.trim().toLowerCase();
@@ -83,7 +99,7 @@
     var localVisible = Array.prototype.some.call(rows, function (r) { return !r.classList.contains('hidden-tool'); });
     var externalVisible = Array.prototype.some.call(externalRows, function (r) { return !r.classList.contains('hidden-tool'); });
     noResults.style.display = visible ? 'none' : 'block';
-    grid.style.display = localVisible ? 'grid' : 'none';
+    grid.style.display = localVisible ? '' : 'none';
     external.style.display = externalVisible ? '' : 'none';
     count.textContent = q ? visible + ' match' + (visible === 1 ? '' : 'es') : (rows.length + externalRows.length) + ' resources';
     clear.hidden = !q;

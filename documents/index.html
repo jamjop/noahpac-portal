@@ -8,11 +8,11 @@
 <title>Clinical Documents — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/index.css">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app documents-app">
-<a class="skip-link" href="#tools-grid">Skip to Clinical Documents</a>
+<a class="skip-link" href="#document-library">Skip to Clinical Documents</a>
 <header class="app-header app-header--unified">
   <div class="app-header__inner">
     <div class="app-header__bar">
@@ -40,7 +40,8 @@
 
   <nav class="document-categories" id="document-categories" aria-label="Document categories"></nav>
 
-  <main id="tools-grid" tabindex="-1">
+  <main class="document-library" id="document-library" tabindex="-1">
+    <div id="tools-grid">
 
     <div class="category-col">
       <h2 class="cat-heading">Shoulder</h2>
@@ -192,11 +193,11 @@
       </ul>
     </div>
 
-  </main>
+    </div>
 
-  <p id="no-results">No documents match your search.</p>
+    <p id="no-results">No documents match your search.</p>
 
-  <section id="ext-refs">
+    <section id="ext-refs">
     <h2 class="cat-heading">Screening &amp; Assessment Forms</h2>
     <div class="ext-list">
       <a class="ext-row" data-search="asthma control test act pulmonary adult age 12 printable pdf children's mercy" href="https://www.childrensmercy.org/contentassets/5cd01da6eead4dcd9e3c2333692501d8/act_adulteng.pdf" target="_blank" rel="noopener">
@@ -240,7 +241,8 @@
         <span class="ext-arrow"><i data-lucide="external-link" class="icon-arrow"></i></span>
       </a>
     </div>
-  </section>
+    </section>
+  </main>
 
   <footer class="app-footer legacy-footer">
     <p>Handouts for quick reference and printing during clinical visits. External links open the original publisher rather than a locally hosted copy, due to redistribution licensing. <strong>Not medical advice — verify appropriateness for each patient before use.</strong></p>
@@ -249,6 +251,6 @@
 
 </div>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>
