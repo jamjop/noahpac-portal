@@ -65,6 +65,8 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.tool-row .lucide-biceps-flexed').first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.lucide-wind')).toBeVisible();
     await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.lucide-brain-circuit')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Neck — General Program' }).locator('.lucide-user-round')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Neck Pain — General' }).locator('.lucide-user-round')).toBeVisible();
     await expect(page.locator('.tool-row .lucide-file-text')).toHaveCount(0);
     await expect(page.locator('.ext-row .lucide-clipboard-check')).toHaveCount(0);
     await expect(page.locator('.document-action,.ext-arrow')).toHaveCount(0);
