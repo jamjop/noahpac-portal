@@ -76,8 +76,6 @@
     if (leadingIcon) leadingIcon.setAttribute('data-lucide', resourceIcon(row));
     if (row.classList.contains('ext-row')) {
       row.querySelector('.ext-body').appendChild(label);
-      var existingAction = row.querySelector('.ext-arrow');
-      if (existingAction) existingAction.classList.add('document-action');
       return;
     }
     var name = row.querySelector('.tool-name');
@@ -85,11 +83,6 @@
     body.className = 'document-row__body';
     row.insertBefore(body, name);
     body.append(name, label);
-    var action = document.createElement('span');
-    action.className = 'document-action';
-    action.setAttribute('aria-hidden', 'true');
-    action.innerHTML = '<i data-lucide="' + (externalLink ? 'external-link' : 'file-down') + '"></i>';
-    row.appendChild(action);
   }
 
   var navLinks = [];

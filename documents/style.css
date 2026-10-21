@@ -229,19 +229,6 @@
   border-radius:0;
   background:transparent;
 }
-.documents-app .document-action{
-  display:grid;
-  width:30px;
-  height:30px;
-  margin-left:8px;
-  place-items:center;
-  flex:0 0 auto;
-  color:var(--app-text-muted);
-  opacity:.7;
-}
-.documents-app .document-action svg{width:16px;height:16px;stroke-width:1.7}
-.documents-app .tool-row:hover .document-action,
-.documents-app .ext-row:hover .document-action{color:var(--app-accent);opacity:1}
 .documents-app #ext-refs{
   margin:0;
   padding:24px;

@@ -67,6 +67,7 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.lucide-brain-circuit')).toBeVisible();
     await expect(page.locator('.tool-row .lucide-file-text')).toHaveCount(0);
     await expect(page.locator('.ext-row .lucide-clipboard-check')).toHaveCount(0);
+    await expect(page.locator('.document-action,.ext-arrow')).toHaveCount(0);
     await expect(page.getByRole('navigation', { name: 'Document categories' }).getByRole('link')).toHaveCount(8);
     await expect(page.getByRole('heading', { name: /Screening & Assessment Forms/ })).toBeVisible();
     await expect(page.locator('.tool-row .document-kind').first()).toHaveText('PDF · Hosted locally');
