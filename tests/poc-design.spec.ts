@@ -5,7 +5,7 @@ test.describe('Calculator proof of concept', () => {
     await page.goto('/calculators/');
 
     const tabs = page.getByRole('tab');
-    await expect(tabs).toHaveCount(27);
+    await expect(tabs).toHaveCount(28);
     await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
 
     await page.getByRole('tab', { name: 'Creatinine Clearance' }).click();

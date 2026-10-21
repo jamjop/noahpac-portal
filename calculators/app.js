@@ -527,6 +527,50 @@ const CALCS = [
     }
   },
 
+  /* 28. Height Converter */
+  {
+    id:"height", name:"Height Converter", num:"28",
+    eyebrow:"General / Conversion", source:"Exact unit conversion · 1 inch = 2.54 centimeters",
+    render: pane => {
+      pane.innerHTML = calcHeader("Height Converter","General / Conversion","Enter a height in any format to update the other units") + `
+      <div class="section-label">Total inches</div>
+      <div class="fields">
+        <div class="field">
+          <label class="field-label" for="height-inches">Height in inches</label>
+          <input type="number" id="height-inches" min="0" max="120" step="any" inputmode="decimal" placeholder="e.g. 71">
+          <span class="unit">inches</span>
+        </div>
+      </div>
+      <div class="section-label section-label-gap">Feet and inches</div>
+      <div class="fields">
+        <div class="field">
+          <label class="field-label" for="height-feet">Feet</label>
+          <input type="number" id="height-feet" min="0" max="10" step="1" inputmode="numeric" placeholder="e.g. 5">
+          <span class="unit">feet</span>
+        </div>
+        <div class="field">
+          <label class="field-label" for="height-feet-inches">Inches</label>
+          <input type="number" id="height-feet-inches" min="0" step="any" inputmode="decimal" placeholder="e.g. 11">
+          <span class="unit">inches</span>
+        </div>
+      </div>
+      <div class="section-label section-label-gap">Centimeters</div>
+      <div class="fields">
+        <div class="field">
+          <label class="field-label" for="height-cm">Height in centimeters</label>
+          <input type="number" id="height-cm" min="0" max="305" step="any" inputmode="decimal" placeholder="e.g. 180.34">
+          <span class="unit">centimeters</span>
+        </div>
+      </div>
+      <div id="height-result" class="result-card"><div class="result-placeholder">Enter a height in any format</div></div>
+      <p class="note">Conversions use the exact international definition: 1 inch = 2.54 centimeters. Feet-and-inches values support decimal inches; values of 12 inches or more are normalized in the calculated result.</p>`;
+      pane.querySelectorAll('input').forEach(el => {
+        el.addEventListener('input', () => syncHeight(el.id));
+      });
+      renderHeightResult(NaN);
+    }
+  },
+
   /* 18. Wells DVT Score */
   {
     id:"wellsdvt", name:"Wells DVT Score", num:"03",
@@ -1443,6 +1487,86 @@ function calcWeightChange(){
     </div>`, '');
 }
 
+function compactHeight(value){
+  if(!Number.isFinite(value)) return '';
+  return String(Math.round((value + Number.EPSILON) * 100) / 100);
+}
+
+function splitHeight(totalInches){
+  const rounded = Math.round((totalInches + Number.EPSILON) * 100) / 100;
+  let feet = Math.floor(rounded / 12);
+  let inches = Math.round((rounded - feet * 12 + Number.EPSILON) * 100) / 100;
+  if(inches >= 12){
+    feet += 1;
+    inches = 0;
+  }
+  return { feet, inches };
+}
+
+function renderHeightResult(totalInches){
+  const el = document.getElementById('height-result');
+  if(!el) return;
+  if(!Number.isFinite(totalInches) || totalInches < 0){
+    el.innerHTML='<div class="result-placeholder">Enter a height in any format</div>';
+    el.className='result-card';
+    return;
+  }
+  const parts = splitHeight(totalInches);
+  const centimeters = totalInches * 2.54;
+  setResult('height-result', resultCard(
+    `${parts.feet}′ ${compactHeight(parts.inches)}″`,
+    'Equivalent height',
+    `${compactHeight(totalInches)} inches · ${compactHeight(centimeters)} centimeters`,
+    ''
+  ));
+}
+
+function clearHeightInputs(exceptIds=[]){
+  ['height-inches','height-feet','height-feet-inches','height-cm'].forEach(id => {
+    if(!exceptIds.includes(id) && v(id)) v(id).value='';
+  });
+  renderHeightResult(NaN);
+}
+
+function syncHeight(sourceId){
+  const source = v(sourceId);
+  if(!source) return;
+  let totalInches;
+
+  if(sourceId === 'height-inches'){
+    if(source.value === ''){ clearHeightInputs([sourceId]); return; }
+    totalInches = num('height-inches');
+    if(!Number.isFinite(totalInches) || totalInches < 0){ clearHeightInputs([sourceId]); return; }
+    const parts = splitHeight(totalInches);
+    v('height-feet').value=compactHeight(parts.feet);
+    v('height-feet-inches').value=compactHeight(parts.inches);
+    v('height-cm').value=compactHeight(totalInches * 2.54);
+  } else if(sourceId === 'height-cm'){
+    if(source.value === ''){ clearHeightInputs([sourceId]); return; }
+    const centimeters = num('height-cm');
+    if(!Number.isFinite(centimeters) || centimeters < 0){ clearHeightInputs([sourceId]); return; }
+    totalInches = centimeters / 2.54;
+    const parts = splitHeight(totalInches);
+    v('height-inches').value=compactHeight(totalInches);
+    v('height-feet').value=compactHeight(parts.feet);
+    v('height-feet-inches').value=compactHeight(parts.inches);
+  } else {
+    const feetValue = v('height-feet').value;
+    const inchesValue = v('height-feet-inches').value;
+    if(feetValue === '' && inchesValue === ''){ clearHeightInputs([sourceId]); return; }
+    const feet = feetValue === '' ? 0 : num('height-feet');
+    const inches = inchesValue === '' ? 0 : num('height-feet-inches');
+    if(!Number.isFinite(feet) || !Number.isFinite(inches) || feet < 0 || inches < 0){
+      clearHeightInputs(['height-feet','height-feet-inches']); return;
+    }
+    totalInches = feet * 12 + inches;
+    v('height-inches').value=compactHeight(totalInches);
+    v('height-cm').value=compactHeight(totalInches * 2.54);
+  }
+
+  renderHeightResult(totalInches);
+}
+
 function copyWeightChange(btn){
   const base = num('wt-base');
   const curr = num('wt-curr');
@@ -1575,7 +1699,7 @@ const CALC_GROUPS = [
   { name:'Renal & metabolic', ids:['crcl','egfr','ckd-stage','electro','hyperglycemia'] },
   { name:'Acute care', ids:['alvarado','curb65','ottawa','pecarn'] },
   { name:'Screening', ids:['act','audit-c','drug-screen','gad7','phq9'] },
-  { name:'Perioperative & general', ids:['gupta','rcri','edd','weight-change'] },
+  { name:'Perioperative & general', ids:['gupta','rcri','edd','height','weight-change'] },
 ];
 
 let currentCalc = null;

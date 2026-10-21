@@ -9,7 +9,7 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#calcFilterSummary')).toContainText('calculator');
     await page.getByRole('button', { name: 'Clear', exact: true }).click();
     await expect(page.getByLabel('Find a calculator')).toHaveValue('');
-    await expect(page.getByRole('tab')).toHaveCount(27);
+    await expect(page.getByRole('tab')).toHaveCount(28);
   });
 
   test('mobile calculator chooser expands, filters, selects, and collapses', async ({ page }) => {
@@ -28,6 +28,28 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(chooser).toContainText('Creatinine Clearance');
     await expect(chooser).toHaveAttribute('aria-expanded', 'false');
     await expect(page.locator('.calc-title')).toHaveText('Creatinine Clearance');
+  });
+
+  test('height converter synchronizes inches, feet and inches, and centimeters', async ({ page }) => {
+    await page.goto('/calculators/?calc=height');
+    await expect(page.getByRole('tab', { name: 'Height Converter' })).toHaveAttribute('aria-selected', 'true');
+
+    await page.getByLabel('Height in inches').fill('71');
+    await expect(page.getByLabel('Feet', { exact: true })).toHaveValue('5');
+    await expect(page.getByLabel('Inches', { exact: true })).toHaveValue('11');
+    await expect(page.getByLabel('Height in centimeters')).toHaveValue('180.34');
+    await expect(page.locator('#height-result')).toContainText('5′ 11″');
+
+    await page.getByLabel('Height in centimeters').fill('170');
+    await expect(page.getByLabel('Height in inches')).toHaveValue('66.93');
+    await expect(page.getByLabel('Feet', { exact: true })).toHaveValue('5');
+    await expect(page.getByLabel('Inches', { exact: true })).toHaveValue('6.93');
+
+    await page.getByLabel('Feet', { exact: true }).fill('6');
+    await page.getByLabel('Inches', { exact: true }).fill('2');
+    await expect(page.getByLabel('Height in inches')).toHaveValue('74');
+    await expect(page.getByLabel('Height in centimeters')).toHaveValue('187.96');
+    await expect(page.locator('#height-result')).toContainText('6′ 2″');
   });
 
   test('opioid summary exposes the regimen math, copies, and resets safely', async ({ page, context }) => {
