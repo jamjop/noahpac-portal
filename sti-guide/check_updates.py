@@ -67,6 +67,8 @@ SEARCHES = [
         'reldate': 400,
     },
 ]
+for search in SEARCHES:
+    search.update(source_id='pubmed', claim_id='sti-treatment')
 
 
 def extract_links(html: str) -> set[str]:
@@ -112,10 +114,10 @@ def main() -> int:
         if date_changed:
             msg = f"'Last Reviewed' changed: {known_reviewed!r} → {current_reviewed!r}"
             alerts.append(msg)
-            findings.append({'detail': msg})
+            findings.append({'detail': msg, 'source_id': 'cdc_sti', 'claim_id': 'sti-treatment'})
         for link in sorted(new_links):
             alerts.append(f"New link: {link}")
-            findings.append({'detail': f'New CDC page link: {link}'})
+            findings.append({'detail': f'New CDC page link: {link}', 'source_id': 'cdc_sti', 'claim_id': 'sti-treatment'})
 
         additional_state = page_state.get('additional_pages', {})
         current_additional = {}
@@ -127,7 +129,8 @@ def main() -> int:
             if previous and reviewed and reviewed != previous:
                 msg = f"CDC HIV {page_id.upper()} page date changed: {previous!r} → {reviewed!r}"
                 alerts.append(msg)
-                findings.append({'detail': msg, 'url': page_url})
+                findings.append({'detail': msg, 'url': page_url,
+                                 'source_id': f'cdc_hiv_{page_id}', 'claim_id': 'sti-hiv-prep-pep'})
 
         pw.save_state(PAGE_STATE, {'links': sorted(current_links), 'last_reviewed': current_reviewed, 'additional_pages': current_additional})
     except Exception as exc:

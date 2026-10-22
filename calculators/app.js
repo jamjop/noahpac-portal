@@ -37,15 +37,24 @@ const CALCS = [
     eyebrow:"General / Anthropometrics", source:"CDC adult BMI categories · Mosteller BSA · Devine IBW",
     render: pane => {
       pane.innerHTML = calcHeader("BMI, BSA & Dosing Weights","General / Anthropometrics","Adult BMI, body surface area, ideal body weight, and adjusted body weight") + `
-      <div class="fields">
-        ${selectField("Sex reference for IBW","anthro-sex",[["male","Male"],["female","Female"]])}
+      ${unitSwitch("anthro-units","Metric")}
+      <div id="anthro-metric-fields" class="fields unit-fields">
         ${field("Height","anthro-height","number","cm","170","100","250")}
         ${field("Weight","anthro-weight","number","kg","70","20","500")}
+      </div>
+      <div id="anthro-imperial-fields" class="fields unit-fields" hidden>
+        ${field("Height — feet","anthro-height-ft","number","ft","5","3","8")}
+        ${field("Height — inches","anthro-height-in","number","in","6.93","0","11.99")}
+        ${field("Weight","anthro-weight-lb","number","lb","154.32","44","1102")}
+      </div>
+      <div class="fields">
+        ${selectField("Sex reference for IBW","anthro-sex",[["male","Male"],["female","Female"]])}
       </div>
       <div id="anthropometrics-result" class="result-card"><div class="result-placeholder">Enter height and weight</div></div>
       <button class="copy-btn" id="anthropometrics-copy">&#x2398; Copy result</button>
       <p class="note">BMI is a screening measure, not a diagnosis. BSA uses the Mosteller equation. Ideal body weight uses the Devine equation and adjusted body weight uses IBW + 0.4 × (actual − IBW) when actual weight exceeds IBW; dosing-weight selection remains medication- and protocol-specific. <a href="https://www.cdc.gov/bmi/adult-calculator/index.html" target="_blank" rel="noopener">CDC adult BMI source</a>.</p>`;
       addListeners("anthropometrics", calcAnthropometrics);
+      bindUnitSwitch('anthro-units','anthro',calcAnthropometrics);
     }
   },
 
@@ -630,26 +639,38 @@ const CALCS = [
     eyebrow:"General / Monitoring", source:"Percentage body weight change calculator",
     render: pane => {
       pane.innerHTML = calcHeader("Weight Change Calculator","General / Monitoring","Percentage body weight change") + `
-      <div class="fields">
+      ${unitSwitch("weight-units","Metric")}
+      <div id="weight-metric-fields" class="fields unit-fields">
         ${field("Baseline weight","wt-base","number","kg","","1","500")}
+        ${field("Current weight","wt-curr","number","kg","","1","500")}
+        ${field("Height","wt-height","number","cm","","100","250","Optional for BMI and BSA")}
+      </div>
+      <div id="weight-imperial-fields" class="fields unit-fields" hidden>
+        ${field("Baseline weight","wt-base-lb","number","lb","","2.2","1102")}
+        ${field("Current weight","wt-curr-lb","number","lb","","2.2","1102")}
+        ${field("Height — feet","wt-height-ft","number","ft","","3","8","Optional")}
+        ${field("Height — inches","wt-height-in","number","in","","0","11.99","Optional")}
+      </div>
+      <div class="fields">
         <div class="field">
           <label class="field-label" for="wt-base-date">Baseline date <span class="calc-note">(optional)</span></label>
           <input type="date" id="wt-base-date">
         </div>
-        ${field("Current weight","wt-curr","number","kg","","1","500")}
         <div class="field">
           <label class="field-label" for="wt-curr-date">Current date <span class="calc-note">(optional)</span></label>
           <input type="date" id="wt-curr-date">
         </div>
       </div>
       <div id="weight-change-result" class="result-card"><div class="result-placeholder">Enter baseline and current weight</div></div>
-      <button class="copy-btn" id="weight-change-copy">&#x2398; Copy results</button>`;
+      <button class="copy-btn" id="weight-change-copy">&#x2398; Copy results</button>
+      <p class="note">Height is optional. When supplied, the result adds baseline and current BMI plus Mosteller BSA. BMI is a screening measure, not a diagnosis, and BSA-based dosing remains medication- and protocol-specific.</p>`;
       pane.querySelectorAll('input').forEach(el => {
         el.addEventListener('input', calcWeightChange);
         el.addEventListener('change', calcWeightChange);
       });
       const wcBtn = document.getElementById('weight-change-copy');
       if(wcBtn) wcBtn.addEventListener('click', () => copyWeightChange(wcBtn));
+      bindUnitSwitch('weight-units','weight',calcWeightChange);
       calcWeightChange();
     }
   },
@@ -914,6 +935,14 @@ function selectField(label, id, opts){
     <select id="${esc(id)}">${options}</select>
   </div>`;
 }
+function unitSwitch(name, selectedLabel){
+  const metricSelected=selectedLabel!=='Imperial';
+  return `<fieldset class="unit-switch" aria-label="Measurement system">
+    <legend>Measurement system</legend>
+    <label><input type="radio" name="${esc(name)}" value="metric" ${metricSelected?'checked':''}><span>Metric</span></label>
+    <label><input type="radio" name="${esc(name)}" value="imperial" ${metricSelected?'':'checked'}><span>Imperial</span></label>
+  </fieldset>`;
+}
 function check(id, label){ return `<label><input type="checkbox" id="${esc(id)}"> ${esc(label)}</label>`; }
 function checkPts(id, label, pts, note){
   const ptsStr = pts > 0 ? `+${pts}` : String(pts);
@@ -945,17 +974,62 @@ function setResult(id, html, risk=''){
   if(el){ el.innerHTML=html; el.className=`result-card${risk?' '+risk:''}`; }
 }
 
+const KG_PER_LB=0.45359237;
+function activeUnit(name){
+  return document.querySelector(`input[name="${name}"]:checked`)?.value||'metric';
+}
+function optionalImperialHeight(feetId,inchesId){
+  const feetValue=v(feetId)?.value||'', inchesValue=v(inchesId)?.value||'';
+  if(feetValue===''&&inchesValue==='') return NaN;
+  const feet=feetValue===''?0:num(feetId), inches=inchesValue===''?0:num(inchesId);
+  return Number.isFinite(feet)&&Number.isFinite(inches)?feet*12+inches:NaN;
+}
+function bindUnitSwitch(name,prefix,callback){
+  document.querySelectorAll(`input[name="${name}"]`).forEach(radio=>radio.addEventListener('change',()=>{
+    const imperial=radio.value==='imperial';
+    const metricFields=v(`${prefix}-metric-fields`), imperialFields=v(`${prefix}-imperial-fields`);
+    if(metricFields) metricFields.hidden=imperial;
+    if(imperialFields) imperialFields.hidden=!imperial;
+    if(prefix==='anthro'){
+      if(imperial){
+        const cm=num('anthro-height'), kg=num('anthro-weight');
+        if(Number.isFinite(cm)){const parts=splitHeight(cm/2.54);v('anthro-height-ft').value=parts.feet;v('anthro-height-in').value=compactHeight(parts.inches);}
+        if(Number.isFinite(kg)) v('anthro-weight-lb').value=compactHeight(kg/KG_PER_LB);
+      }else{
+        const inches=optionalImperialHeight('anthro-height-ft','anthro-height-in'), lb=num('anthro-weight-lb');
+        if(Number.isFinite(inches)) v('anthro-height').value=compactHeight(inches*2.54);
+        if(Number.isFinite(lb)) v('anthro-weight').value=compactHeight(lb*KG_PER_LB);
+      }
+    }else if(prefix==='weight'){
+      if(imperial){
+        [['wt-base','wt-base-lb'],['wt-curr','wt-curr-lb']].forEach(([kgId,lbId])=>{const kg=num(kgId);if(Number.isFinite(kg))v(lbId).value=compactHeight(kg/KG_PER_LB);});
+        const cm=num('wt-height');
+        if(Number.isFinite(cm)){const parts=splitHeight(cm/2.54);v('wt-height-ft').value=parts.feet;v('wt-height-in').value=compactHeight(parts.inches);}
+      }else{
+        [['wt-base-lb','wt-base'],['wt-curr-lb','wt-curr']].forEach(([lbId,kgId])=>{const lb=num(lbId);if(Number.isFinite(lb))v(kgId).value=compactHeight(lb*KG_PER_LB);});
+        const inches=optionalImperialHeight('wt-height-ft','wt-height-in');
+        if(Number.isFinite(inches))v('wt-height').value=compactHeight(inches*2.54);
+      }
+    }
+    callback();
+  }));
+}
+
 /* ── Calculators ── */
 
 function calcAnthropometrics(){
-  const heightCm=num('anthro-height'), weightKg=num('anthro-weight'), sex=sel('anthro-sex');
+  const imperial=activeUnit('anthro-units')==='imperial';
+  const heightInches=imperial?optionalImperialHeight('anthro-height-ft','anthro-height-in'):num('anthro-height')/2.54;
+  const heightCm=heightInches*2.54;
+  const weightKg=imperial?num('anthro-weight-lb')*KG_PER_LB:num('anthro-weight');
+  const sex=sel('anthro-sex');
   if(!Number.isFinite(heightCm)||heightCm<100||heightCm>250||!Number.isFinite(weightKg)||weightKg<20||weightKg>500){
     setResult('anthropometrics-result','<div class="result-placeholder">Enter valid height and weight</div>'); return;
   }
   const heightM=heightCm/100;
   const bmi=weightKg/(heightM*heightM);
   const bsa=Math.sqrt((heightCm*weightKg)/3600);
-  const inches=heightCm/2.54;
+  const inches=heightInches;
   const ibwBase=sex==='female'?45.5:50;
   const ibw=Math.max(ibwBase,ibwBase+2.3*(inches-60));
   const adj=ibw+0.4*(weightKg-ibw);
@@ -1718,8 +1792,14 @@ function formatDate(dateStr){
 }
 
 function calcWeightChange(){
-  const base = num('wt-base');
-  const curr = num('wt-curr');
+  const imperial=activeUnit('weight-units')==='imperial';
+  const baseDisplay=imperial?num('wt-base-lb'):num('wt-base');
+  const currDisplay=imperial?num('wt-curr-lb'):num('wt-curr');
+  const base=imperial?baseDisplay*KG_PER_LB:baseDisplay;
+  const curr=imperial?currDisplay*KG_PER_LB:currDisplay;
+  const unit=imperial?'lb':'kg';
+  const displayFactor=imperial?1/KG_PER_LB:1;
+  const heightCm=imperial?optionalImperialHeight('wt-height-ft','wt-height-in')*2.54:num('wt-height');
   const baseDate = document.getElementById('wt-base-date')?.value || '';
   const currDate = document.getElementById('wt-curr-date')?.value || '';
   const el = document.getElementById('weight-change-result');
@@ -1738,18 +1818,26 @@ function calcWeightChange(){
     if(days > 0){
       durationLine = `<div class="sub-result">
         Duration: <strong>${esc(String(days))} days</strong><br>
-        Rate: <strong>${esc(fmt(absDiff/(days/7),2))} kg/week</strong> · <strong>${esc(fmt(absDiff/(days/30.44),2))} kg/month</strong>
+        Rate: <strong>${esc(fmt(absDiff*displayFactor/(days/7),2))} ${unit}/week</strong> · <strong>${esc(fmt(absDiff*displayFactor/(days/30.44),2))} ${unit}/month</strong>
       </div>`;
     }
+  }
+  let bodySizeLine='';
+  if(Number.isFinite(heightCm)&&heightCm>=100&&heightCm<=250){
+    const heightM=heightCm/100;
+    const baseBmi=base/(heightM*heightM), currBmi=curr/(heightM*heightM);
+    const baseBsa=Math.sqrt(heightCm*base/3600), currBsa=Math.sqrt(heightCm*curr/3600);
+    bodySizeLine=`<div class="sub-result">At ${esc(fmt(heightCm,1))} cm:<br>Baseline BMI <strong>${baseBmi.toFixed(1)} kg/m²</strong> · BSA <strong>${baseBsa.toFixed(2)} m²</strong><br>Current BMI <strong>${currBmi.toFixed(1)} kg/m²</strong> · BSA <strong>${currBsa.toFixed(2)} m²</strong></div>`;
   }
   setResult('weight-change-result', `
     <div class="result-num">${sign}${fmt(absPct,1)}%</div>
     <div class="result-label">${esc(label)}</div>
     <div class="result-detail">
-      Baseline: <strong>${esc(String(base))} kg</strong>${baseDate ? ` <span class="calc-note">· ${esc(formatDate(baseDate))}</span>` : ''}<br>
-      Current: <strong>${esc(String(curr))} kg</strong>${currDate ? ` <span class="calc-note">· ${esc(formatDate(currDate))}</span>` : ''}<br>
-      <strong>${sign}${fmt(absDiff,1)} kg ${esc(diff===0?'change':(isLoss?'lost':'gained'))}</strong>
+      Baseline: <strong>${esc(fmt(baseDisplay,1))} ${unit}</strong>${baseDate ? ` <span class="calc-note">· ${esc(formatDate(baseDate))}</span>` : ''}<br>
+      Current: <strong>${esc(fmt(currDisplay,1))} ${unit}</strong>${currDate ? ` <span class="calc-note">· ${esc(formatDate(currDate))}</span>` : ''}<br>
+      <strong>${sign}${fmt(absDiff*displayFactor,1)} ${unit} ${esc(diff===0?'change':(isLoss?'lost':'gained'))}</strong>
       ${durationLine}
+      ${bodySizeLine}
     </div>`, '');
 }
 
@@ -1834,8 +1922,12 @@ function syncHeight(sourceId){
 }
 
 function copyWeightChange(btn){
-  const base = num('wt-base');
-  const curr = num('wt-curr');
+  const imperial=activeUnit('weight-units')==='imperial';
+  const baseDisplay=imperial?num('wt-base-lb'):num('wt-base');
+  const currDisplay=imperial?num('wt-curr-lb'):num('wt-curr');
+  const base=imperial?baseDisplay*KG_PER_LB:baseDisplay;
+  const curr=imperial?currDisplay*KG_PER_LB:currDisplay;
+  const unit=imperial?'lb':'kg', displayFactor=imperial?1/KG_PER_LB:1;
   if(isNaN(base)||base<=0||isNaN(curr)||curr<=0) return;
   const baseDate = document.getElementById('wt-base-date')?.value || '';
   const currDate = document.getElementById('wt-curr-date')?.value || '';
@@ -1846,12 +1938,17 @@ function copyWeightChange(btn){
   const direction = diff === 0 ? 'unchanged' : (isLoss ? 'lost' : 'gained');
   const changeType = diff === 0 ? 'change' : (isLoss ? 'loss' : 'gain');
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  let text = `Weight Change\n\nStarting weight: ${base} kg${baseDate ? ` (${formatDate(baseDate)})` : ''}\nCurrent weight: ${curr} kg${currDate ? ` (${formatDate(currDate)})` : ''}\n\n${absDiff.toFixed(1)} kg ${direction}\n${absPct.toFixed(1)}% ${changeType}`;
+  let text = `Weight Change\n\nStarting weight: ${baseDisplay} ${unit}${baseDate ? ` (${formatDate(baseDate)})` : ''}\nCurrent weight: ${currDisplay} ${unit}${currDate ? ` (${formatDate(currDate)})` : ''}\n\n${(absDiff*displayFactor).toFixed(1)} ${unit} ${direction}\n${absPct.toFixed(1)}% ${changeType}`;
   if(baseDate && currDate){
     const days = Math.round((new Date(currDate+'T00:00:00') - new Date(baseDate+'T00:00:00')) / 86400000);
     if(days > 0){
-      text += `\nDuration: ${days} days\nRate: ${(absDiff/(days/7)).toFixed(2)} kg/week · ${(absDiff/(days/30.44)).toFixed(2)} kg/month`;
+      text += `\nDuration: ${days} days\nRate: ${(absDiff*displayFactor/(days/7)).toFixed(2)} ${unit}/week · ${(absDiff*displayFactor/(days/30.44)).toFixed(2)} ${unit}/month`;
     }
+  }
+  const heightCm=imperial?optionalImperialHeight('wt-height-ft','wt-height-in')*2.54:num('wt-height');
+  if(Number.isFinite(heightCm)&&heightCm>=100&&heightCm<=250){
+    const heightM=heightCm/100;
+    text += `\nHeight: ${heightCm.toFixed(1)} cm\nBaseline BMI: ${(base/(heightM*heightM)).toFixed(1)} kg/m² · BSA: ${Math.sqrt(heightCm*base/3600).toFixed(2)} m²\nCurrent BMI: ${(curr/(heightM*heightM)).toFixed(1)} kg/m² · BSA: ${Math.sqrt(heightCm*curr/3600).toFixed(2)} m²`;
   }
   text += `\n\nGenerated: ${today}\nSource: noahpac.com/calculators/`;
   navigator.clipboard.writeText(text).then(()=>{

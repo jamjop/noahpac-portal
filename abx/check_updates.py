@@ -185,6 +185,8 @@ SEARCHES = [
         'reldate': 730,
     },
 ]
+for search in SEARCHES:
+    search.update(source_id='pubmed', claim_id='abx-regimens')
 
 
 def main() -> int:

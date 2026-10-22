@@ -22,6 +22,16 @@ PUSHOVER_API  = "https://api.pushover.net/1/messages.json"
 EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 TEXTFILE_DIR  = Path("/var/lib/node_exporter/textfile_collector")
 WAYBACK_SAVE_BASE = "https://web.archive.org/save/"
+_LAST_SEARCH_METADATA: dict[str, dict] = {}
+
+
+class PubMedSearchError(RuntimeError):
+    """Raised when one or more configured searches could not be completed."""
+
+    def __init__(self, failures: list[tuple[str, str]]):
+        self.failures = failures
+        detail = "; ".join(f"{search_id}: {message}" for search_id, message in failures)
+        super().__init__(f"PubMed surveillance incomplete ({detail})")
 
 # CDC's WCMS embeds machine-readable <meta name="cdc:last_published"
 # content="2026-03-10T16:57:04Z"/> and cdc:last_reviewed tags on every page
@@ -170,6 +180,14 @@ def write_quarterly_result(app_id: str, app_name: str, app_url: str,
     report_file = Path(f"/tmp/quarterly-report-{datetime.date.today()}.json")
     try:
         event_findings = [dict(item) for item in findings]
+        # Older topic scripts serialize only the human-readable search name.
+        # Reattach the configured source/claim route here so focused review
+        # packets remain exact without every caller duplicating this logic.
+        for item in event_findings:
+            route = _LAST_SEARCH_METADATA.get(str(item.get('search') or item.get('search_name') or ''))
+            if route:
+                for key, value in route.items():
+                    item.setdefault(key, value)
         missing_abstracts = [
             str(item['pmid']) for item in event_findings
             if item.get('pmid') and not item.get('abstract')
@@ -249,14 +267,22 @@ def run_searches(
     positives when new search entries are added to an existing SEARCHES list).
     """
     findings: list[tuple[str, dict]] = []
+    failures: list[tuple[str, str]] = []
+    _LAST_SEARCH_METADATA.clear()
 
     for search in searches:
         sid = search['id']
+        route = {
+            key: search[key] for key in ('source_id', 'source_ids', 'claim_id', 'claim_ids')
+            if search.get(key)
+        }
+        _LAST_SEARCH_METADATA[search['name']] = route
         print(f"Querying PubMed: {search['name']} …")
         try:
             pmids = esearch(search['query'], search['reldate'], user_agent)
         except Exception as exc:
             print(f"  ERROR fetching {sid}: {exc}", file=sys.stderr)
+            failures.append((sid, str(exc)))
             continue
 
         known        = set(state.get(sid, []))
@@ -284,12 +310,24 @@ def run_searches(
                     'journal': m.get('source', ''),
                     'pubdate': m.get('pubdate', ''),
                     'url': f'https://pubmed.ncbi.nlm.nih.gov/{pmid}/',
+                    **route,
                 }))
 
         state[sid] = sorted(set(known) | set(pmids))
         time.sleep(0.4)
 
+    if failures:
+        # A partial or total fetch failure must never be reported as a clean
+        # surveillance run. The topic exits nonzero, the systemd failure
+        # handler alerts, and successful state is not persisted by callers.
+        raise PubMedSearchError(failures)
+
     return state, findings
+
+
+def report_findings(findings: list[tuple[str, dict]]) -> list[dict]:
+    """Serialize findings without discarding claim/source routing metadata."""
+    return [{'search': name, **metadata} for name, metadata in findings]
 
 
 def fetch_page(url: str, user_agent: str = 'noahpac-monitor/1.0', timeout: int = 30) -> str:

@@ -20,6 +20,12 @@ DEFAULT_OUTPUT = Path(os.environ.get(
     "NOAHPAC_SOURCE_STATUS", "/var/lib/noahpac-monitor/source-links.json"
 ))
 SOFT_HTTP_CODES = {401, 403, 405, 406, 429}
+MONITORING_STRATEGIES = {
+    "auto_extract", "document_fingerprint", "live_api", "literature_search",
+    "official_alert_feed", "official_document_index", "official_page_monitor",
+    "static_publication",
+}
+CHANGE_SENSITIVE_STRATEGIES = MONITORING_STRATEGIES - {"static_publication"}
 
 
 def validate_manifest(path: Path, claims_path: Path = DEFAULT_CLAIMS) -> tuple[dict, list[str]]:
@@ -51,6 +57,11 @@ def validate_manifest(path: Path, claims_path: Path = DEFAULT_CLAIMS) -> tuple[d
             parsed_fingerprint = urlparse(fingerprint_url)
             if parsed_fingerprint.scheme != "https" or not parsed_fingerprint.netloc:
                 errors.append(f"source {source_id} fingerprint_url must use an absolute HTTPS URL")
+        strategy = source.get("monitoring_strategy") if isinstance(source, dict) else None
+        if strategy not in MONITORING_STRATEGIES:
+            errors.append(f"source {source_id} has invalid or missing monitoring_strategy")
+        if source.get("fingerprint") is True and strategy != "document_fingerprint":
+            errors.append(f"source {source_id} is fingerprinted but monitoring_strategy is not document_fingerprint")
     for tool in tools:
         tool_id = tool.get("id", "") if isinstance(tool, dict) else ""
         if not tool_id or tool_id in seen:
@@ -104,6 +115,12 @@ def validate_manifest(path: Path, claims_path: Path = DEFAULT_CLAIMS) -> tuple[d
                 errors.append(f"claim {claim_id} references unknown source {source_id}")
             elif source_id not in tool_by_id[tool_id].get("source_ids", []):
                 errors.append(f"claim {claim_id} source {source_id} is not approved for tool {tool_id}")
+        strategies = {
+            sources[source_id].get("monitoring_strategy")
+            for source_id in source_ids if source_id in sources
+        }
+        if not strategies.intersection(CHANGE_SENSITIVE_STRATEGIES):
+            errors.append(f"claim {claim_id} has no change-sensitive monitoring strategy")
         if claim.get("review_priority") not in {"high", "critical"}:
             errors.append(f"claim {claim_id} has invalid review_priority")
         if claim.get("independent_review") not in {"recommended", "required"}:

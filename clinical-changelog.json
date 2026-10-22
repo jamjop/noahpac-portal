@@ -4,6 +4,24 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-21-monitoring-hardening",
+      "date": "2026-10-21",
+      "type": "governance",
+      "title": "Clinical monitoring failure safety and source fingerprints",
+      "summary": "Hardened shared surveillance so incomplete searches cannot appear clean, review packets target exact content areas, and validated authoritative sources receive normalized-text change detection.",
+      "clinical_change": false,
+      "scope": "Shared clinical monitoring, source governance, and focused review evidence",
+      "affected_routes": [],
+      "changes": [
+        "Changed shared PubMed surveillance to fail explicitly when any configured query cannot complete instead of recording a false no-change result.",
+        "Carried source and claim identifiers from each literature search into focused review packets, including dedicated routing for calculators, antibiotics, empiric therapy, and STI guidance.",
+        "Required every governed source to declare its monitoring strategy and every clinical claim to retain at least one change-sensitive channel.",
+        "Fetch-tested each candidate source twice before expanding normalized-text fingerprints from 9 to 25 authoritative documents and pages.",
+        "Used content-bearing NCBI E-utilities or PMC mirrors for AHA publications that block direct monitoring while retaining canonical reviewer links."
+      ],
+      "source_ids": ["pubmed", "aha_als_2025", "aha_pals_2025", "cdc_opioid_2022", "cdc_sti", "fda_andexxa", "acc_aha_af_2023"]
+    },
+    {
       "id": "2026-10-21-outpatient-calculator-surveillance",
       "date": "2026-10-21",
       "type": "governance",
@@ -32,6 +50,7 @@
       "affected_routes": ["/calculators/"],
       "changes": [
         "Added adult BMI category, Mosteller BSA, Devine ideal body weight, and medication-specific adjusted body-weight context.",
+        "Added metric/imperial entry for anthropometrics and optional height-based baseline/current BMI and Mosteller BSA context in Weight Change.",
         "Added pack-year calculation and a bounded check of USPSTF age, exposure, and smoking-timing criteria for annual low-dose CT.",
         "Added bidirectional A1C and estimated-average-glucose conversion using the ADAG relationship.",
         "Added averaging for up to six complete blood-pressure readings with 2025 AHA/ACC category context.",

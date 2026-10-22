@@ -35,6 +35,8 @@ SEARCHES = [
         "reldate": 400,
     },
 ]
+for search in SEARCHES:
+    search.update(source_id="pubmed", claim_id="empiric-regimens")
 
 
 def main() -> int:
@@ -51,7 +53,7 @@ def main() -> int:
         return 0
 
     detail = pw.format_findings(findings)
-    result_items = [{"detail": line} for line in detail.splitlines() if line.strip()]
+    result_items = pw.report_findings(findings)
     pw.write_quarterly_result(APP_ID, APP_NAME, APP_URL, "changed", result_items)
     pw.save_last_checked(APP_DIR, "changed")
     user, token = os.environ.get("PUSHOVER_USER"), os.environ.get("PUSHOVER_TOKEN")

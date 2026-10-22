@@ -2,6 +2,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 
@@ -85,6 +86,28 @@ class FingerprintMappingTests(unittest.TestCase):
         hunks, _ = fingerprints.build_hunks("", "New clinical content")
         self.assertEqual(hunks[0]["old_lines"], [])
         self.assertEqual(hunks[0]["new_lines"][0]["text"], "New clinical content")
+
+
+class PubMedSurveillanceTests(unittest.TestCase):
+    def test_fetch_failure_raises_instead_of_reporting_clean_run(self):
+        searches = [{"id":"one", "name":"One", "query":"query", "reldate":30}]
+        with mock.patch.object(watcher, "esearch", side_effect=OSError("network unavailable")):
+            with self.assertRaises(watcher.PubMedSearchError):
+                watcher.run_searches(searches, {}, False)
+
+    def test_finding_retains_exact_source_and_claim_route(self):
+        searches = [{
+            "id":"one", "name":"One", "query":"query", "reldate":30,
+            "source_id":"pubmed", "claim_id":"calculators-screening",
+        }]
+        with mock.patch.object(watcher, "esearch", return_value=["123"]), \
+             mock.patch.object(watcher, "esummary", return_value={"123":{
+                 "title":"Study", "source":"Journal", "pubdate":"2026",
+             }}), mock.patch.object(watcher.time, "sleep"):
+            _, findings = watcher.run_searches(searches, {}, False)
+        serialized = watcher.report_findings(findings)
+        self.assertEqual(serialized[0]["source_id"], "pubmed")
+        self.assertEqual(serialized[0]["claim_id"], "calculators-screening")
 
 
 class FocusedReviewEventTests(unittest.TestCase):

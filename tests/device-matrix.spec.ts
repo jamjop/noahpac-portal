@@ -16,7 +16,7 @@ for (const device of DEVICES) {
       await page.goto(route);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, `${route} overflows on ${device.name}`).toBeLessThanOrEqual(1);
-      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('h1').first()).toBeVisible();
     }
 
     await page.goto('/vaccines/');

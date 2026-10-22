@@ -9,56 +9,56 @@
     "live_source": "Results come from an external authoritative API and still require clinical interpretation."
   },
   "sources": {
-    "aha_als_2025": {"title": "AHA 2025 Adult Advanced Life Support", "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"},
-    "aha_pals_2025": {"title": "AHA 2025 Pediatric Advanced Life Support", "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/pediatric-advanced-life-support"},
-    "cdc_opioid_2022": {"title": "CDC Clinical Practice Guideline for Prescribing Opioids for Pain", "url": "https://www.cdc.gov/mmwr/volumes/71/rr/rr7103a1.htm"},
-    "cdc_sti": {"title": "CDC STI Treatment Guidelines", "url": "https://www.cdc.gov/std/treatment-guidelines/"},
-    "cdc_doxy_pep": {"title": "CDC Doxy-PEP Clinical Guidelines", "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7302a1.htm"},
-    "cdc_vaccines": {"title": "CDC Immunization Schedules", "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/"},
-    "aap_vaccines": {"title": "AAP Immunization Schedule", "url": "https://www.aap.org/en/patient-care/immunizations/immunization-schedule-and-resources/"},
-    "uspstf_api": {"title": "USPSTF Prevention TaskForce API", "url": "https://www.uspreventiveservicestaskforce.org/apps/api.jsp"},
-    "ssc_2026": {"title": "Surviving Sepsis Campaign 2026", "url": "https://sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-management-of-sepsis-and-septic-shock-2026"},
-    "endocrine_gc_2024": {"title": "Endocrine Society/ESE Glucocorticoid-induced Adrenal Insufficiency Guideline", "url": "https://academic.oup.com/jcem/article/109/7/1657/7667842"},
-    "chest_periop_2022": {"title": "CHEST Perioperative Antithrombotic Guideline", "url": "https://journal.chestnet.org/article/S0012-3692(22)01359-9/fulltext"},
-    "fda_andexxa": {"title": "FDA Andexxa Safety Communication", "url": "https://www.fda.gov/safety/medical-product-safety-information/update-safety-andexxa-astrazeneca-fda-safety-communication"},
-    "poison_centers": {"title": "America's Poison Centers", "url": "https://www.poisoncenters.org/"},
-    "tccc": {"title": "Joint Trauma System / TCCC Guidelines", "url": "https://jts.health.mil/index.cfm/PI_CPGs/cpgs"},
-    "nd_antibiograms": {"title": "North Dakota HHS Antibiograms", "url": "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/antibiotic-resistance-and-antimicrobial-stewardship/antibiograms"},
-    "nd_reportable": {"title": "North Dakota HHS Reportable Conditions", "url": "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/reportable-conditions"},
-    "nd_behavioral_data": {"title": "North Dakota HHS Behavioral Health Data", "url": "https://www.hhs.nd.gov/behavioral-health/data"},
-    "openfda": {"title": "openFDA Drug APIs", "url": "https://open.fda.gov/apis/drug/"},
-    "nlm_clinical_tables": {"title": "NLM Clinical Tables", "url": "https://clinicaltables.nlm.nih.gov/"},
-    "pubmed": {"title": "PubMed", "url": "https://pubmed.ncbi.nlm.nih.gov/"}
-    ,"fda_medwatch_feed": {"title": "FDA MedWatch Safety Alerts", "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch/rss.xml", "update_channel": "rss", "urgent": true}
-    ,"cdc_han": {"title": "CDC Health Alert Network", "url": "https://www.cdc.gov/han/php/notices/index.html", "update_channel": "official-alert-index", "urgent": true}
-    ,"aasld_fib4": {"title": "AASLD Noninvasive Assessment of Liver Disease", "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/spare-me-jab-noninvasive-assessment-patients-masld"}
-    ,"kdigo_ckd_2024": {"title": "KDIGO 2024 CKD Evaluation and Management Guideline", "url": "https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf", "fingerprint": true}
-    ,"va_audit_c": {"title": "VA/DoD Substance Use Disorder Guideline", "url": "https://www.healthquality.va.gov/guidelines/MH/sud/"}
-    ,"nida_single_question": {"title": "Single-Question Drug-use Screen Validation", "url": "https://pubmed.ncbi.nlm.nih.gov/20625025/"}
-    ,"idsa_gas_2025": {"title": "IDSA 2025 GAS Pharyngitis Guideline Update", "url": "https://www.idsociety.org/practice-guideline/streptococcal-pharyngitis2/"}
-    ,"cdc_gas": {"title": "CDC Clinical Guidance for GAS Pharyngitis", "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"}
-    ,"cdc_hiv_prep": {"title": "CDC Clinical Guidance for PrEP", "url": "https://www.cdc.gov/hivnexus/hcp/prep/index.html"}
-    ,"cdc_hiv_pep": {"title": "CDC Clinical Guidance for PEP", "url": "https://www.cdc.gov/hivnexus/hcp/pep/index.html"}
-    ,"acep_ena_triage_2025": {"title": "ACEP/ENA Emergency Department Triage Statement", "url": "https://www.ena.org/sites/default/files/2025-08/Emergency%20Department%20Triage.pdf", "fingerprint": true}
-    ,"rcp_news2": {"title": "Royal College of Physicians NEWS2", "url": "https://www.rcp.ac.uk/resources/national-early-warning-score-news-2/"}
-    ,"aha_emergency_signs": {"title": "AHA Heart Attack, Stroke and Cardiac Arrest Symptoms", "url": "https://www.heart.org/en/about-us/heart-attack-and-stroke-symptoms"}
-    ,"cdc_stroke_signs": {"title": "CDC Stroke Signs and Symptoms", "url": "https://www.cdc.gov/stroke/signs-symptoms/"}
-    ,"cdc_sepsis_signs": {"title": "CDC About Sepsis", "url": "https://www.cdc.gov/sepsis/about/"}
-    ,"acog_preeclampsia": {"title": "ACOG Preeclampsia and Pregnancy Warning Signs", "url": "https://www.acog.org/womens-health/faqs/preeclampsia-and-high-blood-pressure-during-pregnancy"}
-    ,"tangri_kfre": {"title": "Tangri Four-variable Kidney Failure Risk Equation", "url": "https://pubmed.ncbi.nlm.nih.gov/26757465/"}
-    ,"fda_qtc": {"title": "FDA E14 QT/QTc Guidance", "url": "https://www.fda.gov/media/71372/download", "fingerprint": true}
-    ,"ada_hyperglycemic_crisis_2024": {"title": "2024 Hyperglycemic Crises in Adults Consensus Report", "url": "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A"}
-    ,"acc_aha_af_2023": {"title": "2023 ACC/AHA/ACCP/HRS Atrial Fibrillation Guideline", "url": "https://professional.heart.org/en/science-news/2023-acc-aha-accp-hrs-guideline-for-the-diagnosis-and-management-of-atrial-fibrillation"}
-    ,"aasld_meld_child_pugh": {"title": "AASLD Evolution of MELD and Child-Pugh Scores", "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/evolution-meld-scores"}
-    ,"ats_ers_asthma_control": {"title": "ATS/ERS Statement on Asthma Control and Exacerbations", "url": "https://academic.oup.com/ajrccm/article/180/1/59/8524580"}
-    ,"qualitymetric_act": {"title": "Asthma Control Test Development and Validation (Nathan et al.)", "url": "https://pubmed.ncbi.nlm.nih.gov/14713908/"}
-    ,"cdc_adult_bmi": {"title": "CDC Adult BMI Calculator and Categories", "url": "https://www.cdc.gov/bmi/adult-calculator/index.html", "fingerprint": true}
-    ,"mosteller_bsa": {"title": "Simplified Calculation of Body-Surface Area (Mosteller)", "url": "https://pubmed.ncbi.nlm.nih.gov/3657876/"}
-    ,"uspstf_lung_2021": {"title": "USPSTF Lung Cancer Screening Recommendation", "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening", "fingerprint": true}
-    ,"ada_a1c_eag": {"title": "American Diabetes Association A1C to eAG Conversion", "url": "https://professional.diabetes.org/es/node/171", "fingerprint": true}
-    ,"aha_bp_2025": {"title": "2025 AHA/ACC High Blood Pressure Guideline", "url": "https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know", "fingerprint": true, "fingerprint_url": "https://pubmed.ncbi.nlm.nih.gov/40811497/"}
-    ,"aha_prevent": {"title": "American Heart Association PREVENT Equations", "url": "https://professional.heart.org/en/guidelines-and-statements/prevent-calculator", "fingerprint": true, "fingerprint_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10910659/"}
-    ,"aha_orthostatic": {"title": "AHA Orthostatic Hypotension Scientific Statement", "url": "https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension", "fingerprint": true, "fingerprint_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11067441/"}
+    "aha_als_2025": {"title": "AHA 2025 Adult Advanced Life Support", "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support", "fingerprint": true, "fingerprint_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41122884&retmode=xml", "monitoring_strategy": "document_fingerprint"},
+    "aha_pals_2025": {"title": "AHA 2025 Pediatric Advanced Life Support", "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/pediatric-advanced-life-support", "fingerprint": true, "fingerprint_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41122885&retmode=xml", "monitoring_strategy": "document_fingerprint"},
+    "cdc_opioid_2022": {"title": "CDC Clinical Practice Guideline for Prescribing Opioids for Pain", "url": "https://www.cdc.gov/mmwr/volumes/71/rr/rr7103a1.htm", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_sti": {"title": "CDC STI Treatment Guidelines", "url": "https://www.cdc.gov/std/treatment-guidelines/", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_doxy_pep": {"title": "CDC Doxy-PEP Clinical Guidelines", "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7302a1.htm", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_vaccines": {"title": "CDC Immunization Schedules", "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/", "monitoring_strategy": "official_document_index"},
+    "aap_vaccines": {"title": "AAP Immunization Schedule", "url": "https://www.aap.org/en/patient-care/immunizations/immunization-schedule-and-resources/", "monitoring_strategy": "official_page_monitor"},
+    "uspstf_api": {"title": "USPSTF Prevention TaskForce API", "url": "https://www.uspreventiveservicestaskforce.org/apps/api.jsp", "monitoring_strategy": "live_api"},
+    "ssc_2026": {"title": "Surviving Sepsis Campaign 2026", "url": "https://sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-management-of-sepsis-and-septic-shock-2026", "monitoring_strategy": "official_page_monitor"},
+    "endocrine_gc_2024": {"title": "Endocrine Society/ESE Glucocorticoid-induced Adrenal Insufficiency Guideline", "url": "https://academic.oup.com/jcem/article/109/7/1657/7667842", "monitoring_strategy": "literature_search"},
+    "chest_periop_2022": {"title": "CHEST Perioperative Antithrombotic Guideline", "url": "https://journal.chestnet.org/article/S0012-3692(22)01359-9/fulltext", "monitoring_strategy": "literature_search"},
+    "fda_andexxa": {"title": "FDA Andexxa Safety Communication", "url": "https://www.fda.gov/safety/medical-product-safety-information/update-safety-andexxa-astrazeneca-fda-safety-communication", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "poison_centers": {"title": "America's Poison Centers", "url": "https://www.poisoncenters.org/", "monitoring_strategy": "literature_search"},
+    "tccc": {"title": "Joint Trauma System / TCCC Guidelines", "url": "https://jts.health.mil/index.cfm/PI_CPGs/cpgs", "monitoring_strategy": "official_document_index"},
+    "nd_antibiograms": {"title": "North Dakota HHS Antibiograms", "url": "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/antibiotic-resistance-and-antimicrobial-stewardship/antibiograms", "monitoring_strategy": "auto_extract"},
+    "nd_reportable": {"title": "North Dakota HHS Reportable Conditions", "url": "https://www.hhs.nd.gov/health/diseases-conditions-and-immunization/reportable-conditions", "monitoring_strategy": "official_page_monitor"},
+    "nd_behavioral_data": {"title": "North Dakota HHS Behavioral Health Data", "url": "https://www.hhs.nd.gov/behavioral-health/data", "monitoring_strategy": "official_page_monitor"},
+    "openfda": {"title": "openFDA Drug APIs", "url": "https://open.fda.gov/apis/drug/", "monitoring_strategy": "live_api"},
+    "nlm_clinical_tables": {"title": "NLM Clinical Tables", "url": "https://clinicaltables.nlm.nih.gov/", "monitoring_strategy": "live_api"},
+    "pubmed": {"title": "PubMed", "url": "https://pubmed.ncbi.nlm.nih.gov/", "monitoring_strategy": "literature_search"},
+    "fda_medwatch_feed": {"title": "FDA MedWatch Safety Alerts", "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch/rss.xml", "update_channel": "rss", "urgent": true, "monitoring_strategy": "official_alert_feed"},
+    "cdc_han": {"title": "CDC Health Alert Network", "url": "https://www.cdc.gov/han/php/notices/index.html", "update_channel": "official-alert-index", "urgent": true, "monitoring_strategy": "official_alert_feed"},
+    "aasld_fib4": {"title": "AASLD Noninvasive Assessment of Liver Disease", "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/spare-me-jab-noninvasive-assessment-patients-masld", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "kdigo_ckd_2024": {"title": "KDIGO 2024 CKD Evaluation and Management Guideline", "url": "https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "va_audit_c": {"title": "VA/DoD Substance Use Disorder Guideline", "url": "https://www.healthquality.va.gov/guidelines/MH/sud/", "monitoring_strategy": "official_document_index"},
+    "nida_single_question": {"title": "Single-Question Drug-use Screen Validation", "url": "https://pubmed.ncbi.nlm.nih.gov/20625025/", "monitoring_strategy": "static_publication"},
+    "idsa_gas_2025": {"title": "IDSA 2025 GAS Pharyngitis Guideline Update", "url": "https://www.idsociety.org/practice-guideline/streptococcal-pharyngitis2/", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_gas": {"title": "CDC Clinical Guidance for GAS Pharyngitis", "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_hiv_prep": {"title": "CDC Clinical Guidance for PrEP", "url": "https://www.cdc.gov/hivnexus/hcp/prep/index.html", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_hiv_pep": {"title": "CDC Clinical Guidance for PEP", "url": "https://www.cdc.gov/hivnexus/hcp/pep/index.html", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "acep_ena_triage_2025": {"title": "ACEP/ENA Emergency Department Triage Statement", "url": "https://www.ena.org/sites/default/files/2025-08/Emergency%20Department%20Triage.pdf", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "rcp_news2": {"title": "Royal College of Physicians NEWS2", "url": "https://www.rcp.ac.uk/resources/national-early-warning-score-news-2/", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "aha_emergency_signs": {"title": "AHA Heart Attack, Stroke and Cardiac Arrest Symptoms", "url": "https://www.heart.org/en/about-us/heart-attack-and-stroke-symptoms", "monitoring_strategy": "official_page_monitor"},
+    "cdc_stroke_signs": {"title": "CDC Stroke Signs and Symptoms", "url": "https://www.cdc.gov/stroke/signs-symptoms/", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "cdc_sepsis_signs": {"title": "CDC About Sepsis", "url": "https://www.cdc.gov/sepsis/about/", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "acog_preeclampsia": {"title": "ACOG Preeclampsia and Pregnancy Warning Signs", "url": "https://www.acog.org/womens-health/faqs/preeclampsia-and-high-blood-pressure-during-pregnancy", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "tangri_kfre": {"title": "Tangri Four-variable Kidney Failure Risk Equation", "url": "https://pubmed.ncbi.nlm.nih.gov/26757465/", "monitoring_strategy": "static_publication"},
+    "fda_qtc": {"title": "FDA E14 QT/QTc Guidance", "url": "https://www.fda.gov/media/71372/download", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "ada_hyperglycemic_crisis_2024": {"title": "2024 Hyperglycemic Crises in Adults Consensus Report", "url": "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A", "monitoring_strategy": "literature_search"},
+    "acc_aha_af_2023": {"title": "2023 ACC/AHA/ACCP/HRS Atrial Fibrillation Guideline", "url": "https://professional.heart.org/en/science-news/2023-acc-aha-accp-hrs-guideline-for-the-diagnosis-and-management-of-atrial-fibrillation", "fingerprint": true, "fingerprint_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11095842/", "monitoring_strategy": "document_fingerprint"},
+    "aasld_meld_child_pugh": {"title": "AASLD Evolution of MELD and Child-Pugh Scores", "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/evolution-meld-scores", "monitoring_strategy": "official_page_monitor"},
+    "ats_ers_asthma_control": {"title": "ATS/ERS Statement on Asthma Control and Exacerbations", "url": "https://academic.oup.com/ajrccm/article/180/1/59/8524580", "monitoring_strategy": "literature_search"},
+    "qualitymetric_act": {"title": "Asthma Control Test Development and Validation (Nathan et al.)", "url": "https://pubmed.ncbi.nlm.nih.gov/14713908/", "monitoring_strategy": "static_publication"},
+    "cdc_adult_bmi": {"title": "CDC Adult BMI Calculator and Categories", "url": "https://www.cdc.gov/bmi/adult-calculator/index.html", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "mosteller_bsa": {"title": "Simplified Calculation of Body-Surface Area (Mosteller)", "url": "https://pubmed.ncbi.nlm.nih.gov/3657876/", "monitoring_strategy": "static_publication"},
+    "uspstf_lung_2021": {"title": "USPSTF Lung Cancer Screening Recommendation", "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "ada_a1c_eag": {"title": "American Diabetes Association A1C to eAG Conversion", "url": "https://professional.diabetes.org/es/node/171", "fingerprint": true, "monitoring_strategy": "document_fingerprint"},
+    "aha_bp_2025": {"title": "2025 AHA/ACC High Blood Pressure Guideline", "url": "https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know", "fingerprint": true, "fingerprint_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40811497&retmode=xml", "monitoring_strategy": "document_fingerprint"},
+    "aha_prevent": {"title": "American Heart Association PREVENT Equations", "url": "https://professional.heart.org/en/guidelines-and-statements/prevent-calculator", "fingerprint": true, "fingerprint_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10910659/", "monitoring_strategy": "document_fingerprint"},
+    "aha_orthostatic": {"title": "AHA Orthostatic Hypotension Scientific Statement", "url": "https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension", "fingerprint": true, "fingerprint_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11067441/", "monitoring_strategy": "document_fingerprint"}
   },
   "tools": [
     {"id":"abx","path":"/abx/","title":"Antibiotic Reference","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"abx/check_updates.py","source_ids":["pubmed","idsa_gas_2025","cdc_gas"]},

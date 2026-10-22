@@ -212,6 +212,22 @@ SEARCHES = [
     },
 ]
 
+SEARCH_CLAIMS = {
+    'aha_prevent_risk': 'calculators-outpatient-prevention',
+    'aha_hypertension': 'calculators-outpatient-prevention',
+    'a1c_eag_conversion': 'calculators-outpatient-prevention',
+    'uspstf_lung_screening': 'calculators-outpatient-prevention',
+    'adult_anthropometrics': 'calculators-outpatient-prevention',
+    'asthma_control_test': 'calculators-screening',
+    'uspstf_depression': 'calculators-screening',
+    'uspstf_anxiety': 'calculators-screening',
+    'alcohol_drug_screening': 'calculators-screening',
+    'kdigo_ckd': 'calculators-ckd-liver',
+    'aasld_fib4': 'calculators-ckd-liver',
+}
+for search in SEARCHES:
+    search.update(source_id='pubmed', claim_id=SEARCH_CLAIMS.get(search['id'], 'calculators-equations'))
+
 
 def main() -> int:
     user  = os.environ.get('PUSHOVER_USER', '').strip()

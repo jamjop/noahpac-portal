@@ -83,6 +83,26 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#orthostatic-result')).toContainText('Meets orthostatic BP-drop threshold');
   });
 
+  test('anthropometrics and weight change support metric and imperial workflows', async ({ page }) => {
+    await page.goto('/calculators/?calc=anthropometrics');
+    await page.locator('.unit-switch label', { hasText: 'Imperial' }).click();
+    await expect(page.locator('#anthro-height-ft')).toHaveValue('5');
+    await expect(page.locator('#anthro-height-in')).toHaveValue('6.93');
+    await expect(page.locator('#anthro-weight-lb')).toHaveValue('154.32');
+    await expect(page.locator('#anthropometrics-result')).toContainText('24.2 kg/m²');
+
+    await page.goto('/calculators/?calc=weight-change');
+    await page.locator('#wt-base').fill('100');
+    await page.locator('#wt-curr').fill('90');
+    await page.locator('#wt-height').fill('170');
+    await expect(page.locator('#weight-change-result')).toContainText('−10.0%');
+    await expect(page.locator('#weight-change-result')).toContainText('Baseline BMI 34.6 kg/m²');
+    await expect(page.locator('#weight-change-result')).toContainText('Current BMI 31.1 kg/m²');
+    await page.locator('.unit-switch label', { hasText: 'Imperial' }).click();
+    await expect(page.locator('#weight-change-result')).toContainText('220.5 lb');
+    await expect(page.locator('#weight-change-result')).toContainText('198.4 lb');
+  });
+
   test('opioid summary exposes the regimen math, copies, and resets safely', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('/opioids/');
