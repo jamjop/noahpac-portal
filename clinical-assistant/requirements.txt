@@ -1,9 +1,13 @@
 # Direct runtime dependencies for the API and document-ingestion utility.
 # Transitive dependencies remain managed by pip.
 anthropic==1.4.0
+# 1.5.9 remains the latest stable release. Its published server/RBAC and
+# remote-model advisories are mitigated here by an embedded, fixed-name
+# PersistentClient with no Chroma HTTP server or user-controlled model config.
+# See DEPENDENCY_SECURITY.md and tests/test_clinical_assistant_security.py.
 chromadb==1.5.9
 Flask==3.1.3
 pdf2image==1.17.0
 pdfplumber==0.11.10
-pillow==12.3.0
+pillow==13.0.0
 voyageai==0.5.0
