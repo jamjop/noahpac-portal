@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Privacy-preserving active-duty encounter prompts for medication effects, functional impact, readiness follow-up, and neutral clinical documentation.">
+  <title>Active-Duty Visit Support — Noah PA-C</title>
+  <script src="/assets/app-shell.js"></script>
+  <link rel="stylesheet" href="/assets/fonts.css">
+  <link rel="stylesheet" href="/shared.css">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="clinical-app readiness-app">
+<a class="skip-link" href="#main-content">Skip to encounter prompts</a>
+
+<header class="app-header app-header--unified">
+  <div class="app-header__inner">
+    <div class="app-header__bar">
+      <a class="app-brand" href="/" target="_top" aria-label="Noah PA-C Clinical Tools home">
+        <span class="app-brand__mark" aria-hidden="true">PA</span>
+        <span class="app-brand__copy"><span class="app-brand__name">Noah PA-C</span><span class="app-brand__product">Clinical Tools</span></span>
+      </a>
+      <div class="app-header__actions">
+        <span class="review-status">Clinician review required</span>
+        <label class="theme-field"><span class="theme-field__label">Theme</span><select class="theme-select" data-theme-select aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+    </div>
+    <div class="app-header__title">
+      <p class="app-header__eyebrow">Active-Duty Outpatient Care</p>
+      <h1>Active-Duty Visit Support</h1>
+      <p class="app-header__lede">Readiness-aware prompts for medication effects, functional impact, follow-up, and neutral clinical documentation.</p>
+    </div>
+  </div>
+</header>
+
+<nav class="section-nav" aria-label="Visit support sections">
+  <div class="section-nav__inner">
+    <a href="#context">Encounter</a><a href="#medications">Medication effects</a><a href="#function">Function</a><a href="#completion">Plan</a>
+  </div>
+</nav>
+
+<main class="page-body" id="main-content">
+  <div class="workflow-col">
+    <aside class="privacy-note" aria-label="Privacy and scope">
+      <strong>No identifiers, storage, or automatic disposition.</strong>
+      <span>Selections stay in this browser tab and are not saved or sent to the server. Do not enter names, DoD ID numbers, units, duty positions, or other identifying information. This tool organizes clinical facts; it does not determine PRAP qualification, certification, suspension, deployment status, or profile requirements.</span>
+    </aside>
+
+    <section class="assessment-card" id="context" aria-labelledby="context-title">
+      <div class="card-heading"><span class="step-badge">1</span><div><h2 id="context-title">Encounter context</h2><p>Select only facts addressed during this visit. An unchecked item is not interpreted as absent.</p></div></div>
+      <div class="choice-list">
+        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="New or changed medical condition"><span><strong>New or changed medical condition</strong><small>Includes a new diagnosis, recurrence, progression, or meaningful change in symptoms.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Medication or treatment started, stopped, or changed"><span><strong>Medication or treatment change</strong><small>Started, stopped, titrated, resumed, or changed since the prior review.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Current symptoms or treatment effects may affect performance or safety"><span><strong>Current symptoms or treatment effects</strong><small>Potential effect on alertness, judgment, stability, physical function, or safe task performance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Diagnostic evaluation or treatment response remains pending"><span><strong>Evaluation or treatment response pending</strong><small>Pending test, specialty evaluation, treatment response, or period of clinical stabilization.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Recent off-installation, urgent, emergency, or behavioral-health care reviewed"><span><strong>Recent care outside the usual clinic workflow</strong><small>Off-installation, urgent, emergency, hospital, telehealth, or behavioral-health care was reviewed.</small></span></label>
+      </div>
+    </section>
+
+    <section class="assessment-card" id="medications" aria-labelledby="medications-title">
+      <div class="card-heading"><span class="step-badge">2</span><div><h2 id="medications-title">Medication and treatment effects</h2><p>These are review prompts—not medication-specific restrictions or disqualifying criteria.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Sedation, somnolence, slowed reaction time, or impaired alertness"><span><strong>Sedation or impaired alertness</strong><small>Somnolence, slowed reaction time, or reduced vigilance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Cognitive, mood, behavioral, or judgment effect"><span><strong>Cognition, mood, behavior, or judgment</strong><small>New or clinically meaningful change after illness or treatment.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Dizziness, syncope, imbalance, or orthostatic symptoms"><span><strong>Dizziness, syncope, imbalance, or orthostasis</strong><small>Include falls, near-syncope, or impaired positional tolerance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Visual, auditory, coordination, or motor effect"><span><strong>Sensory, coordination, or motor effect</strong><small>Vision, hearing, coordination, tremor, weakness, or fine-motor performance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Hypoglycemia, bleeding, arrhythmia, seizure, or other episodic incapacitation risk"><span><strong>Potential episodic incapacitation</strong><small>Hypoglycemia, bleeding, arrhythmia, seizure, or another sudden safety-relevant event.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Heat, cold, dehydration, exertional, or environmental tolerance may be affected"><span><strong>Environmental or exertional tolerance</strong><small>Heat, cold, hydration, sweating, photosensitivity, or exertional response.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Sleep quality, sleep timing, or fatigue may be affected"><span><strong>Sleep or fatigue effect</strong><small>Insomnia, hypersomnolence, shift-work difficulty, or disrupted restorative sleep.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Early treatment, dose titration, missed-dose, withdrawal, or stabilization concern"><span><strong>Stabilization or interruption concern</strong><small>Early treatment, dose titration, missed-dose effects, withdrawal, adherence, or monitoring period.</small></span></label>
+      </div>
+    </section>
+
+    <section class="assessment-card" id="function" aria-labelledby="function-title">
+      <div class="card-heading"><span class="step-badge">3</span><div><h2 id="function-title">Functional considerations</h2><p>Document observed or reported limitations precisely; do not infer occupational requirements not established during the encounter.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Driving, machinery, weapons, or other safety-sensitive task performance requires review"><span><strong>Safety-sensitive task performance</strong><small>Driving, machinery, weapons, elevated work, or comparable hazards.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Shift work, night duty, sustained vigilance, or irregular sleep opportunity requires review"><span><strong>Shift work or sustained vigilance</strong><small>Night duty, prolonged alertness, irregular sleep opportunity, or rapid schedule changes.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Running, marching, lifting, carrying, climbing, or prolonged standing is limited"><span><strong>Physical task limitation</strong><small>Running, marching, lifting, carrying, climbing, prolonged standing, or repetitive movement.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="PPE, respirator, confined-space, or environmental exposure tolerance requires review"><span><strong>PPE or environmental exposure</strong><small>Respirator, protective equipment, confined space, extreme temperature, noise, or other exposure.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Condition or treatment could create a foreseeable safety concern for the member or others"><span><strong>Foreseeable safety concern</strong><small>Use patient-specific findings and current policy; selection is not itself a disposition.</small></span></label>
+      </div>
+    </section>
+
+    <section class="assessment-card" id="completion" aria-labelledby="completion-title">
+      <div class="card-heading"><span class="step-badge">4</span><div><h2 id="completion-title">Completion and follow-up</h2><p>Record which safeguards were actually completed and choose the neutral plan reflected in the clinical record.</p></div></div>
+      <div class="choice-list choice-list--compact completion-list">
+        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Medication reconciliation and nonprescription/substance review completed"><span><strong>Medication reconciliation completed</strong><small>Includes nonprescription agents, supplements, nicotine, alcohol, and other substances when relevant.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Symptoms, adverse effects, adherence, and objective findings reviewed"><span><strong>Clinical effects reviewed</strong><small>Symptoms, adverse effects, adherence, examination, vital signs, or relevant testing.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Functional demands and foreseeable safety effects discussed"><span><strong>Functional and safety effects discussed</strong><small>Based on the information available to the treating clinician.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Follow-up and return precautions communicated"><span><strong>Follow-up and return precautions communicated</strong><small>Include earlier reassessment for worsening symptoms or new safety concerns.</small></span></label>
+      </div>
+      <div class="plan-grid">
+        <label><span>Documented plan</span><select id="plan"><option value="">Select a neutral plan</option><option>Continue clinical management with routine follow-up</option><option>Reassess after treatment change or stabilization period</option><option>Document functional limitations through the authorized process</option><option>Review with the appropriate CMA or local PRAP process</option><option>Escalate for urgent or emergency evaluation</option></select></label>
+        <label><span>Follow-up timing</span><select id="followup"><option value="">Not specified</option><option>Within 24–72 hours</option><option>Within 1 week</option><option>Within 2–4 weeks</option><option>At the next scheduled clinical review</option><option>Per specialty or local protocol</option></select></label>
+      </div>
+    </section>
+
+    <details class="references">
+      <summary>Scope, policy boundaries, and sources</summary>
+      <div>
+        <p>This page converts public guidance into encounter prompts. It intentionally contains no local Minot procedures, unit-specific requirements, restricted information, medication-specific restrictions, or automatic reliability decision.</p>
+        <ul>
+          <li><a href="https://static.e-publishing.af.mil/production/1/af_a10/publication/dodm5210.42_dafman13-501/dodm5210.42_dafman13-501.pdf" target="_blank" rel="noopener">DoDM 5210.42 with DAFMAN 13-501 supplement</a></li>
+          <li><a href="https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/521042m.pdf" target="_blank" rel="noopener">DoDM 5210.42, Nuclear Weapons Personnel Reliability Program</a></li>
+          <li><a href="https://health.mil/MHSHome/Military-Health-Topics/Health-Readiness/Public-Health/Health-Readiness-Support" target="_blank" rel="noopener">DHA Health Readiness Support and PHA overview</a></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <aside class="result-col" aria-label="Documentation summary">
+    <section class="summary-panel">
+      <p class="summary-eyebrow">Documentation support</p>
+      <div class="readiness-state" id="readiness-state" role="status" aria-live="polite">
+        <span class="readiness-label">No conclusion</span>
+        <strong>Select the facts addressed during this encounter</strong>
+        <p>Unchecked fields are not interpreted as normal or absent.</p>
+      </div>
+      <div class="summary-findings">
+        <h2>Selected findings</h2>
+        <ul id="finding-list"><li>No findings selected.</li></ul>
+      </div>
+      <div class="summary-actions">
+        <button id="copy-summary" type="button">Copy documentation summary</button>
+        <button id="reset-workflow" class="secondary" type="button">Reset</button>
+      </div>
+      <p class="summary-caution">This summary documents selected clinical facts only. It does not establish qualification, certification, suspension, deployment status, or fitness for a specific duty.</p>
+    </section>
+  </aside>
+</main>
+
+<footer class="app-footer">
+  <p class="last-checked"></p>
+  <p class="app-footer__source">Use current DAF, DoD, DHA, and local guidance. The appropriate CMA and certifying authority retain their respective responsibilities.</p>
+  <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
+</footer>
+
+<script src="app.js?v=1"></script>
+<script src="/assets/last-checked.js?v=20261022-readiness" defer></script>
+</body>
+</html>

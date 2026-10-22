@@ -1,8 +1,26 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-22-active-duty-visit-support",
+      "date": "2026-10-22",
+      "type": "clinical",
+      "title": "Active-duty visit support and Air Force WHtR",
+      "summary": "Added privacy-preserving active-duty encounter prompts and the official Air Force waist-to-height ratio calculation while preserving CMA and certifying-authority decision boundaries.",
+      "clinical_change": true,
+      "scope": "Active-duty outpatient documentation support and Air Force body-composition calculation",
+      "affected_routes": ["/readiness/", "/calculators/"],
+      "changes": [
+        "Added a public browser-only encounter workspace for documenting medication and treatment effects, functional considerations, completed safeguards, and neutral follow-up plans.",
+        "Excluded patient identifiers, persistent storage, local policy, automatic PRAP conclusions, and duty-status determinations from the workflow.",
+        "Added Air Force waist-to-height ratio calculation using like units and the DAFMAN 36-2905 requirement to truncate rather than round to two decimal places.",
+        "Kept fitness scoring and administrative interpretation outside the calculator and linked directly to current official Air Force publications.",
+        "Added claim-level governance, official publication-link monitoring, and normalized-text fingerprinting for the DHA readiness page that passed scheduled-client fetch testing."
+      ],
+      "source_ids": ["daf_fitness_2026", "daf_prap_current", "dodm_prp_2022", "dha_readiness"]
+    },
     {
       "id": "2026-10-21-monitoring-hardening",
       "date": "2026-10-21",

@@ -59,6 +59,29 @@ const CALCS = [
   },
 
   {
+    id:"whtr", name:"Air Force Waist-to-Height Ratio", num:"35",
+    eyebrow:"Active-Duty Readiness", source:"DAFMAN 36-2905 (24 March 2026)",
+    render: pane => {
+      pane.innerHTML = calcHeader("Air Force Waist-to-Height Ratio","Active-Duty Readiness","Official WHtR calculation with DAF truncation method") + `
+      ${unitSwitch("whtr-units","Imperial")}
+      <div id="whtr-metric-fields" class="fields unit-fields" hidden>
+        ${field("Height","whtr-height-cm","number","cm","182.88","100","250")}
+        ${field("Waist circumference","whtr-waist-cm","number","cm","100.33","35","220")}
+      </div>
+      <div id="whtr-imperial-fields" class="fields unit-fields">
+        ${field("Height — feet","whtr-height-ft","number","ft","6","3","8")}
+        ${field("Height — inches","whtr-height-in","number","in","0","0","11.99")}
+        ${field("Waist circumference","whtr-waist-in","number","in","39.5","14","86")}
+      </div>
+      <div id="whtr-result" class="result-card"><div class="result-placeholder">Enter height and waist circumference</div></div>
+      <button class="copy-btn" id="whtr-copy">&#x2398; Copy result</button>
+      <p class="note">DAFMAN 36-2905 calculates WHtR as waist circumference divided by height in the same units and truncates—not rounds—the result to two decimal places. This calculator does not reproduce an official fitness score or determine medical, administrative, exemption, or readiness status. Use the current official scoring chart and authorized measurements for those purposes. <a href="https://static.e-publishing.af.mil/production/1/af_a1/publication/afman36-2905/dafman36-2905.pdf" target="_blank" rel="noopener">DAFMAN 36-2905</a> · <a href="https://www.afpc.af.mil/Portals/70/documents/FITNESS/Tab%202.%20PFRA%20Scoring%20Charts%2C%20cao%2017%20Mar%2026.pdf" target="_blank" rel="noopener">current USAF scoring charts</a>.</p>`;
+      addListeners("whtr", calcWhtr);
+      bindUnitSwitch('whtr-units','whtr',calcWhtr);
+    }
+  },
+
+  {
     id:"smoking", name:"Smoking Pack-Years & LDCT", num:"30",
     eyebrow:"Preventive Care", source:"USPSTF 2021 lung cancer screening recommendation",
     render: pane => {
@@ -1010,6 +1033,16 @@ function bindUnitSwitch(name,prefix,callback){
         const inches=optionalImperialHeight('wt-height-ft','wt-height-in');
         if(Number.isFinite(inches))v('wt-height').value=compactHeight(inches*2.54);
       }
+    }else if(prefix==='whtr'){
+      if(imperial){
+        const cm=num('whtr-height-cm'), waistCm=num('whtr-waist-cm');
+        if(Number.isFinite(cm)){const parts=splitHeight(cm/2.54);v('whtr-height-ft').value=parts.feet;v('whtr-height-in').value=compactHeight(parts.inches);}
+        if(Number.isFinite(waistCm)) v('whtr-waist-in').value=compactHeight(waistCm/2.54);
+      }else{
+        const inches=optionalImperialHeight('whtr-height-ft','whtr-height-in'), waistIn=num('whtr-waist-in');
+        if(Number.isFinite(inches)) v('whtr-height-cm').value=compactHeight(inches*2.54);
+        if(Number.isFinite(waistIn)) v('whtr-waist-cm').value=compactHeight(waistIn*2.54);
+      }
     }
     callback();
   }));
@@ -1044,6 +1077,23 @@ function calcAnthropometrics(){
   setResult('anthropometrics-result',`<div class="result-num">${bmi.toFixed(1)} kg/m²</div>
     <div class="result-label">${esc(category)}</div>
     <div class="result-detail">Body surface area: <strong>${bsa.toFixed(2)} m²</strong><br>Devine ideal body weight: <strong>${ibw.toFixed(1)} kg</strong>${adjustedLine}</div>`,risk);
+}
+
+function calcWhtr(){
+  const imperial=activeUnit('whtr-units')==='imperial';
+  const height=imperial?optionalImperialHeight('whtr-height-ft','whtr-height-in'):num('whtr-height-cm');
+  const waist=imperial?num('whtr-waist-in'):num('whtr-waist-cm');
+  const minHeight=imperial?48:100, maxHeight=imperial?96:250;
+  const minWaist=imperial?14:35, maxWaist=imperial?86:220;
+  if(!Number.isFinite(height)||height<minHeight||height>maxHeight||!Number.isFinite(waist)||waist<minWaist||waist>maxWaist){
+    setResult('whtr-result','<div class="result-placeholder">Enter valid height and waist circumference</div>'); return;
+  }
+  const raw=waist/height;
+  const truncated=Math.floor((raw+Number.EPSILON)*100)/100;
+  const unit=imperial?'in':'cm';
+  setResult('whtr-result',`<div class="result-num">${truncated.toFixed(2)}</div>
+    <div class="result-label">Official truncated WHtR</div>
+    <div class="result-detail">${esc(fmt(waist,2))} ${unit} waist ÷ ${esc(fmt(height,2))} ${unit} height = <strong>${raw.toFixed(4)}</strong><br><span class="calc-note">Use the current official chart for fitness points or administrative interpretation.</span></div>`);
 }
 
 function calcSmoking(){
@@ -2058,7 +2108,7 @@ function buildResultColumn(criteriaCol, resultCol) {
 /* ── Navigation ── */
 const CALC_GROUPS = [
   { name:'Medication & liver', ids:['accutane','fib4','meld'] },
-  { name:'General & preventive', ids:['anthropometrics','height','smoking','weight-change'] },
+  { name:'General & preventive', ids:['anthropometrics','whtr','height','smoking','weight-change'] },
   { name:'Cardiovascular', ids:['bp-average','prevent','orthostatic','ascvd','chads','qtc','wellsdvt','wellspe','heart'] },
   { name:'Renal & metabolic', ids:['a1c-eag','egfr','ckd-stage','crcl','electro','hyperglycemia'] },
   { name:'Screening', ids:['phq9','gad7','audit-c','drug-screen','act'] },

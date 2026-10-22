@@ -9,7 +9,7 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#calcFilterSummary')).toContainText('calculator');
     await page.getByRole('button', { name: 'Clear', exact: true }).click();
     await expect(page.getByLabel('Find a calculator')).toHaveValue('');
-    await expect(page.getByRole('tab')).toHaveCount(34);
+    await expect(page.getByRole('tab')).toHaveCount(35);
   });
 
   test('mobile calculator chooser expands, filters, selects, and collapses', async ({ page }) => {
@@ -56,6 +56,13 @@ test.describe('Calculation and conversion workflows', () => {
     await page.goto('/calculators/?calc=anthropometrics');
     await expect(page.locator('#anthropometrics-result')).toContainText('24.2 kg/m²');
     await expect(page.locator('#anthropometrics-result')).toContainText('1.82 m²');
+
+    await page.goto('/calculators/?calc=whtr');
+    await expect(page.locator('#whtr-result')).toContainText('0.54');
+    await expect(page.locator('#whtr-result')).toContainText('0.5486');
+    await expect(page.locator('#whtr-result')).toContainText('Official truncated WHtR');
+    await page.locator('.unit-switch label', { hasText: 'Metric' }).click();
+    await expect(page.locator('#whtr-result')).toContainText('0.54');
 
     await page.goto('/calculators/?calc=smoking');
     await expect(page.locator('#smoking-result')).toContainText('20.0 pack-years');

@@ -4,7 +4,7 @@ const ROUTES = [
   '/calculators/', '/sepsis/', '/opioids/', '/steroids/', '/peds/',
   '/drugref/', '/lookup/', '/labs/', '/als/', '/pals/', '/tccc/',
   '/abx/', '/allergy/', '/antibiogram/', '/anticoag/', '/clinical-assistant/',
-  '/ddx/', '/documents/', '/empiric/', '/naloxone/', '/reportable/',
+  '/ddx/', '/documents/', '/empiric/', '/naloxone/', '/readiness/', '/reportable/',
   '/screener/', '/sti-guide/', '/toxicology/', '/triage/', '/vaccines/', '/wound/',
 ];
 

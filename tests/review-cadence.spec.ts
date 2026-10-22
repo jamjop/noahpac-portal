@@ -73,7 +73,7 @@ test.describe('Review cadence labels', () => {
   test('clears the clinical gate only when a review is recorded on or after the requirement date', async ({ page }) => {
     await page.route('**/calculators/last_checked.json', (route) => route.fulfill({
       contentType: 'application/json',
-      body: JSON.stringify({ date: '2026-10-15', status: 'no_change', review_pending: false, clinically_reviewed: true }),
+      body: JSON.stringify({ date: '2026-10-22', status: 'no_change', review_pending: false, clinically_reviewed: true }),
     }));
     await page.goto('/calculators/');
     const cadence = page.locator('.app-header__title > .review-status');

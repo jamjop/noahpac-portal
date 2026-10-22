@@ -15,7 +15,7 @@ test('clinical updates are rendered from the structured record', async ({ page }
   await expect(page.getByText('Clinical monitoring reliability')).toBeVisible();
   await expect(page.getByText('Clinical guidance and safety review')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Advanced Life Support', exact: true })).toHaveAttribute('href', '/als/');
-  await expect(page.getByRole('link', { name: 'AHA 2025 Adult Advanced Life Support', exact: true })).toHaveAttribute('href', /cpr\.heart\.org/);
+  await expect(page.getByRole('link', { name: 'AHA 2025 Adult Advanced Life Support', exact: true }).first()).toHaveAttribute('href', /cpr\.heart\.org/);
   await page.getByLabel('Change type').selectOption('governance');
   await expect(page.locator('.update-card')).toHaveCount(
     changelog.entries.filter((entry: { type: string }) => entry.type === 'governance').length,

@@ -18,7 +18,7 @@
 // A page with no cadence tag keeps the green badge (no staleness check).
 (function () {
   var CADENCE_MAX_DAYS = { weekly: 8, monthly: 32, quarterly: 92, annually: 370 };
-  var REVIEW_REQUIRED_AFTER = { '/calculators/': '2026-10-15' };
+  var REVIEW_REQUIRED_AFTER = { '/calculators/': '2026-10-22', '/readiness/': '2026-10-22' };
 
   function maxAgeDays() {
     var el = document.querySelector('.update-cadence, .review-status');
