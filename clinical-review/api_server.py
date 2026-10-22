@@ -63,7 +63,10 @@ def manifest_data() -> tuple[dict, list[dict], dict[str, list[dict]]]:
     data = load_json(MANIFEST)
     claim_data = load_json(CLAIM_MANIFEST)
     sources = data.get("sources", {})
-    tools = [tool for tool in data.get("tools", []) if tool.get("monitor")]
+    tools = [
+        tool for tool in data.get("tools", [])
+        if tool.get("monitor") or tool.get("status") == "review_required"
+    ]
     claims_by_tool: dict[str, list[dict]] = {}
     for claim in claim_data.get("claims", []):
         claims_by_tool.setdefault(claim.get("tool_id", ""), []).append(claim)

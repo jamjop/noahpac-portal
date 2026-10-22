@@ -49,6 +49,30 @@ class ReviewPortalTest(unittest.TestCase):
         self.assertEqual(topic["claims"][0]["id"], "sepsis-guidance")
         self.assertEqual(topic["review_events"][0]["trigger_type"], "legacy-detection")
 
+    def test_dashboard_includes_manual_review_required_tool_without_monitor(self):
+        (api.REPO / "readiness").mkdir()
+        (api.REPO / "readiness" / "last_checked.json").write_text(json.dumps({
+            "date": "2026-10-22", "status": "review_required", "review_pending": True,
+        }))
+        manifest = json.loads(api.MANIFEST.read_text())
+        manifest["tools"].append({
+            "id": "readiness", "path": "/readiness/", "title": "Active-Duty Visit Support",
+            "risk_tier": "moderate", "status": "review_required", "review_cadence": "monthly",
+            "monitor": None, "source_ids": ["ssc"],
+        })
+        api.MANIFEST.write_text(json.dumps(manifest))
+        claims = json.loads(api.CLAIM_MANIFEST.read_text())
+        claims["claims"].append({
+            "id": "readiness-support", "tool_id": "readiness", "scope": "Visit support",
+            "source_ids": ["ssc"], "review_priority": "high", "independent_review": "recommended",
+        })
+        api.CLAIM_MANIFEST.write_text(json.dumps(claims))
+
+        topics = {topic["id"]: topic for topic in api.dashboard()["topics"]}
+        self.assertIn("readiness", topics)
+        self.assertEqual(topics["readiness"]["state"], "pending")
+        self.assertEqual(topics["readiness"]["claims"][0]["id"], "readiness-support")
+
     def test_focused_event_limits_required_claims_and_sources(self):
         claims = json.loads(api.CLAIM_MANIFEST.read_text())
         claims["claims"].append({"id":"sepsis-other","tool_id":"sepsis","scope":"Unrelated content","source_ids":["other"],"review_priority":"high","independent_review":"recommended"})
