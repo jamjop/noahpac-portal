@@ -2104,6 +2104,7 @@ const calcFilterSummary = document.getElementById('calcFilterSummary');
 const clearCalcFilter = document.getElementById('clearCalcFilter');
 calcFilter.addEventListener('input', () => {
   const query = calcFilter.value.trim().toLocaleLowerCase();
+  tabNav.classList.toggle('is-filtering', Boolean(query));
   let matches = 0;
   CALCS.forEach(calc => {
     const button = tabNav.querySelector(`[data-id="${calc.id}"]`);

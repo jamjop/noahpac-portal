@@ -16,11 +16,14 @@ test.describe('Calculator proof of concept', () => {
 
   test('filters calculator navigation without changing calculations', async ({ page }) => {
     await page.goto('/calculators/');
+    await expect(page.locator('.calc-nav-group__label').first()).toBeVisible();
     await page.getByLabel('Find a calculator').fill('heart');
 
     const visibleTabs = page.locator('.tab-btn:visible');
     await expect(visibleTabs).toHaveCount(1);
     await expect(visibleTabs).toHaveText('HEART Score');
+    await expect(page.locator('#tabNav')).toHaveClass(/is-filtering/);
+    await expect(page.locator('.calc-nav-group__label:visible')).toHaveCount(0);
   });
 
   test('renders every calculator without a client-side exception', async ({ page }) => {
