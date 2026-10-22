@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-15",
+  "updated": "2026-10-21",
   "clinical_owner_role": "Site owner (PA-C)",
   "status_definitions": {
     "reviewed": "Content received a documented source-based review.",
@@ -52,6 +52,13 @@
     ,"aasld_meld_child_pugh": {"title": "AASLD Evolution of MELD and Child-Pugh Scores", "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/evolution-meld-scores"}
     ,"ats_ers_asthma_control": {"title": "ATS/ERS Statement on Asthma Control and Exacerbations", "url": "https://academic.oup.com/ajrccm/article/180/1/59/8524580"}
     ,"qualitymetric_act": {"title": "Asthma Control Test Development and Validation (Nathan et al.)", "url": "https://pubmed.ncbi.nlm.nih.gov/14713908/"}
+    ,"cdc_adult_bmi": {"title": "CDC Adult BMI Calculator and Categories", "url": "https://www.cdc.gov/bmi/adult-calculator/index.html"}
+    ,"mosteller_bsa": {"title": "Simplified Calculation of Body-Surface Area (Mosteller)", "url": "https://pubmed.ncbi.nlm.nih.gov/3657876/"}
+    ,"uspstf_lung_2021": {"title": "USPSTF Lung Cancer Screening Recommendation", "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening"}
+    ,"ada_a1c_eag": {"title": "American Diabetes Association A1C to eAG Conversion", "url": "https://professional.diabetes.org/es/node/171"}
+    ,"aha_bp_2025": {"title": "2025 AHA/ACC High Blood Pressure Guideline", "url": "https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know"}
+    ,"aha_prevent": {"title": "American Heart Association PREVENT Equations", "url": "https://professional.heart.org/en/guidelines-and-statements/prevent-calculator"}
+    ,"aha_orthostatic": {"title": "AHA Orthostatic Hypotension Scientific Statement", "url": "https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension"}
   },
   "tools": [
     {"id":"abx","path":"/abx/","title":"Antibiotic Reference","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-11","review_cadence":"monthly","monitor":"abx/check_updates.py","source_ids":["pubmed","idsa_gas_2025","cdc_gas"]},
@@ -59,7 +66,7 @@
     {"id":"als","path":"/als/","title":"Advanced Life Support","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"als/check_updates.py","source_ids":["aha_als_2025"]},
     {"id":"antibiogram","path":"/antibiogram/","title":"ND Antibiogram","risk_tier":"high","status":"monitoring_only","review_cadence":"quarterly","monitor":"antibiogram/auto_update.py","source_ids":["nd_antibiograms"]},
     {"id":"anticoag","path":"/anticoag/","title":"Anticoagulation Reversal","risk_tier":"high","status":"reviewed","last_substantive_review":"2026-10-10","review_cadence":"monthly","monitor":"anticoag/check_updates.py","source_ids":["chest_periop_2022","fda_andexxa"]},
-    {"id":"calculators","path":"/calculators/","title":"Clinical Calculators","risk_tier":"high","status":"review_required","review_required_after":"2026-10-15","review_cadence":"monthly","monitor":"calculators/check_updates.py","source_ids":["pubmed","aasld_fib4","kdigo_ckd_2024","tangri_kfre","fda_qtc","ada_hyperglycemic_crisis_2024","acc_aha_af_2023","aasld_meld_child_pugh","ats_ers_asthma_control","qualitymetric_act","va_audit_c","nida_single_question"]},
+    {"id":"calculators","path":"/calculators/","title":"Clinical Calculators","risk_tier":"high","status":"review_required","review_required_after":"2026-10-21","review_cadence":"monthly","monitor":"calculators/check_updates.py","source_ids":["pubmed","aasld_fib4","kdigo_ckd_2024","tangri_kfre","fda_qtc","ada_hyperglycemic_crisis_2024","acc_aha_af_2023","aasld_meld_child_pugh","ats_ers_asthma_control","qualitymetric_act","va_audit_c","nida_single_question","cdc_adult_bmi","mosteller_bsa","uspstf_lung_2021","ada_a1c_eag","aha_bp_2025","aha_prevent","aha_orthostatic"]},
     {"id":"clinical-assistant","path":"/clinical-assistant/","title":"Clinical Assistant","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"ddx","path":"/ddx/","title":"Differential Diagnosis Reference","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},
     {"id":"documents","path":"/documents/","title":"Clinical Documents","risk_tier":"contextual","status":"monitoring_only","review_cadence":"annual","monitor":null,"source_ids":[]},

@@ -32,6 +32,133 @@ const CALCS = [
     }
   },
 
+  {
+    id:"anthropometrics", name:"BMI, BSA & Dosing Weights", num:"29",
+    eyebrow:"General / Anthropometrics", source:"CDC adult BMI categories · Mosteller BSA · Devine IBW",
+    render: pane => {
+      pane.innerHTML = calcHeader("BMI, BSA & Dosing Weights","General / Anthropometrics","Adult BMI, body surface area, ideal body weight, and adjusted body weight") + `
+      <div class="fields">
+        ${selectField("Sex reference for IBW","anthro-sex",[["male","Male"],["female","Female"]])}
+        ${field("Height","anthro-height","number","cm","170","100","250")}
+        ${field("Weight","anthro-weight","number","kg","70","20","500")}
+      </div>
+      <div id="anthropometrics-result" class="result-card"><div class="result-placeholder">Enter height and weight</div></div>
+      <button class="copy-btn" id="anthropometrics-copy">&#x2398; Copy result</button>
+      <p class="note">BMI is a screening measure, not a diagnosis. BSA uses the Mosteller equation. Ideal body weight uses the Devine equation and adjusted body weight uses IBW + 0.4 × (actual − IBW) when actual weight exceeds IBW; dosing-weight selection remains medication- and protocol-specific. <a href="https://www.cdc.gov/bmi/adult-calculator/index.html" target="_blank" rel="noopener">CDC adult BMI source</a>.</p>`;
+      addListeners("anthropometrics", calcAnthropometrics);
+    }
+  },
+
+  {
+    id:"smoking", name:"Smoking Pack-Years & LDCT", num:"30",
+    eyebrow:"Preventive Care", source:"USPSTF 2021 lung cancer screening recommendation",
+    render: pane => {
+      pane.innerHTML = calcHeader("Smoking Pack-Years & LDCT","Preventive Care","Exposure calculation and USPSTF screening-criteria check") + `
+      <div class="fields">
+        ${field("Age","smoke-age","number","years","55","18","120")}
+        ${field("Average cigarettes per day","smoke-cigarettes","number","cigarettes","20","0","200")}
+        ${field("Years smoked","smoke-years","number","years","20","0","100")}
+        ${selectField("Smoking status","smoke-status",[["current","Current"],["former","Former"]])}
+        ${field("Years since quitting","smoke-quit-years","number","years","0","0","100")}
+      </div>
+      <div id="smoking-result" class="result-card"><div class="result-placeholder">Enter smoking history</div></div>
+      <button class="copy-btn" id="smoking-copy">&#x2398; Copy result</button>
+      <p class="note">USPSTF recommends annual low-dose CT for adults age 50–80 with at least 20 pack-years who currently smoke or quit within 15 years. Screening should stop after 15 quit-years or when health or life expectancy substantially limits curative lung surgery. Confirm history, shared decision-making, and local coverage requirements. <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening" target="_blank" rel="noopener">USPSTF source</a>.</p>`;
+      addListeners("smoking", calcSmoking);
+    }
+  },
+
+  {
+    id:"a1c-eag", name:"A1C ↔ Estimated Average Glucose", num:"31",
+    eyebrow:"Diabetes / Conversion", source:"ADAG equation · American Diabetes Association",
+    render: pane => {
+      pane.innerHTML = calcHeader("A1C ↔ Estimated Average Glucose","Diabetes / Conversion","Enter A1C or eAG to update the other values") + `
+      <div class="fields">
+        ${field("Hemoglobin A1C","a1c-value","number","%","7","3","20")}
+        ${field("Estimated average glucose","eag-mg","number","mg/dL","","20","600")}
+        ${field("Estimated average glucose","eag-mmol","number","mmol/L","","1","35")}
+      </div>
+      <div id="a1c-eag-result" class="result-card"><div class="result-placeholder">Enter A1C or eAG</div></div>
+      <button class="copy-btn" id="a1c-eag-copy">&#x2398; Copy result</button>
+      <p class="note">Uses the ADAG relationship: eAG (mg/dL) = 28.7 × A1C − 46.7. A1C may not reflect average glucose accurately with altered red-cell turnover, some hemoglobin variants, pregnancy, recent transfusion, or selected kidney and liver conditions. <a href="https://professional.diabetes.org/es/node/171" target="_blank" rel="noopener">ADA source</a>.</p>`;
+      pane.querySelectorAll('input').forEach(el => el.addEventListener('input', () => syncA1cEag(el.id)));
+      const copyBtn=document.getElementById('a1c-eag-copy');
+      if(copyBtn) copyBtn.addEventListener('click',()=>copyResult('a1c-eag',copyBtn));
+      syncA1cEag('a1c-value');
+    }
+  },
+
+  {
+    id:"bp-average", name:"Blood Pressure Average", num:"32",
+    eyebrow:"Cardiovascular", source:"2025 AHA/ACC high blood pressure guideline categories",
+    render: pane => {
+      pane.innerHTML = calcHeader("Blood Pressure Average","Cardiovascular","Average up to six readings and classify the resulting blood pressure") + `
+      <div class="section-label">Blood pressure readings</div>
+      <div class="fields bp-reading-grid">
+        ${bpReadingFields(1,120,78)}${bpReadingFields(2,118,76)}
+      </div>
+      <details class="additional-readings">
+        <summary>Add readings 3–6</summary>
+        <div class="fields bp-reading-grid">${bpReadingFields(3,'','')}${bpReadingFields(4,'','')}${bpReadingFields(5,'','')}${bpReadingFields(6,'','')}</div>
+      </details>
+      <div id="bp-average-result" class="result-card"><div class="result-placeholder">Enter at least one complete reading</div></div>
+      <button class="copy-btn" id="bp-average-copy">&#x2398; Copy result</button>
+      <p class="note">Uses the arithmetic mean of complete systolic/diastolic pairs. Categories follow the 2025 AHA/ACC guideline and use the higher category when systolic and diastolic values differ. Diagnosis requires appropriately obtained, repeated measurements; confirm with home or ambulatory monitoring when indicated. Values above 180/120 mm Hg require prompt symptom assessment and clinical evaluation. <a href="https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know" target="_blank" rel="noopener">AHA source</a>.</p>`;
+      addListeners("bp-average", calcBpAverage);
+    }
+  },
+
+  {
+    id:"prevent", name:"AHA PREVENT 10-Year Risk", num:"33",
+    eyebrow:"Cardiovascular Prevention", source:"AHA PREVENT base equations · Khan et al. 2024",
+    render: pane => {
+      pane.innerHTML = calcHeader("AHA PREVENT 10-Year Risk","Cardiovascular Prevention","Race-free base equations for total CVD and ASCVD") + `
+      <div class="fields">
+        ${field("Age","prevent-age","number","years","55","30","79")}
+        ${selectField("Sex","prevent-sex",[["female","Female"],["male","Male"]])}
+        ${field("Total cholesterol","prevent-tc","number","mg/dL","200","130","320")}
+        ${field("HDL cholesterol","prevent-hdl","number","mg/dL","50","20","100")}
+        ${field("Systolic BP","prevent-sbp","number","mmHg","120","90","200")}
+        ${field("eGFR","prevent-egfr","number","mL/min/1.73 m²","90","15","150")}
+      </div>
+      <div class="checks">
+        ${check("prevent-diabetes","Diabetes")}
+        ${check("prevent-smoker","Current smoker")}
+        ${check("prevent-bptx","Taking antihypertensive medication")}
+        ${check("prevent-statin","Taking a statin")}
+      </div>
+      <div id="prevent-result" class="result-card"><div class="result-placeholder">Enter valid values</div></div>
+      <button class="copy-btn" id="prevent-copy">&#x2398; Copy result</button>
+      <p class="note">For adults age 30–79 without known CVD. Do not use with known CVD, severe subclinical CVD, end-stage kidney disease, or life expectancy under one year. This implements the published base equations without optional UACR, A1C, or Social Deprivation Index inputs. Use the outcome-specific estimate required by current guidance and integrate risk enhancers and shared decision-making. <a href="https://professional.heart.org/en/guidelines-and-statements/prevent-calculator" target="_blank" rel="noopener">AHA PREVENT source</a>.</p>`;
+      addListeners("prevent", calcPrevent);
+    }
+  },
+
+  {
+    id:"orthostatic", name:"Orthostatic Vitals", num:"34",
+    eyebrow:"Cardiovascular / Vitals", source:"AHA scientific statement definition",
+    render: pane => {
+      pane.innerHTML = calcHeader("Orthostatic Vitals","Cardiovascular / Vitals","Supine-to-standing blood pressure and heart-rate changes") + `
+      <div class="section-label">After 5 minutes supine</div>
+      <div class="fields">
+        ${field("Supine systolic BP","ortho-sup-sbp","number","mmHg","120","40","260")}
+        ${field("Supine diastolic BP","ortho-sup-dbp","number","mmHg","75","20","160")}
+        ${field("Supine heart rate","ortho-sup-hr","number","bpm","70","20","250")}
+      </div>
+      <div class="section-label section-label-gap">Standing measurement</div>
+      <div class="fields">
+        ${field("Standing systolic BP","ortho-stand-sbp","number","mmHg","100","40","260")}
+        ${field("Standing diastolic BP","ortho-stand-dbp","number","mmHg","65","20","160")}
+        ${field("Standing heart rate","ortho-stand-hr","number","bpm","88","20","250")}
+        ${field("Minutes after standing","ortho-minutes","number","minutes","3","0","10")}
+      </div>
+      <div id="orthostatic-result" class="result-card"><div class="result-placeholder">Enter supine and standing vitals</div></div>
+      <button class="copy-btn" id="orthostatic-copy">&#x2398; Copy result</button>
+      <p class="note">Orthostatic hypotension is a sustained fall of at least 20 mm Hg systolic or 10 mm Hg diastolic within 3 minutes of standing. One entered standing measurement can identify the threshold but cannot establish that the change is sustained. Symptoms, medications, hydration, rhythm, technique, and delayed responses still matter. Heart-rate change is descriptive and does not by itself diagnose POTS. <a href="https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension" target="_blank" rel="noopener">AHA source</a>.</p>`;
+      addListeners("orthostatic", calcOrthostatic);
+    }
+  },
+
   /* 2. Alvarado Score */
   {
     id:"alvarado", name:"Alvarado Score", num:"14",
@@ -819,6 +946,145 @@ function setResult(id, html, risk=''){
 }
 
 /* ── Calculators ── */
+
+function calcAnthropometrics(){
+  const heightCm=num('anthro-height'), weightKg=num('anthro-weight'), sex=sel('anthro-sex');
+  if(!Number.isFinite(heightCm)||heightCm<100||heightCm>250||!Number.isFinite(weightKg)||weightKg<20||weightKg>500){
+    setResult('anthropometrics-result','<div class="result-placeholder">Enter valid height and weight</div>'); return;
+  }
+  const heightM=heightCm/100;
+  const bmi=weightKg/(heightM*heightM);
+  const bsa=Math.sqrt((heightCm*weightKg)/3600);
+  const inches=heightCm/2.54;
+  const ibwBase=sex==='female'?45.5:50;
+  const ibw=Math.max(ibwBase,ibwBase+2.3*(inches-60));
+  const adj=ibw+0.4*(weightKg-ibw);
+  let category='Healthy weight', risk='low';
+  if(bmi<18.5){category='Underweight';risk='moderate';}
+  else if(bmi<25){category='Healthy weight';risk='low';}
+  else if(bmi<30){category='Overweight';risk='moderate';}
+  else if(bmi<35){category='Obesity class 1';risk='high';}
+  else if(bmi<40){category='Obesity class 2';risk='high';}
+  else {category='Obesity class 3';risk='high';}
+  const adjustedLine=weightKg>ibw?`<br>Adjusted body weight: <strong>${adj.toFixed(1)} kg</strong>`:'<br><span class="calc-note">Adjusted body weight is not displayed because actual weight does not exceed IBW.</span>';
+  setResult('anthropometrics-result',`<div class="result-num">${bmi.toFixed(1)} kg/m²</div>
+    <div class="result-label">${esc(category)}</div>
+    <div class="result-detail">Body surface area: <strong>${bsa.toFixed(2)} m²</strong><br>Devine ideal body weight: <strong>${ibw.toFixed(1)} kg</strong>${adjustedLine}</div>`,risk);
+}
+
+function calcSmoking(){
+  const age=num('smoke-age'), cigarettes=num('smoke-cigarettes'), years=num('smoke-years');
+  const status=sel('smoke-status'), quitYears=num('smoke-quit-years');
+  const quitField=v('smoke-quit-years');
+  if(quitField) quitField.disabled=status==='current';
+  if(!Number.isFinite(age)||age<18||age>120||!Number.isFinite(cigarettes)||cigarettes<0||cigarettes>200||!Number.isFinite(years)||years<0||years>100||(status==='former'&&(!Number.isFinite(quitYears)||quitYears<0||quitYears>100))){
+    setResult('smoking-result','<div class="result-placeholder">Enter a complete smoking history</div>'); return;
+  }
+  const packYears=(cigarettes/20)*years;
+  const exposure=packYears>=20;
+  const timing=status==='current'||quitYears<15;
+  const ageRange=age>=50&&age<=80;
+  const meets=ageRange&&exposure&&timing;
+  const reason=!ageRange?'age is outside 50–80 years':!exposure?'exposure is below 20 pack-years':!timing?'quit date is 15 or more years ago':'age, exposure, and smoking-timing criteria are met';
+  setResult('smoking-result',resultCard(`${packYears.toFixed(1)} pack-years`,meets?'Meets USPSTF history criteria for annual LDCT':'Does not meet all USPSTF history criteria',`${reason}. Confirm overall health, willingness and ability for curative treatment, shared decision-making, and local eligibility.`,meets?'moderate':'low'),meets?'moderate':'low');
+}
+
+function syncA1cEag(sourceId){
+  const source=v(sourceId);
+  if(!source) return;
+  if(source.value===''){
+    ['a1c-value','eag-mg','eag-mmol'].forEach(id=>{if(id!==sourceId&&v(id))v(id).value='';});
+    setResult('a1c-eag-result','<div class="result-placeholder">Enter A1C or eAG</div>'); return;
+  }
+  let a1c, mg;
+  if(sourceId==='a1c-value'){
+    a1c=num(sourceId); mg=28.7*a1c-46.7;
+  }else if(sourceId==='eag-mg'){
+    mg=num(sourceId); a1c=(mg+46.7)/28.7;
+  }else{
+    mg=num(sourceId)*18; a1c=(mg+46.7)/28.7;
+  }
+  if(!Number.isFinite(a1c)||!Number.isFinite(mg)||a1c<=0||mg<=0){
+    setResult('a1c-eag-result','<div class="result-placeholder">Enter a valid value</div>'); return;
+  }
+  if(sourceId!=='a1c-value') v('a1c-value').value=compactHeight(a1c);
+  if(sourceId!=='eag-mg') v('eag-mg').value=compactHeight(mg);
+  if(sourceId!=='eag-mmol') v('eag-mmol').value=compactHeight(mg/18);
+  setResult('a1c-eag-result',resultCard(`${a1c.toFixed(1)}% A1C`,'Estimated average glucose',`${mg.toFixed(0)} mg/dL · ${(mg/18).toFixed(1)} mmol/L`,''));
+}
+
+function bpReadingFields(index,sbp,dbp){
+  return `${field(`Reading ${index} systolic`,`bp-sbp-${index}`,"number","mmHg",sbp,"40","260")}${field(`Reading ${index} diastolic`,`bp-dbp-${index}`,"number","mmHg",dbp,"20","160")}`;
+}
+
+function calcBpAverage(){
+  const readings=[];
+  for(let index=1;index<=6;index++){
+    const sbp=num(`bp-sbp-${index}`), dbp=num(`bp-dbp-${index}`);
+    if(Number.isFinite(sbp)&&Number.isFinite(dbp)&&sbp>=40&&sbp<=260&&dbp>=20&&dbp<=160) readings.push({sbp,dbp});
+  }
+  if(!readings.length){setResult('bp-average-result','<div class="result-placeholder">Enter at least one complete reading</div>');return;}
+  const sbp=readings.reduce((sum,r)=>sum+r.sbp,0)/readings.length;
+  const dbp=readings.reduce((sum,r)=>sum+r.dbp,0)/readings.length;
+  let label='Normal',risk='low';
+  if(sbp>180||dbp>120){label='Severely elevated range';risk='high';}
+  else if(sbp>=140||dbp>=90){label='Stage 2 hypertension range';risk='high';}
+  else if(sbp>=130||dbp>=80){label='Stage 1 hypertension range';risk='moderate';}
+  else if(sbp>=120&&dbp<80){label='Elevated blood pressure range';risk='moderate';}
+  setResult('bp-average-result',resultCard(`${Math.round(sbp)}/${Math.round(dbp)} mm Hg`,label,`Arithmetic mean of ${readings.length} complete reading${readings.length===1?'':'s'} (${sbp.toFixed(1)}/${dbp.toFixed(1)} before rounding).`,risk),risk);
+}
+
+const PREVENT_10_YEAR_COEFFICIENTS={
+  cvd:{
+    female:[0.7939329,0.0305239,-0.1606857,-0.2394003,0.360078,0.8667604,0.5360739,0.6045917,0.0433769,0.3151672,-0.1477655,-0.0663612,0.1197879,-0.0819715,0.0306769,-0.0946348,-0.27057,-0.078715,-0.1637806,-3.307728],
+    male:[0.7688528,0.0736174,-0.0954431,-0.4347345,0.3362658,0.7692857,0.4386871,0.5378979,0.0164827,0.288879,-0.1337349,-0.0475924,0.150273,-0.0517874,0.0191169,-0.1049477,-0.2251948,-0.0895067,-0.1543702,-3.031168]
+  },
+  ascvd:{
+    female:[0.7198830247,0.1176967025,-0.1511850059,-0.0835357979,0.3592852056,0.8348584771,0.4831078053,0.4864619076,0.039777901,0.2265308946,-0.0592373982,-0.0395761989,0.0844423026,-0.0567838997,0.0325691998,-0.1035984978,-0.241754204,-0.0791141987,-0.167149201,-3.819974899],
+    male:[0.7099847198,0.1658663005,-0.1144284979,-0.2837212086,0.3239977062,0.7189596891,0.3956972957,0.369007498,0.0203619003,0.2036522031,-0.0865581036,-0.0322915986,0.1145630032,-0.0300005004,0.0232746992,-0.0927024037,-0.2018525004,-0.0970527008,-0.1217081025,-3.500654936]
+  }
+};
+
+function preventRisk(outcome,sex,age,tc,hdl,sbp,egfr,diabetes,smoker,bptx,statin){
+  const c=PREVENT_10_YEAR_COEFFICIENTS[outcome][sex];
+  const cage=(age-55)/10;
+  const cnhdl=((tc-hdl)*0.02586)-3.5;
+  const chdl=((hdl*0.02586)-1.3)/0.3;
+  const csbp=(Math.min(sbp,110)-110)/20;
+  const csbp2=(Math.max(sbp,110)-130)/20;
+  const cegfr=(Math.min(egfr,60)-60)/-15;
+  const cegfr2=(Math.max(egfr,60)-90)/-15;
+  const terms=[cage,cnhdl,chdl,csbp,csbp2,diabetes,smoker,cegfr,cegfr2,bptx,statin,bptx*csbp2,statin*cnhdl,cage*cnhdl,cage*chdl,cage*csbp2,cage*diabetes,cage*smoker,cage*cegfr,1];
+  const logOdds=terms.reduce((sum,term,index)=>sum+term*c[index],0);
+  return 100*Math.exp(logOdds)/(1+Math.exp(logOdds));
+}
+
+function calcPrevent(){
+  const age=num('prevent-age'),tc=num('prevent-tc'),hdl=num('prevent-hdl'),sbp=num('prevent-sbp'),egfr=num('prevent-egfr'),sex=sel('prevent-sex');
+  if([age,tc,hdl,sbp,egfr].some(value=>!Number.isFinite(value))||age<30||age>79||tc<130||tc>320||hdl<20||hdl>100||sbp<90||sbp>200||egfr<15||egfr>150){
+    setResult('prevent-result','<div class="result-placeholder">Enter values within the published input ranges</div>');return;
+  }
+  const diabetes=chk('prevent-diabetes')?1:0,smoker=chk('prevent-smoker')?1:0,bptx=chk('prevent-bptx')?1:0,statin=chk('prevent-statin')?1:0;
+  const cvd=preventRisk('cvd',sex,age,tc,hdl,sbp,egfr,diabetes,smoker,bptx,statin);
+  const ascvd=preventRisk('ascvd',sex,age,tc,hdl,sbp,egfr,diabetes,smoker,bptx,statin);
+  const risk=cvd>=7.5?'moderate':'low';
+  const detail=`PREVENT-CVD (ASCVD + heart failure): ${cvd.toFixed(1)}%. PREVENT-ASCVD (coronary heart disease + stroke): ${ascvd.toFixed(1)}%. Base equations; optional UACR, A1C, and SDI predictors are not included.`;
+  setResult('prevent-result',resultCard(`${cvd.toFixed(1)}%`,'10-year total CVD risk',detail,risk),risk);
+}
+
+function calcOrthostatic(){
+  const supSbp=num('ortho-sup-sbp'),supDbp=num('ortho-sup-dbp'),supHr=num('ortho-sup-hr');
+  const standSbp=num('ortho-stand-sbp'),standDbp=num('ortho-stand-dbp'),standHr=num('ortho-stand-hr'),minutes=num('ortho-minutes');
+  if([supSbp,supDbp,supHr,standSbp,standDbp,standHr,minutes].some(value=>!Number.isFinite(value))){
+    setResult('orthostatic-result','<div class="result-placeholder">Enter supine and standing vitals</div>');return;
+  }
+  const sbpDrop=supSbp-standSbp,dbpDrop=supDbp-standDbp,hrChange=standHr-supHr;
+  const withinWindow=minutes>=0&&minutes<=3;
+  const positive=withinWindow&&(sbpDrop>=20||dbpDrop>=10);
+  const label=!withinWindow?'Outside standard 3-minute window':positive?'Meets orthostatic BP-drop threshold':'Does not meet BP-drop threshold';
+  const detail=`Systolic change: ${standSbp-supSbp>=0?'+':''}${standSbp-supSbp} mm Hg · Diastolic change: ${standDbp-supDbp>=0?'+':''}${standDbp-supDbp} mm Hg · Heart-rate change: ${hrChange>=0?'+':''}${hrChange} bpm at ${minutes} minute${minutes===1?'':'s'}.`;
+  setResult('orthostatic-result',resultCard(`${sbpDrop}/${dbpDrop} mm Hg drop`,label,detail,positive?'high':withinWindow?'low':'moderate'),positive?'high':withinWindow?'low':'moderate');
+}
 
 function calcFib4(){
   const age=num('fib4-age'), ast=num('fib4-ast'), alt=num('fib4-alt'), platelets=num('fib4-plt');
@@ -1695,11 +1961,12 @@ function buildResultColumn(criteriaCol, resultCol) {
 /* ── Navigation ── */
 const CALC_GROUPS = [
   { name:'Medication & liver', ids:['accutane','fib4','meld'] },
-  { name:'Cardiovascular', ids:['ascvd','chads','qtc','heart','wellsdvt','wellspe'] },
-  { name:'Renal & metabolic', ids:['crcl','egfr','ckd-stage','electro','hyperglycemia'] },
-  { name:'Acute care', ids:['alvarado','curb65','ottawa','pecarn'] },
-  { name:'Screening', ids:['act','audit-c','drug-screen','gad7','phq9'] },
-  { name:'Perioperative & general', ids:['gupta','rcri','edd','height','weight-change'] },
+  { name:'General & preventive', ids:['anthropometrics','height','smoking','weight-change'] },
+  { name:'Cardiovascular', ids:['bp-average','prevent','orthostatic','ascvd','chads','qtc','wellsdvt','wellspe','heart'] },
+  { name:'Renal & metabolic', ids:['a1c-eag','egfr','ckd-stage','crcl','electro','hyperglycemia'] },
+  { name:'Screening', ids:['phq9','gad7','audit-c','drug-screen','act'] },
+  { name:'Obstetric & perioperative', ids:['edd','rcri','gupta'] },
+  { name:'Acute care', ids:['curb65','alvarado','ottawa','pecarn'] },
 ];
 
 let currentCalc = null;

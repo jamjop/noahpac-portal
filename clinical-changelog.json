@@ -1,8 +1,29 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-17",
+  "updated": "2026-10-21",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-21-outpatient-calculator-expansion",
+      "date": "2026-10-21",
+      "type": "clinical",
+      "title": "Focused outpatient calculator expansion",
+      "summary": "Added six frequently used outpatient calculations with source-linked limitations and reorganized navigation around the site owner's clinical workflow.",
+      "clinical_change": true,
+      "scope": "Adult anthropometrics, smoking exposure and LDCT criteria, A1C/eAG conversion, blood-pressure averaging, AHA PREVENT risk, and orthostatic vitals",
+      "affected_routes": ["/calculators/"],
+      "changes": [
+        "Added adult BMI category, Mosteller BSA, Devine ideal body weight, and medication-specific adjusted body-weight context.",
+        "Added pack-year calculation and a bounded check of USPSTF age, exposure, and smoking-timing criteria for annual low-dose CT.",
+        "Added bidirectional A1C and estimated-average-glucose conversion using the ADAG relationship.",
+        "Added averaging for up to six complete blood-pressure readings with 2025 AHA/ACC category context.",
+        "Added the published race-free AHA PREVENT base equations for 10-year total CVD and ASCVD risk, without optional UACR, A1C, or SDI predictors.",
+        "Added supine-to-standing BP and heart-rate deltas with the AHA orthostatic-hypotension definition and timing safeguard.",
+        "Kept Accutane Dosing first by owner preference and reordered the remaining category groups for common outpatient use.",
+        "Marked the calculator collection for renewed clinician review."
+      ],
+      "source_ids": ["cdc_adult_bmi", "mosteller_bsa", "uspstf_lung_2021", "ada_a1c_eag", "aha_bp_2025", "aha_prevent", "aha_orthostatic"]
+    },
     {
       "id": "2026-10-17-clinical-surveillance-traceability",
       "date": "2026-10-17",

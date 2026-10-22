@@ -37,6 +37,18 @@ SEARCHES = [
         'reldate': 400,
     },
     {
+        'id':      'aha_prevent_risk',
+        'name':    'AHA PREVENT Cardiovascular Risk Equations',
+        'query':   '(PREVENT[tiab] AND (cardiovascular[tiab] OR ASCVD[tiab])) AND (equation[tiab] OR guideline[pt] OR update[ti] OR validation[ti])',
+        'reldate': 400,
+    },
+    {
+        'id':      'aha_hypertension',
+        'name':    'AHA/ACC Blood Pressure Classification and Orthostatic Guidance',
+        'query':   '("American Heart Association" OR "American College of Cardiology") AND (hypertension OR "orthostatic hypotension") AND (guideline[pt] OR update[ti] OR statement[pt])',
+        'reldate': 400,
+    },
+    {
         'id':      'acc_aha_afib',
         'name':    'ACC/AHA/ESC Atrial Fibrillation Guidelines (CHA₂DS₂-VASc)',
         'query':   '("American College of Cardiology" OR "American Heart Association" OR "European Society of Cardiology") AND "atrial fibrillation" AND (guideline[pt] OR update[ti] OR statement[pt])',
@@ -103,6 +115,24 @@ SEARCHES = [
         'name':    'Adult DKA / HHS Consensus Guidance',
         'query':   '("diabetic ketoacidosis" OR "hyperosmolar hyperglycemic state" OR "hyperglycemic crisis") AND (consensus[ti] OR guideline[pt] OR update[ti])',
         'reldate': 400,
+    },
+    {
+        'id':      'a1c_eag_conversion',
+        'name':    'A1C and Estimated Average Glucose Relationship',
+        'query':   '(A1C OR HbA1c) AND ("estimated average glucose" OR eAG) AND (guideline[pt] OR consensus[ti] OR update[ti] OR validation[ti])',
+        'reldate': 730,
+    },
+    {
+        'id':      'uspstf_lung_screening',
+        'name':    'USPSTF Lung Cancer Screening and Smoking Exposure',
+        'query':   '"US Preventive Services Task Force" AND "lung cancer screening" AND (recommendation OR update OR guideline)',
+        'reldate': 400,
+    },
+    {
+        'id':      'adult_anthropometrics',
+        'name':    'Adult BMI, BSA, and Dosing Weight Guidance',
+        'query':   '("body mass index" OR "body surface area" OR "ideal body weight" OR "adjusted body weight") AND (guideline[pt] OR consensus[ti] OR update[ti] OR validation[ti])',
+        'reldate': 730,
     },
     {
         'id':      'asthma_control_test',

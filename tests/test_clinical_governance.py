@@ -32,7 +32,7 @@ class ClinicalGovernanceTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn("27 tools", completed.stdout)
-        self.assertIn("26 claim mappings", completed.stdout)
+        self.assertIn("27 claim mappings", completed.stdout)
 
     def test_all_manifest_routes_and_monitors_exist(self):
         manifest = json.loads((REPO / "clinical-review.json").read_text())

@@ -9,7 +9,7 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#calcFilterSummary')).toContainText('calculator');
     await page.getByRole('button', { name: 'Clear', exact: true }).click();
     await expect(page.getByLabel('Find a calculator')).toHaveValue('');
-    await expect(page.getByRole('tab')).toHaveCount(28);
+    await expect(page.getByRole('tab')).toHaveCount(34);
   });
 
   test('mobile calculator chooser expands, filters, selects, and collapses', async ({ page }) => {
@@ -50,6 +50,37 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.getByLabel('Height in inches')).toHaveValue('74');
     await expect(page.getByLabel('Height in centimeters')).toHaveValue('187.96');
     await expect(page.locator('#height-result')).toContainText('6′ 2″');
+  });
+
+  test('outpatient calculator expansion preserves published equations and criteria', async ({ page }) => {
+    await page.goto('/calculators/?calc=anthropometrics');
+    await expect(page.locator('#anthropometrics-result')).toContainText('24.2 kg/m²');
+    await expect(page.locator('#anthropometrics-result')).toContainText('1.82 m²');
+
+    await page.goto('/calculators/?calc=smoking');
+    await expect(page.locator('#smoking-result')).toContainText('20.0 pack-years');
+    await expect(page.locator('#smoking-result')).toContainText('Meets USPSTF history criteria');
+
+    await page.goto('/calculators/?calc=a1c-eag');
+    await expect(page.getByLabel('Estimated average glucose', { exact: true }).first()).toHaveValue('154.2');
+    await expect(page.locator('#a1c-eag-result')).toContainText('154 mg/dL');
+
+    await page.goto('/calculators/?calc=bp-average');
+    await expect(page.locator('#bp-average-result')).toContainText('119/77 mm Hg');
+    await expect(page.locator('#bp-average-result')).toContainText('Normal');
+
+    await page.goto('/calculators/?calc=prevent');
+    await page.getByLabel('Age').fill('50');
+    await page.getByLabel('Total cholesterol').fill('240');
+    await page.getByLabel('HDL cholesterol').fill('55');
+    await page.getByLabel('Systolic BP').fill('160');
+    await page.getByLabel('Taking antihypertensive medication').check();
+    await expect(page.locator('#prevent-result')).toContainText('5.4%');
+    await expect(page.locator('#prevent-result')).toContainText('3.6%');
+
+    await page.goto('/calculators/?calc=orthostatic');
+    await expect(page.locator('#orthostatic-result')).toContainText('20/10 mm Hg drop');
+    await expect(page.locator('#orthostatic-result')).toContainText('Meets orthostatic BP-drop threshold');
   });
 
   test('opioid summary exposes the regimen math, copies, and resets safely', async ({ page, context }) => {
