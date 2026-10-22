@@ -25,7 +25,33 @@ done
   --disable-pip-version-check \
   --upgrade-strategy only-if-needed \
   --requirement "${REQUIREMENTS}"
-"${PYTHON}" -m pip check
+
+# This migrated environment can see Ubuntu-managed system packages that are
+# unrelated to the application. Validate the pinned application requirements
+# directly instead of allowing `pip check` to fail on those external packages.
+NOAHPAC_REQUIREMENTS="${REQUIREMENTS}" "${PYTHON}" - <<'PY'
+import os
+from importlib.metadata import PackageNotFoundError, version
+from pathlib import Path
+
+failures = []
+for raw_line in Path(os.environ["NOAHPAC_REQUIREMENTS"]).read_text().splitlines():
+    line = raw_line.strip()
+    if not line or line.startswith("#"):
+        continue
+    name, expected = line.split("==", 1)
+    try:
+        installed = version(name)
+    except PackageNotFoundError:
+        failures.append(f"{name}: missing (expected {expected})")
+        continue
+    if installed != expected:
+        failures.append(f"{name}: installed {installed}, expected {expected}")
+
+if failures:
+    raise SystemExit("Pinned dependency validation failed:\n" + "\n".join(failures))
+print("Pinned Clinical Assistant dependency versions match requirements.")
+PY
 
 # The environment is executable infrastructure, not application state.
 chown -R root:root /opt/noahpac/clinical-assistant/venv

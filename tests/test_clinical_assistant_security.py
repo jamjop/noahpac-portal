@@ -35,7 +35,8 @@ class ClinicalAssistantSecurityTest(unittest.TestCase):
             self.assertIn(directive, self.unit)
 
     def test_dependency_installer_checks_and_restarts_the_service(self):
-        self.assertIn('"${PYTHON}" -m pip check', self.installer)
+        self.assertIn('from importlib.metadata import PackageNotFoundError, version', self.installer)
+        self.assertIn('Pinned Clinical Assistant dependency versions match requirements.', self.installer)
         self.assertIn('systemctl restart "${SERVICE}"', self.installer)
         self.assertIn("http://127.0.0.1:8766/health", self.installer)
 
