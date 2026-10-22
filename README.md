@@ -101,7 +101,7 @@ All scripts use PubMed E-utilities (esearch + esummary) and/or page-hash watchin
 | `abx/check_updates.py` | sequential | PubMed: IDSA, SHEA, SSC, WSES, AAP, ACG, ATS, AGA (9 searches) |
 | `tccc/check_updates.py` | sequential | PubMed: CoTCCC / J Spec Oper Med publications (3 searches) |
 | `vaccines/check_updates.py` | sequential | PubMed: ACIP MMWR, AAP COID/Pediatrics, ACOG Ob/Gyn; CDC, AAP, and ACOG schedule page dates |
-| `calculators/check_updates.py` | sequential | PubMed: ACC/AHA, ACCP/ESC, ATS/BTS, KDIGO, AASLD (MELD/FIB-4), USPSTF and validated behavioral-health screening, Ottawa/PECARN/Alvarado, AAD, and ACOG |
+| `calculators/check_updates.py` | sequential | Monthly PubMed surveillance for ACC/AHA, PREVENT, hypertension/orthostasis, A1C/eAG, adult anthropometrics, USPSTF lung screening, ACCP/ESC, ATS/BTS, KDIGO, AASLD (MELD/FIB-4), validated behavioral-health screening, Ottawa/PECARN/Alvarado, AAD, and ACOG; weekly text fingerprints cover the mutable CDC, USPSTF, ADA, and AHA source pages |
 | `peds/check_updates.py` | sequential | PubMed: AHA/ILCOR PALS, AAP/IDSA pediatric infections, AES/PECARN status epilepticus, ASHP/ACCP/IDSA vancomycin monitoring, ACEP/AAP procedural sedation |
 | `als/check_updates.py` | sequential | PubMed: AHA ACLS, ILCOR adult resuscitation, ERC guidelines, AHA/ACC arrhythmia, post-arrest TTM, ACS/STEMI, AHA/ASA stroke |
 | `pals/check_updates.py` | sequential | PubMed: AHA PALS, ILCOR pediatric resuscitation, ERC pediatric, AHA/ACC pediatric arrhythmia, pediatric post-arrest care, IO access |

@@ -86,6 +86,20 @@ def normalized_text(raw: bytes, content_type: str) -> str:
     return "\n".join(lines)
 
 
+def text_sha256(text: str) -> str | None:
+    """Hash extracted clinical text, ignoring non-content HTML changes."""
+    if not text:
+        return None
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def fingerprint_changed(previous: dict, current: dict) -> bool:
+    """Prefer normalized text hashes, falling back to the downloaded file hash."""
+    if previous.get("text_sha256") and current.get("text_sha256"):
+        return previous["text_sha256"] != current["text_sha256"]
+    return previous.get("sha256") != current.get("sha256")
+
+
 def atomic_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(dir=path.parent, prefix=path.name, suffix=".tmp")
@@ -100,7 +114,8 @@ def atomic_text(path: Path, content: str) -> None:
 
 
 def fetch(source: dict) -> tuple[dict, bytes]:
-    request = urllib.request.Request(source["url"], headers={"User-Agent": USER_AGENT, "Accept": "application/pdf, text/html;q=0.8"})
+    monitored_url = source.get("fingerprint_url", source["url"])
+    request = urllib.request.Request(monitored_url, headers={"User-Agent": USER_AGENT, "Accept": "application/pdf, text/html;q=0.8"})
     with urllib.request.urlopen(request, timeout=60) as response:
         raw = response.read(50 * 1024 * 1024 + 1)
         if len(raw) > 50 * 1024 * 1024:
@@ -111,6 +126,7 @@ def fetch(source: dict) -> tuple[dict, bytes]:
             "etag": response.headers.get("ETag"),
             "last_modified": response.headers.get("Last-Modified"),
             "content_type": response.headers.get_content_type(),
+            "monitored_url": monitored_url,
             "final_url": response.geturl(),
         }, raw)
 
@@ -180,7 +196,8 @@ def main() -> int:
             except Exception as exc:  # noqa: BLE001
                 current_text = ""
                 extraction_error = str(exc)[:500]
-            if old and old.get("sha256") != fingerprint["sha256"]:
+            fingerprint["text_sha256"] = text_sha256(current_text)
+            if old and fingerprint_changed(old, fingerprint):
                 hunks, diff_truncated = (build_hunks(
                     previous_text, current_text, kind="source", label=source["title"]
                 ) if previous_text and current_text else ([], False))

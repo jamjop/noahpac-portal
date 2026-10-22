@@ -53,6 +53,29 @@ class ClinicalGovernanceTests(unittest.TestCase):
                 self.assertTrue(tool["monitor"])
                 self.assertTrue(tool["source_ids"])
 
+    def test_new_outpatient_calculators_have_complete_update_coverage(self):
+        manifest = json.loads((REPO / "clinical-review.json").read_text())
+        claims = json.loads((REPO / "clinical-claims.json").read_text())["claims"]
+        calculator = next(tool for tool in manifest["tools"] if tool["id"] == "calculators")
+        claim = next(claim for claim in claims if claim["id"] == "calculators-outpatient-prevention")
+        expected_sources = {
+            "cdc_adult_bmi", "mosteller_bsa", "uspstf_lung_2021", "ada_a1c_eag",
+            "aha_bp_2025", "aha_prevent", "aha_orthostatic",
+        }
+        mutable_web_sources = expected_sources - {"mosteller_bsa"}
+
+        self.assertTrue(expected_sources.issubset(calculator["source_ids"]))
+        self.assertEqual(set(claim["source_ids"]), expected_sources)
+        for source_id in mutable_web_sources:
+            self.assertIs(manifest["sources"][source_id].get("fingerprint"), True)
+
+        updater = (REPO / calculator["monitor"]).read_text()
+        for search_id in {
+            "aha_prevent_risk", "aha_hypertension", "a1c_eag_conversion",
+            "uspstf_lung_screening", "adult_anthropometrics",
+        }:
+            self.assertIn(f"'id':      '{search_id}'", updater)
+
     def test_failure_alert_dry_run_never_prints_secrets(self):
         env = os.environ.copy()
         env.update(PUSHOVER_USER="secret-user", PUSHOVER_TOKEN="secret-token")

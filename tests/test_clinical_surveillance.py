@@ -44,6 +44,13 @@ class UrgentFeedParsingTests(unittest.TestCase):
 
 
 class FingerprintMappingTests(unittest.TestCase):
+    def test_sources_may_use_a_stable_fingerprint_mirror(self):
+        source = {
+            "url": "https://publisher.example/guideline",
+            "fingerprint_url": "https://archive.example/guideline",
+        }
+        self.assertEqual(source.get("fingerprint_url", source["url"]), source["fingerprint_url"])
+
     def test_maps_changed_source_to_all_affected_tools(self):
         claims = {"claims":[
             {"tool_id":"a","source_ids":["source"]},
@@ -59,6 +66,20 @@ class FingerprintMappingTests(unittest.TestCase):
         self.assertEqual(hunks[0]["old_lines"][-1]["text"], "Dose 5 mg")
         self.assertEqual(hunks[0]["new_lines"][-1]["text"], "Dose 10 mg")
         self.assertTrue(hunks[0]["old_lines"][-1]["changed"])
+
+    def test_document_fingerprints_ignore_markup_only_changes(self):
+        old_text = fingerprints.normalized_text(b"<main><p>Dose 5 mg</p></main>", "text/html")
+        new_text = fingerprints.normalized_text(
+            b"<main class='redesign'><p> Dose   5 mg </p></main>", "text/html"
+        )
+        old = {"sha256": "old-raw", "text_sha256": fingerprints.text_sha256(old_text)}
+        new = {"sha256": "new-raw", "text_sha256": fingerprints.text_sha256(new_text)}
+        self.assertFalse(fingerprints.fingerprint_changed(old, new))
+
+    def test_document_fingerprints_detect_clinical_text_changes(self):
+        old = {"sha256": "old-raw", "text_sha256": fingerprints.text_sha256("Dose 5 mg")}
+        new = {"sha256": "new-raw", "text_sha256": fingerprints.text_sha256("Dose 10 mg")}
+        self.assertTrue(fingerprints.fingerprint_changed(old, new))
 
     def test_diff_represents_an_added_file(self):
         hunks, _ = fingerprints.build_hunks("", "New clinical content")

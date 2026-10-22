@@ -4,6 +4,24 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-21-outpatient-calculator-surveillance",
+      "date": "2026-10-21",
+      "type": "governance",
+      "title": "Outpatient calculator update surveillance",
+      "summary": "Integrated the new outpatient calculators into monthly literature surveillance, weekly authoritative-source comparisons, focused review packets, and governance regression tests.",
+      "clinical_change": false,
+      "scope": "Clinical update monitoring for the six-calculator outpatient expansion",
+      "affected_routes": ["/calculators/"],
+      "changes": [
+        "Mapped every new calculation and interpretation to its approved CDC, USPSTF, ADA, AHA, or primary-publication source.",
+        "Added focused PubMed searches for PREVENT, hypertension and orthostasis, A1C/eAG, lung-cancer screening, and adult anthropometrics to the monthly high-risk monitor.",
+        "Added weekly normalized-text fingerprints for mutable CDC, USPSTF, ADA, and AHA source material so content changes create line-by-line review packets.",
+        "Used stable NIH-hosted copies for automated comparison when canonical AHA pages block monitoring, while preserving canonical AHA links for reviewers.",
+        "Added governance tests that fail if these calculators lose source mappings, literature searches, or source fingerprints."
+      ],
+      "source_ids": ["cdc_adult_bmi", "mosteller_bsa", "uspstf_lung_2021", "ada_a1c_eag", "aha_bp_2025", "aha_prevent", "aha_orthostatic"]
+    },
+    {
       "id": "2026-10-21-outpatient-calculator-expansion",
       "date": "2026-10-21",
       "type": "clinical",

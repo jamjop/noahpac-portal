@@ -46,6 +46,11 @@ def validate_manifest(path: Path, claims_path: Path = DEFAULT_CLAIMS) -> tuple[d
         parsed = urlparse(url)
         if parsed.scheme != "https" or not parsed.netloc:
             errors.append(f"source {source_id} must use an absolute HTTPS URL")
+        fingerprint_url = source.get("fingerprint_url") if isinstance(source, dict) else None
+        if fingerprint_url:
+            parsed_fingerprint = urlparse(fingerprint_url)
+            if parsed_fingerprint.scheme != "https" or not parsed_fingerprint.netloc:
+                errors.append(f"source {source_id} fingerprint_url must use an absolute HTTPS URL")
     for tool in tools:
         tool_id = tool.get("id", "") if isinstance(tool, dict) else ""
         if not tool_id or tool_id in seen:
