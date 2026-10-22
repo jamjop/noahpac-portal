@@ -32,7 +32,7 @@ class ClinicalGovernanceTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn("28 tools", completed.stdout)
-        self.assertIn("29 claim mappings", completed.stdout)
+        self.assertIn("32 claim mappings", completed.stdout)
 
     def test_all_manifest_routes_and_monitors_exist(self):
         manifest = json.loads((REPO / "clinical-review.json").read_text())
@@ -81,18 +81,27 @@ class ClinicalGovernanceTests(unittest.TestCase):
         claims = json.loads((REPO / "clinical-claims.json").read_text())["claims"]
         readiness = next(tool for tool in manifest["tools"] if tool["id"] == "readiness")
         readiness_claim = next(claim for claim in claims if claim["id"] == "readiness-visit-support")
+        pha_claim = next(claim for claim in claims if claim["id"] == "readiness-pha-imr")
+        sleep_claim = next(claim for claim in claims if claim["id"] == "readiness-sleep-fatigue")
+        function_claim = next(claim for claim in claims if claim["id"] == "readiness-functional-limitations")
         whtr_claim = next(claim for claim in claims if claim["id"] == "calculators-air-force-whtr")
 
-        expected_readiness = {"daf_prap_current", "dodm_prp_2022", "dha_readiness"}
+        expected_visit = {"daf_prap_current", "dodm_prp_2022", "dha_readiness"}
+        expected_readiness = expected_visit | {"dha_sleep_support_2025", "afi48_133"}
         self.assertEqual(set(readiness["source_ids"]), expected_readiness)
-        self.assertEqual(set(readiness_claim["source_ids"]), expected_readiness)
+        self.assertEqual(set(readiness_claim["source_ids"]), expected_visit)
+        self.assertEqual(pha_claim["source_ids"], ["dha_readiness"])
+        self.assertEqual(sleep_claim["source_ids"], ["dha_sleep_support_2025"])
+        self.assertEqual(function_claim["source_ids"], ["afi48_133"])
         self.assertEqual(whtr_claim["source_ids"], ["daf_fitness_2026"])
         for source_id in expected_readiness | {"daf_fitness_2026"}:
             source = manifest["sources"][source_id]
             self.assertTrue(source["url"].startswith("https://"))
         self.assertIs(manifest["sources"]["dha_readiness"].get("fingerprint"), True)
         self.assertEqual(manifest["sources"]["dha_readiness"]["monitoring_strategy"], "document_fingerprint")
-        for source_id in {"daf_prap_current", "dodm_prp_2022", "daf_fitness_2026"}:
+        self.assertIs(manifest["sources"]["dha_sleep_support_2025"].get("fingerprint"), True)
+        self.assertEqual(manifest["sources"]["dha_sleep_support_2025"]["monitoring_strategy"], "document_fingerprint")
+        for source_id in {"daf_prap_current", "dodm_prp_2022", "daf_fitness_2026", "afi48_133"}:
             self.assertNotIn("fingerprint", manifest["sources"][source_id])
             self.assertEqual(manifest["sources"][source_id]["monitoring_strategy"], "official_document_index")
 

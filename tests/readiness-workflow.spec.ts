@@ -43,4 +43,60 @@ test.describe('Active-Duty Visit Support', () => {
     await expect(page.locator('#readiness-state')).toContainText('No conclusion');
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   });
+
+  test('PHA companion deep-links, distinguishes unreviewed domains, and surfaces follow-up', async ({ page }) => {
+    await page.goto(`${URL}?workflow=pha`);
+    await expect(page.getByRole('tab', { name: 'PHA / IMR' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#pha-state')).toContainText('Review not started');
+    await page.locator('select[data-summary-label="Vision"]').selectOption({ label: 'Follow-up needed' });
+    await expect(page.locator('#pha-state')).toContainText('One or more readiness domains need follow-up');
+    await expect(page.locator('#pha-finding-list')).toContainText('Vision: Follow-up needed');
+    await expect(page.getByRole('link', { name: 'USPSTF Screener' })).toHaveAttribute('href', '/screener/');
+  });
+
+  test('sleep workflow prioritizes selected safety concerns without diagnosing', async ({ page }) => {
+    await page.goto(`${URL}?workflow=sleep`);
+    await page.getByText('Unintended sleep or near-miss', { exact: true }).click();
+    await expect(page.locator('#sleep-state')).toContainText('Prompt safety review');
+    await expect(page.locator('#sleep-state')).toContainText('appropriate urgent, emergency, behavioral-health, and duty-safety pathways');
+    await expect(page.locator('#sleep-finding-list')).toContainText('Unintended sleep or near-miss while driving');
+    await expect(page.getByText('This summary does not diagnose insomnia, OSA')).toBeVisible();
+  });
+
+  test('functional helper copies limitation-focused language without a profile determination', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto(`${URL}?workflow=function`);
+    await page.getByText('Lifting, carrying, pushing, or pulling', { exact: true }).click();
+    await page.getByLabel('Anticipated duration').selectOption({ label: '8–30 days' });
+    await page.getByLabel('Reassessment timing').selectOption({ label: 'Within 1–2 weeks' });
+    await page.locator('#function-copy-summary').click();
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toContain('Lifting, carrying, pushing, pulling, or repetitive load is limited');
+    expect(copied).toContain('Anticipated duration: 8–30 days');
+    expect(copied).toContain('does not create an AF Form 469');
+    expect(copied).not.toMatch(/fit for duty|cleared for duty/i);
+  });
+
+  test('workflow tabs support keyboard navigation and stable URL state', async ({ page }) => {
+    await page.goto(URL);
+    const visit = page.getByRole('tab', { name: 'Visit support' });
+    await visit.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(page.getByRole('tab', { name: 'PHA / IMR' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page).toHaveURL(/workflow=pha/);
+    await page.keyboard.press('End');
+    await expect(page.getByRole('tab', { name: 'Functional limits' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page).toHaveURL(/workflow=function/);
+  });
+
+  test('every added workflow remains usable on a phone in dark mode', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    for (const workflow of ['pha', 'sleep', 'function']) {
+      await page.goto(`${URL}?workflow=${workflow}`);
+      await page.locator('[data-theme-select]').selectOption('dark');
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+      await expect(page.locator(`[data-workflow-panel="${workflow}"]`)).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+    }
+  });
 });

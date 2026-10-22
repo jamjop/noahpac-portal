@@ -4,6 +4,25 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-22-active-duty-care-workflows",
+      "date": "2026-10-22",
+      "type": "clinical",
+      "title": "PHA, sleep, and functional-limitation workflows",
+      "summary": "Expanded Active-Duty Care Support with public, browser-only PHA/IMR, sleep and fatigue, and functional-limitation documentation workflows without adding automatic readiness or profile decisions.",
+      "clinical_change": true,
+      "scope": "Active-duty PHA preparation, sleep and shift-work assessment, and functional-limitation documentation support",
+      "affected_routes": ["/readiness/"],
+      "changes": [
+        "Added a PHA/IMR visit companion covering public DHA readiness domains, clinical review completion, follow-up routing, and links to existing preventive tools.",
+        "Added a sleep, fatigue, and shift-work workflow that separates immediate safety concerns, sleep opportunity, insomnia symptoms, sleepiness, possible OSA, contributors, screening, and follow-up without assigning a diagnosis.",
+        "Added a functional-limitation helper organized around limitation-focused wording, anticipated duration, reassessment, and authorized coordination without creating an AF Form 469 or determining qualification.",
+        "Kept every workflow identifier-free, browser-only, nonpersistent, and explicitly outside official PHA, ASIMS, PRAP, profiling, deployment, and duty-status decisions.",
+        "Added keyboard-operable deep-linked workflow tabs and neutral copyable summaries for each workflow.",
+        "Added claim-level review mappings and source monitoring; scheduled-client testing supports normalized-text fingerprinting for DHA sleep guidance, while AFI 48-133 remains an official-document-index source because its server returns HTTP 403 to scheduled clients."
+      ],
+      "source_ids": ["dha_readiness", "dha_sleep_support_2025", "afi48_133"]
+    },
+    {
       "id": "2026-10-22-active-duty-visit-support",
       "date": "2026-10-22",
       "type": "clinical",

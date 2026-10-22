@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Privacy-preserving active-duty encounter prompts for medication effects, functional impact, readiness follow-up, and neutral clinical documentation.">
-  <title>Active-Duty Visit Support — Noah PA-C</title>
+  <meta name="description" content="Privacy-preserving active-duty encounter, PHA, sleep, and functional-limitation documentation support.">
+  <title>Active-Duty Care Support — Noah PA-C</title>
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body class="clinical-app readiness-app">
-<a class="skip-link" href="#main-content">Skip to encounter prompts</a>
+<a class="skip-link" href="#main-content">Skip to active workflow</a>
 
 <header class="app-header app-header--unified">
   <div class="app-header__inner">
@@ -27,116 +27,222 @@
     </div>
     <div class="app-header__title">
       <p class="app-header__eyebrow">Active-Duty Outpatient Care</p>
-      <h1>Active-Duty Visit Support</h1>
-      <p class="app-header__lede">Readiness-aware prompts for medication effects, functional impact, follow-up, and neutral clinical documentation.</p>
+      <h1>Active-Duty Care Support</h1>
+      <p class="app-header__lede">Focused encounter, readiness, sleep, and functional-limitation workflows for active-duty outpatient care.</p>
     </div>
   </div>
 </header>
 
-<nav class="section-nav" aria-label="Visit support sections">
-  <div class="section-nav__inner">
-    <a href="#context">Encounter</a><a href="#medications">Medication effects</a><a href="#function">Function</a><a href="#completion">Plan</a>
+<nav class="workflow-nav" aria-label="Active-duty care workflows">
+  <div class="workflow-tabs" role="tablist" aria-label="Choose a workflow">
+    <button type="button" role="tab" id="tab-visit" aria-controls="panel-visit" aria-selected="true" tabindex="0" data-workflow-target="visit">Visit support</button>
+    <button type="button" role="tab" id="tab-pha" aria-controls="panel-pha" aria-selected="false" tabindex="-1" data-workflow-target="pha">PHA / IMR</button>
+    <button type="button" role="tab" id="tab-sleep" aria-controls="panel-sleep" aria-selected="false" tabindex="-1" data-workflow-target="sleep">Sleep &amp; fatigue</button>
+    <button type="button" role="tab" id="tab-function" aria-controls="panel-function" aria-selected="false" tabindex="-1" data-workflow-target="function">Functional limits</button>
   </div>
 </nav>
 
-<main class="page-body" id="main-content">
-  <div class="workflow-col">
-    <aside class="privacy-note" aria-label="Privacy and scope">
-      <strong>No identifiers, storage, or automatic disposition.</strong>
-      <span>Selections stay in this browser tab and are not saved or sent to the server. Do not enter names, DoD ID numbers, units, duty positions, or other identifying information. This tool organizes clinical facts; it does not determine PRAP qualification, certification, suspension, deployment status, or profile requirements.</span>
-    </aside>
+<div class="privacy-wrap">
+  <aside class="privacy-note" aria-label="Privacy and scope">
+    <strong>No identifiers, storage, or automatic disposition.</strong>
+    <span>Selections remain in this browser tab and are not saved or sent to the server. Do not enter names, DoD ID numbers, units, duty positions, or other identifying information. These workflows organize clinical facts; they do not determine PRAP qualification, certification, profiles, deployment status, or fitness for a specific duty.</span>
+  </aside>
+</div>
 
-    <section class="assessment-card" id="context" aria-labelledby="context-title">
-      <div class="card-heading"><span class="step-badge">1</span><div><h2 id="context-title">Encounter context</h2><p>Select only facts addressed during this visit. An unchecked item is not interpreted as absent.</p></div></div>
+<main class="workflow-panel" id="panel-visit" role="tabpanel" aria-labelledby="tab-visit" data-workflow-panel="visit" data-title="Active-Duty Visit Support">
+  <div class="workflow-col" id="main-content" tabindex="-1">
+    <header class="workflow-intro"><p>Encounter workflow</p><h2>Visit Support</h2><span>Capture treatment effects, functional considerations, completed safeguards, and a neutral follow-up plan.</span></header>
+    <section class="assessment-card" aria-labelledby="visit-context-title">
+      <div class="card-heading"><span class="step-badge">1</span><div><h3 id="visit-context-title">Encounter context</h3><p>Select only facts addressed during this visit. An unchecked item is not interpreted as absent.</p></div></div>
       <div class="choice-list">
-        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="New or changed medical condition"><span><strong>New or changed medical condition</strong><small>Includes a new diagnosis, recurrence, progression, or meaningful change in symptoms.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Medication or treatment started, stopped, or changed"><span><strong>Medication or treatment change</strong><small>Started, stopped, titrated, resumed, or changed since the prior review.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Current symptoms or treatment effects may affect performance or safety"><span><strong>Current symptoms or treatment effects</strong><small>Potential effect on alertness, judgment, stability, physical function, or safe task performance.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Diagnostic evaluation or treatment response remains pending"><span><strong>Evaluation or treatment response pending</strong><small>Pending test, specialty evaluation, treatment response, or period of clinical stabilization.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="context" data-summary="Recent off-installation, urgent, emergency, or behavioral-health care reviewed"><span><strong>Recent care outside the usual clinic workflow</strong><small>Off-installation, urgent, emergency, hospital, telehealth, or behavioral-health care was reviewed.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Encounter context" data-summary="New or changed medical condition"><span><strong>New or changed medical condition</strong><small>New diagnosis, recurrence, progression, or meaningful symptom change.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Encounter context" data-summary="Medication or treatment started, stopped, or changed"><span><strong>Medication or treatment change</strong><small>Started, stopped, titrated, resumed, or changed since the prior review.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Encounter context" data-summary="Current symptoms or treatment effects may affect performance or safety"><span><strong>Current symptoms or treatment effects</strong><small>Potential effect on alertness, judgment, stability, physical function, or safe task performance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Encounter context" data-summary="Diagnostic evaluation or treatment response remains pending"><span><strong>Evaluation or response pending</strong><small>Pending test, specialty evaluation, treatment response, or period of clinical stabilization.</small></span></label>
       </div>
     </section>
-
-    <section class="assessment-card" id="medications" aria-labelledby="medications-title">
-      <div class="card-heading"><span class="step-badge">2</span><div><h2 id="medications-title">Medication and treatment effects</h2><p>These are review prompts—not medication-specific restrictions or disqualifying criteria.</p></div></div>
+    <section class="assessment-card" aria-labelledby="visit-med-title">
+      <div class="card-heading"><span class="step-badge">2</span><div><h3 id="visit-med-title">Medication and treatment effects</h3><p>Review prompts—not medication-specific restrictions or disqualifying criteria.</p></div></div>
       <div class="choice-list choice-list--compact">
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Sedation, somnolence, slowed reaction time, or impaired alertness"><span><strong>Sedation or impaired alertness</strong><small>Somnolence, slowed reaction time, or reduced vigilance.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Cognitive, mood, behavioral, or judgment effect"><span><strong>Cognition, mood, behavior, or judgment</strong><small>New or clinically meaningful change after illness or treatment.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Dizziness, syncope, imbalance, or orthostatic symptoms"><span><strong>Dizziness, syncope, imbalance, or orthostasis</strong><small>Include falls, near-syncope, or impaired positional tolerance.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Visual, auditory, coordination, or motor effect"><span><strong>Sensory, coordination, or motor effect</strong><small>Vision, hearing, coordination, tremor, weakness, or fine-motor performance.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Hypoglycemia, bleeding, arrhythmia, seizure, or other episodic incapacitation risk"><span><strong>Potential episodic incapacitation</strong><small>Hypoglycemia, bleeding, arrhythmia, seizure, or another sudden safety-relevant event.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Heat, cold, dehydration, exertional, or environmental tolerance may be affected"><span><strong>Environmental or exertional tolerance</strong><small>Heat, cold, hydration, sweating, photosensitivity, or exertional response.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Sleep quality, sleep timing, or fatigue may be affected"><span><strong>Sleep or fatigue effect</strong><small>Insomnia, hypersomnolence, shift-work difficulty, or disrupted restorative sleep.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="medication" data-summary="Early treatment, dose titration, missed-dose, withdrawal, or stabilization concern"><span><strong>Stabilization or interruption concern</strong><small>Early treatment, dose titration, missed-dose effects, withdrawal, adherence, or monitoring period.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Sedation, somnolence, slowed reaction time, or impaired alertness"><span><strong>Sedation or impaired alertness</strong><small>Somnolence, slowed reaction time, or reduced vigilance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Cognitive, mood, behavioral, or judgment effect"><span><strong>Cognition, mood, behavior, or judgment</strong><small>New or clinically meaningful change after illness or treatment.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Dizziness, syncope, imbalance, or orthostatic symptoms"><span><strong>Dizziness, syncope, imbalance, or orthostasis</strong><small>Include falls, near-syncope, or impaired positional tolerance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Visual, auditory, coordination, or motor effect"><span><strong>Sensory, coordination, or motor effect</strong><small>Vision, hearing, coordination, tremor, weakness, or fine-motor performance.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Hypoglycemia, bleeding, arrhythmia, seizure, or other episodic incapacitation risk"><span><strong>Potential episodic incapacitation</strong><small>Hypoglycemia, bleeding, arrhythmia, seizure, or another sudden safety-relevant event.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Heat, cold, dehydration, exertional, or environmental tolerance may be affected"><span><strong>Environmental or exertional tolerance</strong><small>Heat, cold, hydration, sweating, photosensitivity, or exertional response.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Medication or treatment effects" data-summary="Sleep quality, sleep timing, or fatigue may be affected"><span><strong>Sleep or fatigue effect</strong><small>Insomnia, hypersomnolence, shift-work difficulty, or disrupted restorative sleep.</small></span></label>
       </div>
     </section>
-
-    <section class="assessment-card" id="function" aria-labelledby="function-title">
-      <div class="card-heading"><span class="step-badge">3</span><div><h2 id="function-title">Functional considerations</h2><p>Document observed or reported limitations precisely; do not infer occupational requirements not established during the encounter.</p></div></div>
+    <section class="assessment-card" aria-labelledby="visit-function-title">
+      <div class="card-heading"><span class="step-badge">3</span><div><h3 id="visit-function-title">Functional considerations</h3><p>Document observed or reported limitations precisely; do not infer occupational requirements not established during the encounter.</p></div></div>
       <div class="choice-list choice-list--compact">
-        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Driving, machinery, weapons, or other safety-sensitive task performance requires review"><span><strong>Safety-sensitive task performance</strong><small>Driving, machinery, weapons, elevated work, or comparable hazards.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Shift work, night duty, sustained vigilance, or irregular sleep opportunity requires review"><span><strong>Shift work or sustained vigilance</strong><small>Night duty, prolonged alertness, irregular sleep opportunity, or rapid schedule changes.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Running, marching, lifting, carrying, climbing, or prolonged standing is limited"><span><strong>Physical task limitation</strong><small>Running, marching, lifting, carrying, climbing, prolonged standing, or repetitive movement.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="PPE, respirator, confined-space, or environmental exposure tolerance requires review"><span><strong>PPE or environmental exposure</strong><small>Respirator, protective equipment, confined space, extreme temperature, noise, or other exposure.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="function" data-summary="Condition or treatment could create a foreseeable safety concern for the member or others"><span><strong>Foreseeable safety concern</strong><small>Use patient-specific findings and current policy; selection is not itself a disposition.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional considerations" data-summary="Driving, machinery, weapons, or other safety-sensitive task performance requires review"><span><strong>Safety-sensitive task performance</strong><small>Driving, machinery, weapons, elevated work, or comparable hazards.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional considerations" data-summary="Shift work, night duty, sustained vigilance, or irregular sleep opportunity requires review"><span><strong>Shift work or sustained vigilance</strong><small>Night duty, prolonged alertness, irregular sleep opportunity, or rapid schedule changes.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional considerations" data-summary="Running, marching, lifting, carrying, climbing, or prolonged standing is limited"><span><strong>Physical task limitation</strong><small>Running, marching, lifting, carrying, climbing, prolonged standing, or repetitive movement.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional considerations" data-summary="PPE, respirator, confined-space, or environmental exposure tolerance requires review"><span><strong>PPE or environmental exposure</strong><small>Respirator, protective equipment, confined space, extreme temperature, noise, or other exposure.</small></span></label>
       </div>
     </section>
-
-    <section class="assessment-card" id="completion" aria-labelledby="completion-title">
-      <div class="card-heading"><span class="step-badge">4</span><div><h2 id="completion-title">Completion and follow-up</h2><p>Record which safeguards were actually completed and choose the neutral plan reflected in the clinical record.</p></div></div>
-      <div class="choice-list choice-list--compact completion-list">
-        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Medication reconciliation and nonprescription/substance review completed"><span><strong>Medication reconciliation completed</strong><small>Includes nonprescription agents, supplements, nicotine, alcohol, and other substances when relevant.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Symptoms, adverse effects, adherence, and objective findings reviewed"><span><strong>Clinical effects reviewed</strong><small>Symptoms, adverse effects, adherence, examination, vital signs, or relevant testing.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Functional demands and foreseeable safety effects discussed"><span><strong>Functional and safety effects discussed</strong><small>Based on the information available to the treating clinician.</small></span></label>
-        <label class="choice-row"><input type="checkbox" data-group="completion" data-summary="Follow-up and return precautions communicated"><span><strong>Follow-up and return precautions communicated</strong><small>Include earlier reassessment for worsening symptoms or new safety concerns.</small></span></label>
+    <section class="assessment-card" aria-labelledby="visit-plan-title">
+      <div class="card-heading"><span class="step-badge">4</span><div><h3 id="visit-plan-title">Completion and follow-up</h3><p>Record safeguards actually completed and the neutral plan reflected in the clinical record.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="Completed safeguards" data-summary="Medication reconciliation and nonprescription/substance review completed"><span><strong>Medication reconciliation completed</strong><small>Include nonprescription agents, supplements, nicotine, alcohol, and other substances when relevant.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Completed safeguards" data-summary="Symptoms, adverse effects, adherence, and objective findings reviewed"><span><strong>Clinical effects reviewed</strong><small>Symptoms, adverse effects, adherence, examination, vital signs, or relevant testing.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Completed safeguards" data-summary="Follow-up and return precautions communicated"><span><strong>Follow-up and return precautions communicated</strong><small>Include earlier reassessment for worsening symptoms or new safety concerns.</small></span></label>
       </div>
       <div class="plan-grid">
-        <label><span>Documented plan</span><select id="plan"><option value="">Select a neutral plan</option><option>Continue clinical management with routine follow-up</option><option>Reassess after treatment change or stabilization period</option><option>Document functional limitations through the authorized process</option><option>Review with the appropriate CMA or local PRAP process</option><option>Escalate for urgent or emergency evaluation</option></select></label>
-        <label><span>Follow-up timing</span><select id="followup"><option value="">Not specified</option><option>Within 24–72 hours</option><option>Within 1 week</option><option>Within 2–4 weeks</option><option>At the next scheduled clinical review</option><option>Per specialty or local protocol</option></select></label>
+        <label><span>Documented plan</span><select id="plan" data-summary-label="Documented plan"><option value="">Select a neutral plan</option><option>Continue clinical management with routine follow-up</option><option>Reassess after treatment change or stabilization period</option><option>Document functional limitations through the authorized process</option><option>Review with the appropriate CMA or local PRAP process</option><option>Escalate for urgent or emergency evaluation</option></select></label>
+        <label><span>Follow-up timing</span><select id="followup" data-summary-label="Follow-up timing"><option value="">Not specified</option><option>Within 24–72 hours</option><option>Within 1 week</option><option>Within 2–4 weeks</option><option>At the next scheduled clinical review</option><option>Per specialty or local protocol</option></select></label>
       </div>
     </section>
-
-    <details class="references">
-      <summary>Scope, policy boundaries, and sources</summary>
-      <div>
-        <p>This page converts public guidance into encounter prompts. It intentionally contains no local Minot procedures, unit-specific requirements, restricted information, medication-specific restrictions, or automatic reliability decision.</p>
-        <ul>
-          <li><a href="https://static.e-publishing.af.mil/production/1/af_a10/publication/dodm5210.42_dafman13-501/dodm5210.42_dafman13-501.pdf" target="_blank" rel="noopener">DoDM 5210.42 with DAFMAN 13-501 supplement</a></li>
-          <li><a href="https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/521042m.pdf" target="_blank" rel="noopener">DoDM 5210.42, Nuclear Weapons Personnel Reliability Program</a></li>
-          <li><a href="https://health.mil/MHSHome/Military-Health-Topics/Health-Readiness/Public-Health/Health-Readiness-Support" target="_blank" rel="noopener">DHA Health Readiness Support and PHA overview</a></li>
-        </ul>
-      </div>
-    </details>
   </div>
-
-  <aside class="result-col" aria-label="Documentation summary">
-    <section class="summary-panel">
-      <p class="summary-eyebrow">Documentation support</p>
-      <div class="readiness-state" id="readiness-state" role="status" aria-live="polite">
-        <span class="readiness-label">No conclusion</span>
-        <strong>Select the facts addressed during this encounter</strong>
-        <p>Unchecked fields are not interpreted as normal or absent.</p>
-      </div>
-      <div class="summary-findings">
-        <h2>Selected findings</h2>
-        <ul id="finding-list"><li>No findings selected.</li></ul>
-      </div>
-      <div class="summary-actions">
-        <button id="copy-summary" type="button">Copy documentation summary</button>
-        <button id="reset-workflow" class="secondary" type="button">Reset</button>
-      </div>
-      <p class="summary-caution">This summary documents selected clinical facts only. It does not establish qualification, certification, suspension, deployment status, or fitness for a specific duty.</p>
-    </section>
-  </aside>
+  <aside class="result-col" data-summary-panel></aside>
 </main>
+
+<main class="workflow-panel" id="panel-pha" role="tabpanel" aria-labelledby="tab-pha" data-workflow-panel="pha" data-title="PHA / IMR Visit Companion" hidden>
+  <div class="workflow-col">
+    <header class="workflow-intro"><p>Annual readiness review</p><h2>PHA / IMR Visit Companion</h2><span>Organize public PHA domains and route follow-up to the appropriate existing clinical tools. This is not ASIMS or the official PHA record.</span></header>
+    <section class="assessment-card" aria-labelledby="pha-core-title">
+      <div class="card-heading"><span class="step-badge">1</span><div><h3 id="pha-core-title">Core readiness domains</h3><p>Choose the status verified during this encounter. Blank domains remain unreviewed.</p></div></div>
+      <div class="domain-grid">
+        <label class="domain-row"><span><strong>Vitals and body composition</strong><small>Height, weight, blood pressure, and applicable official measurements.</small></span><select data-domain data-summary-label="Vitals and body composition"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+        <label class="domain-row"><span><strong>Vision</strong><small>Screening currency, symptoms, corrective lenses, or required evaluation.</small></span><select data-domain data-summary-label="Vision"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+        <label class="domain-row"><span><strong>Hearing</strong><small>Screening currency, symptoms, conservation program, or audiology follow-up.</small></span><select data-domain data-summary-label="Hearing"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+        <label class="domain-row"><span><strong>Dental readiness</strong><small>Readiness status or need for dental coordination.</small></span><select data-domain data-summary-label="Dental readiness"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+        <label class="domain-row"><span><strong>Immunizations</strong><small>Routine, occupational, risk-based, and deployment-related needs.</small></span><select data-domain data-summary-label="Immunizations"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+        <label class="domain-row"><span><strong>Required laboratory testing</strong><small>Only tests required by current service, occupational, or clinical guidance.</small></span><select data-domain data-summary-label="Required laboratory testing"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+        <label class="domain-row"><span><strong>Occupational or special-duty examination</strong><small>Currency or referral; do not infer requirements outside the member’s established program.</small></span><select data-domain data-summary-label="Occupational or special-duty examination"><option value="">Not reviewed</option><option>Current — no action identified</option><option>Follow-up needed</option><option>Not applicable today</option></select></label>
+      </div>
+      <div class="related-tools" aria-label="Related readiness tools"><a href="/vaccines/">Vaccine guidance</a><a href="/calculators/?calc=whtr">Air Force WHtR</a><a href="/calculators/?calc=bp-average">BP average</a></div>
+    </section>
+    <section class="assessment-card" aria-labelledby="pha-clinical-title">
+      <div class="card-heading"><span class="step-badge">2</span><div><h3 id="pha-clinical-title">Clinical review</h3><p>Select the elements actually reviewed; selection records completion, not a normal result.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="Clinical review completed" data-summary="Self-reported health status and interval history reviewed"><span><strong>Interval history</strong><small>New diagnoses, procedures, emergency care, hospitalization, specialty care, or unresolved symptoms.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Clinical review completed" data-summary="Current conditions, medications, allergies, and treatment adherence reviewed"><span><strong>Conditions and medications</strong><small>Include treatment effects, adherence, allergies, supplements, and relevant substance use.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Clinical review completed" data-summary="Behavioral-health screening and safety concerns reviewed"><span><strong>Behavioral health</strong><small>Use the official PHA/MHA process and address positive responses through the appropriate clinical pathway.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Clinical review completed" data-summary="Sleep quality, fatigue, and daytime impairment reviewed"><span><strong>Sleep and fatigue</strong><small>Include schedule, daytime sleepiness, insomnia, possible OSA, and safety-sensitive effects.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Clinical review completed" data-summary="Preventive screening and health-promotion recommendations reviewed"><span><strong>Preventive care</strong><small>Age- and risk-appropriate screening, counseling, and follow-up.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Clinical review completed" data-summary="Duty-limiting or deployment-limiting concerns considered using current authorized guidance"><span><strong>Readiness implications considered</strong><small>Clinical prompt only; use official systems and current service/local policy for determinations.</small></span></label>
+      </div>
+      <div class="related-tools"><a href="/screener/">USPSTF Screener</a><a href="/calculators/?calc=phq9">PHQ-9</a><a href="/calculators/?calc=audit-c">AUDIT-C</a><button type="button" data-open-workflow="sleep">Sleep workflow</button></div>
+    </section>
+    <section class="assessment-card" aria-labelledby="pha-plan-title">
+      <div class="card-heading"><span class="step-badge">3</span><div><h3 id="pha-plan-title">Completion plan</h3><p>Record coordination and follow-up reflected in the encounter.</p></div></div>
+      <div class="plan-grid">
+        <label><span>Overall status</span><select data-summary-label="Overall PHA/IMR plan"><option value="">Select status</option><option>Complete in the authorized system</option><option>Complete with routine clinical follow-up</option><option>Pending records or readiness item</option><option>Pending focused clinical evaluation</option><option>Coordinate through the appropriate readiness process</option></select></label>
+        <label><span>Follow-up timing</span><select data-summary-label="Follow-up timing"><option value="">Not specified</option><option>Within 24–72 hours</option><option>Within 1 week</option><option>Within 30 days</option><option>Per specialty or readiness program</option></select></label>
+      </div>
+    </section>
+  </div>
+  <aside class="result-col" data-summary-panel></aside>
+</main>
+
+<main class="workflow-panel" id="panel-sleep" role="tabpanel" aria-labelledby="tab-sleep" data-workflow-panel="sleep" data-title="Sleep, Fatigue & Shift-Work Review" hidden>
+  <div class="workflow-col">
+    <header class="workflow-intro"><p>Focused clinical pathway</p><h2>Sleep, Fatigue &amp; Shift-Work Review</h2><span>Separate sleep opportunity, insomnia, sleepiness, possible OSA, treatment effects, and occupational safety concerns without assigning a diagnosis.</span></header>
+    <section class="assessment-card" aria-labelledby="sleep-safety-title">
+      <div class="card-heading"><span class="step-badge">1</span><div><h3 id="sleep-safety-title">Immediate safety review</h3><p>Selected concerns require prompt clinician assessment and individualized safety counseling.</p></div></div>
+      <div class="choice-list choice-list--compact safety-list">
+        <label class="choice-row"><input type="checkbox" data-priority="urgent" data-group="Immediate safety concerns" data-summary="Unintended sleep or near-miss while driving, operating equipment, or performing a safety-sensitive task"><span><strong>Unintended sleep or near-miss</strong><small>While driving, operating equipment, or performing a safety-sensitive task.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-priority="urgent" data-group="Immediate safety concerns" data-summary="Unable to reliably maintain wakefulness during required duties"><span><strong>Unable to maintain wakefulness</strong><small>Recurrent lapses, microsleeps, or uncontrollable sleepiness during required duties.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-priority="urgent" data-group="Immediate safety concerns" data-summary="Acute mood, behavioral, or self-harm concern identified during sleep assessment"><span><strong>Acute behavioral-health concern</strong><small>Use the appropriate urgent or emergency pathway rather than this workflow alone.</small></span></label>
+      </div>
+    </section>
+    <section class="assessment-card" aria-labelledby="sleep-pattern-title">
+      <div class="card-heading"><span class="step-badge">2</span><div><h3 id="sleep-pattern-title">Symptom pattern and context</h3><p>Select reported patterns; these prompts do not establish a sleep diagnosis.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="Sleep pattern" data-summary="Difficulty initiating sleep, maintaining sleep, or returning to sleep"><span><strong>Insomnia symptoms</strong><small>Include early awakening and the duration/frequency of symptoms.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Sleep pattern" data-summary="Nonrestorative sleep or excessive daytime sleepiness"><span><strong>Nonrestorative sleep or daytime sleepiness</strong><small>Clarify impairment, unintended sleep, naps, and sleep opportunity.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Sleep pattern" data-summary="Snoring, witnessed apneas, gasping, or other possible sleep-disordered breathing features"><span><strong>Possible sleep-disordered breathing</strong><small>Snoring, witnessed apnea, gasping, resistant hypertension, or other risk features.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Sleep pattern" data-summary="Rotating shifts, night work, rapid schedule changes, or circadian misalignment"><span><strong>Shift-work or circadian disruption</strong><small>Work timing, time-zone changes, inconsistent sleep window, or insufficient recovery opportunity.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Sleep pattern" data-summary="Restless legs, parasomnia, nightmares, or abnormal sleep behavior"><span><strong>Other sleep symptoms</strong><small>Restless legs, parasomnia, nightmares, or abnormal sleep behavior.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Contributors reviewed" data-summary="Medication, caffeine, nicotine, alcohol, supplements, and other substances reviewed"><span><strong>Medication and substance contributors</strong><small>Timing, dose changes, stimulants, sedating agents, caffeine, nicotine, alcohol, and supplements.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Contributors reviewed" data-summary="Pain, cardiopulmonary, endocrine, neurologic, and behavioral-health contributors reviewed"><span><strong>Medical and behavioral contributors</strong><small>Pain, mood, trauma symptoms, cardiopulmonary disease, endocrine disease, or neurologic symptoms.</small></span></label>
+      </div>
+      <div class="plan-grid sleep-context">
+        <label><span>Typical sleep opportunity</span><select data-summary-label="Typical sleep opportunity"><option value="">Not recorded</option><option>Less than 4 hours</option><option>4–5 hours</option><option>5–6 hours</option><option>6–7 hours</option><option>7–9 hours</option><option>More than 9 hours</option><option>Highly variable</option></select></label>
+        <label><span>Primary schedule</span><select data-summary-label="Primary schedule"><option value="">Not recorded</option><option>Consistent daytime schedule</option><option>Consistent night schedule</option><option>Rotating shifts</option><option>Irregular or on-call schedule</option><option>Recent deployment or time-zone transition</option></select></label>
+      </div>
+    </section>
+    <section class="assessment-card" aria-labelledby="sleep-plan-title">
+      <div class="card-heading"><span class="step-badge">3</span><div><h3 id="sleep-plan-title">Screening and plan</h3><p>Use validated instruments when appropriate and interpret them within the full clinical assessment.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="Screening and counseling" data-summary="Validated sleepiness or OSA screening instrument reviewed"><span><strong>Validated screening reviewed</strong><small>A score supports—but does not replace—history, examination, safety assessment, and diagnostic evaluation.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Screening and counseling" data-summary="Sleep opportunity, schedule regularity, and behavioral treatment options discussed"><span><strong>Sleep opportunity and behavioral treatment</strong><small>Consider evidence-based CBT-I or BBT-I pathways for chronic insomnia when appropriate.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Screening and counseling" data-summary="Driving, equipment, and duty-safety counseling completed when indicated"><span><strong>Safety counseling completed</strong><small>Document patient-specific advice and follow the appropriate local process when risk affects duty.</small></span></label>
+      </div>
+      <div class="related-tools"><a href="/documents/?q=STOP-BANG">STOP-BANG PDF</a><a href="/documents/?q=Epworth">Epworth PDF</a><a href="/calculators/?calc=phq9">PHQ-9</a><a href="/calculators/?calc=gad7">GAD-7</a></div>
+      <div class="plan-grid">
+        <label><span>Clinical plan</span><select data-summary-label="Clinical plan"><option value="">Select a plan</option><option>Sleep education and routine follow-up</option><option>Focused insomnia evaluation or treatment</option><option>OSA evaluation or sleep-medicine referral</option><option>Evaluate contributing medical, medication, or behavioral condition</option><option>Prompt safety assessment and duty-impact review</option></select></label>
+        <label><span>Follow-up timing</span><select data-summary-label="Follow-up timing"><option value="">Not specified</option><option>Same day</option><option>Within 1 week</option><option>Within 2–4 weeks</option><option>After diagnostic testing</option><option>Per specialty or local protocol</option></select></label>
+      </div>
+    </section>
+  </div>
+  <aside class="result-col" data-summary-panel></aside>
+</main>
+
+<main class="workflow-panel" id="panel-function" role="tabpanel" aria-labelledby="tab-function" data-workflow-panel="function" data-title="Functional Limitation Documentation Helper" hidden>
+  <div class="workflow-col">
+    <header class="workflow-intro"><p>Documentation support</p><h2>Functional Limitation Helper</h2><span>Describe limitations, duration, and reassessment in plain language without making workplace capability, profile, waiver, or readiness determinations.</span></header>
+    <section class="assessment-card" aria-labelledby="function-basis-title">
+      <div class="card-heading"><span class="step-badge">1</span><div><h3 id="function-basis-title">Clinical basis and phase</h3><p>Record the clinical context supporting limitations without including a diagnosis in material intended for nonmedical recipients unless authorized and necessary.</p></div></div>
+      <div class="plan-grid">
+        <label><span>Clinical phase</span><select data-summary-label="Clinical phase"><option value="">Not specified</option><option>Acute condition or injury</option><option>Recovery after procedure or treatment</option><option>Medication initiation or titration</option><option>Diagnostic evaluation pending</option><option>Chronic condition with changed function</option><option>Stable condition requiring defined limitation</option></select></label>
+        <label><span>Anticipated duration</span><select data-summary-label="Anticipated duration"><option value="">Not specified</option><option>7 days or less</option><option>8–30 days</option><option>31–90 days</option><option>More than 90 days</option><option>Until focused reassessment</option><option>Duration uncertain pending evaluation</option></select></label>
+      </div>
+    </section>
+    <section class="assessment-card" aria-labelledby="function-domain-title">
+      <div class="card-heading"><span class="step-badge">2</span><div><h3 id="function-domain-title">Affected functional domains</h3><p>Use limitation-focused language. Selection does not indicate that an AF Form 469 or other action is required.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Running, repetitive impact, or high-impact activity is limited"><span><strong>Running or impact activity</strong><small>Running, jumping, repetitive impact, or agility tasks.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Walking, marching, standing, or stair tolerance is limited"><span><strong>Walking, marching, standing, or stairs</strong><small>Specify clinically appropriate duration, distance, frequency, and terrain in the authorized record.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Lifting, carrying, pushing, pulling, or repetitive load is limited"><span><strong>Lifting, carrying, pushing, or pulling</strong><small>Specify load and frequency in the authorized record when appropriate.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Upper-extremity reach, grip, dexterity, or repetitive motion is limited"><span><strong>Upper-extremity function</strong><small>Reach, grip, fine motor control, overhead activity, or repetitive motion.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Driving, machinery, weapons, heights, or another safety-sensitive task requires limitation or review"><span><strong>Safety-sensitive tasks</strong><small>Driving, machinery, weapons, heights, or other tasks where symptoms or treatment effects matter.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="PPE, respirator, confined-space, heat, cold, or environmental exposure is limited"><span><strong>PPE or environmental exposure</strong><small>Protective equipment, respirator, confined space, heat, cold, noise, or other exposure.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Shift timing, prolonged vigilance, sleep opportunity, or work-hour pattern requires limitation or review"><span><strong>Schedule or sustained vigilance</strong><small>Night duty, rotating shifts, prolonged alertness, or recovery opportunity.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Functional limitations" data-summary="Concentration, communication, judgment, or cognitive endurance is limited"><span><strong>Cognitive or communication function</strong><small>Concentration, processing, communication, judgment, or cognitive endurance.</small></span></label>
+      </div>
+    </section>
+    <section class="assessment-card" aria-labelledby="function-plan-title">
+      <div class="card-heading"><span class="step-badge">3</span><div><h3 id="function-plan-title">Reassessment and coordination</h3><p>AFI 48-133 calls for timely, accurate, unambiguous limitations understandable to nonmedical leadership. Final documentation belongs in the authorized system.</p></div></div>
+      <div class="choice-list choice-list--compact">
+        <label class="choice-row"><input type="checkbox" data-group="Documentation safeguards" data-summary="Limitation wording is specific, time-bounded, and understandable without unnecessary clinical detail"><span><strong>Specific and understandable wording</strong><small>Describe the limitation rather than assuming duties, qualifications, or workplace conditions.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Documentation safeguards" data-summary="Treatment plan, expected course, and reassessment trigger documented in the clinical record"><span><strong>Clinical plan and reassessment trigger</strong><small>Document recovery milestones, test results, treatment response, or specialty input needed for reconsideration.</small></span></label>
+        <label class="choice-row"><input type="checkbox" data-group="Documentation safeguards" data-summary="Appropriate profile, CMA, occupational, or local readiness coordination considered"><span><strong>Authorized coordination considered</strong><small>Use current policy and the appropriate authority; this helper does not select the required process.</small></span></label>
+      </div>
+      <div class="plan-grid">
+        <label><span>Reassessment timing</span><select data-summary-label="Reassessment timing"><option value="">Not specified</option><option>Within 72 hours</option><option>Within 1–2 weeks</option><option>Within 30 days</option><option>At the end of the stated limitation period</option><option>After testing or specialty evaluation</option><option>Earlier for worsening or new safety concern</option></select></label>
+        <label><span>Coordination plan</span><select data-summary-label="Coordination plan"><option value="">Not specified</option><option>Clinical follow-up only</option><option>Document through the authorized profile process</option><option>Review with the appropriate CMA or PRAP process</option><option>Occupational or special-duty evaluation</option><option>Urgent or emergency reassessment</option></select></label>
+      </div>
+    </section>
+  </div>
+  <aside class="result-col" data-summary-panel></aside>
+</main>
+
+<section class="source-section" aria-label="Scope and sources">
+  <details class="references">
+    <summary>Scope, policy boundaries, and sources</summary>
+    <div>
+      <p>These public workflows provide structured clinical prompts only. They intentionally contain no local Minot procedures, unit-specific requirements, restricted information, medication whitelist, occupational qualification table, or automatic reliability or profile decision.</p>
+      <ul>
+        <li><a href="https://health.mil/Military-Health-Topics/Health-Readiness/Public-Health/Health-Readiness-Support" target="_blank" rel="noopener">DHA Health Readiness Support and PHA overview</a></li>
+        <li><a href="https://health.mil/military-health-topics/health-readiness/reserve-health-readiness-program/our-services/pha" target="_blank" rel="noopener">DHA Periodic Health Assessment components</a></li>
+        <li><a href="https://health.mil/About-MHS/MHS-Elements/DVPO/VADOD-CPGs" target="_blank" rel="noopener">2025 VA/DoD Insomnia and OSA clinical practice guideline resources</a></li>
+        <li><a href="https://static.e-publishing.af.mil/production/1/af_sg/publication/afi48-133/afi48-133.pdf" target="_blank" rel="noopener">AFI 48-133, Duty Limiting Conditions</a></li>
+        <li><a href="https://static.e-publishing.af.mil/production/1/af_a10/publication/dodm5210.42_dafman13-501/dodm5210.42_dafman13-501.pdf" target="_blank" rel="noopener">DoDM 5210.42 with DAFMAN 13-501 supplement</a></li>
+      </ul>
+    </div>
+  </details>
+</section>
 
 <footer class="app-footer">
   <p class="last-checked"></p>
-  <p class="app-footer__source">Use current DAF, DoD, DHA, and local guidance. The appropriate CMA and certifying authority retain their respective responsibilities.</p>
+  <p class="app-footer__source">Use current DAF, DoD, DHA, VA/DoD CPG, and local guidance. The appropriate clinical, command, CMA, profiling, and certifying authorities retain their respective responsibilities.</p>
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=1"></script>
-<script src="/assets/last-checked.js?v=20261022-readiness" defer></script>
+<script src="app.js?v=2"></script>
+<script src="/assets/last-checked.js?v=20261022-readiness2" defer></script>
 </body>
 </html>
