@@ -67,11 +67,15 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.lucide-brain-circuit')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck — General Program' }).locator('.lucide-user-round')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Pain — General' }).locator('.lucide-user-round')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'GLP-1 Receptor Agonist Patient Education' }).locator('.lucide-syringe')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Long-Term PPI Use: Benefits & Risks' }).locator('.lucide-pill')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'PPI Quick Guide' }).locator('.lucide-clipboard-list')).toBeVisible();
     await expect(page.locator('.tool-row .lucide-file-text')).toHaveCount(0);
     await expect(page.locator('.ext-row .lucide-clipboard-check')).toHaveCount(0);
     await expect(page.locator('.document-action,.ext-arrow')).toHaveCount(0);
-    await expect(page.getByRole('navigation', { name: 'Document categories' }).getByRole('link')).toHaveCount(8);
+    await expect(page.getByRole('navigation', { name: 'Document categories' }).getByRole('link')).toHaveCount(9);
     await expect(page.getByRole('heading', { name: /Screening & Assessment Forms/ })).toBeVisible();
+    await expect(page.locator('#doc-count')).toHaveText('35 resources');
     await expect(page.locator('.tool-row .document-kind').first()).toHaveText('PDF · Hosted locally');
     await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.document-kind')).toHaveText('External PDF');
     await page.getByLabel('Find a document').fill('carpal tunnel');
@@ -80,6 +84,9 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('#doc-count')).toHaveText('1 match');
     await expect(page).toHaveURL(/q=carpal\+tunnel/);
     await page.getByRole('button', { name: 'Clear search' }).click();
+    await expect(page.getByRole('link', { name: 'GLP-1 Receptor Agonist Patient Education' })).toHaveAttribute('href', 'pdfs/GLP1%20Patient%20Education.pdf');
+    await expect(page.getByRole('link', { name: 'Long-Term PPI Use: Benefits & Risks' })).toHaveAttribute('href', 'pdfs/PPI_Long-Term_Use_Handout.pdf');
+    await expect(page.getByRole('link', { name: 'PPI Quick Guide' })).toHaveAttribute('href', 'pdfs/PPI_Quick_Guide_Handout.pdf');
     await expect(page.getByRole('link', { name: /Asthma Control Test/ })).toHaveAttribute('href', /childrensmercy\.org\/.+act_adulteng\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ })).toHaveAttribute('href', /aims\.uw\.edu\/.+GAD-7_English_0\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind')).toHaveText('External PDF');

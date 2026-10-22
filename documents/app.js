@@ -14,6 +14,9 @@
   }
 
   var resourceIcons = {
+    'GLP-1 Receptor Agonist Patient Education': 'syringe',
+    'Long-Term PPI Use: Benefits & Risks': 'pill',
+    'PPI Quick Guide': 'clipboard-list',
     'Shoulder — General Program': 'biceps-flexed',
     'Shoulder Impingement Syndrome': 'bone',
     'Post-Op Shoulder Rehabilitation Protocol': 'hospital',
