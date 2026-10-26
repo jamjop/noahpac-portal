@@ -1,8 +1,24 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-22",
+  "updated": "2026-10-26",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-26-weight-loss-pace-guidance",
+      "date": "2026-10-26",
+      "type": "clinical",
+      "title": "Intentional weight-loss pace guidance",
+      "summary": "Added source-linked CDC context to the Weight Change calculator for the usual gradual intentional-loss pace without presenting it as a universal safety cutoff.",
+      "clinical_change": true,
+      "scope": "Weight Change calculator interpretation",
+      "affected_routes": ["/calculators/"],
+      "changes": [
+        "Added the CDC gradual, steady intentional weight-loss pace of about 1–2 lb (0.5–0.9 kg) per week.",
+        "Clarified that the range is a general target rather than a universal safety cutoff and that faster or unintentional loss warrants individualized assessment.",
+        "Added the CDC source to calculator governance, claim traceability, and fingerprint-based update monitoring."
+      ],
+      "source_ids": ["cdc_weight_loss"]
+    },
     {
       "id": "2026-10-22-active-duty-care-workflows",
       "date": "2026-10-22",

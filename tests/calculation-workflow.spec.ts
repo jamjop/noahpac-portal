@@ -105,6 +105,8 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#weight-change-result')).toContainText('−10.0%');
     await expect(page.locator('#weight-change-result')).toContainText('Baseline BMI 34.6 kg/m²');
     await expect(page.locator('#weight-change-result')).toContainText('Current BMI 31.1 kg/m²');
+    await expect(page.locator('#pane .note')).toContainText('1–2 lb (0.5–0.9 kg) per week');
+    await expect(page.locator('#pane .note a')).toHaveAttribute('href', 'https://www.cdc.gov/healthy-weight-growth/losing-weight/index.html');
     await page.locator('.unit-switch label', { hasText: 'Imperial' }).click();
     await expect(page.locator('#weight-change-result')).toContainText('220.5 lb');
     await expect(page.locator('#weight-change-result')).toContainText('198.4 lb');

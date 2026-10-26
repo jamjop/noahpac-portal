@@ -686,7 +686,7 @@ const CALCS = [
       </div>
       <div id="weight-change-result" class="result-card"><div class="result-placeholder">Enter baseline and current weight</div></div>
       <button class="copy-btn" id="weight-change-copy">&#x2398; Copy results</button>
-      <p class="note">Height is optional. When supplied, the result adds baseline and current BMI plus Mosteller BSA. BMI is a screening measure, not a diagnosis, and BSA-based dosing remains medication- and protocol-specific.</p>`;
+      <p class="note"><strong>Intentional weight-loss pace:</strong> CDC describes gradual, steady loss of about <strong>1–2 lb (0.5–0.9 kg) per week</strong> as more likely to be maintained than faster loss. This is a general target, not a universal safety cutoff; individual goals should account for starting weight, comorbidities, medications, nutritional status, and whether the loss is intentional. Faster or unintentional loss warrants individualized clinical assessment. <a href="https://www.cdc.gov/healthy-weight-growth/losing-weight/index.html" target="_blank" rel="noopener">CDC healthy weight guidance</a>.<br><br>Height is optional. When supplied, the result adds baseline and current BMI plus Mosteller BSA. BMI is a screening measure, not a diagnosis, and BSA-based dosing remains medication- and protocol-specific.</p>`;
       pane.querySelectorAll('input').forEach(el => {
         el.addEventListener('input', calcWeightChange);
         el.addEventListener('change', calcWeightChange);

@@ -59,7 +59,7 @@ class ClinicalGovernanceTests(unittest.TestCase):
         calculator = next(tool for tool in manifest["tools"] if tool["id"] == "calculators")
         claim = next(claim for claim in claims if claim["id"] == "calculators-outpatient-prevention")
         expected_sources = {
-            "cdc_adult_bmi", "mosteller_bsa", "uspstf_lung_2021", "ada_a1c_eag",
+            "cdc_adult_bmi", "cdc_weight_loss", "mosteller_bsa", "uspstf_lung_2021", "ada_a1c_eag",
             "aha_bp_2025", "aha_prevent", "aha_orthostatic",
         }
         mutable_web_sources = expected_sources - {"mosteller_bsa"}
