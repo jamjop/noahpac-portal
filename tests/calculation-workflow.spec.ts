@@ -151,12 +151,20 @@ test.describe('Calculation and conversion workflows', () => {
 
   test('conversion reference tables become readable cards without phone overflow', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    for (const path of ['/opioids/', '/steroids/']) {
-      await page.goto(path);
-      const firstDataRow = page.locator('#refTable tr').nth(1);
-      await expect(firstDataRow).toBeVisible();
-      await expect(firstDataRow.locator('td').first()).toHaveAttribute('data-label');
-      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), path).toBeLessThanOrEqual(1);
-    }
+    await page.goto('/opioids/');
+    const opioidRow = page.locator('#refTable tr').nth(1);
+    await expect(opioidRow).toBeVisible();
+    await expect(opioidRow.locator('td').first()).toHaveAttribute('data-label');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), '/opioids/').toBeLessThanOrEqual(1);
+
+    await page.goto('/steroids/');
+    await page.locator('#equivalencyReference > summary').click();
+    await expect(page.locator('#refTable')).toBeHidden();
+    const firstSteroid = page.locator('.reference-agent').first();
+    await expect(firstSteroid).toBeVisible();
+    await firstSteroid.locator('summary').click();
+    await expect(firstSteroid.locator('dl')).toBeVisible();
+    await expect(firstSteroid).toContainText('Glucocorticoid potency');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), '/steroids/').toBeLessThanOrEqual(1);
   });
 });

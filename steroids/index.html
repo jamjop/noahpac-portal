@@ -8,7 +8,7 @@
   <script src="/assets/app-shell.js"></script>
   <link rel="stylesheet" href="/assets/fonts.css">
   <link rel="stylesheet" href="/shared.css">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body class="clinical-app medication-tool steroid-app">
 <a class="skip-link" href="#main-content">Skip to steroid converter</a>
@@ -44,6 +44,13 @@
 </header>
 
 <main class="tool-workspace page-body" id="main-content">
+  <ol class="workflow-cue" aria-label="Steroid conversion workflow">
+    <li><span>1</span> Enter regimen</li>
+    <li><span>2</span> Review dose context</li>
+    <li><span>3</span> Convert or assess taper</li>
+  </ol>
+
+  <div class="workflow-grid">
   <div class="input-column">
     <section class="tool-card criterion gc-steroid" aria-labelledby="current-steroid-title">
       <div class="tool-card__header c-header">
@@ -77,40 +84,48 @@
           </select>
         </div>
       </div>
-      <div class="form-actions"><button id="copySummary" type="button">Copy summary</button><button id="resetForm" type="button">Reset</button></div>
     </section>
 
-    <section class="tool-card criterion gc-convert" aria-labelledby="target-steroid-title">
-      <div class="tool-card__header c-header">
-        <span class="tool-card__marker c-letter tool-card__marker--neutral" aria-hidden="true">⇄</span>
-        <div class="tool-card__heading">
-          <h2 id="target-steroid-title">Convert to <span class="optional-label">optional</span></h2>
-          <p>Use this one-time lookup when changing agents. The taper below continues to use the current steroid entered above.</p>
+    <details class="workflow-disclosure gc-convert" id="conversionDetails">
+      <summary>
+        <span class="disclosure-icon" aria-hidden="true">⇄</span>
+        <span>
+          <strong id="target-steroid-title">Convert to another steroid</strong>
+          <small>Optional equivalency lookup when changing agents</small>
+        </span>
+      </summary>
+      <div class="disclosure-body">
+        <p>The tapering context continues to use the current steroid entered above.</p>
+        <div class="clinical-form-grid field-grid">
+          <div class="clinical-field clinical-field--full field full-width">
+            <label for="toDrug">Target steroid</label>
+            <select id="toDrug"></select>
+          </div>
         </div>
       </div>
-      <div class="clinical-form-grid field-grid">
-        <div class="clinical-field clinical-field--full field full-width">
-          <label for="toDrug">Target steroid</label>
-          <select id="toDrug"></select>
-        </div>
-      </div>
-    </section>
+    </details>
   </div>
 
   <aside class="results-rail summary-column" aria-labelledby="steroid-summary-title">
     <div class="results-rail__intro">
       <p class="results-rail__eyebrow">Live calculation</p>
-      <h2 id="steroid-summary-title">Dose summary</h2>
+      <h2 id="steroid-summary-title">At a glance</h2>
     </div>
-    <section class="result-panel gc-equiv" aria-labelledby="hydrocortisone-equivalent-title">
-      <h3 class="result-panel-head" id="hydrocortisone-equivalent-title">Hydrocortisone-equivalent</h3>
+    <section class="result-panel clinical-summary gc-equiv" aria-labelledby="dose-context-title">
+      <h3 class="result-panel-head" id="dose-context-title">Current regimen and dose context</h3>
       <div id="currentEquiv" class="result-panel-body mme-display" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
-    </section>
-    <section class="result-panel gc-dose" aria-labelledby="steroid-converted-dose-title">
-      <h3 class="result-panel-head" id="steroid-converted-dose-title">Converted dose</h3>
-      <div id="convResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+      <div class="conversion-summary" id="conversionSummary" hidden>
+        <h3 id="steroid-converted-dose-title">Equivalent target dose</h3>
+        <div id="convResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
+      </div>
+      <div class="summary-actions">
+        <button id="copySummary" type="button" disabled>Copy summary</button>
+        <button id="resetForm" type="button" class="secondary">Reset</button>
+      </div>
+      <p class="summary-note">Approximate equivalency only. Verify the indication, formulation, and patient-specific factors.</p>
     </section>
   </aside>
+  </div>
 
   <section class="result-panel taper-panel gc-tapering" aria-labelledby="tapering-guidance-title">
     <div class="taper-panel__header">
@@ -118,20 +133,26 @@
         <p class="results-rail__eyebrow">Longitudinal plan</p>
         <h2 id="tapering-guidance-title">Tapering guidance</h2>
       </div>
-      <p>Guideline context only; this tool does not generate a patient-specific taper or prescription.</p>
+      <p>Dose- and duration-based context only. No patient-specific taper or prescription is generated.</p>
     </div>
     <div id="taperResult" class="result-panel-body conv-result" role="status" aria-live="polite" aria-atomic="true"><span class="mme-placeholder">—</span></div>
   </section>
 
-  <section class="reference-card ref-card gc-reference" aria-labelledby="steroid-reference-title">
-    <div class="reference-card__header">
-      <h2 id="steroid-reference-title">Corticosteroid equivalency reference</h2>
-      <span class="reference-card__note">Approximate values</span>
+  <details class="reference-card ref-card gc-reference" id="equivalencyReference">
+    <summary class="reference-card__header">
+      <span>
+        <strong id="steroid-reference-title">View full corticosteroid equivalency reference</strong>
+        <small>Eight agents · approximate values</small>
+      </span>
+      <span class="reference-card__action" aria-hidden="true">Show</span>
+    </summary>
+    <div class="reference-card__body">
+      <div class="reference-table-wrap tbl-wrap" tabindex="0" role="region" aria-label="Scrollable corticosteroid equivalency table">
+        <table class="reference-table ref-table" id="refTable"></table>
+      </div>
+      <div class="reference-mobile" id="refMobile" aria-label="Corticosteroid equivalency list"></div>
     </div>
-    <div class="reference-table-wrap tbl-wrap" tabindex="0" role="region" aria-label="Scrollable corticosteroid equivalency table">
-      <table class="reference-table ref-table" id="refTable"></table>
-    </div>
-  </section>
+  </details>
 </main>
 
 <footer class="app-footer">
@@ -145,7 +166,7 @@
   <p class="app-footer__meta">© <span data-current-year></span> Noah PA-C</p>
 </footer>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 <script src="/assets/last-checked.js" defer></script>
 </body>
 </html>

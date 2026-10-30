@@ -82,7 +82,7 @@ function calcAndRender() {
   const hcEquiv = hydrocortisoneEquiv(fromSt, fromDose, freq);
 
   if (hcEquiv === null || isNaN(hcEquiv)) {
-    equivEl.innerHTML = '<span class="mme-placeholder">Enter dose above</span>';
+    equivEl.innerHTML = '<span class="mme-placeholder">Enter the current regimen to see dose context</span>';
   } else {
     const cls = equivClass(hcEquiv);
     const prednisoneEquiv = hcEquiv * (5 / 20);
@@ -90,15 +90,27 @@ function calcAndRender() {
     if (cls === 'risk') flagHtml = '<div class="mme-flag risk">⚠ High-dose — ≥20 mg/day prednisone-equivalent</div>';
     else if (cls === 'warn') flagHtml = '<div class="mme-flag warn">⚠ Supraphysiologic — 5–19 mg/day prednisone-equivalent</div>';
     else flagHtml = '<div class="mme-flag ok">Physiologic range — &lt;5 mg/day prednisone-equivalent</div>';
+    const dailyDose = fromDose * freq;
     equivEl.innerHTML = `
-      <div class="mme-row">
-        <span class="mme-num ${esc(cls)}">${hcEquiv.toFixed(1)}</span>
-        <span class="mme-label">mg/day hydrocortisone-equiv</span>
+      <div class="regimen-line">
+        <span class="regimen-line__label">Current total daily dose</span>
+        <strong>${dailyDose.toFixed(2)} mg/day ${esc(fromSt.name)}</strong>
+        <small>${esc(fromSt.name)} ${fromDose} mg × ${freq}/day = ${dailyDose.toFixed(2)} mg/day current regimen</small>
       </div>
-      <div class="conv-detail">${esc(fromSt.name)} ${fromDose} mg × ${freq}/day = ${(fromDose * freq).toFixed(2)} mg/day current regimen</div>
-      <div class="conv-detail">≈ ${prednisoneEquiv.toFixed(1)} mg/day prednisone-equivalent</div>
+      <div class="dose-metrics">
+        <div class="dose-metric">
+          <span>Prednisone equivalent</span>
+          <strong class="${esc(cls)}">${prednisoneEquiv.toFixed(1)} <small>mg/day</small></strong>
+        </div>
+        <div class="dose-metric">
+          <span>Hydrocortisone equivalent</span>
+          <strong>${hcEquiv.toFixed(1)} <small>mg/day</small></strong>
+        </div>
+      </div>
       ${flagHtml}`;
   }
+
+  document.getElementById('copySummary').disabled = hcEquiv === null || isNaN(hcEquiv);
 
   // ── Conversion display ──
   const convEl = document.getElementById('convResult');
@@ -151,11 +163,14 @@ function taperGuidance(hcEquiv, duration) {
     </div>`;
   }
 
-  return `${noteHtml}<div class="conv-warning">No patient-specific taper or prescription is generated. Select dose steps and timing from the indication, relapse risk, duration of exposure, comorbidities, dosage forms, and clinical response.</div>`;
+  const durationLabel = duration === 'short' ? 'Under 3 weeks' : '3 weeks or longer';
+  return `<div class="taper-context"><span>Dose and duration context</span><strong>${esc(tierLabel)}</strong><small>${esc(durationLabel)}</small></div>${noteHtml}<div class="conv-warning">No patient-specific taper or prescription is generated. Select dose steps and timing from the indication, relapse risk, duration of exposure, comorbidities, dosage forms, and clinical response.</div>`;
 }
 
 function buildRefTable() {
   const tbl = document.getElementById('refTable');
+  const mobile = document.getElementById('refMobile');
+  mobile.innerHTML = '';
   tbl.innerHTML = `<tr>
     <th>Steroid</th>
     <th>Equiv. Dose (mg)</th>
@@ -172,15 +187,28 @@ function buildRefTable() {
       <td class="mono" data-label="Mineralocorticoid">${s.mc === 0 ? 'None' : esc(String(s.mc)) + '×'}</td>
       <td data-label="Duration">${esc(s.duration)}</td>
     </tr>`;
+    mobile.insertAdjacentHTML('beforeend', `<details class="reference-agent">
+      <summary>
+        <span><strong>${esc(s.name)}</strong><small>${esc(s.duration)}</small></span>
+        <span class="reference-agent__dose">${esc(String(s.equiv_dose))} mg</span>
+      </summary>
+      <dl>
+        <div><dt>Equivalent dose</dt><dd>${esc(String(s.equiv_dose))} mg</dd></div>
+        <div><dt>Glucocorticoid potency</dt><dd>${esc(String(gc))}×</dd></div>
+        <div><dt>Mineralocorticoid activity</dt><dd>${s.mc === 0 ? 'None' : esc(String(s.mc)) + '×'}</dd></div>
+      </dl>
+    </details>`);
   }
   tbl.innerHTML += `<tr><td colspan="5" style="font-size:11px;color:var(--ink-muted);padding:6px 10px">Equivalent doses referenced to hydrocortisone 20 mg. Potency is relative to hydrocortisone = 1×. Source: Endocrine Society, standard clinical pharmacology references.</td></tr>`;
 }
 
 async function copySummary() {
   const equiv = document.getElementById('currentEquiv').innerText.trim();
-  const converted = document.getElementById('convResult').innerText.trim();
-  if (!equiv || equiv === 'Enter dose above') return;
-  await navigator.clipboard.writeText(`Corticosteroid equivalency summary\n${equiv}\nConverted dose: ${converted}\nApproximate equivalency only; verify indication, formulation, and patient-specific factors.`);
+  const conversionDetails = document.getElementById('conversionDetails');
+  const converted = conversionDetails.open ? document.getElementById('convResult').innerText.trim() : '';
+  if (!equiv || equiv.includes('Enter the current regimen')) return;
+  const convertedLine = converted ? `\nConverted dose: ${converted}` : '';
+  await navigator.clipboard.writeText(`Corticosteroid equivalency summary\n${equiv}${convertedLine}\nApproximate equivalency only; verify indication, formulation, and patient-specific factors.`);
   const button = document.getElementById('copySummary');
   button.textContent = 'Copied'; button.classList.add('copied');
   setTimeout(() => { button.textContent = 'Copy summary'; button.classList.remove('copied'); }, 1600);
@@ -195,12 +223,19 @@ function wireListeners() {
     el.addEventListener('input', calcAndRender);
   }
   document.getElementById('copySummary').addEventListener('click', copySummary);
+  const conversionDetails = document.getElementById('conversionDetails');
+  const conversionSummary = document.getElementById('conversionSummary');
+  const syncConversionVisibility = () => { conversionSummary.hidden = !conversionDetails.open; };
+  conversionDetails.addEventListener('toggle', syncConversionVisibility);
+  syncConversionVisibility();
   document.getElementById('resetForm').addEventListener('click', () => {
     document.getElementById('fromDrug').value = 'prednisone';
     document.getElementById('fromDose').value = '';
     document.getElementById('fromFreq').value = '1';
     document.getElementById('fromDuration').value = 'long';
     document.getElementById('toDrug').value = 'hydrocortisone';
+    conversionDetails.open = false;
+    syncConversionVisibility();
     calcAndRender(); document.getElementById('fromDose').focus();
   });
 }

@@ -12,128 +12,110 @@
   --app-border:var(--line);--app-border-strong:#c8d2df;--app-accent:var(--purple);
   --app-accent-soft:var(--purple-soft);--app-radius-sm:6px;--app-radius-md:9px;
   --app-radius-lg:12px;--app-content:1120px;
-  margin:0;background:var(--app-canvas);color:var(--app-text);
-  font-family:'Inter',system-ui,sans-serif;
+  margin:0;background:var(--app-canvas);color:var(--app-text);font-family:'Inter',system-ui,sans-serif;
 }
 
-/* Conversion and taper workflow */
-.page-body{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 340px;
-  grid-template-areas:
-    "inputs summary"
-    "taper taper"
-    "reference reference";
-  gap:18px 28px;
-  align-items:start;
+/* A single, task-led workflow replaces four equally weighted page sections. */
+.page-body{display:block}
+.workflow-cue{
+  display:flex;align-items:center;gap:0;max-width:720px;margin:0 0 18px;padding:0;
+  list-style:none;color:var(--app-text-muted);font-size:11px;font-weight:700;
 }
-.input-column{grid-area:inputs;display:flex;min-width:0;flex-direction:column;gap:14px}
-.summary-column{grid-area:summary;position:sticky;top:24px}
-.taper-panel{grid-area:taper}
-.ref-card{grid-area:reference}
+.workflow-cue li{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.workflow-cue li:not(:last-child)::after{width:42px;height:1px;margin:0 12px;background:var(--app-border);content:""}
+.workflow-cue span{display:grid;width:23px;height:23px;place-items:center;border:1px solid var(--app-border-strong);border-radius:50%;background:var(--app-surface);color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:9px}
+.workflow-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start}
+.input-column{display:flex;min-width:0;flex-direction:column;gap:14px}
+.summary-column{position:sticky;top:24px;display:flex;min-width:0;flex-direction:column;gap:10px}
+.taper-panel,.ref-card{margin-top:18px}
 
-/* Fallback component essentials; shared.css supplies the full component layer. */
-.tool-card,.result-panel,.reference-card{border:1px solid var(--app-border);border-radius:12px;background:var(--app-surface)}
+/* Regimen entry */
+.tool-card,.result-panel,.reference-card,.workflow-disclosure{border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface)}
 .tool-card{padding:22px}
 .tool-card__header{display:flex;gap:14px;margin-bottom:20px}
-.tool-card__marker{display:grid;width:36px;height:36px;flex:0 0 auto;place-items:center;border-radius:6px;background:var(--app-accent-soft);color:var(--app-accent);font-weight:700}
-.tool-card__marker--neutral{background:var(--app-surface-subtle);color:var(--app-text-muted)}
-.tool-card__heading h2{margin:0;font-size:18px}.tool-card__heading p{margin:4px 0 0;color:var(--app-text-muted);font-size:13px}.optional-label{color:var(--app-text-muted);font-size:12px;font-weight:500}
+.tool-card__marker,.disclosure-icon{display:grid;width:36px;height:36px;flex:0 0 auto;place-items:center;border-radius:7px;background:var(--app-accent-soft);color:var(--app-accent);font-weight:700}
+.tool-card__heading h2{margin:0;font-size:18px}.tool-card__heading p{margin:4px 0 0;color:var(--app-text-muted);font-size:13px;line-height:1.5}
 .clinical-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .clinical-field{display:flex;min-width:0;flex-direction:column;gap:7px}.clinical-field--full{grid-column:1/-1}
-.clinical-field label{color:var(--app-text-secondary);font-size:12px;font-weight:700}.clinical-field input,.clinical-field select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--app-border-strong);border-radius:9px;background:var(--app-surface);color:var(--app-text);font-size:15px}
-.input-with-unit{display:flex;align-items:center;gap:9px}.input-with-unit input{min-width:0}.input-with-unit__unit{min-width:48px;color:var(--app-text-muted);font-size:12px}
-.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.form-actions button{min-height:44px;padding:8px 12px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-sm);background:transparent;color:var(--app-text-secondary);font:inherit;font-size:12px;font-weight:700;cursor:pointer}.form-actions button:first-child{border-color:var(--app-accent);color:var(--app-accent)}.form-actions button.copied{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
-.results-rail{display:flex;flex-direction:column;gap:12px}.results-rail__intro h2{margin:0;font-size:19px}.results-rail__eyebrow{margin:0 0 3px;color:var(--app-accent);font-size:11px;font-weight:700;text-transform:uppercase}
-.result-panel{overflow:hidden}.result-panel-head{margin:0;padding:12px 16px;border-bottom:1px solid var(--app-border);background:var(--app-surface-subtle);font-size:11px}.result-panel-body{min-height:76px;padding:16px}
-.reference-card{overflow:hidden}.reference-card__header{display:flex;justify-content:space-between;gap:16px;padding:18px 20px 14px;border-bottom:1px solid var(--app-border)}.reference-card__header h2{margin:0;font-size:16px}.reference-card__note{color:var(--app-text-muted);font-size:12px}.reference-table-wrap{overflow-x:auto}.reference-table{width:100%;border-collapse:collapse;font-size:13px}.reference-table th,.reference-table td{padding:10px 13px;border-bottom:1px solid var(--app-border);text-align:left}
+.clinical-field label{color:var(--app-text-secondary);font-size:12px;font-weight:700}
+.clinical-field input,.clinical-field select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--app-border-strong);border-radius:9px;background:var(--app-surface);color:var(--app-text);font-size:15px}
+.clinical-field input:focus,.clinical-field select:focus{outline:3px solid color-mix(in srgb,var(--app-accent) 20%,transparent);outline-offset:1px;border-color:var(--app-accent)}
+.input-with-unit{display:flex;align-items:center;gap:9px}.input-with-unit input{min-width:0}.input-with-unit__unit{min-width:30px;color:var(--app-text-muted);font-size:12px}
 
-/* Live dose summaries */
+/* Optional conversion is visually subordinate until it is needed. */
+.workflow-disclosure{overflow:hidden}
+.workflow-disclosure>summary{display:flex;min-height:68px;align-items:center;gap:13px;padding:14px 17px;cursor:pointer;list-style:none}
+.workflow-disclosure>summary::-webkit-details-marker{display:none}
+.workflow-disclosure>summary::after{margin-left:auto;color:var(--app-text-muted);font-size:17px;content:"+"}
+.workflow-disclosure[open]>summary::after{content:"−"}
+.workflow-disclosure>summary>span:nth-child(2){display:grid;gap:3px}
+.workflow-disclosure>summary strong{color:var(--app-text);font-size:14px}
+.workflow-disclosure>summary small{color:var(--app-text-muted);font-size:12px;font-weight:500}
+.disclosure-icon{width:34px;height:34px;background:var(--app-surface-subtle)}
+.disclosure-body{padding:0 17px 17px;border-top:1px solid var(--app-border)}
+.disclosure-body>p{margin:14px 0;color:var(--app-text-muted);font-size:12px;line-height:1.5}
+
+/* One cohesive summary puts the regimen, equivalents, classification, and actions together. */
+.results-rail__intro h2{margin:0;font-size:20px;letter-spacing:-.02em}.results-rail__eyebrow{margin:0 0 3px;color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.clinical-summary{overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.07)}
+.result-panel-head{margin:0;padding:13px 16px;border-bottom:1px solid var(--app-border);background:var(--app-surface-subtle);color:var(--app-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.result-panel-body{min-height:76px;padding:17px}
 .mme-placeholder{color:var(--app-text-muted);font-size:13px;line-height:1.5}
-.mme-row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.mme-num{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:34px;font-weight:700;line-height:1}
-.mme-num.ok{color:var(--ok)}.mme-num.warn{color:var(--warn)}.mme-num.risk{color:var(--risk)}
-.mme-label{color:var(--app-text-secondary);font-size:12px;font-weight:650}
-.mme-flag{margin-top:10px;padding:7px 9px;border-radius:6px;font-size:12px;font-weight:700;line-height:1.45}
-.mme-flag.ok{background:var(--ok-soft);color:var(--ok)}
-.mme-flag.warn{background:var(--warn-soft);color:var(--callout-warn-ink)}
-.mme-flag.risk{background:var(--risk-soft);color:var(--risk)}
-.conv-drug{margin-bottom:5px;color:var(--app-text);font-size:14px;font-weight:750}
-.conv-dose{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;line-height:1.25}
-.conv-detail{margin-top:7px;color:var(--app-text-secondary);font-size:12px;line-height:1.6}
-.conv-warning{margin-top:10px;padding:9px 10px;border-left:3px solid var(--warn);border-radius:6px;background:var(--warn-soft);color:var(--callout-warn-ink);font-size:12px;font-weight:650;line-height:1.55}
+.regimen-line{display:grid;gap:4px}
+.regimen-line__label{color:var(--app-text-muted);font-size:10px;font-weight:750;letter-spacing:.04em;text-transform:uppercase}
+.regimen-line>strong{color:var(--app-text);font-size:18px;line-height:1.3}
+.regimen-line>small{color:var(--app-text-muted);font-size:11px;line-height:1.45}
+.dose-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:15px}
+.dose-metric{display:grid;gap:6px;padding:11px;border:1px solid var(--app-border);border-radius:8px;background:var(--app-surface-subtle)}
+.dose-metric>span{color:var(--app-text-muted);font-size:10px;line-height:1.35}
+.dose-metric>strong{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1.2}
+.dose-metric>strong.ok{color:var(--ok)}.dose-metric>strong.warn{color:var(--warn)}.dose-metric>strong.risk{color:var(--risk)}
+.dose-metric strong small{font-size:9px;font-weight:650}
+.mme-flag{margin-top:10px;padding:8px 10px;border-radius:7px;font-size:11px;font-weight:700;line-height:1.45}
+.mme-flag.ok{background:var(--ok-soft);color:var(--ok)}.mme-flag.warn{background:var(--warn-soft);color:var(--callout-warn-ink)}.mme-flag.risk{background:var(--risk-soft);color:var(--risk)}
+.conversion-summary{border-top:1px solid var(--app-border)}.conversion-summary[hidden]{display:none}.conversion-summary>h3{margin:0;padding:13px 17px 0;color:var(--app-text-muted);font-size:11px}.conversion-summary .result-panel-body{min-height:0;padding-top:9px}
+.conv-drug{margin-bottom:4px;color:var(--app-text);font-size:13px;font-weight:750}.conv-dose{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:21px;font-weight:700}.conv-detail{margin-top:7px;color:var(--app-text-secondary);font-size:11px;line-height:1.55}
+.summary-actions{display:grid;grid-template-columns:1fr auto;gap:8px;padding:0 17px 14px}
+.summary-actions button{min-height:44px;padding:9px 13px;border:1px solid var(--app-accent);border-radius:8px;background:var(--app-accent);color:#fff;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+.summary-actions button.secondary{border-color:var(--app-border-strong);background:var(--app-surface);color:var(--app-text-secondary)}
+.summary-actions button:disabled{border-color:var(--app-border);background:var(--app-surface-subtle);color:var(--app-text-muted);cursor:not-allowed}
+.summary-actions button.copied{border-color:var(--ok);background:var(--ok)}
+.summary-note{margin:0;padding:12px 17px;border-top:1px solid var(--app-border);background:var(--app-surface-subtle);color:var(--app-text-muted);font-size:10px;line-height:1.5}
 
-/* Taper guidance has the width needed for explanation and a readable schedule. */
-.taper-panel__header{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:28px;
-  padding:20px 22px 16px;
-  border-bottom:1px solid var(--app-border);
-}
-.taper-panel__header h2{margin:0;color:var(--app-text);font-size:19px;line-height:1.3;letter-spacing:-.02em}
-.taper-panel__header>p{max-width:500px;margin:0;color:var(--app-text-muted);font-size:12px;line-height:1.55}
-.taper-panel>.result-panel-body{min-height:110px;padding:20px 22px}
-.taper-text{max-width:880px;color:var(--app-text-secondary);font-size:14px;line-height:1.7}
-.taper-text strong{color:var(--app-text)}
-.taper-sched{width:100%;max-width:720px;margin-top:16px;border-collapse:collapse;font-size:13px}
-.taper-sched td{padding:9px 10px;border-bottom:1px solid var(--app-border);vertical-align:top}
-.taper-sched td:first-child{width:34%}
-.taper-sched tr:last-child td{border-bottom:0}
-.taper-sched td.mono{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-weight:650;white-space:nowrap}
-.copy-btn{
-  min-height:44px;
-  margin-top:16px;
-  padding:9px 16px;
-  border:1px solid var(--app-accent);
-  border-radius:999px;
-  background:var(--app-surface);
-  color:var(--app-accent);
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-}
-.copy-btn:hover{background:var(--app-accent-soft)}
-.copy-btn.copied{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+/* Tapering context remains prominent, but its recommendation has a clear headline. */
+.taper-panel{overflow:hidden}
+.taper-panel__header{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;padding:18px 21px 15px;border-bottom:1px solid var(--app-border)}
+.taper-panel__header h2{margin:0;color:var(--app-text);font-size:18px;letter-spacing:-.02em}.taper-panel__header>p{max-width:510px;margin:0;color:var(--app-text-muted);font-size:11px;line-height:1.55}
+.taper-panel>.result-panel-body{min-height:100px;padding:19px 21px}
+.taper-context{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 18px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--app-border)}
+.taper-context>span{grid-column:1/-1;color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.07em;text-transform:uppercase}
+.taper-context>strong{color:var(--app-text);font-size:16px}.taper-context>small{align-self:center;color:var(--app-text-muted);font-size:11px}
+.taper-text{max-width:900px;color:var(--app-text-secondary);font-size:13px;line-height:1.65}.taper-text strong{color:var(--app-text)}
+.conv-warning{max-width:900px;margin-top:13px;padding:9px 11px;border-left:3px solid var(--warn);border-radius:6px;background:var(--warn-soft);color:var(--callout-warn-ink);font-size:11px;font-weight:650;line-height:1.55}
 
-/* Reference and footer */
-.ref-table td:first-child{color:var(--app-text);font-weight:650}
-.ref-table td.mono{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600}
-.ref-table tr.warn-row td{background:var(--warn-soft)}
+/* The detailed table stays available without dominating the default page. */
+.reference-card{overflow:hidden}
+.reference-card>summary{list-style:none;cursor:pointer}.reference-card>summary::-webkit-details-marker{display:none}
+.reference-card__header{display:flex;min-height:66px;align-items:center;justify-content:space-between;gap:16px;padding:15px 20px}
+.reference-card__header>span:first-child{display:grid;gap:4px}.reference-card__header strong{color:var(--app-text);font-size:14px}.reference-card__header small{color:var(--app-text-muted);font-size:11px;font-weight:500}
+.reference-card__action{color:var(--app-accent);font-size:11px;font-weight:750}.reference-card__action::after{content:"Show"}.reference-card[open] .reference-card__action::after{content:"Hide"}.reference-card__action{font-size:0}.reference-card__action::after{font-size:11px}
+.reference-card__body{border-top:1px solid var(--app-border)}
+.reference-table-wrap{overflow-x:auto}.reference-table{width:100%;border-collapse:collapse;font-size:12px}.reference-table th,.reference-table td{padding:10px 13px;border-bottom:1px solid var(--app-border);text-align:left}.reference-table th{color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.05em;text-transform:uppercase}.ref-table td:first-child{color:var(--app-text);font-weight:650}.ref-table td.mono{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600}.reference-mobile{display:none}
 .source-note{margin:12px 2px 0;color:var(--app-text-muted);font-size:12px;line-height:1.6}
 
 @media(prefers-color-scheme:dark){
-  :root{
-    --bg:#0f1117;--surface:#1a2030;--ink:#e2e8f0;--ink-soft:#aab6c7;--ink-muted:#94a3b8;
-    --line:#303a4b;--purple:#65a3ff;--purple-soft:#10264b;
-    --ok:#4ade9b;--ok-soft:#0b3d31;--warn:#f8bf4f;--warn-soft:#352506;
-    --risk:#ff9198;--risk-soft:#461c20;--callout-warn-ink:#ffe0a3;
-  }
+  :root{--bg:#0f1117;--surface:#1a2030;--ink:#e2e8f0;--ink-soft:#aab6c7;--ink-muted:#94a3b8;--line:#303a4b;--purple:#65a3ff;--purple-soft:#10264b;--ok:#4ade9b;--ok-soft:#0b3d31;--warn:#f8bf4f;--warn-soft:#352506;--risk:#ff9198;--risk-soft:#461c20;--callout-warn-ink:#ffe0a3}
   html:not([data-theme]) .steroid-app{--app-surface-subtle:#141a26;--app-border-strong:#465268}
 }
 html[data-theme="dark"] .steroid-app{--app-surface-subtle:#141a26;--app-border-strong:#465268}
 
 @media(max-width:900px){
-  .page-body{
-    max-width:760px;
-    grid-template-columns:1fr;
-    grid-template-areas:"inputs" "summary" "taper" "reference";
-  }
-  .summary-column{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .results-rail__intro{grid-column:1/-1}
+  .workflow-grid{grid-template-columns:1fr}.summary-column{position:static}.clinical-summary{box-shadow:none}
 }
-
 @media(max-width:700px){
-  .tool-card{padding:17px}
-  .clinical-form-grid{grid-template-columns:1fr;gap:14px}.clinical-field--full{grid-column:auto}
-  .taper-panel__header{flex-direction:column;gap:8px;padding:17px}
-  .taper-panel>.result-panel-body{padding:17px}
-  .reference-table,.reference-table tbody{display:block}.reference-table tr{display:grid;margin:10px;border:1px solid var(--app-border);border-radius:var(--app-radius-md);background:var(--app-surface)}.reference-table tr:has(th),.reference-table tr:has(td[colspan]){display:none}.reference-table td{display:grid;min-width:0;grid-template-columns:120px minmax(0,1fr);gap:10px;border-bottom:1px solid var(--app-border);overflow-wrap:anywhere}.reference-table td::before{content:attr(data-label);color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase}
+  .workflow-cue{justify-content:space-between;margin-bottom:14px}.workflow-cue li{display:grid;justify-items:center;gap:5px;font-size:9px;text-align:center;white-space:normal}.workflow-cue li:not(:last-child)::after{display:none}
+  .tool-card{padding:17px}.clinical-form-grid{grid-template-columns:1fr;gap:14px}.clinical-field--full{grid-column:auto}
+  .taper-panel__header{flex-direction:column;gap:7px;padding:16px 17px 14px}.taper-panel>.result-panel-body{padding:17px}.taper-context{grid-template-columns:1fr}.taper-context>small{align-self:auto}
+  .reference-table-wrap{display:none}.reference-mobile{display:block}.reference-agent{border-bottom:1px solid var(--app-border)}.reference-agent:last-child{border-bottom:0}.reference-agent>summary{display:flex;min-height:61px;align-items:center;justify-content:space-between;gap:14px;padding:11px 15px;cursor:pointer;list-style:none}.reference-agent>summary::-webkit-details-marker{display:none}.reference-agent>summary>span:first-child{display:grid;gap:3px}.reference-agent>summary strong{color:var(--app-text);font-size:13px}.reference-agent>summary small{color:var(--app-text-muted);font-size:10px}.reference-agent__dose{color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700}.reference-agent__dose::after{margin-left:8px;color:var(--app-text-muted);content:"+"}.reference-agent[open] .reference-agent__dose::after{content:"−"}.reference-agent dl{display:grid;gap:0;margin:0;padding:0 15px 12px 28px}.reference-agent dl div{display:flex;justify-content:space-between;gap:18px;padding:6px 0;border-top:1px solid var(--app-border)}.reference-agent dt{color:var(--app-text-muted);font-size:10px}.reference-agent dd{margin:0;color:var(--app-text);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:650}
 }
-
-@media(max-width:540px){
-  .summary-column{grid-template-columns:1fr}.results-rail__intro{grid-column:auto}
-  .taper-sched td:first-child{width:auto}
-  .copy-btn{width:100%}
-}
+@media(max-width:480px){.dose-metrics{grid-template-columns:1fr}.summary-actions{grid-template-columns:1fr}.summary-actions button.secondary{order:2}}

@@ -21,12 +21,27 @@ test.describe('Medication tool redesign', () => {
     await page.locator('#fromDose').fill('10');
 
     await expect(page.locator('#currentEquiv')).toContainText('40.0');
-    await expect(page.locator('#currentEquiv')).toContainText('10.0 mg/day prednisone-equivalent');
+    await expect(page.locator('#currentEquiv')).toContainText('Prednisone equivalent');
+    await expect(page.locator('#currentEquiv')).toContainText('10.0 mg/day');
+    await expect(page.locator('#conversionDetails')).not.toHaveAttribute('open', '');
+    await expect(page.locator('#conversionSummary')).toBeHidden();
+    await page.locator('#conversionDetails > summary').click();
+    await expect(page.locator('#toDrug')).toBeVisible();
+    await expect(page.locator('#conversionSummary')).toBeVisible();
     await expect(page.locator('#convResult')).toContainText('40.00 mg/day total');
     await expect(page.locator('#taperResult')).toContainText('Supraphysiologic dose');
     await expect(page.locator('#taperResult')).toContainText('No patient-specific taper or prescription is generated');
     await expect(page.locator('#taperResult .taper-sched')).toHaveCount(0);
     await expect(page.locator('#copySigBtn')).toHaveCount(0);
+  });
+
+  test('steroid workflow progressively reveals the detailed equivalency reference', async ({ page }) => {
+    await page.goto('/steroids/');
+    await expect(page.getByRole('list', { name: 'Steroid conversion workflow' })).toContainText('Enter regimen');
+    await expect(page.locator('#equivalencyReference')).not.toHaveAttribute('open', '');
+    await page.locator('#equivalencyReference > summary').click();
+    await expect(page.locator('#refTable')).toBeVisible();
+    await expect(page.locator('#refTable tr')).toHaveCount(10);
   });
 
   for (const route of ['/opioids/', '/steroids/', '/peds/']) {
