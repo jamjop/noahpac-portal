@@ -86,8 +86,18 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.locator('#prevent-result')).toContainText('3.6%');
 
     await page.goto('/calculators/?calc=orthostatic');
+    await expect(page.getByText('Have the patient lie supine and rest quietly for at least 5 minutes.')).toBeVisible();
+    await expect(page.getByLabel('Immediate / early standing systolic BP')).toHaveValue('110');
+    await expect(page.getByLabel('3-minute systolic BP')).toHaveValue('100');
     await expect(page.locator('#orthostatic-result')).toContainText('20/10 mm Hg drop');
     await expect(page.locator('#orthostatic-result')).toContainText('Meets orthostatic BP-drop threshold');
+    await expect(page.locator('#orthostatic-result')).toContainText('Immediate/early vs supine: SBP -10, DBP -5 mm Hg, HR +10 bpm');
+
+    await page.getByLabel('Immediate / early standing systolic BP').fill('95');
+    await page.getByLabel('Immediate / early standing diastolic BP').fill('60');
+    await page.getByLabel('3-minute systolic BP').fill('115');
+    await page.getByLabel('3-minute diastolic BP').fill('72');
+    await expect(page.locator('#orthostatic-result')).toContainText('Early BP drop not present at 3 minutes');
   });
 
   test('anthropometrics and weight change support metric and imperial workflows', async ({ page }) => {

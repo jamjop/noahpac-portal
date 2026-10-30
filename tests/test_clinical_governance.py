@@ -60,7 +60,7 @@ class ClinicalGovernanceTests(unittest.TestCase):
         claim = next(claim for claim in claims if claim["id"] == "calculators-outpatient-prevention")
         expected_sources = {
             "cdc_adult_bmi", "cdc_weight_loss", "mosteller_bsa", "uspstf_lung_2021", "ada_a1c_eag",
-            "aha_bp_2025", "aha_prevent", "aha_orthostatic",
+            "aha_bp_2025", "aha_prevent", "aha_orthostatic", "cdc_steadi_orthostatic",
         }
         mutable_web_sources = expected_sources - {"mosteller_bsa"}
 

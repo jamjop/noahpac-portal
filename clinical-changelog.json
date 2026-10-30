@@ -1,8 +1,26 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-26",
+  "updated": "2026-10-29",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-29-orthostatic-measurement-sequence",
+      "date": "2026-10-29",
+      "type": "clinical",
+      "title": "Orthostatic-vital measurement sequence",
+      "summary": "Expanded the Orthostatic Vitals calculator to capture supine, early standing, and 3-minute standing measurements with a clear source-linked procedure.",
+      "clinical_change": true,
+      "scope": "Orthostatic-vital measurement and interpretation",
+      "affected_routes": ["/calculators/"],
+      "changes": [
+        "Added a concise five-step measurement procedure covering supine rest, safe standing, symptom assessment, an early upright reading, and a repeat at 3 minutes.",
+        "Added separate BP and heart-rate inputs for early standing and 3-minute standing measurements.",
+        "Updated the interpretation to display both changes and distinguish an early transient threshold from a threshold still present at 3 minutes.",
+        "Clarified that CDC STEADI uses 1- and 3-minute cuff readings and that true initial orthostatic hypotension within 15 seconds generally requires continuous beat-to-beat monitoring.",
+        "Added the CDC protocol to clinical claim traceability and fingerprint-based source monitoring."
+      ],
+      "source_ids": ["aha_orthostatic", "cdc_steadi_orthostatic"]
+    },
     {
       "id": "2026-10-26-weight-loss-pace-guidance",
       "date": "2026-10-26",

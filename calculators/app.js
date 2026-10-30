@@ -168,25 +168,38 @@ const CALCS = [
 
   {
     id:"orthostatic", name:"Orthostatic Vitals", num:"34",
-    eyebrow:"Cardiovascular / Vitals", source:"AHA scientific statement definition",
+    eyebrow:"Cardiovascular / Vitals", source:"AHA definition · CDC STEADI measurement sequence",
     render: pane => {
-      pane.innerHTML = calcHeader("Orthostatic Vitals","Cardiovascular / Vitals","Supine-to-standing blood pressure and heart-rate changes") + `
+      pane.innerHTML = calcHeader("Orthostatic Vitals","Cardiovascular / Vitals","Supine baseline, early standing, and 3-minute standing measurements") + `
+      ${criterionCard("Measurement procedure","Use the same arm and an appropriately sized cuff throughout.",`
+        <ol class="procedure-steps">
+          <li>Have the patient lie supine and rest quietly for at least 5 minutes.</li>
+          <li>Measure and record supine blood pressure and heart rate.</li>
+          <li>Assist the patient to stand safely, start the timer, and ask about dizziness, lightheadedness, weakness, or presyncope.</li>
+          <li>Obtain the first standing blood pressure and heart rate as soon as practical. Standard cuff-based protocols commonly target about 1 minute.</li>
+          <li>Repeat blood pressure and heart rate after 3 minutes standing, and document symptoms at either time point.</li>
+        </ol>`)}
       <div class="section-label">After 5 minutes supine</div>
       <div class="fields">
         ${field("Supine systolic BP","ortho-sup-sbp","number","mmHg","120","40","260")}
         ${field("Supine diastolic BP","ortho-sup-dbp","number","mmHg","75","20","160")}
         ${field("Supine heart rate","ortho-sup-hr","number","bpm","70","20","250")}
       </div>
-      <div class="section-label section-label-gap">Standing measurement</div>
+      <div class="section-label section-label-gap">Immediate / early standing — obtain promptly</div>
       <div class="fields">
-        ${field("Standing systolic BP","ortho-stand-sbp","number","mmHg","100","40","260")}
-        ${field("Standing diastolic BP","ortho-stand-dbp","number","mmHg","65","20","160")}
-        ${field("Standing heart rate","ortho-stand-hr","number","bpm","88","20","250")}
-        ${field("Minutes after standing","ortho-minutes","number","minutes","3","0","10")}
+        ${field("Immediate / early standing systolic BP","ortho-early-sbp","number","mmHg","110","40","260")}
+        ${field("Immediate / early standing diastolic BP","ortho-early-dbp","number","mmHg","70","20","160")}
+        ${field("Immediate / early standing heart rate","ortho-early-hr","number","bpm","80","20","250")}
       </div>
-      <div id="orthostatic-result" class="result-card"><div class="result-placeholder">Enter supine and standing vitals</div></div>
+      <div class="section-label section-label-gap">After 3 minutes standing</div>
+      <div class="fields">
+        ${field("3-minute systolic BP","ortho-three-sbp","number","mmHg","100","40","260")}
+        ${field("3-minute diastolic BP","ortho-three-dbp","number","mmHg","65","20","160")}
+        ${field("3-minute heart rate","ortho-three-hr","number","bpm","88","20","250")}
+      </div>
+      <div id="orthostatic-result" class="result-card"><div class="result-placeholder">Enter all three sets of vitals</div></div>
       <button class="copy-btn" id="orthostatic-copy">&#x2398; Copy result</button>
-      <p class="note">Orthostatic hypotension is a sustained fall of at least 20 mm Hg systolic or 10 mm Hg diastolic within 3 minutes of standing. One entered standing measurement can identify the threshold but cannot establish that the change is sustained. Symptoms, medications, hydration, rhythm, technique, and delayed responses still matter. Heart-rate change is descriptive and does not by itself diagnose POTS. <a href="https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension" target="_blank" rel="noopener">AHA source</a>.</p>`;
+      <p class="note">Orthostatic hypotension is a sustained fall of at least 20 mm Hg systolic or 10 mm Hg diastolic within 3 minutes of standing. The early cuff reading records your clinic's first practical upright measurement; CDC STEADI specifies standing measurements at 1 and 3 minutes. A transient fall within the first 15 seconds (“initial orthostatic hypotension”) is not reliably excluded by a standard cuff and generally requires continuous beat-to-beat monitoring. Symptoms, medications, hydration, rhythm, technique, and delayed responses still matter. Heart-rate change is descriptive and does not by itself diagnose POTS. <a href="https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension" target="_blank" rel="noopener">AHA source</a> · <a href="https://www.cdc.gov/steadi/media/pdfs/STEADI-Assessment-MeasuringBP-508.pdf" target="_blank" rel="noopener">CDC measurement protocol</a>.</p>`;
       addListeners("orthostatic", calcOrthostatic);
     }
   },
@@ -1198,16 +1211,28 @@ function calcPrevent(){
 
 function calcOrthostatic(){
   const supSbp=num('ortho-sup-sbp'),supDbp=num('ortho-sup-dbp'),supHr=num('ortho-sup-hr');
-  const standSbp=num('ortho-stand-sbp'),standDbp=num('ortho-stand-dbp'),standHr=num('ortho-stand-hr'),minutes=num('ortho-minutes');
-  if([supSbp,supDbp,supHr,standSbp,standDbp,standHr,minutes].some(value=>!Number.isFinite(value))){
-    setResult('orthostatic-result','<div class="result-placeholder">Enter supine and standing vitals</div>');return;
+  const earlySbp=num('ortho-early-sbp'),earlyDbp=num('ortho-early-dbp'),earlyHr=num('ortho-early-hr');
+  const threeSbp=num('ortho-three-sbp'),threeDbp=num('ortho-three-dbp'),threeHr=num('ortho-three-hr');
+  if([supSbp,supDbp,supHr,earlySbp,earlyDbp,earlyHr,threeSbp,threeDbp,threeHr].some(value=>!Number.isFinite(value))){
+    setResult('orthostatic-result','<div class="result-placeholder">Enter all three sets of vitals</div>');return;
   }
-  const sbpDrop=supSbp-standSbp,dbpDrop=supDbp-standDbp,hrChange=standHr-supHr;
-  const withinWindow=minutes>=0&&minutes<=3;
-  const positive=withinWindow&&(sbpDrop>=20||dbpDrop>=10);
-  const label=!withinWindow?'Outside standard 3-minute window':positive?'Meets orthostatic BP-drop threshold':'Does not meet BP-drop threshold';
-  const detail=`Systolic change: ${standSbp-supSbp>=0?'+':''}${standSbp-supSbp} mm Hg · Diastolic change: ${standDbp-supDbp>=0?'+':''}${standDbp-supDbp} mm Hg · Heart-rate change: ${hrChange>=0?'+':''}${hrChange} bpm at ${minutes} minute${minutes===1?'':'s'}.`;
-  setResult('orthostatic-result',resultCard(`${sbpDrop}/${dbpDrop} mm Hg drop`,label,detail,positive?'high':withinWindow?'low':'moderate'),positive?'high':withinWindow?'low':'moderate');
+  const earlySbpDrop=supSbp-earlySbp,earlyDbpDrop=supDbp-earlyDbp,earlyHrChange=earlyHr-supHr;
+  const threeSbpDrop=supSbp-threeSbp,threeDbpDrop=supDbp-threeDbp,threeHrChange=threeHr-supHr;
+  const earlyPositive=earlySbpDrop>=20||earlyDbpDrop>=10;
+  const threePositive=threeSbpDrop>=20||threeDbpDrop>=10;
+  const signed=value=>`${value>=0?'+':''}${value}`;
+  let label,risk;
+  if(earlyPositive&&threePositive){
+    label='BP-drop threshold present early and at 3 minutes';risk='high';
+  }else if(threePositive){
+    label='Meets orthostatic BP-drop threshold at 3 minutes';risk='high';
+  }else if(earlyPositive){
+    label='Early BP drop not present at 3 minutes';risk='moderate';
+  }else{
+    label='Does not meet BP-drop threshold at recorded times';risk='low';
+  }
+  const detail=`Immediate/early vs supine: SBP ${signed(earlySbp-supSbp)}, DBP ${signed(earlyDbp-supDbp)} mm Hg, HR ${signed(earlyHrChange)} bpm. At 3 minutes vs supine: SBP ${signed(threeSbp-supSbp)}, DBP ${signed(threeDbp-supDbp)} mm Hg, HR ${signed(threeHrChange)} bpm.`;
+  setResult('orthostatic-result',resultCard(`3 min: ${threeSbpDrop}/${threeDbpDrop} mm Hg drop`,label,detail,risk),risk);
 }
 
 function calcFib4(){

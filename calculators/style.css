@@ -317,6 +317,8 @@
 .perc-result.neg{display:block;background:var(--ok-soft);color:var(--ok-ink)}
 .perc-result.pos{display:block;background:var(--warn-soft);color:var(--perc-pos-ink)}
 .criterion .perc-result{margin:14px -18px -18px}
+.procedure-steps{display:grid;gap:9px;margin:0;padding-left:1.35rem;color:var(--app-text-secondary);font-size:13px;line-height:1.55}
+.procedure-steps li::marker{color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-weight:700}
 .phq-instr{margin:0 0 12px;color:var(--app-text-secondary);font-size:14px;line-height:1.55}
 .phq-table{display:flex;flex-direction:column;gap:8px}
 .phq-row{

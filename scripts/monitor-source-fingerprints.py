@@ -13,6 +13,8 @@ import re
 import subprocess
 import sys
 import tempfile
+import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -26,6 +28,7 @@ STATE = Path(os.environ.get("NOAHPAC_FINGERPRINT_STATE", "/var/lib/noahpac-monit
 REPORT = Path(os.environ.get("NOAHPAC_FINGERPRINT_REPORT", "/var/lib/noahpac-monitor/source-fingerprints-latest.json"))
 SNAPSHOT_DIR = Path(os.environ.get("NOAHPAC_FINGERPRINT_SNAPSHOTS", "/var/lib/noahpac-monitor/source-snapshots"))
 USER_AGENT = "NoahPAC-Clinical-Document-Monitor/1.0"
+ACCEPT = "application/pdf, text/html;q=0.8"
 
 
 def atomic_json(path: Path, payload: dict) -> None:
@@ -113,10 +116,23 @@ def atomic_text(path: Path, content: str) -> None:
         raise
 
 
+def open_source(monitored_url: str):
+    request = urllib.request.Request(monitored_url, headers={"User-Agent": USER_AGENT, "Accept": ACCEPT})
+    try:
+        return urllib.request.urlopen(request, timeout=60)
+    except urllib.error.HTTPError as exc:
+        hostname = (urllib.parse.urlparse(monitored_url).hostname or "").lower()
+        if exc.code != 403 or not (hostname == "cdc.gov" or hostname.endswith(".cdc.gov")):
+            raise
+        # CDC intermittently rejects descriptive automation User-Agents while
+        # serving the same public document to urllib's default client.
+        retry = urllib.request.Request(monitored_url, headers={"Accept": ACCEPT})
+        return urllib.request.urlopen(retry, timeout=60)
+
+
 def fetch(source: dict) -> tuple[dict, bytes]:
     monitored_url = source.get("fingerprint_url", source["url"])
-    request = urllib.request.Request(monitored_url, headers={"User-Agent": USER_AGENT, "Accept": "application/pdf, text/html;q=0.8"})
-    with urllib.request.urlopen(request, timeout=60) as response:
+    with open_source(monitored_url) as response:
         raw = response.read(50 * 1024 * 1024 + 1)
         if len(raw) > 50 * 1024 * 1024:
             raise ValueError("document exceeds 50 MiB safety limit")

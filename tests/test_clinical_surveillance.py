@@ -1,7 +1,9 @@
 import importlib.util
+import io
 import json
 import tempfile
 import unittest
+import urllib.error
 from unittest import mock
 from pathlib import Path
 
@@ -51,6 +53,35 @@ class FingerprintMappingTests(unittest.TestCase):
             "fingerprint_url": "https://archive.example/guideline",
         }
         self.assertEqual(source.get("fingerprint_url", source["url"]), source["fingerprint_url"])
+
+    def test_cdc_fingerprint_retries_403_without_custom_user_agent(self):
+        url = "https://www.cdc.gov/steadi/protocol.pdf"
+        seen = []
+
+        def fake_urlopen(request, timeout=None):
+            seen.append(request)
+            if len(seen) == 1:
+                raise urllib.error.HTTPError(url, 403, "Forbidden", {}, io.BytesIO(b""))
+            return io.BytesIO(b"pdf")
+
+        with mock.patch.object(fingerprints.urllib.request, "urlopen", side_effect=fake_urlopen):
+            response = fingerprints.open_source(url)
+            self.assertEqual(response.read(), b"pdf")
+
+        self.assertEqual(len(seen), 2)
+        self.assertEqual(seen[0].get_header("User-agent"), fingerprints.USER_AGENT)
+        self.assertIsNone(seen[1].get_header("User-agent"))
+
+    def test_non_cdc_fingerprint_does_not_retry_403(self):
+        url = "https://example.org/protocol.pdf"
+
+        def blocked(request, timeout=None):
+            raise urllib.error.HTTPError(url, 403, "Forbidden", {}, io.BytesIO(b""))
+
+        with mock.patch.object(fingerprints.urllib.request, "urlopen", side_effect=blocked) as urlopen:
+            with self.assertRaises(urllib.error.HTTPError):
+                fingerprints.open_source(url)
+        self.assertEqual(urlopen.call_count, 1)
 
     def test_maps_changed_source_to_all_affected_tools(self):
         claims = {"claims":[
