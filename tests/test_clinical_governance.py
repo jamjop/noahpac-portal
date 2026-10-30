@@ -32,7 +32,7 @@ class ClinicalGovernanceTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn("28 tools", completed.stdout)
-        self.assertIn("32 claim mappings", completed.stdout)
+        self.assertIn("33 claim mappings", completed.stdout)
 
     def test_all_manifest_routes_and_monitors_exist(self):
         manifest = json.loads((REPO / "clinical-review.json").read_text())
@@ -104,6 +104,23 @@ class ClinicalGovernanceTests(unittest.TestCase):
         for source_id in {"daf_prap_current", "dodm_prp_2022", "daf_fitness_2026", "afi48_133"}:
             self.assertNotIn("fingerprint", manifest["sources"][source_id])
             self.assertEqual(manifest["sources"][source_id]["monitoring_strategy"], "official_document_index")
+
+    def test_musculoskeletal_handouts_have_source_fingerprint_coverage(self):
+        manifest = json.loads((REPO / "clinical-review.json").read_text())
+        claims = json.loads((REPO / "clinical-claims.json").read_text())["claims"]
+        documents = next(tool for tool in manifest["tools"] if tool["id"] == "documents")
+        claim = next(claim for claim in claims if claim["id"] == "documents-msk-handouts")
+        expected = {
+            "hprc_achilles", "hprc_cecs", "hprc_groin", "hprc_bsi_foot", "hprc_hip_fai",
+            "hprc_gtps", "hprc_posterior_tibial", "hprc_return_running",
+            "aaos_hip_conditioning", "aaos_foot_ankle_conditioning",
+        }
+        self.assertEqual(set(documents["source_ids"]), expected)
+        self.assertEqual(set(claim["source_ids"]), expected)
+        for source_id in expected:
+            source = manifest["sources"][source_id]
+            self.assertIs(source.get("fingerprint"), True)
+            self.assertEqual(source["monitoring_strategy"], "document_fingerprint")
 
     def test_failure_alert_dry_run_never_prints_secrets(self):
         env = os.environ.copy()

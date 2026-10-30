@@ -63,7 +63,7 @@ test.describe('Remaining-page redesign', () => {
 
     await page.goto('/documents/');
     await expect(page.getByRole('heading', { name: 'Quick access' })).toBeVisible();
-    await expect(page.locator('#doc-count')).toHaveText('35 resources available');
+    await expect(page.locator('#doc-count')).toHaveText('45 resources available');
     await expect(page.getByRole('navigation', { name: 'Document collections' }).getByRole('button')).toHaveCount(6);
     await page.getByRole('button', { name: 'Medication education' }).click();
     await expect(page.locator('#library-title')).toHaveText('Medication education');
@@ -76,6 +76,17 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.tool-row .lucide-biceps-flexed').first()).toBeVisible();
     await expect(page.getByRole('link', { name: 'Hamstring Strain' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Hip, Thigh & Knee' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Return to Activity' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Groin Pain in the Athlete/ })).toHaveAttribute('href', 'pdfs/groin-pain-athlete-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Hip Labral Tear & Femoroacetabular Impingement/ })).toHaveAttribute('href', 'pdfs/hip-labral-fai-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Greater Trochanteric Pain Syndrome/ })).toHaveAttribute('href', 'pdfs/greater-trochanteric-pain-syndrome-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Achilles Tendinopathy/ })).toHaveAttribute('href', 'pdfs/achilles-tendinopathy-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Posterior Tibial Tendinopathy/ })).toHaveAttribute('href', 'pdfs/posterior-tibial-tendinopathy-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Chronic Exertional Compartment Syndrome/ })).toHaveAttribute('href', 'pdfs/chronic-exertional-compartment-syndrome-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Bone Stress Injuries of the Foot/ })).toHaveAttribute('href', 'pdfs/bone-stress-injuries-foot-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Hip Conditioning Program/ })).toHaveAttribute('href', /orthoinfo\.aaos\.org\/.+hip-conditioning-program/);
+    await expect(page.getByRole('link', { name: /Foot & Ankle Conditioning Program/ })).toHaveAttribute('href', /orthoinfo\.aaos\.org\/.+foot-and-ankle-conditioning-program/);
+    await expect(page.getByRole('link', { name: /Achilles Tendinopathy/ }).locator('.document-kind')).toHaveText('Patient guide + exercises · HPRC / USU');
     await expect(page.getByRole('link', { name: 'Neck Home Exercise Program (USAF / MedBridge)' }).locator('.lucide-user-round')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Pain Patient Guide' }).locator('.lucide-user-round')).toBeVisible();
     const musculoskeletalGrid = await page.locator('#tools-grid').boundingBox();
@@ -83,6 +94,9 @@ test.describe('Remaining-page redesign', () => {
     expect(musculoskeletalGrid).not.toBeNull();
     expect(shoulderSection).not.toBeNull();
     expect(shoulderSection!.width).toBeGreaterThan(musculoskeletalGrid!.width * 0.9);
+
+    await page.getByRole('button', { name: 'Return to Activity' }).click();
+    await expect(page.getByRole('link', { name: /Return-to-Running Progression/ })).toHaveAttribute('href', /hprc-online\.org\/.+begin-running-again/);
 
     await page.getByRole('button', { name: 'Vestibular' }).click();
     await expect(page.getByRole('link', { name: 'Hamstring Strain' })).toBeHidden();

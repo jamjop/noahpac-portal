@@ -60,6 +60,16 @@
     'Neck Home Exercise Program (USAF / MedBridge)': 'user-round',
     'Neck Pain Patient Guide': 'user-round',
     'Hamstring Strain': 'biceps-flexed',
+    'Groin Pain in the Athlete': 'person-standing',
+    'Hip Labral Tear & Femoroacetabular Impingement': 'circle-dot',
+    'Greater Trochanteric Pain Syndrome': 'biceps-flexed',
+    'Hip Conditioning Program': 'dumbbell',
+    'Achilles Tendinopathy': 'footprints',
+    'Posterior Tibial Tendinopathy': 'footprints',
+    'Chronic Exertional Compartment Syndrome': 'activity',
+    'Bone Stress Injuries of the Foot': 'bone',
+    'Foot & Ankle Conditioning Program': 'footprints',
+    'Return-to-Running Progression': 'footprints',
     'Self-Treatment Epley Maneuver': 'move-3d',
     'Half Somersault (Foster Method) for BPPV': 'rotate-cw',
     'Asthma Control Test': 'wind',
@@ -102,6 +112,10 @@
     if (collection === 'medication') return 'Patient education';
     if (/post-op|rehabilitation protocol/i.test(title)) return 'Rehabilitation protocol';
     if (/epley|somersault/i.test(title)) return 'Patient instruction';
+    if (/return-to-running/i.test(title)) return 'Return-to-activity guidance';
+    if (/conditioning program/i.test(title)) return 'Conditioning program';
+    if (/bone stress|compartment syndrome/i.test(title)) return 'Patient education';
+    if (/Achilles|Groin Pain|Labral Tear|Trochanteric Pain|Posterior Tibial/i.test(title)) return 'Patient guide + exercises';
     return 'Exercise handout';
   }
 

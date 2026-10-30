@@ -1,8 +1,25 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-29",
+  "updated": "2026-10-30",
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
+    {
+      "id": "2026-10-30-active-duty-msk-handouts",
+      "date": "2026-10-30",
+      "type": "clinical",
+      "title": "Active-duty musculoskeletal handout expansion",
+      "summary": "Added military sports-medicine patient education, basic rehabilitation exercises, conditioning programs, and return-to-running guidance to the Clinical Documents library.",
+      "clinical_change": true,
+      "scope": "Clinician-directed musculoskeletal patient education and home rehabilitation resources",
+      "affected_routes": ["/documents/"],
+      "changes": [
+        "Added unchanged self-hosted HPRC/USU handouts for Achilles tendinopathy, chronic exertional compartment syndrome, athletic groin pain, foot bone-stress injuries, hip labral tear/FAI, greater trochanteric pain syndrome, and posterior tibial tendinopathy.",
+        "Added authoritative external HPRC return-to-running guidance and AAOS hip and foot/ankle conditioning programs.",
+        "Placed each resource in its applicable musculoskeletal body region and displayed publisher attribution in the document metadata.",
+        "Added exact source fingerprints so upstream document changes generate focused evidence in the clinical review portal rather than silently aging the locally hosted copies."
+      ],
+      "source_ids": ["hprc_achilles", "hprc_cecs", "hprc_groin", "hprc_bsi_foot", "hprc_hip_fai", "hprc_gtps", "hprc_posterior_tibial", "hprc_return_running", "aaos_hip_conditioning", "aaos_foot_ankle_conditioning"]
+    },
     {
       "id": "2026-10-29-orthostatic-measurement-sequence",
       "date": "2026-10-29",
