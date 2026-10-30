@@ -74,6 +74,8 @@ test.describe('Remaining-page redesign', () => {
 
     await page.getByRole('button', { name: 'Musculoskeletal' }).click();
     await expect(page.locator('.tool-row .lucide-biceps-flexed').first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Hamstring Strain' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Hip, Thigh & Knee' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Home Exercise Program (USAF / MedBridge)' }).locator('.lucide-user-round')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Pain Patient Guide' }).locator('.lucide-user-round')).toBeVisible();
     const musculoskeletalGrid = await page.locator('#tools-grid').boundingBox();
@@ -81,6 +83,10 @@ test.describe('Remaining-page redesign', () => {
     expect(musculoskeletalGrid).not.toBeNull();
     expect(shoulderSection).not.toBeNull();
     expect(shoulderSection!.width).toBeGreaterThan(musculoskeletalGrid!.width * 0.9);
+
+    await page.getByRole('button', { name: 'Vestibular' }).click();
+    await expect(page.getByRole('link', { name: 'Hamstring Strain' })).toBeHidden();
+    await expect(page.getByRole('link', { name: 'Self-Treatment Epley Maneuver' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Screening & forms' }).click();
     await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.lucide-wind')).toBeVisible();

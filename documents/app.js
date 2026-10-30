@@ -27,7 +27,7 @@
     { id: 'screening', label: 'Screening & forms', icon: 'clipboard-check', title: 'Screening & assessment forms', description: 'Printable screening and assessment instruments from their original publishers.' },
     { id: 'medication', label: 'Medication education', icon: 'pill', title: 'Medication education', description: 'Patient-facing medication counseling and quick-reference handouts.' },
     { id: 'musculoskeletal', label: 'Musculoskeletal', icon: 'bone', title: 'Musculoskeletal handouts', description: 'Exercise programs, rehabilitation protocols, and condition-specific patient handouts.' },
-    { id: 'other', label: 'Vestibular & other', icon: 'rotate-cw', title: 'Vestibular & other handouts', description: 'Patient instructions that do not fit the primary collections.' },
+    { id: 'other', label: 'Vestibular', icon: 'rotate-cw', title: 'Vestibular instructions', description: 'Patient instructions for positional vertigo maneuvers.' },
     { id: 'all', label: 'All documents', icon: 'library', title: 'All documents', description: 'Browse the complete clinical document library.' }
   ];
 
@@ -92,7 +92,7 @@
 
   function collectionForCategory(title) {
     if (title === 'Medication Education') return 'medication';
-    if (title === 'Other') return 'other';
+    if (title === 'Vestibular') return 'other';
     if (title === 'Screening & Assessment Forms') return 'screening';
     return 'musculoskeletal';
   }
