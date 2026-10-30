@@ -62,34 +62,42 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.ddx-name')).toContainText('Sodium');
 
     await page.goto('/documents/');
-    await expect(page.locator('.tool-row .lucide-biceps-flexed').first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.lucide-wind')).toBeVisible();
-    await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.lucide-brain-circuit')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Neck — General Program' }).locator('.lucide-user-round')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Neck Pain — General' }).locator('.lucide-user-round')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Quick access' })).toBeVisible();
+    await expect(page.locator('#doc-count')).toHaveText('35 resources available');
+    await expect(page.getByRole('navigation', { name: 'Document collections' }).getByRole('button')).toHaveCount(6);
+    await page.getByRole('button', { name: 'Medication education' }).click();
+    await expect(page.locator('#library-title')).toHaveText('Medication education');
     await expect(page.getByRole('link', { name: 'GLP-1 Receptor Agonist Patient Education' }).locator('.lucide-syringe')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Long-Term PPI Use: Benefits & Risks' }).locator('.lucide-pill')).toBeVisible();
     await expect(page.getByRole('link', { name: 'PPI Quick Guide' }).locator('.lucide-clipboard-list')).toBeVisible();
+    await expect(page.locator('.tool-row .document-kind').first()).toHaveText('Patient education');
+
+    await page.getByRole('button', { name: 'Musculoskeletal' }).click();
+    await expect(page.locator('.tool-row .lucide-biceps-flexed').first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Neck Home Exercise Program (USAF / MedBridge)' }).locator('.lucide-user-round')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Neck Pain Patient Guide' }).locator('.lucide-user-round')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Screening & forms' }).click();
+    await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.lucide-wind')).toBeVisible();
+    await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.lucide-brain-circuit')).toBeVisible();
     await expect(page.locator('.tool-row .lucide-file-text')).toHaveCount(0);
     await expect(page.locator('.ext-row .lucide-clipboard-check')).toHaveCount(0);
     await expect(page.locator('.document-action,.ext-arrow')).toHaveCount(0);
-    await expect(page.getByRole('navigation', { name: 'Document categories' }).getByRole('link')).toHaveCount(9);
     await expect(page.getByRole('heading', { name: /Screening & Assessment Forms/ })).toBeVisible();
-    await expect(page.locator('#doc-count')).toHaveText('35 resources');
-    await expect(page.locator('.tool-row .document-kind').first()).toHaveText('PDF · Hosted locally');
-    await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.document-kind')).toHaveText('External PDF');
+    await expect(page.locator('#doc-count')).toHaveText('5 resources');
+    await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.document-kind')).toHaveText('Screening form · External');
     await page.getByLabel('Find a document').fill('carpal tunnel');
-    await expect(page.getByText('Carpal Tunnel Syndrome', { exact: true })).toBeVisible();
-    await expect(page.getByText('Shoulder — General Program')).toBeHidden();
+    await expect(page.locator('#search-results').getByText('Carpal Tunnel Syndrome', { exact: true })).toBeVisible();
     await expect(page.locator('#doc-count')).toHaveText('1 match');
     await expect(page).toHaveURL(/q=carpal\+tunnel/);
     await page.getByRole('button', { name: 'Clear search' }).click();
-    await expect(page.getByRole('link', { name: 'GLP-1 Receptor Agonist Patient Education' })).toHaveAttribute('href', 'pdfs/GLP1%20Patient%20Education.pdf');
-    await expect(page.getByRole('link', { name: 'Long-Term PPI Use: Benefits & Risks' })).toHaveAttribute('href', 'pdfs/PPI_Long-Term_Use_Handout.pdf');
-    await expect(page.getByRole('link', { name: 'PPI Quick Guide' })).toHaveAttribute('href', 'pdfs/PPI_Quick_Guide_Handout.pdf');
+    await page.getByRole('button', { name: 'All documents' }).click();
+    await expect(page.locator('.tool-row', { hasText: 'GLP-1 Receptor Agonist Patient Education' })).toHaveAttribute('href', 'pdfs/GLP1%20Patient%20Education.pdf');
+    await expect(page.locator('.tool-row', { hasText: 'Long-Term PPI Use: Benefits & Risks' })).toHaveAttribute('href', 'pdfs/PPI_Long-Term_Use_Handout.pdf');
+    await expect(page.locator('.tool-row', { hasText: 'PPI Quick Guide' })).toHaveAttribute('href', 'pdfs/PPI_Quick_Guide_Handout.pdf');
     await expect(page.getByRole('link', { name: /Asthma Control Test/ })).toHaveAttribute('href', /childrensmercy\.org\/.+act_adulteng\.pdf/);
     await expect(page.getByRole('link', { name: /GAD-7/ })).toHaveAttribute('href', /aims\.uw\.edu\/.+GAD-7_English_0\.pdf/);
-    await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind')).toHaveText('External PDF');
+    await expect(page.getByRole('link', { name: /GAD-7/ }).locator('.document-kind')).toHaveText('Screening form · External');
     await expect(page.getByRole('link', { name: /STOP-BANG Questionnaire/ })).toHaveAttribute('href', /faa\.gov\/.+STOP_BANG_Questionnaire\.pdf/);
     await expect(page.getByRole('link', { name: /Epworth Sleepiness Scale/ })).toHaveAttribute('href', /faa\.gov\/.+Epworth_Sleepiness_Scale\.pdf/);
     const gadTitle = await page.getByRole('link', { name: /GAD-7/ }).locator('.ext-name').boundingBox();
@@ -105,6 +113,36 @@ test.describe('Remaining-page redesign', () => {
     await page.goto('/sti-guide/');
     await page.getByLabel('Diagnosis, medication, or population').fill('gonorrhea');
     await expect(page.locator('.guide-card').first()).toContainText(/gonorrhea/i);
+  });
+
+  test('document library offers one-tap mobile collections and device-local quick access', async ({ page, context }) => {
+    await page.addInitScript(() => {
+      localStorage.removeItem('noahpac.documentFavorites');
+      localStorage.removeItem('noahpac.documentRecent');
+      localStorage.removeItem('noahpac.documentCollection');
+    });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/documents/');
+
+    await expect(page.getByLabel('Browse document collection')).toBeVisible();
+    await page.getByLabel('Browse document collection').selectOption('medication');
+    const glpLink = page.getByRole('link', { name: 'GLP-1 Receptor Agonist Patient Education' });
+    await expect(glpLink).toBeVisible();
+    await page.getByRole('button', { name: 'Add GLP-1 Receptor Agonist Patient Education to favorites' }).click();
+
+    await page.getByLabel('Browse document collection').selectOption('quick');
+    await expect(page.getByRole('heading', { name: 'Favorites' })).toBeVisible();
+    await expect(page.locator('#quick-access').getByRole('link', { name: /GLP-1 Receptor Agonist Patient Education/ })).toBeVisible();
+
+    await page.getByLabel('Browse document collection').selectOption('medication');
+    const [opened] = await Promise.all([
+      context.waitForEvent('page'),
+      page.getByRole('link', { name: 'PPI Quick Guide' }).click(),
+    ]);
+    await opened.close();
+    await page.getByLabel('Browse document collection').selectOption('quick');
+    await expect(page.getByRole('heading', { name: 'Recently opened' })).toBeVisible();
+    await expect(page.locator('#quick-access').getByRole('link', { name: /PPI Quick Guide/ })).toBeVisible();
   });
 
   test('screeners and complex tools retain representative content and controls', async ({ page }) => {

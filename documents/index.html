@@ -8,7 +8,7 @@
 <title>Clinical Documents — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/index.css">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=10">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app documents-app">
@@ -38,9 +38,21 @@
     <div class="document-search__status"><span id="doc-count" aria-live="polite"></span><button class="app-clear-button" id="doc-clear" type="button" hidden>Clear search</button></div>
   </section>
 
-  <nav class="document-categories" id="document-categories" aria-label="Document categories"></nav>
+  <div class="mobile-collection-field">
+    <label for="collection-select">Browse collection</label>
+    <select id="collection-select" aria-label="Browse document collection"></select>
+  </div>
 
-  <main class="document-library" id="document-library" tabindex="-1">
+  <main class="document-browser" id="document-library" tabindex="-1">
+    <nav class="document-categories" id="document-categories" aria-label="Document collections"></nav>
+    <section class="document-library" aria-labelledby="library-title">
+      <header class="library-header">
+        <div><p class="library-eyebrow">Document library</p><h2 id="library-title">Quick access</h2><p id="library-description">Commonly used resources, favorites, and recently opened documents.</p></div>
+      </header>
+      <div id="quick-access" class="quick-access"></div>
+      <div id="search-results" class="search-results" hidden></div>
+      <nav id="subcategory-nav" class="subcategory-nav" aria-label="Musculoskeletal body regions" hidden></nav>
+      <div id="catalog-content" hidden>
     <div id="tools-grid">
 
     <div class="category-col">
@@ -166,11 +178,11 @@
         </a></li>
         <li><a class="tool-row" data-search="plantar fasciitis foot heel pain" href="pdfs/plantar-fasciitis-1.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Plantar Fasciitis — Option 1</span>
+          <span class="tool-name">Plantar Fasciitis Overview (OrthoInfo)</span>
         </a></li>
         <li><a class="tool-row" data-search="plantar fasciitis foot heel pain" href="pdfs/plantar-fasciitis-2.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Plantar Fasciitis — Option 2</span>
+          <span class="tool-name">Plantar Fasciitis Home Exercise Program (OrthoIndy)</span>
         </a></li>
         <li><a class="tool-row" data-search="shin splints medial tibial stress syndrome mtss" href="pdfs/shin-splints-mtss.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
@@ -184,11 +196,11 @@
       <ul class="tool-list">
         <li><a class="tool-row" data-search="neck general program cervical" href="pdfs/neck-general-program.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Neck — General Program</span>
+          <span class="tool-name">Neck Home Exercise Program (USAF / MedBridge)</span>
         </a></li>
         <li><a class="tool-row" data-search="neck pain cervical general" href="pdfs/neck-pain-general.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Neck Pain — General</span>
+          <span class="tool-name">Neck Pain Patient Guide</span>
         </a></li>
       </ul>
     </div>
@@ -202,11 +214,11 @@
         </a></li>
         <li><a class="tool-row" data-search="epley maneuver bppv vertigo dizziness" href="pdfs/epley-maneuver-bppv.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Epley Maneuver (BPPV)</span>
+          <span class="tool-name">Self-Treatment Epley Maneuver</span>
         </a></li>
         <li><a class="tool-row" data-search="epley foster method bppv vertigo dizziness" href="pdfs/epley-maneuver-foster-method-bppv.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Epley Maneuver — Foster Method (BPPV)</span>
+          <span class="tool-name">Half Somersault (Foster Method) for BPPV</span>
         </a></li>
       </ul>
     </div>
@@ -255,6 +267,8 @@
       </a>
     </div>
     </section>
+      </div>
+    </section>
   </main>
 
   <footer class="app-footer legacy-footer">
@@ -264,6 +278,6 @@
 
 </div>
 
-<script src="app.js?v=11"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>

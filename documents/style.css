@@ -1,271 +1,91 @@
-:root {
-  --accent: var(--purple);
-  --line-input: var(--line);
+:root{--accent:var(--purple);--line-input:var(--line)}
+*{box-sizing:border-box}
+.documents-app [hidden]{display:none!important}
+
+/* Search remains global even while the library is browsing one collection. */
+.documents-app .document-search{margin:0 0 18px;padding:0 0 18px;border:0;border-bottom:1px solid var(--app-border);background:transparent}
+.document-search label{display:grid;gap:7px}
+#doc-search{width:100%;min-height:48px;padding:11px 14px 11px 42px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-md);outline:0;background:var(--app-surface);color:var(--app-text);box-shadow:none;font:inherit;font-size:14px}
+#doc-search:focus{border-color:var(--app-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--app-accent) 18%,transparent)}
+.document-search__status{display:flex;min-height:24px;align-items:center;justify-content:space-between;gap:12px;margin-top:6px;color:var(--app-text-muted);font-size:12px}
+.mobile-collection-field{display:none}
+
+/* Desktop library browser: a stable collection rail and one focused result surface. */
+.document-browser{display:grid;grid-template-columns:210px minmax(0,1fr);gap:22px;align-items:start}
+.document-categories{position:sticky;top:18px;display:grid;gap:5px;padding:8px;border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface);box-shadow:var(--app-shadow-soft)}
+.document-categories button{display:flex;min-height:44px;align-items:center;gap:10px;padding:9px 10px;border:0;border-radius:var(--app-radius-sm);background:transparent;color:var(--app-text-secondary);font:inherit;font-size:12px;font-weight:650;text-align:left;cursor:pointer}
+.document-categories button svg{width:16px;height:16px;flex:0 0 auto;color:var(--app-text-muted);stroke-width:1.7}
+.document-categories button:hover{background:var(--app-surface-subtle);color:var(--app-text)}
+.document-categories button.is-active{background:var(--app-accent-soft);color:var(--app-accent)}
+.document-categories button.is-active svg{color:var(--app-accent)}
+
+.document-library{min-width:0;overflow:hidden;border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface);box-shadow:var(--app-shadow-soft)}
+.library-header{padding:20px 22px 17px;border-bottom:1px solid var(--app-border)}
+.library-eyebrow{margin:0 0 4px;color:var(--app-accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.library-header h2{margin:0;color:var(--app-text);font-size:20px;letter-spacing:-.02em}
+.library-header p:last-child{max-width:680px;margin:5px 0 0;color:var(--app-text-muted);font-size:12px;line-height:1.5}
+
+/* Quick access and global search use the same quiet resource rows. */
+.quick-access,.search-results{padding:8px 22px 22px}
+.quick-hint{display:flex;align-items:flex-start;gap:9px;margin:10px 0 16px;padding:11px 12px;border-radius:var(--app-radius-sm);background:var(--app-surface-subtle);color:var(--app-text-muted);font-size:11px;line-height:1.5}
+.quick-hint svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px;color:var(--app-accent)}
+.resource-section{padding-top:14px}.resource-section+.resource-section{margin-top:8px;border-top:1px solid var(--app-border)}
+.resource-section h3{margin:0 0 7px;color:var(--app-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.resource-card-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+.resource-card{display:grid;min-width:0;grid-template-columns:minmax(0,1fr) 40px;align-items:center;border-bottom:1px solid var(--app-border)}
+.resource-card>a{display:flex;min-width:0;min-height:62px;align-items:center;gap:11px;padding:9px 4px;color:inherit;text-decoration:none}
+.resource-card>a:hover strong{color:var(--app-accent)}
+.resource-card__icon{display:grid;width:30px;height:30px;flex:0 0 auto;place-items:center;color:var(--app-text-muted)}
+.resource-card__icon svg{width:17px;height:17px;stroke-width:1.7}
+.resource-card__body{display:grid;min-width:0;gap:3px}.resource-card__body strong{overflow-wrap:anywhere;color:var(--app-text);font-size:13px;line-height:1.35}.resource-card__body small{color:var(--app-text-muted);font-size:10px;line-height:1.35}
+
+/* Region filters appear only inside the musculoskeletal collection. */
+.subcategory-nav{display:flex;gap:6px;padding:11px 22px;border-bottom:1px solid var(--app-border);overflow-x:auto;scrollbar-width:none}
+.subcategory-nav::-webkit-scrollbar{display:none}
+.subcategory-nav button{min-height:36px;padding:7px 10px;border:1px solid var(--app-border);border-radius:999px;background:var(--app-surface);color:var(--app-text-muted);font:inherit;font-size:10px;font-weight:650;white-space:nowrap;cursor:pointer}
+.subcategory-nav button:hover,.subcategory-nav button.is-active{border-color:var(--app-accent);background:var(--app-accent-soft);color:var(--app-accent)}
+
+/* Category content stays compact; only the selected collection is in view. */
+.category-col,#ext-refs{scroll-margin-top:16px;padding:20px 22px;border-bottom:1px solid var(--app-border)}
+.category-col:last-child,#ext-refs:last-child{border-bottom:0}
+.documents-app .cat-heading{display:flex;align-items:center;gap:8px;margin:0 0 8px;color:var(--app-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.09em;text-transform:uppercase}
+.category-count{color:var(--app-text-muted);font-size:9px;letter-spacing:0}
+.tool-list,.ext-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0;padding:0;list-style:none}
+.document-item{position:relative;display:grid;min-width:0;grid-template-columns:minmax(0,1fr) 40px;align-items:center;border-top:1px solid var(--app-border)}
+.tool-list .document-item:nth-child(-n+2),.ext-list .document-item:nth-child(-n+2){border-top:0}
+.tool-row,.ext-row{display:flex;min-width:0;min-height:61px;align-items:center;gap:0;padding:9px 4px;border:0;border-radius:0;color:inherit;text-decoration:none}
+.tool-row:hover,.ext-row:hover{background:transparent;box-shadow:none;transform:none}.tool-row:hover .tool-name,.ext-row:hover .ext-name{color:var(--app-accent)}
+.tool-icon,.ext-icon{display:grid;width:30px;height:32px;flex:0 0 auto;place-items:center;margin-right:10px;border:0;background:transparent;color:var(--app-text-muted);opacity:.8}
+.icon-tool,.icon-ext{width:17px;height:17px;stroke-width:1.65}
+.document-row__body,.ext-body{display:grid;min-width:0;gap:2px;align-self:center}
+.tool-name,.ext-name{overflow-wrap:anywhere;color:var(--app-text);font-size:13px;font-weight:650;line-height:1.35}
+.ext-desc{color:var(--app-text-muted);font-size:10px;line-height:1.35}
+.document-kind{color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:650;letter-spacing:.045em;line-height:1.4;text-transform:uppercase}
+.favorite-button{display:grid;width:40px;height:40px;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--app-text-muted);cursor:pointer}
+.favorite-button:hover{background:var(--app-surface-subtle);color:var(--app-accent)}
+.favorite-button:focus-visible{outline:2px solid var(--app-accent);outline-offset:1px}
+.favorite-button svg{width:16px;height:16px;stroke-width:1.7}.favorite-button.is-favorite{color:var(--app-accent)}.favorite-button.is-favorite svg{fill:currentColor}
+#no-results{margin:0;padding:42px 22px;color:var(--app-text-muted);font-size:13px;text-align:center}
+
+.legacy-footer{margin-top:24px}
+
+@media(max-width:800px){
+  .mobile-collection-field{display:grid;gap:6px;margin:0 0 14px}.mobile-collection-field label{color:var(--app-text-secondary);font-size:11px;font-weight:700}.mobile-collection-field select{width:100%;min-height:46px;padding:9px 12px;border:1px solid var(--app-border-strong);border-radius:var(--app-radius-md);background:var(--app-surface);color:var(--app-text);font:inherit;font-size:14px}
+  .document-browser{display:block}.document-categories{display:none}.document-library{box-shadow:none}
+  .library-header{padding:17px 16px 14px}.library-header h2{font-size:18px}
+  .quick-access,.search-results{padding:6px 16px 17px}.resource-card-list{grid-template-columns:1fr}
+  .subcategory-nav{padding:10px 16px}
+  .category-col,#ext-refs{padding:17px 16px 14px}.tool-list,.ext-list{grid-template-columns:1fr}
+  .tool-list .document-item:nth-child(2),.ext-list .document-item:nth-child(2){border-top:1px solid var(--app-border)}
+  .tool-row,.ext-row{min-height:63px}.favorite-button{width:44px;height:44px}
 }
 
-/* ── Back link (documents/ isn't the homepage, index.css has no equivalent) ── */
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: 0.8125rem;
-  color: var(--ink-muted);
-  text-decoration: none;
-  margin-bottom: 1.5rem;
-}
-.back-link:hover { color: var(--accent); }
-.icon-back { width: 14px; height: 14px; stroke-width: 2; }
-
-/* ── Search input (index.css styles #search-input; this page uses #doc-search
-   so app.js's existing element lookups don't need to change) ── */
-#doc-search {
-  width: 100%; background: var(--surface); border: 1px solid var(--line-input);
-  padding: 0.75rem 1rem 0.75rem 2.5rem; font-size: 0.875rem; color: var(--ink);
-  box-shadow: 0 1px 2px rgba(0,0,0,.05); outline: none; font-family: inherit; box-sizing: border-box;
-}
-#doc-search:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.document-search{margin-bottom:1.5rem;padding:1rem;border:1px solid var(--app-border);border-radius:var(--app-radius-lg);background:var(--app-surface);box-shadow:var(--app-shadow-soft)}
-.document-search label{display:grid;gap:.45rem}
-.document-search__status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:.65rem;color:var(--app-text-muted);font-size:.78rem}
-.hidden-tool{display:none!important}
-.document-categories{display:flex;gap:6px;margin:-.35rem 0 1.75rem;padding:4px 0;overflow-x:auto;scrollbar-width:none;overscroll-behavior-inline:contain}
-.document-categories::-webkit-scrollbar{display:none}
-.document-categories a{display:inline-flex;align-items:center;min-height:40px;padding:7px 11px;border:1px solid var(--app-border);border-radius:999px;background:var(--app-surface);color:var(--app-text-secondary);font-size:.75rem;font-weight:650;text-decoration:none;white-space:nowrap}
-.document-categories a:hover{border-color:var(--app-border-strong);color:var(--app-accent)}
-.category-col,#ext-refs{scroll-margin-top:16px}
-.documents-app .cat-heading{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
-.category-count{display:inline-grid;min-width:22px;height:22px;place-items:center;padding:0 6px;border-radius:999px;background:var(--app-surface-subtle);color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:0}
-.document-row__body{display:grid;flex:1;min-width:0;gap:3px;align-self:center}
-.documents-app .tool-name{min-width:0;line-height:1.4}
-.document-kind{display:inline-flex;justify-self:start;color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:.59rem;font-weight:600;letter-spacing:.04em;line-height:1.3;text-transform:uppercase;white-space:nowrap}
-.documents-app .ext-row .document-kind{margin-top:4px;padding:2px 6px;border:1px solid var(--app-border);border-radius:999px;background:var(--app-surface-subtle)}
-
-/* Documents use a quiet semantic icon system matched to body region, exercise,
-   procedure, or screening purpose. */
-.documents-app .tool-icon{
-  width:26px;
-  height:34px;
-  margin-right:.65rem;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  opacity:.58;
-}
-.documents-app .tool-row:hover .tool-icon{background:transparent;border-color:transparent}
-.documents-app .icon-tool{width:18px;height:18px;stroke-width:1.6}
-.documents-app .ext-icon{display:grid;width:26px;height:34px;place-items:center}
-
-/* ── External-source badge (OrthoInfo etc., hosted files have none) ── */
-.ext-badge {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  color: var(--ink-muted);
-  margin-left: 0.375rem;
+@media(max-width:480px){
+  .document-workspace{width:min(100% - 24px,var(--app-content))}
+  .resource-card{grid-template-columns:minmax(0,1fr) 44px}.document-item{grid-template-columns:minmax(0,1fr) 44px}
 }
 
-/* ── Print: clean handout, no chrome ── */
-@media print {
-  .back-link, .search-wrap, .document-categories, footer, #ext-refs { display: none; }
-}
-
-@media(max-width:700px){
-  .document-categories{position:sticky;top:0;z-index:8;padding:8px 0;background:var(--bg)}
-}
-
-/* ── Quiet document directory ───────────────────────────────────────────── */
-.documents-app .document-search{
-  margin:0 0 14px;
-  padding:0 0 18px;
-  border:0;
-  border-bottom:1px solid var(--app-border);
-  border-radius:0;
-  background:transparent;
-  box-shadow:none;
-}
-.documents-app #doc-search{
-  min-height:46px;
-  border-color:var(--app-border);
-  border-radius:var(--app-radius-sm);
-  background:var(--app-surface);
-  box-shadow:none;
-}
-.documents-app .document-search__status{margin-top:.5rem}
-.documents-app .document-categories{
-  flex-wrap:wrap;
-  gap:4px 18px;
-  margin:0 0 18px;
-  padding:0 2px;
-  overflow:visible;
-}
-.documents-app .document-categories a{
-  position:relative;
-  min-height:36px;
-  padding:6px 0;
-  border:0;
-  border-bottom:2px solid transparent;
-  border-radius:0;
-  background:transparent;
-  color:var(--app-text-muted);
-  font-size:.76rem;
-}
-.documents-app .document-categories a:hover,
-.documents-app .document-categories a:focus-visible{
-  border-bottom-color:var(--app-accent);
-  color:var(--app-accent);
-}
-.document-library{
-  overflow:hidden;
-  border:1px solid var(--app-border);
-  border-radius:var(--app-radius-lg);
-  background:var(--app-surface);
-  box-shadow:var(--app-shadow-soft);
-}
-.documents-app #tools-grid{display:block}
-.documents-app .category-col{
-  padding:24px 24px 22px;
-  border:0;
-  border-bottom:1px solid var(--app-border);
-  border-radius:0;
-  background:transparent;
-}
-.documents-app .cat-heading{
-  gap:9px;
-  margin:0 0 10px;
-  padding:0;
-  border:0;
-  color:var(--app-text-secondary);
-  font-size:.76rem;
-  letter-spacing:.11em;
-}
-.documents-app .category-count{
-  display:inline;
-  min-width:0;
-  height:auto;
-  padding:0;
-  border-radius:0;
-  background:transparent;
-  color:var(--app-text-muted);
-  font:600 .68rem/1 'IBM Plex Mono',monospace;
-}
-.documents-app .tool-list,
-.documents-app .ext-list{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  column-gap:24px;
-}
-.documents-app .tool-list li,
-.documents-app .ext-row{
-  min-width:0;
-  border-top:1px solid var(--app-border);
-}
-.documents-app .tool-list li:nth-child(-n+2),
-.documents-app .ext-row:nth-child(-n+2){border-top:0}
-.documents-app .tool-row,
-.documents-app .ext-row{
-  min-height:58px;
-  margin:0;
-  padding:10px 6px;
-  border-radius:var(--app-radius-sm);
-  transition:background-color .15s ease,color .15s ease;
-}
-.documents-app .tool-row{align-items:center;border:0}
-.documents-app .tool-row:hover,
-.documents-app .ext-row:hover{
-  border-color:transparent;
-  background:var(--app-surface-subtle);
-  box-shadow:none;
-  transform:none;
-}
-.documents-app .tool-icon,
-.documents-app .ext-icon{
-  display:grid;
-  width:28px;
-  height:34px;
-  margin:0 10px 0 0;
-  place-items:center;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  color:var(--app-text-muted);
-  opacity:.72;
-}
-.documents-app .tool-row:hover .tool-icon,
-.documents-app .ext-row:hover .ext-icon{
-  border:0;
-  background:transparent;
-  color:var(--app-accent);
-  opacity:1;
-}
-.documents-app .icon-tool,
-.documents-app .icon-ext{width:18px;height:18px;stroke-width:1.65}
-.documents-app .tool-name,
-.documents-app .ext-name{
-  color:var(--app-text);
-  font-size:.87rem;
-  font-weight:620;
-  line-height:1.35;
-}
-.documents-app .ext-desc{
-  margin-top:2px;
-  color:var(--app-text-muted);
-  font-size:.75rem;
-  line-height:1.4;
-}
-.documents-app .document-kind{
-  margin-top:3px;
-  padding:0;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  color:var(--app-text-muted);
-  font-size:.61rem;
-  font-weight:600;
-  letter-spacing:.035em;
-}
-.documents-app .ext-row .document-kind{
-  margin-top:3px;
-  padding:0;
-  border:0;
-  border-radius:0;
-  background:transparent;
-}
-.documents-app #ext-refs{
-  margin:0;
-  padding:24px;
-  border:0;
-}
-.documents-app #no-results{padding:48px 24px}
-
-@media(max-width:700px){
-  .documents-app .document-categories{
-    position:sticky;
-    top:0;
-    z-index:8;
-    flex-wrap:nowrap;
-    gap:6px;
-    margin:0 -14px 16px;
-    padding:8px 14px;
-    overflow-x:auto;
-    background:var(--bg);
-  }
-  .documents-app .document-categories a{
-    min-height:40px;
-    padding:7px 11px;
-    border:1px solid var(--app-border);
-    border-radius:999px;
-    background:var(--app-surface);
-    white-space:nowrap;
-  }
-  .documents-app .document-categories a:hover,
-  .documents-app .document-categories a:focus-visible{border-color:var(--app-accent)}
-  .documents-app .category-col,
-  .documents-app #ext-refs{padding:18px 16px 16px}
-  .documents-app .tool-list,
-  .documents-app .ext-list{grid-template-columns:1fr}
-  .documents-app .tool-list li,
-  .documents-app .ext-row{border-top:1px solid var(--app-border)}
-  .documents-app .tool-list li:first-child,
-  .documents-app .ext-row:first-child{border-top:0}
-  .documents-app .tool-row,
-  .documents-app .ext-row{min-height:60px;padding:10px 2px}
+@media print{
+  .app-header__actions,.document-search,.mobile-collection-field,.document-categories,.subcategory-nav,.favorite-button,.quick-access,.legacy-footer{display:none!important}
+  .document-browser{display:block}.document-library{border:0;box-shadow:none}.library-header{padding:0 0 12px}.category-col,#ext-refs{padding:12px 0;break-inside:avoid}.tool-list,.ext-list{grid-template-columns:repeat(2,1fr)}
 }
