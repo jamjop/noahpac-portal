@@ -76,6 +76,11 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.locator('.tool-row .lucide-biceps-flexed').first()).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Home Exercise Program (USAF / MedBridge)' }).locator('.lucide-user-round')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Pain Patient Guide' }).locator('.lucide-user-round')).toBeVisible();
+    const musculoskeletalGrid = await page.locator('#tools-grid').boundingBox();
+    const shoulderSection = await page.locator('.category-col', { hasText: 'Shoulder' }).first().boundingBox();
+    expect(musculoskeletalGrid).not.toBeNull();
+    expect(shoulderSection).not.toBeNull();
+    expect(shoulderSection!.width).toBeGreaterThan(musculoskeletalGrid!.width * 0.9);
 
     await page.getByRole('button', { name: 'Screening & forms' }).click();
     await expect(page.getByRole('link', { name: /Asthma Control Test/ }).locator('.lucide-wind')).toBeVisible();

@@ -46,6 +46,7 @@
 .subcategory-nav button:hover,.subcategory-nav button.is-active{border-color:var(--app-accent);background:var(--app-accent-soft);color:var(--app-accent)}
 
 /* Category content stays compact; only the selected collection is in view. */
+.documents-app #tools-grid{display:block}
 .category-col,#ext-refs{scroll-margin-top:16px;padding:20px 22px;border-bottom:1px solid var(--app-border)}
 .category-col:last-child,#ext-refs:last-child{border-bottom:0}
 .documents-app .cat-heading{display:flex;align-items:center;gap:8px;margin:0 0 8px;color:var(--app-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.09em;text-transform:uppercase}
@@ -58,7 +59,7 @@
 .tool-icon,.ext-icon{display:grid;width:30px;height:32px;flex:0 0 auto;place-items:center;margin-right:10px;border:0;background:transparent;color:var(--app-text-muted);opacity:.8}
 .icon-tool,.icon-ext{width:17px;height:17px;stroke-width:1.65}
 .document-row__body,.ext-body{display:grid;min-width:0;gap:2px;align-self:center}
-.tool-name,.ext-name{overflow-wrap:anywhere;color:var(--app-text);font-size:13px;font-weight:650;line-height:1.35}
+.tool-name,.ext-name{overflow-wrap:break-word;word-break:normal;color:var(--app-text);font-size:13px;font-weight:650;line-height:1.35}
 .ext-desc{color:var(--app-text-muted);font-size:10px;line-height:1.35}
 .document-kind{color:var(--app-text-muted);font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:650;letter-spacing:.045em;line-height:1.4;text-transform:uppercase}
 .favorite-button{display:grid;width:40px;height:40px;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--app-text-muted);cursor:pointer}
