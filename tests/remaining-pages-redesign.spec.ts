@@ -63,7 +63,7 @@ test.describe('Remaining-page redesign', () => {
 
     await page.goto('/documents/');
     await expect(page.getByRole('heading', { name: 'Quick access' })).toBeVisible();
-    await expect(page.locator('#doc-count')).toHaveText('45 resources available');
+    await expect(page.locator('#doc-count')).toHaveText('50 resources available');
     await expect(page.getByRole('navigation', { name: 'Document collections' }).getByRole('button')).toHaveCount(6);
     await page.getByRole('button', { name: 'Medication education' }).click();
     await expect(page.locator('#library-title')).toHaveText('Medication education');
@@ -77,6 +77,15 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByRole('link', { name: 'Hamstring Strain' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Hip, Thigh & Knee' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Return to Activity' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Military MSK Decision Support — Rx3/ })).toHaveAttribute('href', 'https://rx3.usuhs.edu/');
+    await expect(page.getByRole('link', { name: /Carpal Tunnel Syndrome/ })).toHaveAttribute('href', 'pdfs/carpal-tunnel-hprc.pdf');
+    await expect(page.getByRole('link', { name: /De Quervain's Tenosynovitis/ })).toHaveAttribute('href', 'pdfs/dequervains-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Patellar & Quadriceps Tendinopathy/ })).toHaveAttribute('href', 'pdfs/patellar-quadriceps-tendinopathy-hprc.pdf');
+    await expect(page.getByRole('link', { name: /SICK Scapula/ })).toHaveAttribute('href', 'pdfs/sick-scapula-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Glenohumeral Internal Rotation Deficit/ })).toHaveAttribute('href', 'pdfs/gird-hprc.pdf');
+    await expect(page.getByRole('link', { name: /SLAP Tears/ })).toHaveAttribute('href', 'pdfs/slap-tears-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Glenohumeral & AC Osteoarthritis/ })).toHaveAttribute('href', 'pdfs/shoulder-osteoarthritis-hprc.pdf');
+    await expect(page.getByRole('link', { name: /Osgood-Schlatter Disease/ })).toHaveAttribute('href', 'pdfs/osgood-schlatter-hprc.pdf');
     await expect(page.getByRole('link', { name: /Groin Pain in the Athlete/ })).toHaveAttribute('href', 'pdfs/groin-pain-athlete-hprc.pdf');
     await expect(page.getByRole('link', { name: /Hip Labral Tear & Femoroacetabular Impingement/ })).toHaveAttribute('href', 'pdfs/hip-labral-fai-hprc.pdf');
     await expect(page.getByRole('link', { name: /Greater Trochanteric Pain Syndrome/ })).toHaveAttribute('href', 'pdfs/greater-trochanteric-pain-syndrome-hprc.pdf');
@@ -87,6 +96,7 @@ test.describe('Remaining-page redesign', () => {
     await expect(page.getByRole('link', { name: /Hip Conditioning Program/ })).toHaveAttribute('href', /orthoinfo\.aaos\.org\/.+hip-conditioning-program/);
     await expect(page.getByRole('link', { name: /Foot & Ankle Conditioning Program/ })).toHaveAttribute('href', /orthoinfo\.aaos\.org\/.+foot-and-ankle-conditioning-program/);
     await expect(page.getByRole('link', { name: /Achilles Tendinopathy/ }).locator('.document-kind')).toHaveText('Patient guide + exercises · HPRC / USU');
+    await expect(page.getByRole('link', { name: /Carpal Tunnel Syndrome/ }).locator('.document-kind')).toHaveText('Patient guide + exercises · HPRC / USU');
     await expect(page.getByRole('link', { name: 'Neck Home Exercise Program (USAF / MedBridge)' }).locator('.lucide-user-round')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Neck Pain Patient Guide' }).locator('.lucide-user-round')).toBeVisible();
     const musculoskeletalGrid = await page.locator('#tools-grid').boundingBox();

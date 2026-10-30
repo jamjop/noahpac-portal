@@ -8,7 +8,7 @@
 <title>Clinical Documents — Noah PA-C</title>
 <script src="/assets/app-shell.js"></script>
 <link rel="stylesheet" href="/index.css">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 <script src="/lib/lucide.min.js"></script>
 </head>
 <body class="clinical-app legacy-app documents-app">
@@ -53,6 +53,11 @@
       <div id="search-results" class="search-results" hidden></div>
       <nav id="subcategory-nav" class="subcategory-nav" aria-label="Musculoskeletal body regions" hidden></nav>
       <div id="catalog-content" hidden>
+    <a class="provider-resource" id="rx3-provider-link" href="https://rx3.usuhs.edu/" target="_blank" rel="noopener" hidden>
+      <span class="provider-resource__icon"><i data-lucide="shield-plus" aria-hidden="true"></i></span>
+      <span><strong>Military MSK Decision Support — Rx3</strong><small>USU provider decision guides for shoulder, ankle, hip, low-back, and knee pain</small></span>
+      <i data-lucide="external-link" aria-hidden="true"></i>
+    </a>
     <div id="tools-grid">
 
     <div class="category-col">
@@ -92,6 +97,22 @@
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
           <span class="tool-name">Rotator Cuff &amp; Shoulder Conditioning <span class="ext-badge">OrthoInfo ↗</span></span>
         </a></li>
+        <li><a class="tool-row" data-search="sick scapula scapular dyskinesis shoulder blade overhead athlete military hprc usu" href="pdfs/sick-scapula-hprc.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
+          <span class="tool-name">SICK Scapula <span class="ext-badge">HPRC / USU</span></span>
+        </a></li>
+        <li><a class="tool-row" data-search="glenohumeral internal rotation deficit gird shoulder overhead athlete military hprc usu" href="pdfs/gird-hprc.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
+          <span class="tool-name">Glenohumeral Internal Rotation Deficit <span class="ext-badge">HPRC / USU</span></span>
+        </a></li>
+        <li><a class="tool-row" data-search="slap tear superior labrum anterior posterior shoulder military hprc usu" href="pdfs/slap-tears-hprc.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
+          <span class="tool-name">SLAP Tears <span class="ext-badge">HPRC / USU</span></span>
+        </a></li>
+        <li><a class="tool-row" data-search="glenohumeral acromioclavicular osteoarthritis shoulder oa arthritis military hprc usu" href="pdfs/shoulder-osteoarthritis-hprc.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
+          <span class="tool-name">Glenohumeral &amp; AC Osteoarthritis <span class="ext-badge">HPRC / USU</span></span>
+        </a></li>
       </ul>
     </div>
 
@@ -102,17 +123,17 @@
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
           <span class="tool-name">Cubital Tunnel Syndrome</span>
         </a></li>
-        <li><a class="tool-row" data-search="de quervains tenosynovitis wrist thumb" href="pdfs/dequervains-tenosynovitis.pdf" target="_blank" rel="noopener">
+        <li><a class="tool-row" data-search="de quervains tenosynovitis wrist thumb military hprc usu" href="pdfs/dequervains-hprc.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">De Quervain's Tenosynovitis</span>
+          <span class="tool-name">De Quervain's Tenosynovitis <span class="ext-badge">HPRC / USU</span></span>
         </a></li>
         <li><a class="tool-row" data-search="wrist tendinopathy" href="pdfs/wrist-tendinopathy.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
           <span class="tool-name">Wrist Tendinopathy</span>
         </a></li>
-        <li><a class="tool-row" data-search="carpal tunnel syndrome hand wrist" href="pdfs/carpal-tunnel-syndrome.pdf" target="_blank" rel="noopener">
+        <li><a class="tool-row" data-search="carpal tunnel syndrome hand wrist median nerve military hprc usu" href="pdfs/carpal-tunnel-hprc.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Carpal Tunnel Syndrome</span>
+          <span class="tool-name">Carpal Tunnel Syndrome <span class="ext-badge">HPRC / USU</span></span>
         </a></li>
         <li><a class="tool-row" data-search="epicondylitis tennis golfer elbow aaos orthoinfo" href="https://www.orthoinfo.org/globalassets/pdfs/2024-therapeutic-exercise-program-for-lateral-and-medial-epicondylitis.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
@@ -174,9 +195,13 @@
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
           <span class="tool-name">Patellofemoral Pain Syndrome</span>
         </a></li>
-        <li><a class="tool-row" data-search="patellar tendinitis knee jumpers knee" href="pdfs/patellar-tendinitis.pdf" target="_blank" rel="noopener">
+        <li><a class="tool-row" data-search="patellar quadriceps tendinopathy tendon knee jumpers knee military hprc usu" href="pdfs/patellar-quadriceps-tendinopathy-hprc.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
-          <span class="tool-name">Patellar Tendinitis</span>
+          <span class="tool-name">Patellar &amp; Quadriceps Tendinopathy <span class="ext-badge">HPRC / USU</span></span>
+        </a></li>
+        <li><a class="tool-row" data-search="osgood schlatter disease tibial tubercle knee young athlete military hprc usu" href="pdfs/osgood-schlatter-hprc.pdf" target="_blank" rel="noopener">
+          <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
+          <span class="tool-name">Osgood-Schlatter Disease <span class="ext-badge">HPRC / USU</span></span>
         </a></li>
         <li><a class="tool-row" data-search="it band iliotibial band syndrome knee" href="pdfs/it-band-syndrome-knee.pdf" target="_blank" rel="noopener">
           <span class="tool-icon"><i data-lucide="file-text" class="icon-tool"></i></span>
@@ -324,6 +349,6 @@
 
 </div>
 
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

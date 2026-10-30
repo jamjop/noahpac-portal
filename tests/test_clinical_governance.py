@@ -113,14 +113,20 @@ class ClinicalGovernanceTests(unittest.TestCase):
         expected = {
             "hprc_achilles", "hprc_cecs", "hprc_groin", "hprc_bsi_foot", "hprc_hip_fai",
             "hprc_gtps", "hprc_posterior_tibial", "hprc_return_running",
+            "hprc_carpal_tunnel", "hprc_dequervains", "hprc_patellar_quadriceps",
+            "hprc_sick_scapula", "hprc_gird", "hprc_slap", "hprc_shoulder_oa",
+            "hprc_osgood_schlatter",
             "aaos_hip_conditioning", "aaos_foot_ankle_conditioning",
         }
-        self.assertEqual(set(documents["source_ids"]), expected)
-        self.assertEqual(set(claim["source_ids"]), expected)
+        all_expected = expected | {"usu_rx3"}
+        self.assertEqual(set(documents["source_ids"]), all_expected)
+        self.assertEqual(set(claim["source_ids"]), all_expected)
         for source_id in expected:
             source = manifest["sources"][source_id]
             self.assertIs(source.get("fingerprint"), True)
             self.assertEqual(source["monitoring_strategy"], "document_fingerprint")
+        self.assertNotIn("fingerprint", manifest["sources"]["usu_rx3"])
+        self.assertEqual(manifest["sources"]["usu_rx3"]["monitoring_strategy"], "official_page_monitor")
 
     def test_failure_alert_dry_run_never_prints_secrets(self):
         env = os.environ.copy()

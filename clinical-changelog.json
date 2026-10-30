@@ -4,6 +4,23 @@
   "policy": "Records substantive clinical-content, safety, and governance changes. Cosmetic-only changes are omitted.",
   "entries": [
     {
+      "id": "2026-10-30-hprc-msk-conversion",
+      "date": "2026-10-30",
+      "type": "clinical",
+      "title": "Military musculoskeletal handout conversion",
+      "summary": "Expanded use of USU/HPRC military sports-medicine handouts and replaced three older overlapping documents with current military-specific resources.",
+      "clinical_change": true,
+      "scope": "Clinician-directed musculoskeletal patient education and USU provider decision support",
+      "affected_routes": ["/documents/"],
+      "changes": [
+        "Replaced the prior carpal-tunnel, De Quervain's, and patellar-tendinitis PDFs with unchanged HPRC/USU handouts.",
+        "Added HPRC/USU handouts for SICK scapula, glenohumeral internal rotation deficit, SLAP tears, glenohumeral/acromioclavicular osteoarthritis, and Osgood-Schlatter disease.",
+        "Added an understated external link to the USU Rx3 provider decision-support application without reproducing the interactive service.",
+        "Added exact fingerprints for all eight new HPRC source documents and official-page monitoring for Rx3."
+      ],
+      "source_ids": ["hprc_carpal_tunnel", "hprc_dequervains", "hprc_patellar_quadriceps", "hprc_sick_scapula", "hprc_gird", "hprc_slap", "hprc_shoulder_oa", "hprc_osgood_schlatter", "usu_rx3"]
+    },
+    {
       "id": "2026-10-30-active-duty-msk-handouts",
       "date": "2026-10-30",
       "type": "clinical",

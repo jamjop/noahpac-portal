@@ -47,6 +47,8 @@
 
 /* Category content stays compact; only the selected collection is in view. */
 .documents-app #tools-grid{display:block}
+.provider-resource{display:grid;grid-template-columns:34px minmax(0,1fr) 20px;align-items:center;gap:10px;margin:14px 22px 4px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--app-accent) 24%,var(--app-border));border-radius:var(--app-radius-md);background:color-mix(in srgb,var(--app-accent) 5%,var(--app-surface));color:var(--app-text);text-decoration:none}
+.provider-resource[hidden]{display:none}.provider-resource:hover{border-color:color-mix(in srgb,var(--app-accent) 45%,var(--app-border));background:color-mix(in srgb,var(--app-accent) 8%,var(--app-surface))}.provider-resource__icon{display:grid;width:34px;height:34px;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--app-accent) 12%,transparent);color:var(--app-accent)}.provider-resource__icon svg,.provider-resource>svg{width:17px;height:17px;stroke-width:1.7}.provider-resource>svg{color:var(--app-text-muted)}.provider-resource span:nth-child(2){display:grid;gap:2px;min-width:0}.provider-resource strong{font-size:12px;line-height:1.35}.provider-resource small{color:var(--app-text-muted);font-size:10px;line-height:1.4}
 .category-col,#ext-refs{scroll-margin-top:16px;padding:20px 22px;border-bottom:1px solid var(--app-border)}
 .category-col:last-child,#ext-refs:last-child{border-bottom:0}
 .documents-app .cat-heading{display:flex;align-items:center;gap:8px;margin:0 0 8px;color:var(--app-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:750;letter-spacing:.09em;text-transform:uppercase}
@@ -76,7 +78,7 @@
   .library-header{padding:17px 16px 14px}.library-header h2{font-size:18px}
   .quick-access,.search-results{padding:6px 16px 17px}.resource-card-list{grid-template-columns:1fr}
   .subcategory-nav{padding:10px 16px}
-  .category-col,#ext-refs{padding:17px 16px 14px}.tool-list,.ext-list{grid-template-columns:1fr}
+  .provider-resource{margin:12px 16px 2px;padding:12px}.category-col,#ext-refs{padding:17px 16px 14px}.tool-list,.ext-list{grid-template-columns:1fr}
   .tool-list .document-item:nth-child(2),.ext-list .document-item:nth-child(2){border-top:1px solid var(--app-border)}
   .tool-row,.ext-row{min-height:63px}.favorite-button{width:44px;height:44px}
 }

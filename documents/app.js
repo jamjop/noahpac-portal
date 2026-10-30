@@ -17,6 +17,7 @@
   var searchResults = document.getElementById('search-results');
   var catalogContent = document.getElementById('catalog-content');
   var subcategoryNav = document.getElementById('subcategory-nav');
+  var rx3ProviderLink = document.getElementById('rx3-provider-link');
 
   var FAVORITES_KEY = 'noahpac.documentFavorites';
   var RECENTS_KEY = 'noahpac.documentRecent';
@@ -39,6 +40,10 @@
     'Shoulder Impingement Syndrome': 'bone',
     'Post-Op Shoulder Rehabilitation Protocol': 'hospital',
     'Rotator Cuff & Shoulder Conditioning': 'rotate-cw',
+    'SICK Scapula': 'scan-line',
+    'Glenohumeral Internal Rotation Deficit': 'rotate-ccw',
+    'SLAP Tears': 'activity',
+    'Glenohumeral & AC Osteoarthritis': 'bone',
     'Cubital Tunnel Syndrome': 'bone',
     "De Quervain's Tenosynovitis": 'hand',
     'Wrist Tendinopathy': 'hand',
@@ -50,7 +55,8 @@
     'Sacroiliac Joint Pain': 'bone',
     'Knee — General Program': 'person-standing',
     'Patellofemoral Pain Syndrome': 'circle-dot',
-    'Patellar Tendinitis': 'biceps-flexed',
+    'Patellar & Quadriceps Tendinopathy': 'biceps-flexed',
+    'Osgood-Schlatter Disease': 'bone',
     'IT Band Syndrome': 'move-diagonal-2',
     'Ankle — General Program': 'footprints',
     'Ankle Sprain Rehab': 'footprints',
@@ -115,7 +121,7 @@
     if (/return-to-running/i.test(title)) return 'Return-to-activity guidance';
     if (/conditioning program/i.test(title)) return 'Conditioning program';
     if (/bone stress|compartment syndrome/i.test(title)) return 'Patient education';
-    if (/Achilles|Groin Pain|Labral Tear|Trochanteric Pain|Posterior Tibial/i.test(title)) return 'Patient guide + exercises';
+    if (/Achilles|Groin Pain|Labral Tear|Trochanteric Pain|Posterior Tibial|Carpal Tunnel|De Quervain|Patellar & Quadriceps|Osgood-Schlatter|SICK Scapula|Internal Rotation Deficit|SLAP Tears|AC Osteoarthritis/i.test(title)) return 'Patient guide + exercises';
     return 'Exercise handout';
   }
 
@@ -384,6 +390,7 @@
     quickAccess.hidden = currentCollection !== 'quick';
     catalogContent.hidden = currentCollection === 'quick';
     subcategoryNav.hidden = currentCollection !== 'musculoskeletal';
+    rx3ProviderLink.hidden = currentCollection !== 'musculoskeletal' && currentCollection !== 'all';
 
     categorySections.forEach(function (category) {
       var visible = currentCollection === 'all' || category.collection === currentCollection;
