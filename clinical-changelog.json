@@ -8,13 +8,14 @@
       "date": "2026-10-29",
       "type": "clinical",
       "title": "Orthostatic-vital measurement sequence",
-      "summary": "Expanded the Orthostatic Vitals calculator to capture supine, early standing, and 3-minute standing measurements with a clear source-linked procedure.",
+      "summary": "Expanded the Orthostatic Vitals calculator to capture supine, immediate standing, and 3-minute standing measurements with a clear source-linked procedure.",
       "clinical_change": true,
       "scope": "Orthostatic-vital measurement and interpretation",
       "affected_routes": ["/calculators/"],
       "changes": [
-        "Added a concise five-step measurement procedure covering supine rest, safe standing, symptom assessment, an early upright reading, and a repeat at 3 minutes.",
-        "Added separate BP and heart-rate inputs for early standing and 3-minute standing measurements.",
+        "Added a concise five-step measurement procedure covering supine rest, safe standing, symptom assessment, an immediate upright reading, and a repeat at 3 minutes.",
+        "Clarified that the first standing cuff cycle begins immediately rather than waiting until the 1-minute mark.",
+        "Added separate BP and heart-rate inputs for immediate standing and 3-minute standing measurements.",
         "Updated the interpretation to display both changes and distinguish an early transient threshold from a threshold still present at 3 minutes.",
         "Clarified that CDC STEADI uses 1- and 3-minute cuff readings and that true initial orthostatic hypotension within 15 seconds generally requires continuous beat-to-beat monitoring.",
         "Added the CDC protocol to clinical claim traceability and fingerprint-based source monitoring."

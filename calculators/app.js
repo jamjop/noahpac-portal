@@ -175,8 +175,8 @@ const CALCS = [
         <ol class="procedure-steps">
           <li>Have the patient lie supine and rest quietly for at least 5 minutes.</li>
           <li>Measure and record supine blood pressure and heart rate.</li>
-          <li>Assist the patient to stand safely, start the timer, and ask about dizziness, lightheadedness, weakness, or presyncope.</li>
-          <li>Obtain the first standing blood pressure and heart rate as soon as practical. Standard cuff-based protocols commonly target about 1 minute.</li>
+          <li>Assist the patient to stand safely and start the timer as soon as the patient is upright.</li>
+          <li><strong>Begin the first standing blood pressure and heart-rate measurement immediately.</strong> Do not wait 1 minute before starting the cuff cycle. Record the early value and ask about dizziness, lightheadedness, weakness, or presyncope.</li>
           <li>Repeat blood pressure and heart rate after 3 minutes standing, and document symptoms at either time point.</li>
         </ol>`)}
       <div class="section-label">After 5 minutes supine</div>
@@ -185,7 +185,7 @@ const CALCS = [
         ${field("Supine diastolic BP","ortho-sup-dbp","number","mmHg","75","20","160")}
         ${field("Supine heart rate","ortho-sup-hr","number","bpm","70","20","250")}
       </div>
-      <div class="section-label section-label-gap">Immediate / early standing — obtain promptly</div>
+      <div class="section-label section-label-gap">Immediate standing — start the cuff without delay</div>
       <div class="fields">
         ${field("Immediate / early standing systolic BP","ortho-early-sbp","number","mmHg","110","40","260")}
         ${field("Immediate / early standing diastolic BP","ortho-early-dbp","number","mmHg","70","20","160")}
@@ -199,7 +199,7 @@ const CALCS = [
       </div>
       <div id="orthostatic-result" class="result-card"><div class="result-placeholder">Enter all three sets of vitals</div></div>
       <button class="copy-btn" id="orthostatic-copy">&#x2398; Copy result</button>
-      <p class="note">Orthostatic hypotension is a sustained fall of at least 20 mm Hg systolic or 10 mm Hg diastolic within 3 minutes of standing. The early cuff reading records your clinic's first practical upright measurement; CDC STEADI specifies standing measurements at 1 and 3 minutes. A transient fall within the first 15 seconds (“initial orthostatic hypotension”) is not reliably excluded by a standard cuff and generally requires continuous beat-to-beat monitoring. Symptoms, medications, hydration, rhythm, technique, and delayed responses still matter. Heart-rate change is descriptive and does not by itself diagnose POTS. <a href="https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension" target="_blank" rel="noopener">AHA source</a> · <a href="https://www.cdc.gov/steadi/media/pdfs/STEADI-Assessment-MeasuringBP-508.pdf" target="_blank" rel="noopener">CDC measurement protocol</a>.</p>`;
+      <p class="note">Orthostatic hypotension is a sustained fall of at least 20 mm Hg systolic or 10 mm Hg diastolic within 3 minutes of standing. Start the first cuff cycle immediately upon standing so the earliest practical upright value is captured, then repeat at 3 minutes. Do not delay the first measurement until the 1-minute mark. A conventional intermittent cuff cannot reliably capture or exclude true “initial orthostatic hypotension” within the first 15 seconds; that transient phenomenon generally requires continuous beat-to-beat monitoring. Symptoms, medications, hydration, rhythm, technique, and delayed responses still matter. Heart-rate change is descriptive and does not by itself diagnose POTS. <a href="https://professional.heart.org/en/science-news/orthostatic-hypotension-in-adults-with-hypertension" target="_blank" rel="noopener">AHA source</a> · <a href="https://www.cdc.gov/steadi/media/pdfs/STEADI-Assessment-MeasuringBP-508.pdf" target="_blank" rel="noopener">CDC measurement protocol</a> · <a href="https://www.droracle.ai/articles/1625751/how-are-orthostatic-vital-signs-measured" target="_blank" rel="noopener">Referenced timing review</a>.</p>`;
       addListeners("orthostatic", calcOrthostatic);
     }
   },

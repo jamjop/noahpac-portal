@@ -87,6 +87,8 @@ test.describe('Calculation and conversion workflows', () => {
 
     await page.goto('/calculators/?calc=orthostatic');
     await expect(page.getByText('Have the patient lie supine and rest quietly for at least 5 minutes.')).toBeVisible();
+    await expect(page.getByText('Begin the first standing blood pressure and heart-rate measurement immediately.')).toBeVisible();
+    await expect(page.getByText(/Do not wait 1 minute before starting the cuff cycle/)).toBeVisible();
     await expect(page.getByLabel('Immediate / early standing systolic BP')).toHaveValue('110');
     await expect(page.getByLabel('3-minute systolic BP')).toHaveValue('100');
     await expect(page.locator('#orthostatic-result')).toContainText('20/10 mm Hg drop');
