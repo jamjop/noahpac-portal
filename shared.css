@@ -1357,7 +1357,7 @@ html[data-theme="dark"] .protocol-app{
 body.clinical-app.legacy-app{
   min-height:100vh;
   padding-bottom:0;
-  background:var(--app-bg);
+  background:var(--app-canvas);
   color:var(--app-text);
 }
 body.clinical-app.legacy-app .legacy-main,
