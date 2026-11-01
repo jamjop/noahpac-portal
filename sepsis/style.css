@@ -22,9 +22,8 @@
   position:sticky;
   top:0;
   z-index:20;
-  border-bottom:1px solid var(--app-border);
-  background:color-mix(in srgb,var(--app-surface) 94%,transparent);
-  backdrop-filter:blur(10px);
+  padding-top:10px;
+  background:transparent;
 }
 .section-nav__inner{
   display:flex;
@@ -33,6 +32,11 @@
   align-items:center;
   gap:8px;
   margin:0 auto;
+  padding:0 7px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-lg);
+  background:color-mix(in srgb,var(--app-surface) 94%,transparent);
+  backdrop-filter:blur(10px);
 }
 .section-nav a{
   display:inline-flex;

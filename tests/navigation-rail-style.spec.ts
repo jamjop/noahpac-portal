@@ -59,6 +59,53 @@ test('section navigation uses the same restrained rectangular language', async (
   }
 });
 
+const HEADER_RAILS = [
+  ['/abx/', '.tool-family-nav', '.tool-family-nav__inner'],
+  ['/allergy/', '.tool-family-nav', '.tool-family-nav__inner'],
+  ['/antibiogram/', '.tool-family-nav', '.tool-family-nav__inner'],
+  ['/empiric/', '.tool-family-nav', '.tool-family-nav__inner'],
+  ['/peds/', '.tool-section-nav', '.tool-section-nav__inner'],
+  ['/sepsis/', '.section-nav', '.section-nav__inner'],
+  ['/triage/', '.section-nav', '.section-nav__inner'],
+  ['/readiness/', '.workflow-nav', '.workflow-tabs'],
+] as const;
+
+test('under-header navigation rails align with the page content instead of bleeding edge to edge', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    for (const [route, outerSelector, innerSelector] of HEADER_RAILS) {
+      await page.goto(route);
+      const outer = page.locator(outerSelector).first();
+      const inner = page.locator(innerSelector).first();
+      await expect(inner, `${route} has a visible contained header rail`).toBeVisible();
+
+      const geometry = await inner.evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return {
+          left: rect.left,
+          right: window.innerWidth - rect.right,
+          radius: Number.parseFloat(style.borderTopLeftRadius),
+          borderWidth: Number.parseFloat(style.borderTopWidth),
+          background: style.backgroundColor,
+          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        };
+      });
+      expect(geometry.left, `${route} left edge uses a page gutter`).toBeGreaterThanOrEqual(13);
+      expect(geometry.right, `${route} right edge uses a page gutter`).toBeGreaterThanOrEqual(13);
+      expect(Math.abs(geometry.left - geometry.right), `${route} is centered`).toBeLessThanOrEqual(2);
+      expect(geometry.radius, `${route} rail is visibly contained`).toBeGreaterThanOrEqual(9);
+      expect(geometry.borderWidth, `${route} rail has a quiet boundary`).toBeGreaterThanOrEqual(1);
+      expect(geometry.background, `${route} rail retains its shaded surface`).not.toBe('rgba(0, 0, 0, 0)');
+      expect(geometry.overflow, `${route} does not create horizontal page overflow`).toBe(0);
+      await expect(outer, `${route} no longer shades the full viewport`).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    }
+  }
+});
+
 test('clinical status pills remain semantically distinct', async ({ page }) => {
   await page.goto('/wound/');
   await expect(page.locator('.pill').first()).toHaveCSS('border-radius', '50px');

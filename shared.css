@@ -483,8 +483,8 @@ footer .last-checked.stale .dot{
 /* Connected tool families retain separate workflows while sharing one quiet,
    discoverable navigation and evidence context. */
 .tool-family-nav{
-  border-bottom:1px solid var(--app-border);
-  background:var(--app-surface-subtle);
+  padding-top:12px;
+  background:transparent;
 }
 .tool-family-nav__inner{
   display:flex;
@@ -493,6 +493,10 @@ footer .last-checked.stale .dot{
   width:min(100% - 32px,var(--app-content));
   min-height:56px;
   margin:0 auto;
+  padding:0 14px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-lg);
+  background:var(--app-surface-subtle);
 }
 .tool-family-nav__identity{
   display:grid;
@@ -591,7 +595,7 @@ html[data-theme="dark"] .clinical-app{
   .app-footer__meta{text-align:left}
   .tool-family-nav__inner{
     display:block;
-    width:100%;
+    width:calc(100% - 28px);
     min-height:0;
     padding:9px 0 7px;
   }
@@ -623,9 +627,8 @@ html[data-theme="dark"] .clinical-app{
   position:sticky;
   top:0;
   z-index:20;
-  border-bottom:1px solid var(--app-border);
-  background:color-mix(in srgb,var(--app-surface) 94%,transparent);
-  backdrop-filter:blur(10px);
+  padding-top:10px;
+  background:transparent;
 }
 .tool-section-nav__inner{
   display:flex;
@@ -634,6 +637,11 @@ html[data-theme="dark"] .clinical-app{
   align-items:center;
   gap:6px;
   margin:0 auto;
+  padding:0 7px;
+  border:1px solid var(--app-border);
+  border-radius:var(--app-radius-lg);
+  background:color-mix(in srgb,var(--app-surface) 94%,transparent);
+  backdrop-filter:blur(10px);
 }
 .tool-section-nav a{
   display:inline-flex;
@@ -648,6 +656,16 @@ html[data-theme="dark"] .clinical-app{
   white-space:nowrap;
 }
 .tool-section-nav a:hover{background:var(--app-accent-soft);color:var(--app-accent)}
+
+@media(max-width:700px){
+  .tool-section-nav__inner{
+    width:calc(100% - 28px);
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .tool-section-nav__inner::-webkit-scrollbar{display:none}
+  .tool-section-nav a{flex:0 0 auto}
+}
 
 .tool-workspace{
   width:min(100% - 32px,var(--app-content));
