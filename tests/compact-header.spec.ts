@@ -4,8 +4,9 @@ const ROUTES = [
   '/calculators/', '/sepsis/', '/opioids/', '/steroids/', '/peds/',
   '/drugref/', '/lookup/', '/labs/', '/als/', '/pals/', '/tccc/',
   '/abx/', '/allergy/', '/antibiogram/', '/anticoag/', '/clinical-assistant/',
-  '/ddx/', '/documents/', '/empiric/', '/naloxone/', '/readiness/', '/reportable/',
-  '/screener/', '/sti-guide/', '/toxicology/', '/triage/', '/vaccines/', '/wound/',
+  '/clinical-review/', '/ddx/', '/documents/', '/empiric/', '/naloxone/',
+  '/readiness/', '/reportable/', '/screener/', '/sti-guide/', '/toxicology/',
+  '/triage/', '/updates/', '/vaccines/', '/wound/',
 ];
 
 for (const width of [375, 1440]) {
@@ -18,16 +19,23 @@ for (const width of [375, 1440]) {
         const header = document.querySelector('.app-header--unified')!.getBoundingClientRect();
         const controls = document.querySelector('.app-header__bar')!.getBoundingClientRect();
         const title = document.querySelector('.app-header__title h1')!.getBoundingClientRect();
+        const inner = document.querySelector('.app-header__inner')!.getBoundingClientRect();
+        const accent = getComputedStyle(document.querySelector('.app-header__inner')!, '::after');
         return {
           headerHeight: header.height,
           controlsBottom: controls.bottom,
           titleTop: title.top,
+          innerWidth: inner.width,
+          accentWidth: Number.parseFloat(accent.width),
+          headerBorderBottom: Number.parseFloat(getComputedStyle(document.querySelector('.app-header--unified')!).borderBottomWidth),
           documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         };
       });
 
       expect(geometry.controlsBottom, `${route} controls overlap its title`).toBeLessThanOrEqual(geometry.titleTop + 1);
       expect(geometry.headerHeight, `${route} header is still too tall`).toBeLessThanOrEqual(width === 375 ? 225 : 205);
+      expect(Math.abs(geometry.accentWidth - geometry.innerWidth), `${route} accent aligns with the header content`).toBeLessThanOrEqual(1);
+      expect(geometry.headerBorderBottom, `${route} does not retain a full-width bottom rule`).toBe(0);
       expect(geometry.documentOverflow, `${route} has horizontal overflow`).toBeLessThanOrEqual(1);
       await expect(page.getByLabel('Color theme')).toBeVisible();
       await expect(page.locator('.app-brand__mark')).toHaveText('PA');

@@ -1557,14 +1557,16 @@ html[data-theme="dark"] body.clinical-app{
 
 body.clinical-app .app-header--unified{
   position:relative;
+  border-bottom:0;
   background:linear-gradient(180deg,var(--app-surface-raised),var(--app-surface));
 }
-body.clinical-app .app-header--unified::after{
+body.clinical-app .app-header--unified .app-header__inner::after{
   position:absolute;
   right:0;
   bottom:-1px;
   left:0;
   height:2px;
+  border-radius:999px;
   background:linear-gradient(90deg,var(--app-family-accent),color-mix(in srgb,var(--app-family-accent) 28%,transparent) 34%,transparent 72%);
   content:"";
   opacity:.72;
