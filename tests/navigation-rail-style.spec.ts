@@ -149,6 +149,20 @@ test('antibiotic search header stays compact on a phone', async ({ page }) => {
   expect(headerHeight).toBeLessThan(80);
 });
 
+test('mobile reference search card is visually separated from its condition menu', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/abx/');
+  const searchPanel = page.locator('.reference-search-panel').first();
+  const conditionMenu = page.locator('.cat-nav').first();
+  const searchBox = await searchPanel.boundingBox();
+  const menuBox = await conditionMenu.boundingBox();
+  expect(searchBox).not.toBeNull();
+  expect(menuBox).not.toBeNull();
+  const gap = menuBox!.y - (searchBox!.y + searchBox!.height);
+  expect(gap, 'the condition menu has a deliberate gap below search').toBeGreaterThanOrEqual(12);
+  expect(gap, 'the search and condition menu remain visually related').toBeLessThanOrEqual(24);
+});
+
 test('clinical status pills remain semantically distinct', async ({ page }) => {
   await page.goto('/wound/');
   await expect(page.locator('.pill').first()).toHaveCSS('border-radius', '50px');

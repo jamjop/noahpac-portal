@@ -1506,7 +1506,9 @@ body.clinical-app.legacy-app .legacy-search-panel input::placeholder{color:var(-
 }
 @media(max-width:799px){
   .abx-app .legacy-search-panel,.ddx-app .legacy-search-panel{margin:0 0 14px}
-  .abx-app .cat-nav,.ddx-app .cat-nav{margin:0 -14px;padding:10px 14px;border-radius:0}
+  .abx-app .cat-nav{margin:14px -14px 0}
+  .abx-app .cat-nav,.ddx-app .cat-nav{padding:10px 14px;border-radius:0}
+  .ddx-app .cat-nav{margin:0 -14px}
 }
 
 /* Document library */
