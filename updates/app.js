@@ -75,7 +75,7 @@
 
     if (entry.commit) {
       const link = element("a", "update-commit", entry.commit);
-      link.href = `https://github.com/jamjop/noahpac-portal/commit/${entry.commit}`;
+      link.href = `https://github.com/absaroka-dev/noahpac-portal/commit/${entry.commit}`;
       link.target = "_blank";
       link.rel = "noopener";
       details.append(detailRow("Release record", [link]));
