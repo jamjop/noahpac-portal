@@ -79,6 +79,10 @@ footer{max-width:960px}
 /* ── Detail pane ── */
 .pane{padding:24px 16px 60px;max-width:960px;margin:0 auto}
 @media(max-width:560px){.pane{padding:16px 16px 50px}}
+@media(max-width:700px){
+  .abx-search-panel .reference-search-panel__header{align-items:flex-start;flex-direction:row;gap:10px}
+  .abx-search-panel .abx-result-count{margin-top:1px;white-space:nowrap}
+}
 
 .abx-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);font-weight:600}
 .abx-title{font-size:clamp(18px,3vw,22px);font-weight:600;line-height:1.1;margin:4px 0 2px}

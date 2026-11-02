@@ -593,22 +593,41 @@ html[data-theme="dark"] .clinical-app{
   .clinical-app .app-footer{grid-template-columns:1fr;width:calc(100% - 28px)}
   .clinical-app .app-footer .last-checked,.app-footer__source,.app-footer__meta{grid-column:auto;grid-row:auto}
   .app-footer__meta{text-align:left}
+  .tool-family-nav{padding-top:0}
   .tool-family-nav__inner{
     display:block;
-    width:calc(100% - 28px);
+    width:100%;
     min-height:0;
-    padding:9px 0 7px;
+    padding:6px 14px;
+    border-width:0 0 1px;
+    border-radius:0;
+    background:var(--app-surface);
   }
-  .tool-family-nav__identity{padding:0 14px 6px}
-  .tool-family-nav__identity>span{display:none}
+  .tool-family-nav__identity{display:none}
   .tool-family-nav__links{
-    overflow-x:auto;
-    padding:0 10px 3px;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:2px;
+    overflow:visible;
+    padding:0;
     scrollbar-width:none;
     overscroll-behavior-inline:contain;
   }
   .tool-family-nav__links::-webkit-scrollbar{display:none}
-  .tool-family-nav a{flex:0 0 auto;min-height:44px}
+  .tool-family-nav a{
+    min-width:0;
+    min-height:44px;
+    justify-content:center;
+    padding:7px 4px;
+    overflow:hidden;
+    font-size:0;
+    text-align:center;
+  }
+  .tool-family-nav a::after{
+    content:attr(data-short-label);
+    font-size:11px;
+    line-height:1.2;
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -658,9 +677,15 @@ html[data-theme="dark"] .clinical-app{
 .tool-section-nav a:hover{background:var(--app-accent-soft);color:var(--app-accent)}
 
 @media(max-width:700px){
+  .tool-section-nav{padding-top:0}
   .tool-section-nav__inner{
-    width:calc(100% - 28px);
+    width:100%;
+    padding:0 14px;
+    border-width:0 0 1px;
+    border-radius:0;
+    background:var(--app-surface);
     overflow-x:auto;
+    scroll-padding-inline:14px;
     scrollbar-width:none;
   }
   .tool-section-nav__inner::-webkit-scrollbar{display:none}
@@ -843,7 +868,7 @@ html[data-theme="dark"] .clinical-app{
 .clinical-caution strong{color:inherit}
 
 @media(max-width:700px){
-  .tool-section-nav__inner{width:calc(100% - 28px);overflow-x:auto;scrollbar-width:none}
+  .tool-section-nav__inner{width:100%;padding:0 14px;border-width:0 0 1px;border-radius:0;background:var(--app-surface);overflow-x:auto;scroll-padding-inline:14px;scrollbar-width:none}
   .tool-section-nav__inner::-webkit-scrollbar{display:none}
   .tool-section-nav a{flex:0 0 auto}
   .tool-workspace{width:calc(100% - 28px);padding-top:20px}

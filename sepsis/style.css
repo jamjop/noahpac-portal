@@ -218,7 +218,8 @@ html[data-theme="dark"] .sepsis-app{--app-surface-subtle:#141a26;--app-border-st
 }
 
 @media(max-width:700px){
-  .section-nav__inner{width:calc(100% - 28px);overflow-x:auto;scrollbar-width:none}
+  .section-nav{padding-top:0}
+  .section-nav__inner{width:100%;padding:0 14px;border-width:0 0 1px;border-radius:0;background:var(--app-surface);overflow-x:auto;scroll-padding-inline:14px;scrollbar-width:none}
   .section-nav__inner::-webkit-scrollbar{display:none}
   .section-nav a{flex:0 0 auto}
   .page-body{width:calc(100% - 28px);padding-top:20px}

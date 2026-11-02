@@ -70,7 +70,7 @@ const HEADER_RAILS = [
   ['/readiness/', '.workflow-nav', '.workflow-tabs'],
 ] as const;
 
-test('under-header navigation rails align with the page content instead of bleeding edge to edge', async ({ page }) => {
+test('under-header navigation rails stay contained on desktop and simplify on mobile', async ({ page }) => {
   for (const viewport of [
     { width: 1440, height: 900 },
     { width: 390, height: 844 },
@@ -89,21 +89,64 @@ test('under-header navigation rails align with the page content instead of bleed
           left: rect.left,
           right: window.innerWidth - rect.right,
           radius: Number.parseFloat(style.borderTopLeftRadius),
-          borderWidth: Number.parseFloat(style.borderTopWidth),
+          borderTopWidth: Number.parseFloat(style.borderTopWidth),
+          borderBottomWidth: Number.parseFloat(style.borderBottomWidth),
           background: style.backgroundColor,
           overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         };
       });
-      expect(geometry.left, `${route} left edge uses a page gutter`).toBeGreaterThanOrEqual(13);
-      expect(geometry.right, `${route} right edge uses a page gutter`).toBeGreaterThanOrEqual(13);
+      if (viewport.width > 700) {
+        expect(geometry.left, `${route} desktop left edge uses a page gutter`).toBeGreaterThanOrEqual(13);
+        expect(geometry.right, `${route} desktop right edge uses a page gutter`).toBeGreaterThanOrEqual(13);
+        expect(geometry.radius, `${route} desktop rail is visibly contained`).toBeGreaterThanOrEqual(9);
+        expect(geometry.borderTopWidth, `${route} desktop rail has a quiet boundary`).toBeGreaterThanOrEqual(1);
+      } else {
+        expect(geometry.left, `${route} mobile rail uses the full usable width`).toBeLessThanOrEqual(1);
+        expect(geometry.right, `${route} mobile rail uses the full usable width`).toBeLessThanOrEqual(1);
+        expect(geometry.radius, `${route} mobile rail avoids nested-card styling`).toBe(0);
+        expect(geometry.borderTopWidth, `${route} mobile rail avoids a redundant top rule`).toBe(0);
+      }
       expect(Math.abs(geometry.left - geometry.right), `${route} is centered`).toBeLessThanOrEqual(2);
-      expect(geometry.radius, `${route} rail is visibly contained`).toBeGreaterThanOrEqual(9);
-      expect(geometry.borderWidth, `${route} rail has a quiet boundary`).toBeGreaterThanOrEqual(1);
+      expect(geometry.borderBottomWidth, `${route} rail retains a quiet lower boundary`).toBeGreaterThanOrEqual(1);
       expect(geometry.background, `${route} rail retains its shaded surface`).not.toBe('rgba(0, 0, 0, 0)');
       expect(geometry.overflow, `${route} does not create horizontal page overflow`).toBe(0);
       await expect(outer, `${route} no longer shades the full viewport`).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     }
   }
+});
+
+test('antimicrobial mobile navigation shows all four destinations without clipping', async ({ page }) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    for (const route of ['/abx/', '/allergy/', '/antibiogram/', '/empiric/']) {
+      await page.goto(route);
+      await expect(page.locator('.tool-family-nav__identity')).toBeHidden();
+      const geometry = await page.locator('.tool-family-nav__links').evaluate((element) => ({
+        clientWidth: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+        links: [...element.querySelectorAll('a')].map((link) => {
+          const rect = link.getBoundingClientRect();
+          return { left: rect.left, right: rect.right, shortLabel: getComputedStyle(link, '::after').content };
+        }),
+      }));
+      expect(geometry.scrollWidth, `${route} family navigation fits at ${width}px`).toBeLessThanOrEqual(geometry.clientWidth);
+      expect(geometry.links).toHaveLength(4);
+      for (const link of geometry.links) {
+        expect(link.left, `${route} link remains onscreen at ${width}px`).toBeGreaterThanOrEqual(0);
+        expect(link.right, `${route} link remains onscreen at ${width}px`).toBeLessThanOrEqual(width);
+        expect(link.shortLabel, `${route} link has a concise mobile label`).not.toBe('none');
+      }
+    }
+  }
+});
+
+test('antibiotic search header stays compact on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/abx/');
+  const header = page.locator('.abx-search-panel .reference-search-panel__header');
+  await expect(header).toHaveCSS('flex-direction', 'row');
+  const headerHeight = await header.evaluate((element) => element.getBoundingClientRect().height);
+  expect(headerHeight).toBeLessThan(80);
 });
 
 test('clinical status pills remain semantically distinct', async ({ page }) => {
