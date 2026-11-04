@@ -31,6 +31,13 @@ test.describe('Calculation and conversion workflows', () => {
     expect(Math.abs(alignment[0]!.x - alignment[1]!.x)).toBeLessThanOrEqual(1);
     expect(Math.abs(alignment[0]!.width - alignment[1]!.width)).toBeLessThanOrEqual(1);
     await expect(panel).toHaveCSS('border-top-width', '1px');
+    const surfaces = await panel.evaluate((element) => ({
+      panel: getComputedStyle(element).backgroundColor,
+      navigation: getComputedStyle(element.closest('.calc-navigation')!).backgroundColor,
+      search: getComputedStyle(element.querySelector('input')!).backgroundColor,
+    }));
+    expect(surfaces.panel, 'the open chooser is shaded differently from its navigation bar').not.toBe(surfaces.navigation);
+    expect(surfaces.search, 'the search field remains distinct within the shaded chooser').not.toBe(surfaces.panel);
 
     await page.getByLabel('Find a calculator').fill('renal');
     await expect(page.locator('.tab-btn:visible')).toHaveCount(2);
