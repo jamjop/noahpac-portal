@@ -181,21 +181,21 @@ const CALCS = [
         </ol>`)}
       <div class="section-label">After 5 minutes supine</div>
       <div class="fields">
-        ${field("Supine systolic BP","ortho-sup-sbp","number","mmHg","120","40","260")}
-        ${field("Supine diastolic BP","ortho-sup-dbp","number","mmHg","75","20","160")}
-        ${field("Supine heart rate","ortho-sup-hr","number","bpm","70","20","250")}
+        ${field("Supine systolic BP","ortho-sup-sbp","number","mmHg","","40","260","e.g. 120")}
+        ${field("Supine diastolic BP","ortho-sup-dbp","number","mmHg","","20","160","e.g. 75")}
+        ${field("Supine heart rate","ortho-sup-hr","number","bpm","","20","250","e.g. 70")}
       </div>
       <div class="section-label section-label-gap">Immediate standing — start the cuff without delay</div>
       <div class="fields">
-        ${field("Immediate / early standing systolic BP","ortho-early-sbp","number","mmHg","110","40","260")}
-        ${field("Immediate / early standing diastolic BP","ortho-early-dbp","number","mmHg","70","20","160")}
-        ${field("Immediate / early standing heart rate","ortho-early-hr","number","bpm","80","20","250")}
+        ${field("Immediate / early standing systolic BP","ortho-early-sbp","number","mmHg","","40","260","e.g. 110")}
+        ${field("Immediate / early standing diastolic BP","ortho-early-dbp","number","mmHg","","20","160","e.g. 70")}
+        ${field("Immediate / early standing heart rate","ortho-early-hr","number","bpm","","20","250","e.g. 80")}
       </div>
       <div class="section-label section-label-gap">After 3 minutes standing</div>
       <div class="fields">
-        ${field("3-minute systolic BP","ortho-three-sbp","number","mmHg","100","40","260")}
-        ${field("3-minute diastolic BP","ortho-three-dbp","number","mmHg","65","20","160")}
-        ${field("3-minute heart rate","ortho-three-hr","number","bpm","88","20","250")}
+        ${field("3-minute systolic BP","ortho-three-sbp","number","mmHg","","40","260","e.g. 100")}
+        ${field("3-minute diastolic BP","ortho-three-dbp","number","mmHg","","20","160","e.g. 65")}
+        ${field("3-minute heart rate","ortho-three-hr","number","bpm","","20","250","e.g. 88")}
       </div>
       <div id="orthostatic-result" class="result-card"><div class="result-placeholder">Enter all three sets of vitals</div></div>
       <button class="copy-btn" id="orthostatic-copy">&#x2398; Copy result</button>

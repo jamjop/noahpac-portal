@@ -107,8 +107,25 @@ test.describe('Calculation and conversion workflows', () => {
     await expect(page.getByText('Have the patient lie supine and rest quietly for at least 5 minutes.')).toBeVisible();
     await expect(page.getByText('Begin the first standing blood pressure and heart-rate measurement immediately.')).toBeVisible();
     await expect(page.getByText(/Do not wait 1 minute before starting the cuff cycle/)).toBeVisible();
-    await expect(page.getByLabel('Immediate / early standing systolic BP')).toHaveValue('110');
-    await expect(page.getByLabel('3-minute systolic BP')).toHaveValue('100');
+    await expect(page.getByLabel('Supine systolic BP')).toHaveValue('');
+    await expect(page.getByLabel('Supine systolic BP')).toHaveAttribute('placeholder', 'e.g. 120');
+    await expect(page.getByLabel('Immediate / early standing systolic BP')).toHaveValue('');
+    await expect(page.getByLabel('3-minute systolic BP')).toHaveValue('');
+    await expect(page.locator('#orthostatic-result')).toContainText('Enter all three sets of vitals');
+
+    for (const [label, value] of [
+      ['Supine systolic BP', '120'],
+      ['Supine diastolic BP', '75'],
+      ['Supine heart rate', '70'],
+      ['Immediate / early standing systolic BP', '110'],
+      ['Immediate / early standing diastolic BP', '70'],
+      ['Immediate / early standing heart rate', '80'],
+      ['3-minute systolic BP', '100'],
+      ['3-minute diastolic BP', '65'],
+      ['3-minute heart rate', '88'],
+    ] as const) {
+      await page.getByLabel(label, { exact: true }).fill(value);
+    }
     await expect(page.locator('#orthostatic-result')).toContainText('20/10 mm Hg drop');
     await expect(page.locator('#orthostatic-result')).toContainText('Meets orthostatic BP-drop threshold');
     await expect(page.locator('#orthostatic-result')).toContainText('Immediate/early vs supine: SBP -10, DBP -5 mm Hg, HR +10 bpm');
