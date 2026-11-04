@@ -18,8 +18,19 @@ test.describe('Calculation and conversion workflows', () => {
 
     const chooser = page.locator('#calcChooserToggle');
     await expect(chooser).toHaveAttribute('aria-expanded', 'false');
+    await expect(chooser).toContainText('Selected calculator');
+    await expect(chooser).toContainText('Browse');
     await chooser.click();
     await expect(chooser).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByText('Choose a calculator', { exact: true })).toBeVisible();
+
+    const panel = page.locator('#calcChooserPanel');
+    const alignment = await Promise.all([chooser.boundingBox(), panel.boundingBox()]);
+    expect(alignment[0]).not.toBeNull();
+    expect(alignment[1]).not.toBeNull();
+    expect(Math.abs(alignment[0]!.x - alignment[1]!.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(alignment[0]!.width - alignment[1]!.width)).toBeLessThanOrEqual(1);
+    await expect(panel).toHaveCSS('border-top-width', '1px');
 
     await page.getByLabel('Find a calculator').fill('renal');
     await expect(page.locator('.tab-btn:visible')).toHaveCount(2);
