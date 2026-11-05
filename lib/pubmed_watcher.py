@@ -6,6 +6,7 @@ own SEARCHES list, app metadata, and notification strings. All HTTP, state
 I/O, and Pushover logic lives here.
 """
 import json
+import random
 import re
 import sys
 import time
@@ -13,6 +14,7 @@ import urllib.error
 import urllib.request
 import urllib.parse
 import datetime
+from email.utils import parsedate_to_datetime
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -23,6 +25,10 @@ EUTILS_BASE   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 TEXTFILE_DIR  = Path("/var/lib/node_exporter/textfile_collector")
 WAYBACK_SAVE_BASE = "https://web.archive.org/save/"
 _LAST_SEARCH_METADATA: dict[str, dict] = {}
+PUBMED_MAX_ATTEMPTS = 3
+PUBMED_BACKOFF_SECONDS = 1.0
+PUBMED_MAX_RETRY_AFTER_SECONDS = 30.0
+PUBMED_RETRYABLE_HTTP_STATUS = {429, 500, 502, 503, 504}
 
 
 class PubMedSearchError(RuntimeError):
@@ -46,6 +52,63 @@ CDC_DATE_PATTERNS = [
 ]
 
 
+def _retry_after_seconds(headers, now: datetime.datetime | None = None) -> float | None:
+    """Return a bounded Retry-After delay from seconds or an HTTP date."""
+    if not headers:
+        return None
+    raw = headers.get('Retry-After')
+    if not raw:
+        return None
+    try:
+        delay = float(raw)
+    except (TypeError, ValueError):
+        try:
+            retry_at = parsedate_to_datetime(raw)
+            current = now or datetime.datetime.now(datetime.timezone.utc)
+            if retry_at.tzinfo is None:
+                retry_at = retry_at.replace(tzinfo=datetime.timezone.utc)
+            delay = (retry_at - current).total_seconds()
+        except (TypeError, ValueError, OverflowError):
+            return None
+    return min(max(delay, 0.0), PUBMED_MAX_RETRY_AFTER_SECONDS)
+
+
+def _read_pubmed(req: urllib.request.Request, timeout: int = 30) -> bytes:
+    """Read an NCBI E-utilities response with bounded transient retries.
+
+    A sustained outage still raises the final exception so a topic cannot be
+    recorded as clean when PubMed surveillance was incomplete.
+    """
+    for attempt in range(1, PUBMED_MAX_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read()
+        except urllib.error.HTTPError as exc:
+            retryable = exc.code in PUBMED_RETRYABLE_HTTP_STATUS
+            retry_after = _retry_after_seconds(exc.headers)
+            detail = f"HTTP {exc.code}"
+            if not retryable or attempt == PUBMED_MAX_ATTEMPTS:
+                raise
+        except (urllib.error.URLError, TimeoutError) as exc:
+            retry_after = None
+            detail = str(getattr(exc, 'reason', exc))
+            if attempt == PUBMED_MAX_ATTEMPTS:
+                raise
+
+        delay = retry_after
+        if delay is None:
+            delay = PUBMED_BACKOFF_SECONDS * (2 ** (attempt - 1))
+            delay += random.uniform(0.0, 0.25)
+        print(
+            f"  PubMed request failed ({detail}); retrying in {delay:.1f}s "
+            f"(attempt {attempt + 1}/{PUBMED_MAX_ATTEMPTS})",
+            file=sys.stderr,
+        )
+        time.sleep(delay)
+
+    raise RuntimeError("unreachable PubMed retry state")
+
+
 def esearch(query: str, reldate: int,
             user_agent: str = 'noahpac-monitor/1.0') -> list[str]:
     params = urllib.parse.urlencode({
@@ -54,8 +117,7 @@ def esearch(query: str, reldate: int,
     })
     url = f"{EUTILS_BASE}/esearch.fcgi?{params}"
     req = urllib.request.Request(url, headers={'User-Agent': user_agent})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.loads(resp.read()).get('esearchresult', {}).get('idlist', [])
+    return json.loads(_read_pubmed(req)).get('esearchresult', {}).get('idlist', [])
 
 
 def esummary(pmids: list[str],
@@ -67,8 +129,7 @@ def esummary(pmids: list[str],
     })
     url = f"{EUTILS_BASE}/esummary.fcgi?{params}"
     req = urllib.request.Request(url, headers={'User-Agent': user_agent})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read())
+    data = json.loads(_read_pubmed(req))
     result = {}
     for pmid, item in data.get('result', {}).items():
         if pmid == 'uids':
@@ -92,8 +153,7 @@ def eabstracts(pmids: list[str],
     req = urllib.request.Request(
         f"{EUTILS_BASE}/efetch.fcgi?{params}", headers={'User-Agent': user_agent}
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        root = ET.fromstring(resp.read())
+    root = ET.fromstring(_read_pubmed(req))
     result = {}
     for article in root.findall('.//PubmedArticle'):
         pmid = article.findtext('.//PMID', '').strip()

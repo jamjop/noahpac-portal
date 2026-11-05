@@ -120,6 +120,55 @@ class FingerprintMappingTests(unittest.TestCase):
 
 
 class PubMedSurveillanceTests(unittest.TestCase):
+    def test_transient_server_errors_retry_then_succeed(self):
+        response = mock.MagicMock()
+        response.__enter__.return_value.read.return_value = b'{"ok": true}'
+        failures = [
+            urllib.error.HTTPError("https://example.test", 500, "error", {}, io.BytesIO()),
+            urllib.error.HTTPError("https://example.test", 503, "error", {}, io.BytesIO()),
+            response,
+        ]
+        with mock.patch.object(watcher.urllib.request, "urlopen", side_effect=failures), \
+             mock.patch.object(watcher.time, "sleep") as sleep, \
+             mock.patch.object(watcher.random, "uniform", return_value=0.0):
+            body = watcher._read_pubmed(urllib.request.Request("https://example.test"))
+        self.assertEqual(body, b'{"ok": true}')
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [1.0, 2.0])
+
+    def test_rate_limit_honors_bounded_retry_after(self):
+        response = mock.MagicMock()
+        response.__enter__.return_value.read.return_value = b'ok'
+        limited = urllib.error.HTTPError(
+            "https://example.test", 429, "limited", {"Retry-After": "7"}, io.BytesIO()
+        )
+        with mock.patch.object(watcher.urllib.request, "urlopen", side_effect=[limited, response]), \
+             mock.patch.object(watcher.time, "sleep") as sleep:
+            watcher._read_pubmed(urllib.request.Request("https://example.test"))
+        sleep.assert_called_once_with(7.0)
+
+    def test_permanent_client_error_is_not_retried(self):
+        bad_request = urllib.error.HTTPError(
+            "https://example.test", 400, "bad request", {}, io.BytesIO()
+        )
+        with mock.patch.object(watcher.urllib.request, "urlopen", side_effect=bad_request) as urlopen, \
+             mock.patch.object(watcher.time, "sleep") as sleep:
+            with self.assertRaises(urllib.error.HTTPError):
+                watcher._read_pubmed(urllib.request.Request("https://example.test"))
+        self.assertEqual(urlopen.call_count, 1)
+        sleep.assert_not_called()
+
+    def test_sustained_outage_still_fails_closed(self):
+        unavailable = urllib.error.HTTPError(
+            "https://example.test", 503, "unavailable", {}, io.BytesIO()
+        )
+        with mock.patch.object(watcher.urllib.request, "urlopen", side_effect=unavailable) as urlopen, \
+             mock.patch.object(watcher.time, "sleep") as sleep, \
+             mock.patch.object(watcher.random, "uniform", return_value=0.0):
+            with self.assertRaises(urllib.error.HTTPError):
+                watcher._read_pubmed(urllib.request.Request("https://example.test"))
+        self.assertEqual(urlopen.call_count, watcher.PUBMED_MAX_ATTEMPTS)
+        self.assertEqual(sleep.call_count, watcher.PUBMED_MAX_ATTEMPTS - 1)
+
     def test_fetch_failure_raises_instead_of_reporting_clean_run(self):
         searches = [{"id":"one", "name":"One", "query":"query", "reldate":30}]
         with mock.patch.object(watcher, "esearch", side_effect=OSError("network unavailable")):
